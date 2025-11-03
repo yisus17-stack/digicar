@@ -78,10 +78,10 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-background animate-in fade-in-0">
-          <div className="container mx-auto px-4 h-full">
+        <div className="fixed inset-x-0 top-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0">
+          <div className="container mx-auto px-4">
             <div className="flex items-center h-20 gap-4">
-                <Link href="/" className="flex items-center space-x-2">
+                <Link href="/" className="flex items-center space-x-2 opacity-0 pointer-events-none">
                     <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
                 </Link>
                 <div className="relative flex-1">
@@ -93,15 +93,16 @@ const SiteHeader = () => {
                       autoFocus
                     />
                 </div>
-                <Button variant="link" onClick={() => setIsSearchOpen(false)} className="text-foreground">
-                    Cancelar
+                <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
+                    <X className="h-5 w-5" />
+                    <span className='sr-only'>Cancelar</span>
                 </Button>
             </div>
-            <div className="mt-8">
-                <p className="font-semibold mb-4">Términos de búsqueda populares</p>
+            <div className="mt-4 pb-12">
+                <p className="font-semibold mb-4 text-muted-foreground">Búsquedas Populares</p>
                 <div className="flex flex-wrap gap-2">
                     {popularSearches.map((term) => (
-                        <Button key={term} variant="secondary" size="sm" className="rounded-full">
+                        <Button key={term} variant="secondary" size="sm" className="rounded-full font-normal">
                             {term}
                         </Button>
                     ))}
