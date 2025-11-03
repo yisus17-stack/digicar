@@ -78,12 +78,9 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-x-0 top-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0">
-          <div className="container mx-auto px-4">
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0 flex justify-center items-start pt-16">
+          <div className="container mx-auto px-4 w-full max-w-2xl">
             <div className="flex items-center h-20 gap-4">
-                <Link href="/" className="flex items-center space-x-2 opacity-0 pointer-events-none">
-                    <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
-                </Link>
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
