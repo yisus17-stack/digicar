@@ -13,26 +13,35 @@ const SiteHeader = () => {
 
   return (
     <header className="bg-background/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 gap-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
           <span className="font-bold text-xl">DigiCar</span>
         </Link>
-        <nav
-          className={cn(
-            'hidden md:flex items-center space-x-8 text-lg font-medium'
-          )}
-        >
+        
+        <nav className={cn('hidden md:flex items-center space-x-8 text-lg font-medium', { 'md:hidden': isSearchOpen })}>
           <Link href="/" className="text-primary font-bold">Inicio</Link>
           <Link href="/" className="transition-colors hover:text-primary">Catálogo</Link>
           <Link href="/compare" className="transition-colors hover:text-primary">Comparar</Link>
           <Link href="/simulator" className="transition-colors hover:text-primary">Simulador</Link>
         </nav>
+
+        {isSearchOpen && (
+             <div className="hidden md:flex flex-1 items-center justify-end">
+                <nav className='flex items-center space-x-8 text-lg font-medium mr-8'>
+                    <Link href="/" className="text-primary font-bold">Inicio</Link>
+                    <Link href="/" className="transition-colors hover:text-primary">Catálogo</Link>
+                    <Link href="/compare" className="transition-colors hover:text-primary">Comparar</Link>
+                    <Link href="/simulator" className="transition-colors hover:text-primary">Simulador</Link>
+                </nav>
+            </div>
+        )}
+
         <div className="flex items-center gap-4">
           {isSearchOpen ? (
             <div className="relative flex-1 md:max-w-xs">
               <Input
-                type="search"
+                type="text"
                 placeholder="Buscar autos..."
                 className="w-full pr-10"
                 autoFocus
