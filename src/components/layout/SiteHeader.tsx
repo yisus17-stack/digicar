@@ -11,7 +11,7 @@ const SiteHeader = () => {
           <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
           <span className="font-bold text-xl">DigiCar</span>
         </Link>
-        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <nav className="hidden md:flex items-center space-x-8 text-base font-medium">
           <Link href="/" className="text-primary font-bold">Inicio</Link>
           <Link href="/" className="transition-colors hover:text-primary">Catálogo</Link>
           <Link href="/compare" className="transition-colors hover:text-primary">Comparar</Link>
