@@ -78,7 +78,7 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0 flex justify-center items-start pt-16">
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0 flex justify-center pt-16 md:pt-24">
           <div className="container mx-auto px-4 w-full max-w-2xl">
             <div className="flex items-center h-20 gap-4">
                 <div className="relative flex-1">
