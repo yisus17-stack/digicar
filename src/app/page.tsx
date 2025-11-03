@@ -7,10 +7,10 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-          Explore Our Vehicle Collection
+          Explora Nuestra Colección de Vehículos
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-          Find the car that fits your life. Our curated selection offers unparalleled quality, performance, and style, ready for you to discover.
+          Encuentra el auto que se adapta a tu vida. Nuestra selección curada ofrece calidad, rendimiento y estilo inigualables, listos para que los descubras.
         </p>
       </div>
       <CarCatalog cars={cars} />

@@ -26,8 +26,8 @@ export default function CarCatalog({ cars }: CarCatalogProps) {
         return [...prev, id];
       }
       toast({
-        title: 'Selection Limit Reached',
-        description: 'You can only compare up to 2 cars at a time.',
+        title: 'Límite de Selección Alcanzado',
+        description: 'Solo puedes comparar hasta 2 autos a la vez.',
         variant: 'destructive',
       });
       return prev;
@@ -39,8 +39,8 @@ export default function CarCatalog({ cars }: CarCatalogProps) {
       router.push(`/compare?ids=${selectedCars.join(',')}`);
     } else {
         toast({
-            title: 'Select Two Cars',
-            description: 'Please select exactly two cars to compare.',
+            title: 'Selecciona Dos Autos',
+            description: 'Por favor, selecciona exactamente dos autos para comparar.',
         });
     }
   };
@@ -63,10 +63,10 @@ export default function CarCatalog({ cars }: CarCatalogProps) {
       {selectedCars.length > 0 && (
         <div className="sticky bottom-4 inset-x-0 flex justify-center mt-8">
             <div className="bg-card/90 backdrop-blur-lg p-3 rounded-lg shadow-2xl border flex items-center gap-4">
-                <p className="text-sm font-medium">{selectedCars.length} / 2 cars selected</p>
+                <p className="text-sm font-medium">{selectedCars.length} / 2 autos seleccionados</p>
                 <Button onClick={handleCompare} disabled={selectedCars.length !== 2}>
                     <GitCompareArrows className="mr-2 h-4 w-4" />
-                    Compare
+                    Comparar
                 </Button>
             </div>
         </div>

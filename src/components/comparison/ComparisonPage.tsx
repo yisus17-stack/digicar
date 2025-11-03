@@ -38,7 +38,7 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
   const handleAiSummary = () => {
     const car1Features = JSON.stringify(car1);
     const car2Features = JSON.stringify(car2);
-    const userNeeds = "I want a balanced car. Consider price, performance, and features.";
+    const userNeeds = "Quiero un auto equilibrado. Considera el precio, el rendimiento y las características.";
 
     startTransition(async () => {
         setSummary(null);
@@ -46,24 +46,24 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
             const result = await summarizeCarComparison({ car1Features, car2Features, userNeeds });
             setSummary(result);
         } catch (error) {
-            setSummary({ summary: 'Could not generate summary.', recommendation: 'An error occurred.' });
+            setSummary({ summary: 'No se pudo generar el resumen.', recommendation: 'Ocurrió un error.' });
         }
     });
   };
 
   const features = [
-    { label: 'Price', key: 'price' },
-    { label: 'Year', key: 'year' },
-    { label: 'Mileage', key: 'mileage' },
-    { label: 'Fuel Type', key: 'fuelType' },
-    { label: 'Transmission', key: 'transmission' },
-    { label: 'Engine', key: 'engine' },
-    { label: 'Horsepower', key: 'horsepower' },
+    { label: 'Precio', key: 'price' },
+    { label: 'Año', key: 'year' },
+    { label: 'Kilometraje', key: 'mileage' },
+    { label: 'Tipo de Combustible', key: 'fuelType' },
+    { label: 'Transmisión', key: 'transmission' },
+    { label: 'Motor', key: 'engine' },
+    { label: 'Caballos de Fuerza', key: 'horsepower' },
   ];
 
-  const formatValue = (key: string, value: any) => {
+  const formatValue = (key: string, value: any, car: Car) => {
     if (key === 'price') return `$${Number(value).toLocaleString()}`;
-    if (key === 'mileage') return `${Number(value).toLocaleString()} ${value.fuelType === 'Electric' ? 'mi' : 'MPG'}`;
+    if (key === 'mileage') return `${Number(value).toLocaleString()} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}`;
     if (key === 'horsepower') return `${value} HP`;
     return value;
   }
@@ -74,7 +74,7 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Feature</TableHead>
+              <TableHead className="w-[200px]">Característica</TableHead>
               {[car1, car2].map((car, index) => {
                 const image = index === 0 ? car1Image : car2Image;
                 return (
@@ -94,12 +94,12 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
             {features.map(feature => (
               <TableRow key={feature.key}>
                 <TableCell className="font-medium">{feature.label}</TableCell>
-                <TableCell>{formatValue(feature.key, car1[feature.key as keyof Car])}</TableCell>
-                <TableCell>{formatValue(feature.key, car2[feature.key as keyof Car])}</TableCell>
+                <TableCell>{formatValue(feature.key, car1[feature.key as keyof Car], car1)}</TableCell>
+                <TableCell>{formatValue(feature.key, car2[feature.key as keyof Car], car2)}</TableCell>
               </TableRow>
             ))}
             <TableRow>
-                <TableCell className="font-medium">All Features</TableCell>
+                <TableCell className="font-medium">Todas las Características</TableCell>
                 <TableCell>
                     <ul className="list-disc pl-5 space-y-1 text-sm">
                         {car1.features.map(f => <li key={f}>{f}</li>)}
@@ -118,22 +118,22 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
       <div className="text-center">
           <Button size="lg" onClick={handleAiSummary} disabled={isPending}>
             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-            Get AI Summary & Recommendation
+            Obtener Resumen y Recomendación de IA
           </Button>
       </div>
 
       {summary && (
         <Card className="shadow-lg animate-in fade-in duration-500">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> AI Analysis</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> Análisis de IA</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h3 className="font-bold mb-2">Key Differences</h3>
+                    <h3 className="font-bold mb-2">Diferencias Clave</h3>
                     <p className="text-muted-foreground">{summary.summary}</p>
                 </div>
                 <div>
-                    <h3 className="font-bold mb-2">Recommendation</h3>
+                    <h3 className="font-bold mb-2">Recomendación</h3>
                     <p className="text-muted-foreground">{summary.recommendation}</p>
                 </div>
             </CardContent>
@@ -142,10 +142,10 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
 
       <Card>
         <CardHeader>
-            <CardTitle>Interested?</CardTitle>
+            <CardTitle>¿Interesado?</CardTitle>
         </CardHeader>
         <CardContent>
-            <p className="text-muted-foreground mb-4">Get a personalized quote or schedule a test drive for one of these models.</p>
+            <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
             <LeadCaptureForm interestedCars={`${car1.brand} ${car1.model}, ${car2.brand} ${car2.model}`} />
         </CardContent>
       </Card>

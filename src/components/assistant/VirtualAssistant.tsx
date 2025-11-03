@@ -43,7 +43,7 @@ export default function VirtualAssistant() {
       } catch (error) {
         const errorMessage: Message = {
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again.',
+          content: 'Lo siento, encontré un error. Por favor, inténtalo de nuevo.',
         };
         setMessages(prev => [...prev, errorMessage]);
       }
@@ -59,20 +59,20 @@ export default function VirtualAssistant() {
             size="icon"
           >
             <Bot className="h-8 w-8" />
-            <span className="sr-only">Open AI Assistant</span>
+            <span className="sr-only">Abrir Asistente de IA</span>
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col w-full sm:max-w-md">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <Bot /> DigiCar Assistant
+              <Bot /> Asistente DigiCar
             </SheetTitle>
           </SheetHeader>
           <ScrollArea className="flex-1 -mx-6 px-6" ref={scrollAreaRef}>
             <div className="space-y-6 py-6">
               {messages.length === 0 && (
                 <div className="text-center text-muted-foreground p-4">
-                  Ask me anything about our cars! For example, "What's a good car for a family of 4?"
+                  ¡Pregúntame lo que sea sobre nuestros autos! Por ejemplo, "¿Cuál es un buen auto para una familia de 4?"
                 </div>
               )}
               {messages.map((message, index) => (
@@ -112,7 +112,7 @@ export default function VirtualAssistant() {
                   </Avatar>
                   <div className="bg-muted rounded-lg p-3 text-sm flex items-center gap-2">
                     <Loader className="h-4 w-4 animate-spin" />
-                    <span>Thinking...</span>
+                    <span>Pensando...</span>
                   </div>
                 </div>
               )}
@@ -123,7 +123,7 @@ export default function VirtualAssistant() {
               <Input
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Ask a question..."
+                placeholder="Haz una pregunta..."
                 disabled={isPending}
               />
               <Button type="submit" disabled={isPending || !input.trim()} size="icon">

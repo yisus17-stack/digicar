@@ -53,7 +53,21 @@ export default function SimulatorPage() {
   });
 
   const onSubmit = (data: FormData) => {
-    const prompt = `I'm looking for a car with a budget around $${data.budget}. My primary use is for ${data.primaryUse}. I need to carry about ${data.passengers} passengers. For fuel type, I prefer ${data.fuelType === 'NoPreference' ? 'any type' : data.fuelType}.`;
+    const primaryUseMap = {
+      'Commute': 'transporte diario',
+      'Family': 'familiar',
+      'Performance': 'rendimiento',
+      'Off-road': 'todoterreno'
+    };
+
+    const fuelTypeMap = {
+        'Gasoline': 'gasolina',
+        'Hybrid': 'híbrido',
+        'Electric': 'eléctrico',
+        'NoPreference': 'cualquier tipo'
+    }
+
+    const prompt = `Estoy buscando un auto con un presupuesto de alrededor de $${data.budget}. Mi uso principal es para ${primaryUseMap[data.primaryUse]}. Necesito llevar alrededor de ${data.passengers} pasajeros. En cuanto al tipo de combustible, prefiero ${fuelTypeMap[data.fuelType]}.`;
 
     startTransition(async () => {
       setRecommendation(null);
@@ -61,7 +75,7 @@ export default function SimulatorPage() {
         const result = await virtualAssistantCarRecommendations({ userInput: prompt });
         setRecommendation(result.recommendation);
       } catch (error) {
-        setRecommendation('Sorry, something went wrong. Please try again.');
+        setRecommendation('Lo siento, algo salió mal. Por favor, inténtalo de nuevo.');
       }
     });
   };
@@ -70,7 +84,7 @@ export default function SimulatorPage() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Your Preferences</CardTitle>
+          <CardTitle>Tus Preferencias</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -80,7 +94,7 @@ export default function SimulatorPage() {
                 name="budget"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Budget: ${field.value.toLocaleString()}</FormLabel>
+                    <FormLabel>Presupuesto: ${field.value.toLocaleString()}</FormLabel>
                     <FormControl>
                       <Slider
                         min={20000}
@@ -99,18 +113,18 @@ export default function SimulatorPage() {
                 name="primaryUse"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Primary Use</FormLabel>
+                    <FormLabel>Uso Principal</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a primary use" />
+                          <SelectValue placeholder="Selecciona un uso principal" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Commute">Daily Commute</SelectItem>
-                        <SelectItem value="Family">Family Car</SelectItem>
-                        <SelectItem value="Performance">Performance/Fun</SelectItem>
-                        <SelectItem value="Off-road">Off-road/Adventure</SelectItem>
+                        <SelectItem value="Commute">Transporte Diario</SelectItem>
+                        <SelectItem value="Family">Auto Familiar</SelectItem>
+                        <SelectItem value="Performance">Rendimiento/Diversión</SelectItem>
+                        <SelectItem value="Off-road">Todoterreno/Aventura</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -122,7 +136,7 @@ export default function SimulatorPage() {
                 name="passengers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Passengers</FormLabel>
+                    <FormLabel>Pasajeros</FormLabel>
                     <FormControl>
                       <Input type="number" min="1" max="7" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10))}/>
                     </FormControl>
@@ -136,7 +150,7 @@ export default function SimulatorPage() {
                 name="fuelType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Fuel Preference</FormLabel>
+                    <FormLabel>Preferencia de Combustible</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
@@ -147,25 +161,25 @@ export default function SimulatorPage() {
                           <FormControl>
                             <RadioGroupItem value="Gasoline" id="gasoline" />
                           </FormControl>
-                          <FormLabel htmlFor="gasoline" className='font-normal'>Gasoline</FormLabel>
+                          <FormLabel htmlFor="gasoline" className='font-normal'>Gasolina</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>
                             <RadioGroupItem value="Hybrid" id="hybrid" />
                           </FormControl>
-                          <FormLabel htmlFor="hybrid" className='font-normal'>Hybrid</FormLabel>
+                          <FormLabel htmlFor="hybrid" className='font-normal'>Híbrido</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>
                             <RadioGroupItem value="Electric" id="electric" />
                           </FormControl>
-                          <FormLabel htmlFor="electric" className='font-normal'>Electric</FormLabel>
+                          <FormLabel htmlFor="electric" className='font-normal'>Eléctrico</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>
                             <RadioGroupItem value="NoPreference" id="no-preference" />
                           </FormControl>
-                          <FormLabel htmlFor="no-preference" className='font-normal'>No Preference</FormLabel>
+                          <FormLabel htmlFor="no-preference" className='font-normal'>Sin Preferencia</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -179,7 +193,7 @@ export default function SimulatorPage() {
                 ) : (
                   <Wand2 className="mr-2 h-4 w-4" />
                 )}
-                Find My Car
+                Encontrar Mi Auto
               </Button>
             </form>
           </Form>
@@ -189,11 +203,11 @@ export default function SimulatorPage() {
       <div className="flex items-center justify-center">
         <Card className="w-full min-h-[300px] flex flex-col items-center justify-center shadow-lg">
             <CardHeader>
-                <CardTitle>AI Recommendation</CardTitle>
+                <CardTitle>Recomendación de IA</CardTitle>
             </CardHeader>
             <CardContent className="text-center flex-grow flex items-center justify-center">
                 {isPending && <Loader className="h-8 w-8 animate-spin text-primary" />}
-                {!isPending && !recommendation && <p className="text-muted-foreground">Your recommended car will appear here.</p>}
+                {!isPending && !recommendation && <p className="text-muted-foreground">Tu auto recomendado aparecerá aquí.</p>}
                 {!isPending && recommendation && (
                     <p className="text-lg animate-in fade-in duration-500">{recommendation}</p>
                 )}

@@ -12,7 +12,7 @@ export const cars: Car[] = [
     transmission: 'Automatic',
     engine: '4.0L V8',
     horsepower: 550,
-    features: ['Leather Seats', 'Sunroof', '360 Camera', 'Premium Sound System', 'Adaptive Cruise Control'],
+    features: ['Asientos de Cuero', 'Techo Solar', 'Cámara 360', 'Sistema de Sonido Premium', 'Control de Crucero Adaptativo'],
     image: 'prestige-x10',
   },
   {
@@ -26,7 +26,7 @@ export const cars: Car[] = [
     transmission: 'Automatic',
     engine: '3.5L V6 Twin-Turbo',
     horsepower: 480,
-    features: ['Sport-tuned Suspension', 'Alcantara Interior', 'Launch Control', 'Carbon Fiber Trim'],
+    features: ['Suspensión Deportiva', 'Interior de Alcantara', 'Control de Lanzamiento', 'Detalles en Fibra de Carbono'],
     image: 'aurora-gt',
   },
   {
@@ -38,9 +38,9 @@ export const cars: Car[] = [
     mileage: 350,
     fuelType: 'Electric',
     transmission: 'Automatic',
-    engine: 'Dual Motor',
+    engine: 'Motor Dual',
     horsepower: 450,
-    features: ['Autopilot', '17-inch Touchscreen', 'Glass Roof', 'Fast Charging', 'HEPA Air Filtration'],
+    features: ['Piloto Automático', 'Pantalla Táctil de 17 pulgadas', 'Techo de Cristal', 'Carga Rápida', 'Filtración de Aire HEPA'],
     image: 'volta-ev-pro',
   },
   {
@@ -52,9 +52,9 @@ export const cars: Car[] = [
     mileage: 22,
     fuelType: 'Hybrid',
     transmission: 'Automatic',
-    engine: '2.5L 4-Cylinder Hybrid',
+    engine: '2.5L 4-Cilindros Híbrido',
     horsepower: 220,
-    features: ['7-Seater', 'All-Wheel Drive', 'Panoramic Sunroof', 'Apple CarPlay/Android Auto'],
+    features: ['7 Asientos', 'Tracción Total', 'Techo Solar Panorámico', 'Apple CarPlay/Android Auto'],
     image: 'horizon-suv',
   },
   {
@@ -66,9 +66,9 @@ export const cars: Car[] = [
     mileage: 25,
     fuelType: 'Gasoline',
     transmission: 'Automatic',
-    engine: '2.0L 4-Cylinder Turbo',
+    engine: '2.0L 4-Cilindros Turbo',
     horsepower: 250,
-    features: ['Heated Seats', 'Wireless Charging', 'Blind Spot Monitor', 'Spacious Cabin'],
+    features: ['Asientos Calefactables', 'Carga Inalámbrica', 'Monitor de Punto Ciego', 'Cabina Espaciosa'],
     image: 'nomad-cruiser',
   },
   {
@@ -82,7 +82,7 @@ export const cars: Car[] = [
     transmission: 'Manual',
     engine: '1.8L Turbo',
     horsepower: 300,
-    features: ['Compact Design', 'Recaro Seats', 'Performance Brakes', 'Sport Exhaust'],
+    features: ['Diseño Compacto', 'Asientos Recaro', 'Frenos de Alto Rendimiento', 'Escape Deportivo'],
     image: 'comet-r',
   },
   {
@@ -94,9 +94,9 @@ export const cars: Car[] = [
     mileage: 45,
     fuelType: 'Hybrid',
     transmission: 'Automatic',
-    engine: '2.0L Hybrid',
+    engine: '2.0L Híbrido',
     horsepower: 190,
-    features: ['Luxury Interior', 'Advanced Safety Suite', 'Quiet Cabin', 'Ambient Lighting'],
+    features: ['Interior de Lujo', 'Suite de Seguridad Avanzada', 'Cabina Silenciosa', 'Iluminación Ambiental'],
     image: 'stratus-sedan',
   },
   {
@@ -110,7 +110,7 @@ export const cars: Car[] = [
     transmission: 'Automatic',
     engine: '3.0L V6 Diesel',
     horsepower: 280,
-    features: ['Off-road Package', 'Towing Capacity', 'Durable Bedliner', 'Advanced Infotainment'],
+    features: ['Paquete Todoterreno', 'Capacidad de Remolque', 'Revestimiento de Caja Duradero', 'Infoentretenimiento Avanzado'],
     image: 'terra-truck',
   },
 ];

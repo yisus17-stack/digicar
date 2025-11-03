@@ -1,25 +1,25 @@
 'use server';
 /**
- * @fileOverview Summarizes car comparisons based on user needs.
+ * @fileOverview Resume comparaciones de automóviles según las necesidades del usuario.
  *
- * - summarizeCarComparison - A function that summarizes the comparison and recommends a car.
- * - SummarizeCarComparisonInput - The input type for the summarizeCarComparison function.
- * - SummarizeCarComparisonOutput - The return type for the summarizeCarComparison function.
+ * - summarizeCarComparison - Una función que resume la comparación y recomienda un automóvil.
+ * - SummarizeCarComparisonInput - El tipo de entrada para la función summarizeCarComparison.
+ * - SummarizeCarComparisonOutput - El tipo de retorno para la función summarizeCarComparison.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SummarizeCarComparisonInputSchema = z.object({
-  car1Features: z.string().describe('Features of the first car model.'),
-  car2Features: z.string().describe('Features of the second car model.'),
-  userNeeds: z.string().describe('The user specified needs and preferences.'),
+  car1Features: z.string().describe('Características del primer modelo de automóvil.'),
+  car2Features: z.string().describe('Características del segundo modelo de automóvil.'),
+  userNeeds: z.string().describe('Las necesidades y preferencias especificadas por el usuario.'),
 });
 export type SummarizeCarComparisonInput = z.infer<typeof SummarizeCarComparisonInputSchema>;
 
 const SummarizeCarComparisonOutputSchema = z.object({
-  summary: z.string().describe('A summary of the car comparison highlighting key differences.'),
-  recommendation: z.string().describe('Recommendation of which car best suits the user needs.'),
+  summary: z.string().describe('Un resumen de la comparación de automóviles que destaca las diferencias clave.'),
+  recommendation: z.string().describe('Recomendación de qué automóvil se adapta mejor a las necesidades del usuario.'),
 });
 export type SummarizeCarComparisonOutput = z.infer<typeof SummarizeCarComparisonOutputSchema>;
 
@@ -31,13 +31,13 @@ const prompt = ai.definePrompt({
   name: 'summarizeCarComparisonPrompt',
   input: {schema: SummarizeCarComparisonInputSchema},
   output: {schema: SummarizeCarComparisonOutputSchema},
-  prompt: `You are an expert car advisor. Consider the following features of two cars and the user's needs to provide a summary and recommendation.
+  prompt: `Eres un asesor de automóviles experto. Considera las siguientes características de dos automóviles y las necesidades del usuario para proporcionar un resumen y una recomendación.
 
-Car 1 Features: {{{car1Features}}}
-Car 2 Features: {{{car2Features}}}
-User Needs: {{{userNeeds}}}
+Características del Auto 1: {{{car1Features}}}
+Características del Auto 2: {{{car2Features}}}
+Necesidades del usuario: {{{userNeeds}}}
 
-Provide a concise summary of the key differences between the cars and recommend the car that best suits the user's needs. Clearly state your reasoning for the recommendation.`,
+Proporciona un resumen conciso de las diferencias clave entre los automóviles y recomienda el que mejor se adapte a las necesidades del usuario. Expón claramente tu razonamiento para la recomendación.`,
 });
 
 const summarizeCarComparisonFlow = ai.defineFlow(

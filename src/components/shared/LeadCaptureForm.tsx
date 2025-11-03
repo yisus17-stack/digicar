@@ -17,8 +17,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters.'),
-  email: z.string().email('Please enter a valid email.'),
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.'),
+  email: z.string().email('Por favor, introduce un correo electrónico válido.'),
   phone: z.string().optional(),
   interestedCars: z.string(),
   message: z.string().optional(),
@@ -45,10 +45,10 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
   });
 
   const onSubmit = (data: FormData) => {
-    console.log('Lead captured:', data);
+    console.log('Cliente potencial capturado:', data);
     toast({
-      title: 'Inquiry Sent!',
-      description: "Thank you for your interest. We'll be in touch shortly.",
+      title: '¡Consulta Enviada!',
+      description: "Gracias por tu interés. Nos pondremos en contacto en breve.",
     });
     form.reset();
   };
@@ -62,9 +62,9 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Nombre Completo</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input placeholder="Juan Pérez" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -75,9 +75,9 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Correo Electrónico</FormLabel>
                 <FormControl>
-                  <Input placeholder="john.doe@example.com" {...field} />
+                  <Input placeholder="juan.perez@ejemplo.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,7 +89,7 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number (Optional)</FormLabel>
+              <FormLabel>Número de Teléfono (Opcional)</FormLabel>
               <FormControl>
                 <Input placeholder="(123) 456-7890" {...field} />
               </FormControl>
@@ -102,7 +102,7 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
             name="interestedCars"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Car(s) of Interest</FormLabel>
+                <FormLabel>Auto(s) de Interés</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -115,10 +115,10 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message (Optional)</FormLabel>
+              <FormLabel>Mensaje (Opcional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Any questions? Let us know..."
+                  placeholder="¿Alguna pregunta? Háznosla saber..."
                   className="resize-none"
                   {...field}
                 />
@@ -127,7 +127,7 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
             </FormItem>
           )}
         />
-        <Button type="submit">Submit Inquiry</Button>
+        <Button type="submit">Enviar Consulta</Button>
       </form>
     </Form>
   );

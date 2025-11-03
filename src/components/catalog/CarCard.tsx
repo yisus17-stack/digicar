@@ -31,7 +31,7 @@ export default function CarCard({ car, isSelected, onToggleSelect, selectionDisa
             checked={isSelected}
             onCheckedChange={() => onToggleSelect(car.id)}
             disabled={selectionDisabled && !isSelected}
-            aria-label={`Select ${car.brand} ${car.model} for comparison`}
+            aria-label={`Seleccionar ${car.brand} ${car.model} para comparar`}
           />
         </Label>
         <div className="aspect-[3/2] w-full overflow-hidden">
@@ -65,7 +65,7 @@ export default function CarCard({ car, isSelected, onToggleSelect, selectionDisa
           </div>
           <div className="flex items-center gap-2">
             <GitCommit className="w-4 h-4 text-primary" />
-            <span>{car.mileage.toLocaleString()} {car.fuelType === 'Electric' ? 'mi' : 'MPG'}</span>
+            <span>{car.mileage.toLocaleString()} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
           </div>
         </div>
       </CardContent>

@@ -14,19 +14,19 @@ const SiteHeader = () => {
             href="/"
             className="transition-colors hover:text-primary"
           >
-            Catalog
+            Catálogo
           </Link>
           <Link
             href="/compare"
             className="transition-colors hover:text-primary"
           >
-            Compare
+            Comparar
           </Link>
           <Link
             href="/simulator"
             className="transition-colors hover:text-primary"
           >
-            Simulator
+            Simulador
           </Link>
         </nav>
       </div>

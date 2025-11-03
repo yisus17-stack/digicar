@@ -6,8 +6,8 @@ import SiteFooter from '@/components/layout/SiteFooter';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'DigiCar - Your Digital Car Showroom',
-  description: 'Explore, compare, and simulate your next car with DigiCar.',
+  title: 'DigiCar - Tu Salón de Exposición de Autos Digital',
+  description: 'Explora, compara y simula tu próximo auto con DigiCar.',
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

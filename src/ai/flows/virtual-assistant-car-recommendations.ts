@@ -1,22 +1,22 @@
 'use server';
 /**
- * @fileOverview A virtual assistant that provides personalized car recommendations based on user needs and preferences.
+ * @fileOverview Un asistente virtual que ofrece recomendaciones personalizadas de automóviles basadas en las necesidades y preferencias del usuario.
  *
- * - virtualAssistantCarRecommendations - A function that handles the car recommendation process.
- * - VirtualAssistantCarRecommendationsInput - The input type for the virtualAssistantCarRecommendations function.
- * - VirtualAssistantCarRecommendationsOutput - The return type for the virtualAssistantCarRecommendations function.
+ * - virtualAssistantCarRecommendations - Una función que maneja el proceso de recomendación de automóviles.
+ * - VirtualAssistantCarRecommendationsInput - El tipo de entrada para la función virtualAssistantCarRecommendations.
+ * - VirtualAssistantCarRecommendationsOutput - El tipo de retorno para la función virtualAssistantCarRecommendations.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const VirtualAssistantCarRecommendationsInputSchema = z.object({
-  userInput: z.string().describe('The user input query for car recommendations.'),
+  userInput: z.string().describe('La consulta de entrada del usuario para recomendaciones de automóviles.'),
 });
 export type VirtualAssistantCarRecommendationsInput = z.infer<typeof VirtualAssistantCarRecommendationsInputSchema>;
 
 const VirtualAssistantCarRecommendationsOutputSchema = z.object({
-  recommendation: z.string().describe('The car recommendation based on the user input.'),
+  recommendation: z.string().describe('La recomendación de automóvil basada en la entrada del usuario.'),
 });
 export type VirtualAssistantCarRecommendationsOutput = z.infer<typeof VirtualAssistantCarRecommendationsOutputSchema>;
 
@@ -30,11 +30,11 @@ const prompt = ai.definePrompt({
   name: 'virtualAssistantCarRecommendationsPrompt',
   input: {schema: VirtualAssistantCarRecommendationsInputSchema},
   output: {schema: VirtualAssistantCarRecommendationsOutputSchema},
-  prompt: `You are a virtual assistant that provides personalized car recommendations based on user needs and preferences.
+  prompt: `Eres un asistente virtual que ofrece recomendaciones personalizadas de automóviles basadas en las necesidades y preferencias del usuario.
 
-  Based on the user input: {{{userInput}}},
-  recommend a car model.
-  Keep the recommendation concise and informative.
+  Basado en la entrada del usuario: {{{userInput}}},
+  recomienda un modelo de automóvil.
+  Mantén la recomendación concisa e informativa.
   `,
 });
 
