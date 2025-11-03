@@ -33,8 +33,10 @@ export default function Home() {
         <>
             <div className="container mx-auto px-4 py-16">
                 <div className="flex flex-col items-center text-center gap-8">
-                    <div className="relative">
-                        <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio /</Link>
+                    <div className="relative w-full">
+                        <div className="text-left mb-4">
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
+                        </div>
                         <h1 className="text-5xl md:text-7xl font-bold mt-4 leading-tight">
                             Conduce tu historia <br /> con <span className="text-primary">DigiCar</span>
                         </h1>
@@ -51,7 +53,7 @@ export default function Home() {
                         </div>
                         <VirtualAssistant />
                     </div>
-                    <div className="w-full max-w-4xl">
+                    <div className="w-full max-w-4xl mt-8">
                         {heroCarImage && (
                             <Image
                                 src={heroCarImage.imageUrl}
