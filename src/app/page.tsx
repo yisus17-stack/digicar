@@ -32,7 +32,7 @@ export default function Home() {
         <>
             <div className="container mx-auto px-4 py-16">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="relative">
+                    <div className="relative text-center lg:text-left">
                         <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio /</Link>
                         <h1 className="text-5xl md:text-7xl font-bold mt-4 leading-tight">
                             Conduce tu historia <br /> con <span className="text-primary">DigiCar</span>
@@ -40,7 +40,7 @@ export default function Home() {
                         <p className="mt-6 text-lg text-muted-foreground">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex gap-4">
+                        <div className="mt-8 flex gap-4 justify-center lg:justify-start">
                             <Button size="lg" asChild>
                                 <Link href="/#popular">Explorar</Link>
                             </Button>
