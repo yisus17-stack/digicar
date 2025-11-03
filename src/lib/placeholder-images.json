@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "prestige-x10",
+      "description": "A luxury sedan in a city at night.",
+      "imageUrl": "https://images.unsplash.com/photo-1698816688678-a3f838fd4fe0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBzZWRhbnxlbnwwfHx8fDE3NjIyMTE1NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "luxury sedan"
+    },
+    {
+      "id": "aurora-gt",
+      "description": "A sports car on a winding road.",
+      "imageUrl": "https://images.unsplash.com/photo-1524102724373-bcf6ed410592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3BvcnRzJTIwY2FyfGVufDB8fHx8MTc2MjE5MDY3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sports car"
+    },
+    {
+      "id": "volta-ev-pro",
+      "description": "An electric car charging in a futuristic garage.",
+      "imageUrl": "https://images.unsplash.com/photo-1593941707874-ef25b8b4a92b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbGVjdHJpYyUyMGNhcnxlbnwwfHx8fDE3NjIxNDQwMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electric car"
+    },
+    {
+      "id": "horizon-suv",
+      "description": "An SUV parked with a mountain view in the background.",
+      "imageUrl": "https://images.unsplash.com/photo-1576469196962-433b47333f9b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdXYlMjBtb3VudGFpbnN8ZW58MHx8fHwxNzYyMjExNTcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "suv mountains"
+    },
+    {
+      "id": "nomad-cruiser",
+      "description": "A comfortable sedan on a suburban street.",
+      "imageUrl": "https://images.unsplash.com/photo-1674196675678-3b6e4aaa593c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYW1pbHklMjBzZWRhbnxlbnwwfHx8fDE3NjIxMjEwNjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "family sedan"
+    },
+    {
+      "id": "comet-r",
+      "description": "A compact sports car on a racetrack.",
+      "imageUrl": "https://images.unsplash.com/photo-1693163933194-f3c09e0843ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxob3QlMjBoYXRjaHxlbnwwfHx8fDE3NjIyMTE1NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hot hatch"
+    },
+    {
+      "id": "stratus-sedan",
+      "description": "A hybrid sedan driving through a green landscape.",
+      "imageUrl": "https://images.unsplash.com/photo-1615887110697-0819ec23465f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aHlicmlkJTIwY2FyfGVufDB8fHx8MTc2MjE2NDE3Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hybrid car"
+    },
+    {
+      "id": "terra-truck",
+      "description": "A pickup truck on a dirt road in the desert.",
+      "imageUrl": "https://images.unsplash.com/photo-1588814928518-238716568ef4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGlja3VwJTIwdHJ1Y2t8ZW58MHx8fHwxNzYyMTgwOTkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pickup truck"
+    }
+  ]
 }
