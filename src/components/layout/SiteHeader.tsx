@@ -74,9 +74,9 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-in fade-in-0">
-          <div className='bg-background border-b'>
-            <div className="container mx-auto px-4">
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-in fade-in-0" onClick={() => setIsSearchOpen(false)}>
+          <div className='bg-background border-b' onClick={(e) => e.stopPropagation()}>
+            <div className="container mx-auto px-4 pt-8 md:pt-16">
               <div className="flex items-center h-20 gap-4">
                 <Link href="/" className="flex items-center space-x-2">
                   <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
@@ -95,7 +95,7 @@ const SiteHeader = () => {
                   <span className="hidden md:inline">Cancelar</span>
                 </Button>
               </div>
-              <div className="mt-4 pb-12">
+              <div className="mt-8 pb-12">
                 <p className="font-semibold mb-4 text-muted-foreground">Búsquedas Populares</p>
                 <div className="flex flex-wrap gap-2">
                   {popularSearches.map((term) => (
@@ -107,7 +107,6 @@ const SiteHeader = () => {
               </div>
             </div>
           </div>
-          <div className="h-full w-full" onClick={() => setIsSearchOpen(false)}></div>
         </div>
       )}
     </>
