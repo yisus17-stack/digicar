@@ -92,7 +92,7 @@ const SiteHeader = () => {
                 </div>
                 <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
                     <X className="h-5 w-5" />
-                    <span className='sr-only'>Cancelar</span>
+                    <span>Cancelar</span>
                 </Button>
             </div>
             <div className="mt-4 pb-12">
