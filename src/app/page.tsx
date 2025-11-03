@@ -32,8 +32,8 @@ export default function Home() {
     return (
         <>
             <div className="container mx-auto px-4 py-16">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="relative text-center">
+                <div className="flex flex-col items-center text-center gap-8">
+                    <div className="relative">
                         <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio /</Link>
                         <h1 className="text-5xl md:text-7xl font-bold mt-4 leading-tight">
                             Conduce tu historia <br /> con <span className="text-primary">DigiCar</span>
@@ -51,14 +51,14 @@ export default function Home() {
                         </div>
                         <VirtualAssistant />
                     </div>
-                    <div>
+                    <div className="w-full max-w-4xl">
                         {heroCarImage && (
                             <Image
                                 src={heroCarImage.imageUrl}
                                 alt="Coche principal"
                                 width={800}
                                 height={600}
-                                className="rounded-lg object-contain"
+                                className="rounded-lg object-contain w-full h-auto"
                                 data-ai-hint="sedán de lujo"
                                 priority
                             />
