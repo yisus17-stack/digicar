@@ -78,34 +78,40 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-in fade-in-0 flex justify-center pt-16 md:pt-24">
-          <div className="container mx-auto px-4 w-full max-w-2xl">
-            <div className="flex items-center h-20 gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Buscar"
-                      className="w-full h-12 pl-10 pr-4 text-lg bg-muted border-none rounded-full"
-                      autoFocus
-                    />
-                </div>
-                <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
-                    <X className="h-5 w-5" />
-                    <span>Cancelar</span>
-                </Button>
-            </div>
-            <div className="mt-4 pb-12">
-                <p className="font-semibold mb-4 text-muted-foreground">Búsquedas Populares</p>
-                <div className="flex flex-wrap gap-2">
-                    {popularSearches.map((term) => (
-                        <Button key={term} variant="secondary" size="sm" className="rounded-full font-normal">
-                            {term}
+        <div className="fixed inset-0 z-50 bg-background/80 animate-in fade-in-0">
+            <div className='bg-background border-b'>
+                <div className="container mx-auto px-4 w-full max-w-full">
+                    <div className="flex items-center h-20 gap-4">
+                        <Link href="/" className="flex items-center space-x-2">
+                            <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
+                        </Link>
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input
+                            type="search"
+                            placeholder="Buscar"
+                            className="w-full h-12 pl-10 pr-4 text-lg bg-muted border-none rounded-full data-[search-hidden-x]::-webkit-search-cancel-button:hidden"
+                            autoFocus
+                            />
+                        </div>
+                        <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
+                            <X className="h-5 w-5 md:hidden" />
+                            <span className="hidden md:inline">Cancelar</span>
                         </Button>
-                    ))}
+                    </div>
+                    <div className="mt-4 pb-12">
+                        <p className="font-semibold mb-4 text-muted-foreground">Búsquedas Populares</p>
+                        <div className="flex flex-wrap gap-2">
+                            {popularSearches.map((term) => (
+                                <Button key={term} variant="secondary" size="sm" className="rounded-full font-normal">
+                                    {term}
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
-          </div>
+            <div className="h-full w-full" onClick={() => setIsSearchOpen(false)}></div>
         </div>
       )}
     </>
