@@ -7,8 +7,8 @@ export default function VirtualAssistant() {
   return (
     <div className="absolute top-0 right-0">
         <Button variant="ghost" className="flex items-center gap-2 text-primary hover:text-primary">
-            <Headphones className="h-6 w-6 p-1 border-2 border-primary rounded-full" />
-            <span className="font-bold">Asesor Virtual</span>
+            <Headphones className="h-8 w-8 p-1.5 border-2 border-primary rounded-full" />
+            <span className="font-bold">Chatbot</span>
         </Button>
     </div>
   );
