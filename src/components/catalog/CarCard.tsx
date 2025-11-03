@@ -3,80 +3,53 @@
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Fuel, Gauge, GitCommit, Settings } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { GitCommitHorizontal, Gauge, Users } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface CarCardProps {
   car: Car;
-  isSelected: boolean;
-  onToggleSelect: (id: string) => void;
-  selectionDisabled: boolean;
 }
 
-export default function CarCard({ car, isSelected, onToggleSelect, selectionDisabled }: CarCardProps) {
+export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg duration-300 ease-in-out">
-      <CardHeader className="p-0 relative">
-        <Label
-          htmlFor={`compare-${car.id}`}
-          className="absolute top-4 right-4 z-10 bg-card/80 p-2 rounded-full cursor-pointer hover:bg-primary/20 transition-colors"
-        >
-          <Checkbox
-            id={`compare-${car.id}`}
-            checked={isSelected}
-            onCheckedChange={() => onToggleSelect(car.id)}
-            disabled={selectionDisabled && !isSelected}
-            aria-label={`Seleccionar ${car.brand} ${car.model} para comparar`}
-          />
-        </Label>
-        <div className="aspect-[3/2] w-full overflow-hidden">
+    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg duration-300 ease-in-out group">
+        <div className="overflow-hidden">
           {placeholder && (
             <Image
               src={placeholder.imageUrl}
               alt={`${car.brand} ${car.model}`}
               width={600}
               height={400}
-              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+              className="object-cover w-full h-full aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
               data-ai-hint={placeholder.imageHint}
             />
           )}
         </div>
-      </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <CardTitle className="text-xl font-headline mb-2">{car.brand} {car.model}</CardTitle>
-        <div className="text-sm text-muted-foreground mb-4">{car.year}</div>
-        <div className="grid grid-cols-2 gap-2 text-sm">
+      <CardContent className="p-4 flex-grow flex flex-col">
+        <div className="text-sm uppercase text-muted-foreground">{car.brand}</div>
+        <p className="text-lg font-bold mb-2">{car.model}</p>
+        <div className="flex items-center justify-between text-primary font-bold text-lg mb-4">
+            <span>${car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">
-            <Fuel className="w-4 h-4 text-primary" />
-            <span>{car.fuelType}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Settings className="w-4 h-4 text-primary" />
+            <GitCommitHorizontal className="w-4 h-4" />
             <span>{car.transmission}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-primary" />
-            <span>{car.horsepower} HP</span>
+            <Gauge className="w-4 h-4" />
+            <span>{car.horsepower} km/h</span>
           </div>
           <div className="flex items-center gap-2">
-            <GitCommit className="w-4 h-4 text-primary" />
-            <span>{car.mileage.toLocaleString()} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
+            <Users className="w-4 h-4" />
+            <span>5</span>
           </div>
         </div>
+        <Button className="w-full mt-4">Ver detalles</Button>
       </CardContent>
-      <CardFooter className="p-4 bg-card/50">
-        <div className="flex justify-between items-center w-full">
-          <div className="text-2xl font-bold text-primary-foreground">
-            ${car.price.toLocaleString()}
-          </div>
-          <Badge variant="secondary">{car.brand}</Badge>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
