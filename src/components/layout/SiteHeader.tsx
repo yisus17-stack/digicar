@@ -7,6 +7,18 @@ import { Button } from '../ui/button';
 import { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
+import { Badge } from '../ui/badge';
+
+const popularSearches = [
+    'Prestige X10',
+    'Aurora GT',
+    'Volta EV',
+    'SUV',
+    'Deportivo',
+    'Híbrido',
+    'Familiar',
+];
+
 
 const SiteHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -58,7 +70,7 @@ const SiteHeader = () => {
                   <User className="h-5 w-5" />
               </Button>
               
-              <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(true)}>
                 <Search className="h-5 w-5" />
               </Button>
           </div>
@@ -66,30 +78,34 @@ const SiteHeader = () => {
       </header>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-in fade-in-0" onClick={() => setIsSearchOpen(false)}>
-          <div className="container mx-auto px-4 pt-20" onClick={(e) => e.stopPropagation()}>
-            <div className="relative w-full max-w-xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Buscar autos, marcas..."
-                  className="w-full h-14 pl-12 pr-14 text-lg"
-                  autoFocus
-                />
-                 <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    onClick={() => setIsSearchOpen(false)}
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
-              </div>
-              {/* Aquí se podrían añadir las recomendaciones */}
-              <div className="mt-4 p-4 bg-background rounded-lg">
-                <p className="text-center text-muted-foreground">Escribe algo para empezar a buscar...</p>
-              </div>
+        <div className="fixed inset-0 z-50 bg-background animate-in fade-in-0">
+          <div className="container mx-auto px-4 h-full">
+            <div className="flex items-center h-20 gap-4">
+                <Link href="/" className="flex items-center space-x-2">
+                    <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
+                </Link>
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="search"
+                      placeholder="Buscar"
+                      className="w-full h-12 pl-10 pr-4 text-lg bg-muted border-none rounded-full"
+                      autoFocus
+                    />
+                </div>
+                <Button variant="link" onClick={() => setIsSearchOpen(false)} className="text-foreground">
+                    Cancelar
+                </Button>
+            </div>
+            <div className="mt-8">
+                <p className="font-semibold mb-4">Términos de búsqueda populares</p>
+                <div className="flex flex-wrap gap-2">
+                    {popularSearches.map((term) => (
+                        <Button key={term} variant="secondary" size="sm" className="rounded-full">
+                            {term}
+                        </Button>
+                    ))}
+                </div>
             </div>
           </div>
         </div>
