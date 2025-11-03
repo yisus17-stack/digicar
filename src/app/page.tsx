@@ -44,10 +44,10 @@ export default function Home() {
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex gap-4 justify-center">
-                            <Button size="lg" asChild>
+                            <Button size="lg" className="text-lg px-10 py-6" asChild>
                                 <Link href="/#popular">Explorar</Link>
                             </Button>
-                            <Button size="lg" variant="outline" asChild>
+                            <Button size="lg" variant="outline" className="text-lg px-10 py-6" asChild>
                                 <Link href="/">Ver catálogo</Link>
                             </Button>
                         </div>
