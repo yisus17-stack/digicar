@@ -20,8 +20,7 @@ const SiteHeader = () => {
         </Link>
         <nav
           className={cn(
-            'hidden md:flex items-center space-x-8 text-lg font-medium',
-            { 'md:hidden': isSearchOpen }
+            'hidden md:flex items-center space-x-8 text-lg font-medium'
           )}
         >
           <Link href="/" className="text-primary font-bold">Inicio</Link>
