@@ -170,11 +170,14 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="lg:flex lg:gap-8 lg:items-start">
-        <aside className={cn('lg:w-1/4 lg:flex lg:flex-col mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
+        <aside className={cn('lg:w-1/4 lg:flex-col lg:mb-0 transition-all duration-300', 
+            isMobile ? "hidden" : "flex",
+            !showFilters && !isMobile ? "hidden" : "flex"
+          )}>
             {!isMobile && filterComponent}
         </aside>
 
-        <main className={cn('flex-1 flex flex-col', showFilters ? 'lg:w-3/4' : 'lg:w-full')}>
+        <main className={cn('flex-1 flex flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
             <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
