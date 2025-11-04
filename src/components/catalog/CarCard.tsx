@@ -44,7 +44,7 @@ export default function CarCard({ car }: CarCardProps) {
             />
           )}
         </div>
-      <CardContent className="p-4 flex-grow flex flex-col">
+      <CardContent className="p-6 flex-grow flex flex-col">
         <div className="text-sm uppercase text-muted-foreground">{car.brand}</div>
         <p className="text-lg font-bold mb-2">{car.model}</p>
         <div className="flex items-center justify-between text-primary font-bold text-lg mb-4">
