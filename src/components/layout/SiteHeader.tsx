@@ -56,7 +56,7 @@ const SiteHeader = () => {
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-12 gap-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
+            <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} className="w-28 md:w-36"/>
           </Link>
 
           <div className="flex-1 flex justify-center">
@@ -87,11 +87,11 @@ const SiteHeader = () => {
             style={{ minWidth: '100px' }}
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
-              <Search className="h-5 w-5" />
+              <Search className="h-6 w-6 md:h-5 md:w-5" />
             </Button>
 
             <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
+              <User className="h-6 w-6 md:h-5 md:w-5" />
             </Button>
           </div>
         </div>
