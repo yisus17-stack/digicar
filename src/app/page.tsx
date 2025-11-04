@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
+            <div className="container mx-auto px-4 pt-8 pb-12 md:pt-12 md:pb-24">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center text-lg font-medium">
                         <span className="text-primary">Inicio</span>
