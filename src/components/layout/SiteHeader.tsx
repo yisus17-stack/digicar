@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import VirtualAssistant from '../assistant/VirtualAssistant';
 
 const popularSearches = [
   'Prestige X10',
@@ -135,6 +136,8 @@ const SiteHeader = () => {
               <Search className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
 
+            <VirtualAssistant />
+            
             <Button variant="ghost" size="icon">
               <User className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
