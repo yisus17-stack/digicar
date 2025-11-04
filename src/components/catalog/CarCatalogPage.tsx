@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo, useTransition, useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 import { cars } from '@/lib/data';
 import type { Car } from '@/lib/types';
@@ -44,6 +44,11 @@ export default function CarCatalogPage() {
   const [showFilters, setShowFilters] = useState(true);
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -170,7 +175,7 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        { !isMobile && showFilters && (
+        { hasMounted && !isMobile && showFilters && (
             <aside className='lg:w-1/4'>
                 {filterComponent}
             </aside>
