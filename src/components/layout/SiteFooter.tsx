@@ -16,7 +16,7 @@ const SiteFooter = () => {
             <p>Maravatío, Michoacán</p>
             <p>contacto@digicar.com.mx</p>
           </div>
-          <div>
+          <div className="md:text-center">
             <h3 className="font-bold text-lg mb-4">Enlaces</h3>
             <ul className="space-y-2">
               <li><Link href="/" className="hover:underline">Catálogo</Link></li>
@@ -25,9 +25,9 @@ const SiteFooter = () => {
               <li><Link href="#" className="hover:underline">Chat</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="md:text-right">
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
-            <div className="flex gap-4 justify-center md:justify-start">
+            <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook">
                 <Facebook className="h-6 w-6 border rounded-full p-1" />
               </Link>
@@ -41,13 +41,12 @@ const SiteFooter = () => {
           </div>
         </div>
         <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-center">
-            <p className="text-center md:flex-1 md:text-left">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-            <div className="flex gap-2 mt-4 md:mt-0 text-xs justify-center flex-1">
+            <p className="text-center md:text-left md:flex-1">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
+            <div className="flex gap-2 mt-4 md:mt-0 text-xs justify-center md:justify-end md:flex-1">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
                 <Link href="#" className="hover:underline">Política de Privacidad</Link>
             </div>
-            <div className="md:flex-1"></div>
         </div>
       </div>
     </footer>
