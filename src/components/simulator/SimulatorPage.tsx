@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Wand2 } from 'lucide-react';
 import { virtualAssistantCarRecommendations } from '@/ai/flows/virtual-assistant-car-recommendations';
+import { translations } from '@/lib/translations';
 
 const formSchema = z.object({
   budget: z.number().min(20000).max(100000),
@@ -161,19 +162,19 @@ export default function SimulatorPage() {
                           <FormControl>
                             <RadioGroupItem value="Gasoline" id="gasoline" />
                           </FormControl>
-                          <FormLabel htmlFor="gasoline" className='font-normal'>Gasolina</FormLabel>
+                          <FormLabel htmlFor="gasoline" className='font-normal'>{translations.fuelType.Gasoline}</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>
                             <RadioGroupItem value="Hybrid" id="hybrid" />
                           </FormControl>
-                          <FormLabel htmlFor="hybrid" className='font-normal'>Híbrido</FormLabel>
+                          <FormLabel htmlFor="hybrid" className='font-normal'>{translations.fuelType.Hybrid}</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>
                             <RadioGroupItem value="Electric" id="electric" />
                           </FormControl>
-                          <FormLabel htmlFor="electric" className='font-normal'>Eléctrico</FormLabel>
+                          <FormLabel htmlFor="electric" className='font-normal'>{translations.fuelType.Electric}</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2">
                           <FormControl>

@@ -12,6 +12,7 @@ import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
 import { Car } from '@/lib/types';
 import { ScrollArea } from '../ui/scroll-area';
+import { translations } from '@/lib/translations';
 
 interface CarFiltersProps {
   filters: any;
@@ -74,7 +75,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los tipos</SelectItem>
-                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type]}</SelectItem>)}
                   </SelectContent>
               </Select>
           </div>
@@ -96,7 +97,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los combustibles</SelectItem>
-                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType]}</SelectItem>)}
                   </SelectContent>
               </Select>
           </div>
@@ -118,7 +119,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los colores</SelectItem>
-                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{color}</SelectItem>)}
+                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color]}</SelectItem>)}
                   </SelectContent>
               </Select>
           </div>
@@ -140,7 +141,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todas las transmisiones</SelectItem>
-                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission]}</SelectItem>)}
                   </SelectContent>
               </Select>
           </div>

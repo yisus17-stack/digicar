@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { GitCommitHorizontal, Users, Fuel } from 'lucide-react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { translations } from '@/lib/translations';
 
 interface CarCardProps {
   car: Car;
@@ -14,18 +15,6 @@ interface CarCardProps {
 
 export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
-
-  const transmissionMap = {
-    'Automatic': 'Automática',
-    'Manual': 'Manual'
-  }
-
-  const fuelTypeMap = {
-    'Gasoline': 'Gasolina',
-    'Diesel': 'Diésel',
-    'Electric': 'Eléctrico',
-    'Hybrid': 'Híbrido'
-  }
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg duration-300 ease-in-out group">
@@ -53,11 +42,11 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">
             <GitCommitHorizontal className="w-4 h-4" />
-            <span>{transmissionMap[car.transmission]}</span>
+            <span>{translations.transmission[car.transmission]}</span>
           </div>
           <div className="flex items-center gap-2">
             <Fuel className="w-4 h-4" />
-            <span>{fuelTypeMap[car.fuelType]}</span>
+            <span>{translations.fuelType[car.fuelType]}</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4" />
