@@ -7,7 +7,7 @@ import { cars } from '@/lib/data';
 import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
-import { X, SlidersHorizontal } from 'lucide-react';
+import { X, SlidersHorizontal, Loader } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -168,6 +168,14 @@ export default function CarCatalogPage() {
     />
   );
 
+  if (!hasMounted) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background z-50">
+        <Loader className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-4">
@@ -187,7 +195,7 @@ export default function CarCatalogPage() {
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>
-                {hasMounted && isMobile ? (
+                {isMobile ? (
                   <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm">
@@ -209,7 +217,7 @@ export default function CarCatalogPage() {
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
-                ) : hasMounted && !isMobile ? (
+                ) : (
                   <>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
@@ -217,11 +225,6 @@ export default function CarCatalogPage() {
                     </Button>
                     {sortOptions}
                   </>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <Skeleton className="h-9 w-32" />
-                    <Skeleton className="h-10 w-[220px]" />
-                  </div>
                 )}
               </div>
             </div>
