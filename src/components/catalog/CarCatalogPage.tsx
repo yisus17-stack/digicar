@@ -190,7 +190,7 @@ export default function CarCatalogPage() {
                         Filtrar y Ordenar
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="flex flex-col w-full">
+                    <SheetContent side="right" className="flex flex-col w-full">
                       <SheetHeader>
                         <SheetTitle>Filtrar y Ordenar</SheetTitle>
                       </SheetHeader>
