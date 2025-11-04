@@ -9,8 +9,13 @@ import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
-import VirtualAssistant from '../assistant/VirtualAssistant';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '../ui/sheet';
 
 const popularSearches = [
   'Prestige X10',
@@ -58,11 +63,10 @@ const SiteHeader = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isSearchVisible]);
-  
+
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
-
 
   const handleClearSearch = () => {
     setSearchValue('');
@@ -73,41 +77,14 @@ const SiteHeader = () => {
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-12 gap-4">
           <div className="flex items-center gap-2">
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-7 w-7" />
-                  <span className="sr-only">Abrir menú</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Link href="/" className="flex items-center space-x-2">
-                      <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
-                    </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="p-4">
-                  <nav className="flex flex-col space-y-4">
-                    {navLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className={cn(
-                          'text-lg transition-colors hover:text-primary',
-                          pathname === link.href ? 'text-primary font-bold' : ''
-                        )}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} className="w-24 md:w-36"/>
+              <Image
+                src="/logo.png"
+                alt="DigiCar Logo"
+                width={150}
+                height={50}
+                className="w-24 md:w-36"
+              />
             </Link>
           </div>
 
@@ -136,11 +113,52 @@ const SiteHeader = () => {
               <Search className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
 
-            <VirtualAssistant />
-            
             <Button variant="ghost" size="icon">
               <User className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
+
+            <div className="md:hidden">
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-7 w-7" />
+                    <span className="sr-only">Abrir menú</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                  <SheetHeader>
+                    <SheetTitle>
+                      <Link href="/" className="flex items-center space-x-2">
+                        <Image
+                          src="/logo.png"
+                          alt="DigiCar Logo"
+                          width={150}
+                          height={50}
+                        />
+                      </Link>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="p-4">
+                    <nav className="flex flex-col space-y-4">
+                      {navLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={cn(
+                            'text-lg transition-colors hover:text-primary',
+                            pathname === link.href
+                              ? 'text-primary font-bold'
+                              : ''
+                          )}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </header>
@@ -168,7 +186,10 @@ const SiteHeader = () => {
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-12 pt-8 md:pt-16">
                 <div className="flex items-center h-20 gap-4">
-                  <Link href="/" className="hidden sm:flex items-center space-x-2">
+                  <Link
+                    href="/"
+                    className="hidden sm:flex items-center space-x-2"
+                  >
                     <Image
                       src="/logo.png"
                       alt="DigiCar Logo"
@@ -217,7 +238,7 @@ const SiteHeader = () => {
                         size="sm"
                         className="rounded-full font-normal"
                         onClick={() => {
-                            setSearchValue(term);
+                          setSearchValue(term);
                         }}
                       >
                         {term}
