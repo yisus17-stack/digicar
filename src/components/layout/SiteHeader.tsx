@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 const popularSearches = [
   'Prestige X10',
@@ -22,6 +23,14 @@ const popularSearches = [
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const pathname = usePathname();
+
+  const navLinks = [
+    { href: '/', label: 'Inicio' },
+    { href: '/catalog', label: 'Catálogo' },
+    { href: '/compare', label: 'Comparar' },
+    { href: '/simulator', label: 'Simulador' },
+  ];
 
   const openSearch = () => {
     setIsSearchVisible(true);
@@ -61,24 +70,18 @@ const SiteHeader = () => {
 
           <div className="flex-1 flex justify-center">
             <nav className="hidden md:flex items-center space-x-8 text-lg font-medium">
-              <Link href="/" className="text-primary font-bold">
-                Inicio
-              </Link>
-              <Link href="/catalog" className="transition-colors hover:text-primary">
-                Catálogo
-              </Link>
-              <Link
-                href="/compare"
-                className="transition-colors hover:text-primary"
-              >
-                Comparar
-              </Link>
-              <Link
-                href="/simulator"
-                className="transition-colors hover:text-primary"
-              >
-                Simulador
-              </Link>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'transition-colors hover:text-primary',
+                    pathname === link.href ? 'text-primary font-bold' : ''
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </div>
 
