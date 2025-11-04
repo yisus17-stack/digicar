@@ -24,30 +24,30 @@ const SiteFooter = () => {
               <li><Link href="#" className="hover:underline">Chat</Link></li>
             </ul>
           </div>
-          <div className="flex flex-col items-center md:items-end">
-            <h3 className="font-bold text-lg mb-2 text-center md:text-right w-full">Redes sociales</h3>
-            <div className="flex gap-4 justify-center md:justify-end">
+          <div className="flex flex-col items-center">
+            <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
+            <div className="flex gap-4 justify-center">
               <Link href="#" aria-label="Facebook" className="group">
                 <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-6 h-6">
-                        <Image src="/facebook.svg" alt="Facebook" width={24} height={24} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/facebook.svg" alt="Facebook" width={24} height={24} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }} />
+                    <div className="relative w-8 h-8">
+                        <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
+                        <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }} />
                     </div>
                 </div>
               </Link>
               <Link href="#" aria-label="Instagram" className="group">
                 <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-6 h-6">
-                        <Image src="/instagram.svg" alt="Instagram" width={24} height={24} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/instagram.svg" alt="Instagram" width={24} height={24} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
+                    <div className="relative w-8 h-8">
+                        <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
+                        <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
                     </div>
                 </div>
               </Link>
               <Link href="#" aria-label="Twitter" className="group">
                 <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-6 h-6">
-                        <Image src="/x.svg" alt="X" width={24} height={24} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/x.svg" alt="X" width={24} height={24} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
+                    <div className="relative w-8 h-8">
+                        <Image src="/x.svg" alt="X" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
+                        <Image src="/x.svg" alt="X" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
                     </div>
                 </div>
               </Link>
@@ -55,9 +55,9 @@ const SiteFooter = () => {
           </div>
         </div>
         <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm">
-          <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center text-center">
             <p className="mb-4 md:mb-0">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-            <div className="flex justify-center md:justify-end text-xs gap-2">
+            <div className="flex justify-center text-xs gap-2">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
                 <Link href="#" className="hover:underline">Política de Privacidad</Link>
