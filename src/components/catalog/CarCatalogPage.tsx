@@ -179,7 +179,7 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        <aside className={cn('lg:w-1/4', !showFilters && 'hidden')}>
+        <aside className={cn('hidden lg:block lg:w-1/4', !showFilters && 'lg:hidden')}>
             {filterComponent}
         </aside>
 
