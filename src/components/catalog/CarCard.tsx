@@ -5,7 +5,6 @@ import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import { GitCommitHorizontal, Users, Fuel } from 'lucide-react';
-import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { translations } from '@/lib/translations';
 
@@ -40,7 +39,7 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="text-primary font-bold text-base mb-4">
             <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
-        <div className="space-y-2 text-sm text-muted-foreground border-t pt-3 mb-4">
+        <div className="space-y-2 text-sm text-muted-foreground border-t pt-3 mt-auto">
           <div className="flex items-center gap-2">
             <GitCommitHorizontal className="w-4 h-4" />
             <span>{translations.transmission[car.transmission]}</span>
@@ -54,7 +53,6 @@ export default function CarCard({ car }: CarCardProps) {
             <span>{car.passengers} Pasajeros</span>
           </div>
         </div>
-        <Button size="sm" className="w-full mt-auto">Ver detalles</Button>
       </CardContent>
     </Card>
   );
