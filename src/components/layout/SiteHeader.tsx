@@ -48,7 +48,7 @@ const SiteHeader = () => {
       <header className="bg-background/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 gap-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
+            <Image src="/logo.svg" alt="DigiCar Logo" width={50} height={50} />
           </Link>
           
           <div className="flex-1 flex justify-center">
