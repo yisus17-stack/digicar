@@ -6,6 +6,7 @@ import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import { GitCommitHorizontal, Gauge, Users } from 'lucide-react';
 import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 interface CarCardProps {
   car: Car;
@@ -16,14 +17,17 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg duration-300 ease-in-out group">
-        <div className="overflow-hidden">
+        <div className="overflow-hidden aspect-[4/3] bg-gray-50">
           {placeholder && (
             <Image
               src={placeholder.imageUrl}
               alt={`${car.brand} ${car.model}`}
               width={600}
               height={400}
-              className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
+              className={cn(
+                "w-full h-full transition-transform duration-300 group-hover:scale-105",
+                placeholder.imageUrl.includes('unsplash') ? 'object-cover' : 'object-contain'
+              )}
               data-ai-hint={placeholder.imageHint}
             />
           )}
