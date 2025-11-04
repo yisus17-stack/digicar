@@ -25,7 +25,7 @@ const SiteFooter = () => {
             </ul>
           </div>
           <div className="flex flex-col items-center md:items-end">
-            <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
+            <h3 className="font-bold text-lg mb-2 text-center md:text-right w-full">Redes sociales</h3>
             <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook" className="group">
                 <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
