@@ -17,19 +17,20 @@ export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="flex flex-col overflow-hidden hover:shadow-lg duration-300 ease-in-out group">
-        <div className="overflow-hidden aspect-video bg-gray-50">
+    <Card className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out group">
+        <div className="relative aspect-video overflow-hidden bg-gray-50">
           {placeholder && (
             <Image
               src={placeholder.imageUrl}
               alt={`${car.brand} ${car.model}`}
-              width={600}
-              height={400}
+              fill
               className={cn(
-                "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+                "object-cover group-hover:scale-105 transition-transform duration-300",
                 !placeholder.imageUrl.includes('unsplash') && 'object-contain'
               )}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               data-ai-hint={placeholder.imageHint}
+              priority={true}
             />
           )}
         </div>
