@@ -136,7 +136,7 @@ const SiteHeader = () => {
                 <SheetContent side="right" className="w-3/4">
                   <div className="p-4">
                     <SheetHeader className="pb-4">
-                        <SheetTitle className="p-3">
+                        <div className='p-3'>
                           <Link href="/" className="flex items-center">
                             <Image
                               src="/logo.png"
@@ -145,7 +145,7 @@ const SiteHeader = () => {
                               height={40}
                             />
                           </Link>
-                        </SheetTitle>
+                        </div>
                     </SheetHeader>
                     <nav className="flex flex-col space-y-2">
                       {navLinks.map((link) => {
