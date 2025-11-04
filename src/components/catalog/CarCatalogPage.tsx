@@ -7,8 +7,7 @@ import { cars } from '@/lib/data';
 import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
-import { Input } from '../ui/input';
-import { Search, X, SlidersHorizontal } from 'lucide-react';
+import { X, SlidersHorizontal } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -16,7 +15,7 @@ import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from '../ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 
@@ -163,6 +162,8 @@ export default function CarCatalogPage() {
       cars={cars}
       maxPrice={MAX_PRICE}
       sortComponent={isMobile ? sortOptions : undefined}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 
@@ -274,4 +275,5 @@ export default function CarCatalogPage() {
       </div>
     </div>
   );
-}
+
+    
