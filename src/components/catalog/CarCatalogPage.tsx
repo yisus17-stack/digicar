@@ -15,11 +15,14 @@ import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from '../ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '../ui/scroll-area';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
 
-type SortOrder = 'relevance' | 'price-asc' | 'price-desc';
+export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
 export default function CarCatalogPage() {
   const [filters, setFilters] = useState({
@@ -38,6 +41,8 @@ export default function CarCatalogPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
   const [showFilters, setShowFilters] = useState(true);
+  const isMobile = useIsMobile();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -70,6 +75,8 @@ export default function CarCatalogPage() {
       filtered.sort((a, b) => a.price - b.price);
     } else if (sortOrder === 'price-desc') {
       filtered.sort((a, b) => b.price - a.price);
+    } else if (sortOrder === 'year-desc') {
+      filtered.sort((a, b) => b.year - a.year);
     }
     
     return filtered;
@@ -83,7 +90,9 @@ export default function CarCatalogPage() {
 
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
-    setCurrentPage(1);
+    if (!isMobile) {
+      setCurrentPage(1);
+    }
   };
   
   const handleResetFilters = () => {
@@ -103,6 +112,11 @@ export default function CarCatalogPage() {
     setCurrentPage(1);
     setSortOrder('relevance');
   };
+  
+  const handleApplyMobileFilters = () => {
+    setCurrentPage(1);
+    setIsSheetOpen(false);
+  }
 
   const handleSearchWithAI = () => {
     startAiTransition(async () => {
@@ -113,8 +127,38 @@ export default function CarCatalogPage() {
         carList: JSON.stringify(filteredCars.map(c => ({id: c.id, brand: c.brand, model: c.model, features: c.features, price: c.price})))
       });
       setAiSummary(result.recommendation);
+      if (isMobile) {
+        setIsSheetOpen(false);
+      }
     });
   };
+
+  const sortOptions = (
+    <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
+      <SelectTrigger className="w-full md:w-[220px] focus-visible:ring-0 focus-visible:ring-offset-0">
+        <SelectValue placeholder="Ordenar por" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="relevance">Relevancia</SelectItem>
+        <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
+        <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
+        <SelectItem value="year-desc">Año: Más reciente primero</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+
+  const filterComponent = (
+    <CarFilters 
+      filters={filters}
+      onFilterChange={handleFilterChange}
+      onReset={handleResetFilters}
+      onSearchWithAI={handleSearchWithAI}
+      isLoading={isAiLoading}
+      cars={cars}
+      maxPrice={MAX_PRICE}
+      sortComponent={isMobile ? sortOptions : undefined}
+    />
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -124,20 +168,12 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="flex gap-8 items-start">
-        <aside className={cn('lg:w-1/4 mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
-            <CarFilters 
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onReset={handleResetFilters}
-              onSearchWithAI={handleSearchWithAI}
-              isLoading={isAiLoading}
-              cars={cars}
-              maxPrice={MAX_PRICE}
-            />
+      <div className="lg:flex lg:gap-8 lg:items-start">
+        <aside className={cn('lg:w-1/4 lg:block mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
+            {!isMobile && filterComponent}
         </aside>
 
-        <main className={cn('flex-1 flex flex-col transition-all duration-300', showFilters ? 'lg:w-3/4' : 'lg:w-full')}>
+        <main className={cn('flex-1 flex flex-col', showFilters ? 'lg:w-3/4' : 'lg:w-full')}>
             <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -159,20 +195,37 @@ export default function CarCatalogPage() {
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>
-                <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
-                  <SlidersHorizontal className='mr-2 h-4 w-4' />
-                  {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
-                </Button>
-                <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
-                  <SelectTrigger className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0">
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="relevance">Relevancia</SelectItem>
-                    <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
-                    <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
-                  </SelectContent>
-                </Select>
+                {isMobile ? (
+                  <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <SlidersHorizontal className='mr-2 h-4 w-4' />
+                        Filtrar y Ordenar
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent className="flex flex-col">
+                      <SheetHeader>
+                        <SheetTitle>Filtrar y Ordenar</SheetTitle>
+                      </SheetHeader>
+                      <ScrollArea className="flex-1">
+                        <div className='pr-6'>
+                          {filterComponent}
+                        </div>
+                      </ScrollArea>
+                      <SheetFooter className="pt-4 border-t">
+                        <Button onClick={handleApplyMobileFilters} className='w-full'>Aplicar</Button>
+                      </SheetFooter>
+                    </SheetContent>
+                  </Sheet>
+                ) : (
+                  <>
+                    <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
+                      <SlidersHorizontal className='mr-2 h-4 w-4' />
+                      {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
+                    </Button>
+                    {sortOptions}
+                  </>
+                )}
               </div>
             </div>
 
