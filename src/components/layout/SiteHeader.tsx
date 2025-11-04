@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Search, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
@@ -21,38 +21,43 @@ const popularSearches = [
 
 
 const SiteHeader = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isSearchAnimatingOut, setIsSearchAnimatingOut] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [isPending, startTransition] = useTransition();
+
+
+  const openSearch = () => {
+    setIsSearchVisible(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeSearch = () => {
+    setIsSearchAnimatingOut(true);
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      setIsSearchVisible(false);
+      setIsSearchAnimatingOut(false);
+      setSearchValue('');
+    }, 300); // Duration of the animation
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsSearchOpen(false);
+      if (event.key === 'Escape' && isSearchVisible) {
+        closeSearch();
       }
     };
 
-    if (isSearchOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = '';
-    }
-
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
-  }, [isSearchOpen]);
+  }, [isSearchVisible]);
 
   const handleClearSearch = () => {
     setSearchValue('');
   };
-
-  useEffect(() => {
-    if (!isSearchOpen) {
-      setSearchValue('');
-    }
-  }, [isSearchOpen]);
 
   return (
     <>
@@ -72,7 +77,7 @@ const SiteHeader = () => {
           </div>
 
           <div className="flex items-center justify-end gap-4" style={{minWidth: '150px'}}>
-              <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
+              <Button variant="ghost" size="icon" onClick={openSearch}>
                   <Search className="h-5 w-5" />
               </Button>
 
@@ -83,9 +88,21 @@ const SiteHeader = () => {
         </div>
       </header>
 
-      {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-in fade-in-0" onClick={() => setIsSearchOpen(false)}>
-          <div className='bg-background border-b animate-in slide-in-from-top-4 duration-300' onClick={(e) => e.stopPropagation()}>
+      {isSearchVisible && (
+        <div 
+          className={cn(
+            "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm",
+            isSearchAnimatingOut ? "animate-out fade-out" : "animate-in fade-in"
+          )}
+          onClick={closeSearch}
+        >
+          <div 
+            className={cn(
+              'bg-background border-b',
+               isSearchAnimatingOut ? "animate-out slide-out-to-top-4 duration-300" : "animate-in slide-in-from-top-4 duration-300"
+            )}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="container mx-auto px-12 pt-8 md:pt-16">
               <div className="flex items-center h-20 gap-4">
                 <Link href="/" className="flex items-center space-x-2">
@@ -112,7 +129,7 @@ const SiteHeader = () => {
                     </Button>
                   )}
                 </div>
-                <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
+                <Button variant="ghost" onClick={closeSearch} className="text-muted-foreground">
                   <X className="h-5 w-5 md:hidden" />
                   <span className="hidden md:inline">Cancelar</span>
                 </Button>
