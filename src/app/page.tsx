@@ -29,7 +29,7 @@ export default function Home() {
         <>
             <div className="container mx-auto px-4 pt-16 pb-8">
                 <div className="flex flex-col items-center text-center gap-8">
-                    <div className="w-full">
+                    <div className="w-full relative">
                         <div className="text-left mb-4">
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
                         </div>
@@ -52,7 +52,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="w-full mt-8">
+            <div className="w-full -mt-32">
                 <Image
                     src="/fondo-inicio.png"
                     alt="Coche principal"
