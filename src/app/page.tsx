@@ -10,10 +10,10 @@ const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="filter invert" />
-                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="filter invert" />
+                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} />
+                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} />
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50}/>
-                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="filter invert" />
+                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} />
             </div>
         </div>
     </div>
