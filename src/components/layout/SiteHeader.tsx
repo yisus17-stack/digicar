@@ -57,7 +57,7 @@ const SiteHeader = () => {
   return (
     <>
       <header className="bg-background/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 gap-4">
+        <div className="container mx-auto flex h-20 items-center justify-between px-12 gap-4">
           <Link href="/" className="flex items-center space-x-2">
             <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50} />
           </Link>
@@ -86,7 +86,7 @@ const SiteHeader = () => {
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-in fade-in-0" onClick={() => setIsSearchOpen(false)}>
           <div className='bg-background border-b' onClick={(e) => e.stopPropagation()}>
-            <div className="container mx-auto px-4 pt-8 md:pt-16">
+            <div className="container mx-auto px-12 pt-8 md:pt-16">
               <div className="flex items-center h-20 gap-4">
                 <Link href="/" className="flex items-center space-x-2">
                   <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={40} />
@@ -94,9 +94,9 @@ const SiteHeader = () => {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
-                    type="text"
+                    type="search"
                     placeholder="Buscar"
-                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                     autoFocus
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
