@@ -6,7 +6,6 @@ import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { ChevronRight } from 'lucide-react';
 
 const BrandLogos = () => (
@@ -24,12 +23,11 @@ const BrandLogos = () => (
 
 
 export default function Home() {
-    const heroCarImage = findPlaceholderImage('horizon-suv');
     const popularCars = cars.slice(0, 3);
 
     return (
         <>
-            <div className="container mx-auto px-4 py-16">
+            <div className="container mx-auto px-4 pt-16 pb-8">
                 <div className="flex flex-col items-center text-center gap-8">
                     <div className="w-full">
                         <div className="text-left mb-4">
@@ -51,20 +49,18 @@ export default function Home() {
                         </div>
                         <VirtualAssistant />
                     </div>
-                    <div className="w-full max-w-4xl mt-8">
-                        {heroCarImage && (
-                            <Image
-                                src={heroCarImage.imageUrl}
-                                alt="Coche principal"
-                                width={800}
-                                height={600}
-                                className="rounded-lg object-contain w-full h-auto"
-                                data-ai-hint="suv montañas"
-                                priority
-                            />
-                        )}
-                    </div>
                 </div>
+            </div>
+
+            <div className="w-full mt-8">
+                <Image
+                    src="/fondo-inicio.png"
+                    alt="Coche principal"
+                    width={1920}
+                    height={1080}
+                    className="w-full h-auto"
+                    priority
+                />
             </div>
             
             <BrandLogos />
