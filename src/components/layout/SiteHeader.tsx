@@ -133,10 +133,10 @@ const SiteHeader = () => {
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
+                <SheetContent side="right" className="w-3/4">
                   <SheetHeader>
                     <SheetTitle>
-                      <Link href="/" className="flex items-center space-x-2">
+                      <Link href="/" className="flex items-center space-x-2 justify-end">
                         <Image
                           src="/logo.png"
                           alt="DigiCar Logo"
@@ -155,7 +155,7 @@ const SiteHeader = () => {
                             key={link.href}
                             href={link.href}
                             className={cn(
-                              'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:bg-muted',
+                              'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:text-primary',
                               pathname === link.href
                                 ? 'font-bold text-primary'
                                 : ''
