@@ -168,13 +168,6 @@ export default function CarCatalogPage() {
     />
   );
 
-  if (!hasMounted) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background z-50">
-        <Loader className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -217,6 +210,11 @@ export default function CarCatalogPage() {
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
+                ) : !hasMounted ? (
+                  <div className='flex items-center gap-4'>
+                    <Skeleton className='h-9 w-36' />
+                    <Skeleton className='h-10 w-[220px]' />
+                  </div>
                 ) : (
                   <>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
