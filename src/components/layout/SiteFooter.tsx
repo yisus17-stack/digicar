@@ -6,9 +6,9 @@ const SiteFooter = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
                 <Image src="/logo-light.svg" alt="DigiCar Logo" width={150} height={50} />
             </div>
             <p>Av. Principal No. 173</p>
@@ -27,7 +27,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center md:justify-start">
               <Link href="#" aria-label="Facebook">
                 <Facebook className="h-6 w-6 border rounded-full p-1" />
               </Link>

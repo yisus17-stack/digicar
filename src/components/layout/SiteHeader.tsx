@@ -53,8 +53,8 @@ const SiteHeader = () => {
 
   return (
     <>
-      <header className="bg-background sticky top-0 z-40 w-full border-b">
-        <div className="container mx-auto flex h-20 items-center justify-between px-12 gap-4">
+      <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-12 gap-4">
           <Link href="/" className="flex items-center space-x-2">
             <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
           </Link>
@@ -83,8 +83,8 @@ const SiteHeader = () => {
           </div>
 
           <div
-            className="flex items-center justify-end gap-4"
-            style={{ minWidth: '150px' }}
+            className="flex items-center justify-end gap-2 sm:gap-4"
+            style={{ minWidth: '100px' }}
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
               <Search className="h-5 w-5" />
@@ -118,9 +118,9 @@ const SiteHeader = () => {
               className="bg-background border-b"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="container mx-auto px-12 pt-8 md:pt-16">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-12 pt-8 md:pt-16">
                 <div className="flex items-center h-20 gap-4">
-                  <Link href="/" className="flex items-center space-x-2">
+                  <Link href="/" className="hidden sm:flex items-center space-x-2">
                     <Image
                       src="/logo.png"
                       alt="DigiCar Logo"
@@ -169,6 +169,9 @@ const SiteHeader = () => {
                         variant="secondary"
                         size="sm"
                         className="rounded-full font-normal"
+                        onClick={() => {
+                            setSearchValue(term);
+                        }}
                       >
                         {term}
                       </Button>

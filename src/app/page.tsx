@@ -11,10 +11,10 @@ const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-around items-center gap-4 flex-wrap">
-                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} />
-                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} />
+                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="grayscale opacity-60" />
+                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="grayscale opacity-60" />
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50}/>
-                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} />
+                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="grayscale opacity-60" />
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-12 pt-12 md:pb-24">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-12 md:py-24">
                 <div className="flex justify-between items-center mb-8 text-xl font-medium">
                     <div>
                         <span className="font-semibold text-primary">Inicio</span>
@@ -34,18 +34,18 @@ export default function Home() {
                     <VirtualAssistant />
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-lg text-black max-w-xl">
+                        <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex gap-4">
-                            <Button size="lg" className="text-lg px-10 py-6">
+                        <div className="mt-8 flex gap-4 justify-center md:justify-start">
+                            <Button size="lg" className="text-lg px-8 sm:px-10 py-6">
                                 Explorar
                             </Button>
-                            <Button size="lg" variant="outline" className="text-lg px-10 py-6">
+                            <Button size="lg" variant="outline" className="text-lg px-8 sm:px-10 py-6">
                                 Ver catálogo
                             </Button>
                         </div>
@@ -74,7 +74,7 @@ export default function Home() {
                 <CarCatalog cars={popularCars} />
             </div>
             
-            <div className="text-center mb-16">
+            <div className="text-center mb-16 px-4">
               <Button asChild variant="outline">
                 <Link href="/">
                   Ver todos los vehículos <ChevronRight className="ml-2 h-4 w-4" />
