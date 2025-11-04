@@ -91,8 +91,6 @@ export default function CarCatalogPage() {
   };
 
   const handleSearchWithAI = () => {
-    if (!searchTerm) return;
-    
     startAiTransition(async () => {
       setAiSummary('');
       const result = await summarizeCatalogFilters({
@@ -118,6 +116,8 @@ export default function CarCatalogPage() {
               filters={filters}
               onFilterChange={handleFilterChange}
               onReset={handleResetFilters}
+              onSearchWithAI={handleSearchWithAI}
+              isLoading={isAiLoading}
               cars={cars}
               maxPrice={MAX_PRICE}
             />
@@ -160,7 +160,7 @@ export default function CarCatalogPage() {
               )}
             </div>
 
-            <div className='pt-8 flex items-end'>
+            <div className='pt-8'>
               {totalPages > 1 && (
                   <Pagination className="mt-4">
                   <PaginationContent>
