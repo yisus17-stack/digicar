@@ -169,13 +169,12 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="lg:flex lg:gap-8 lg:items-start">
-         <aside className={cn('lg:w-1/4 lg:flex-col lg:mb-0 transition-all duration-300', 
-            isMobile ? "hidden" : "flex",
-            !showFilters && !isMobile ? "hidden" : "flex"
-          )}>
-            {!isMobile && filterComponent}
-        </aside>
+      <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
+        { !isMobile && showFilters && (
+            <aside className='lg:w-1/4'>
+                {filterComponent}
+            </aside>
+        )}
 
         <main className={cn('flex flex-1 flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
             <div className="flex flex-col md:flex-row md:relative mb-6 gap-2">
@@ -209,7 +208,7 @@ export default function CarCatalogPage() {
                         Filtrar y Ordenar
                       </Button>
                     </SheetTrigger>
-                    <SheetContent className="flex flex-col w-full">
+                    <SheetContent side="left" className="flex flex-col w-full">
                       <SheetHeader>
                         <SheetTitle>Filtrar y Ordenar</SheetTitle>
                       </SheetHeader>
@@ -291,5 +290,3 @@ export default function CarCatalogPage() {
     </div>
   );
 }
-
-    
