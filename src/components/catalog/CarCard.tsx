@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
-import { GitCommitHorizontal, Gauge, Users } from 'lucide-react';
+import { GitCommitHorizontal, Users, Fuel } from 'lucide-react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +18,13 @@ export default function CarCard({ car }: CarCardProps) {
   const transmissionMap = {
     'Automatic': 'Automática',
     'Manual': 'Manual'
+  }
+
+  const fuelTypeMap = {
+    'Gasoline': 'Gasolina',
+    'Diesel': 'Diésel',
+    'Electric': 'Eléctrico',
+    'Hybrid': 'Híbrido'
   }
 
   return (
@@ -49,8 +56,8 @@ export default function CarCard({ car }: CarCardProps) {
             <span>{transmissionMap[car.transmission]}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4" />
-            <span>{car.mileage} km/h</span>
+            <Fuel className="w-4 h-4" />
+            <span>{fuelTypeMap[car.fuelType]}</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4" />
