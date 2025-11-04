@@ -25,7 +25,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-24 overflow-x-hidden">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-28 overflow-x-hidden">
                 
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
