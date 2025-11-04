@@ -1,15 +1,12 @@
-
-
 'use client';
 
 import Link from 'next/link';
 import { Search, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
-import { Badge } from '../ui/badge';
 
 const popularSearches = [
     'Prestige X10',
@@ -24,10 +21,7 @@ const popularSearches = [
 
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [isSearchAnimatingOut, setIsSearchAnimatingOut] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [isPending, startTransition] = useTransition();
-
 
   const openSearch = () => {
     setIsSearchVisible(true);
@@ -35,13 +29,9 @@ const SiteHeader = () => {
   };
 
   const closeSearch = () => {
-    setIsSearchAnimatingOut(true);
+    setIsSearchVisible(false);
     document.body.style.overflow = '';
-    setTimeout(() => {
-      setIsSearchVisible(false);
-      setIsSearchAnimatingOut(false);
-      setSearchValue('');
-    }, 300); // Duration of the animation
+    setSearchValue('');
   };
 
   useEffect(() => {
@@ -92,17 +82,11 @@ const SiteHeader = () => {
 
       {isSearchVisible && (
         <div 
-          className={cn(
-            "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm",
-            isSearchAnimatingOut ? "animate-out fade-out" : "animate-in fade-in"
-          )}
+          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
           onClick={closeSearch}
         >
           <div 
-            className={cn(
-              'bg-background border-b',
-               isSearchAnimatingOut ? "animate-out slide-out-to-top-4 duration-300" : "animate-in slide-in-from-top-4 duration-300"
-            )}
+            className='bg-background border-b'
             onClick={(e) => e.stopPropagation()}
           >
             <div className="container mx-auto px-12 pt-8 md:pt-16">
