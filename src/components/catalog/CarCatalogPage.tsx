@@ -16,7 +16,7 @@ import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from '../ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 
@@ -175,33 +175,13 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        { hasMounted && !isMobile && showFilters && (
+        {hasMounted && !isMobile && showFilters && (
             <aside className='lg:w-1/4'>
                 {filterComponent}
             </aside>
         )}
 
         <main className={cn('flex flex-1 flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
-            <div className="flex flex-col md:flex-row md:relative mb-6 gap-2">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                    type="text"
-                    placeholder="Describe tu auto ideal y usa la IA..."
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 h-12 text-base focus-visible:ring-0 focus-visible:ring-offset-0 md:pr-40"
-                    />
-                </div>
-                <Button 
-                  onClick={handleSearchWithAI}
-                  className="w-full md:w-auto md:absolute md:right-2 md:top-1/2 md:-translate-y-1/2"
-                  disabled={isAiLoading}
-                >
-                  {isAiLoading ? 'Analizando...' : 'Buscar con IA'}
-                </Button>
-            </div>
-            
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>

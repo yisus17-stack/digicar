@@ -14,6 +14,7 @@ import { Car } from '@/lib/types';
 import { translations } from '@/lib/translations';
 import { Loader, Sparkles } from 'lucide-react';
 import { Separator } from '../ui/separator';
+import { Input } from '../ui/input';
 
 interface CarFiltersProps {
   filters: any;
@@ -59,6 +60,18 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         )}
         <h3 className="text-2xl font-bold md:hidden">Filtros</h3>
         <h3 className="text-2xl font-bold hidden md:block">Filtros</h3>
+        
+        <div>
+          <Label>Describe tu auto ideal (IA)</Label>
+          <Input
+            type="text"
+            placeholder="Ej: Un SUV familiar para 7 personas..."
+            // value={searchTerm} // This needs to be managed in CarCatalogPage
+            // onChange={e => setSearchTerm(e.target.value)}
+            className="w-full text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+          />
+        </div>
+        
         <div>
             <Label>Marca</Label>
             <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
