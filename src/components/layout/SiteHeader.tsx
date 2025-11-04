@@ -22,6 +22,7 @@ const popularSearches = [
 
 const SiteHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,6 +42,16 @@ const SiteHeader = () => {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
+  }, [isSearchOpen]);
+
+  const handleClearSearch = () => {
+    setSearchValue('');
+  };
+
+  useEffect(() => {
+    if (!isSearchOpen) {
+      setSearchValue('');
+    }
   }, [isSearchOpen]);
 
   return (
@@ -83,11 +94,23 @@ const SiteHeader = () => {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
-                    type="search"
+                    type="text"
                     placeholder="Buscar"
-                    className="w-full h-12 pl-10 pr-4 text-lg bg-muted border-none rounded-full data-[search-hidden-x]::-webkit-search-cancel-button:hidden"
+                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full"
                     autoFocus
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
                   />
+                  {searchValue && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                      onClick={handleClearSearch}
+                    >
+                      <X className="h-5 w-5 text-muted-foreground" />
+                    </Button>
+                  )}
                 </div>
                 <Button variant="ghost" onClick={() => setIsSearchOpen(false)} className="text-muted-foreground">
                   <X className="h-5 w-5 md:hidden" />
