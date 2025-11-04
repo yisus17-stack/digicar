@@ -31,18 +31,18 @@ const prompt = ai.definePrompt({
   name: 'summarizeCatalogFiltersPrompt',
   input: {schema: SummarizeCatalogFiltersInputSchema},
   output: {schema: SummarizeCatalogFiltersOutputSchema},
-  prompt: `You are an expert car advisor. Your task is to recommend the best car for a user based on their preferences.
+  prompt: `Eres un asesor de autos experto. Tu tarea es recomendar el mejor auto para un usuario basándote en sus preferencias.
 
-Analyze the following information:
-1.  **User's Filters**: {{{filters}}}
-2.  **User's Description**: {{{userDescription}}}
-3.  **Available Cars**: {{{carList}}}
+Analiza la siguiente información:
+1.  **Filtros del usuario**: {{{filters}}}
+2.  **Descripción del usuario**: {{{userDescription}}}
+3.  **Autos disponibles**: {{{carList}}}
 
-Based on all this information, select the single best car from the list that matches the user's needs.
+Basado en toda esta información, selecciona el mejor auto de la lista que coincida con las necesidades del usuario.
 
-Provide a concise recommendation explaining why you chose that car and include its ID in the \`recommendedCarId\` field.
-Example response: "Based on your need for a fuel-efficient car for daily commutes, I recommend the Stratus Elegance. Its hybrid engine is perfect for saving on gas."
-If no specific car stands out, make a general recommendation based on the filters.
+Proporciona una recomendación concisa explicando por qué elegiste ese auto e incluye su ID en el campo \`recommendedCarId\`.
+Ejemplo de respuesta: "Basado en tu necesidad de un auto de bajo consumo para traslados diarios, te recomiendo el Stratus Elegance. Su motor híbrido es perfecto para ahorrar en gasolina."
+Si ningún auto específico destaca, haz una recomendación general basada en los filtros.
 `,
 });
 
