@@ -26,9 +26,9 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 pt-8 pb-12 md:pt-12 md:pb-24">
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center text-lg font-medium">
+            <div className="container mx-auto px-6 md:px-8 pt-4 pb-12 md:pt-8 md:pb-24">
+                <div className="flex justify-between items-center mb-4 text-lg font-medium">
+                    <div>
                         <span className="text-primary">Inicio</span>
                     </div>
                     <VirtualAssistant />
