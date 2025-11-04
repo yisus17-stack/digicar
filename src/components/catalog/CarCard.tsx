@@ -23,7 +23,7 @@ export default function CarCard({ car }: CarCardProps) {
               alt={`${car.brand} ${car.model}`}
               width={600}
               height={400}
-              className="object-cover w-full h-full aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
+              className="object-cover w-full h-auto aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
               data-ai-hint={placeholder.imageHint}
             />
           )}
