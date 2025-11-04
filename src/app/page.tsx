@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 pt-16 pb-8">
+            <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="relative">
                         <div className="text-left mb-4">
@@ -54,7 +54,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto"
+                            className="w-full h-auto md:mt-8"
                             priority
                         />
                     </div>
