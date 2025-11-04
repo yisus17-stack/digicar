@@ -11,10 +11,10 @@ const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-around items-center gap-4 flex-wrap">
-                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="grayscale opacity-60" />
-                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="grayscale opacity-60"/>
+                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
+                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="opacity-60"/>
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50}/>
-                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="grayscale opacity-60" />
+                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="opacity-60" />
             </div>
         </div>
     </div>
@@ -26,8 +26,8 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-12 md:py-24">
-                <div className="flex justify-between items-center mb-8 text-lg font-medium">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 overflow-x-hidden">
+                <div className="flex justify-between items-center mb-8 text-base font-medium">
                     <div>
                         <span className="font-semibold text-primary">Inicio</span>
                     </div>
@@ -38,10 +38,10 @@ export default function Home() {
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-md sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
+                        <p className="mt-4 text-md sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex gap-4 justify-center md:justify-start">
+                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                             <Button size="lg" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
                                 Explorar
                             </Button>
@@ -50,13 +50,13 @@ export default function Home() {
                             </Button>
                         </div>
                     </div>
-                    <div>
+                    <div className="mt-8 md:mt-0">
                         <Image
                             src="/auto-inicio.png"
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto scale-90 md:mt-12 lg:scale-105"
+                            className="w-full h-auto scale-90 md:scale-105"
                             priority
                         />
                     </div>
