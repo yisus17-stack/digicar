@@ -56,7 +56,7 @@ const SiteHeader = () => {
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-12 gap-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} className="w-28 md:w-36"/>
+            <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} className="w-24 md:w-36"/>
           </Link>
 
           <div className="flex-1 flex justify-center">
@@ -83,15 +83,15 @@ const SiteHeader = () => {
           </div>
 
           <div
-            className="flex items-center justify-end gap-2 sm:gap-4"
+            className="flex items-center justify-end gap-1 sm:gap-4"
             style={{ minWidth: '100px' }}
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
-              <Search className="h-6 w-6 md:h-5 md:w-5" />
+              <Search className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
 
             <Button variant="ghost" size="icon">
-              <User className="h-6 w-6 md:h-5 md:w-5" />
+              <User className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
           </div>
         </div>
@@ -154,8 +154,7 @@ const SiteHeader = () => {
                     onClick={closeSearch}
                     className="text-muted-foreground"
                   >
-                    <X className="h-5 w-5 md:hidden" />
-                    <span className="hidden md:inline">Cancelar</span>
+                    <span className="inline">Cancelar</span>
                   </Button>
                 </div>
                 <div className="mt-8 pb-12">
