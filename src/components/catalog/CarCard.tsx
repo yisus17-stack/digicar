@@ -34,9 +34,11 @@ export default function CarCard({ car }: CarCardProps) {
           )}
         </div>
       <CardContent className="p-4 flex-grow flex flex-col">
-        <div className="text-xs uppercase text-muted-foreground">{car.brand}</div>
-        <p className="text-lg font-bold mb-2 leading-tight">{car.model}</p>
-        <div className="text-primary font-bold text-base mb-4">
+        <p className="text-xl font-bold leading-tight">{car.model}</p>
+        <p className="text-sm text-muted-foreground normal-case mt-1">
+          {car.brand} - {translations.type[car.type as keyof typeof translations.type]}
+        </p>
+        <div className="text-base mt-2 mb-4">
             <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
         <div className="space-y-2 text-sm text-muted-foreground border-t pt-3 mt-auto">
