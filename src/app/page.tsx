@@ -1,6 +1,4 @@
 
-
-
 import CarCatalog from '@/components/catalog/CarCatalog';
 import VirtualAssistant from '@/components/assistant/VirtualAssistant';
 import { cars } from '@/lib/data';
@@ -35,7 +33,7 @@ export default function Home() {
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
                         </div>
                         <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
-                            Conduce tu historia <br /> con <span className="text-primary">DigiCar</span>
+                            Conduce tu historia con <span className="text-primary">DigiCar</span>
                         </h1>
                         <p className="mt-6 text-lg text-muted-foreground max-w-xl">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
