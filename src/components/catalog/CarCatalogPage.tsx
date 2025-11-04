@@ -6,7 +6,7 @@ import { cars } from '@/lib/data';
 import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
-import { X, SlidersHorizontal, Loader } from 'lucide-react';
+import { X, SlidersHorizontal, Loader, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -166,9 +166,11 @@ export default function CarCatalogPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-4">
-        <p className="text-sm text-muted-foreground">
-          <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link> &gt; Catálogo
-        </p>
+        <div className="flex items-center text-sm text-muted-foreground">
+          <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link>
+          <ChevronRight className="h-4 w-4 mx-1" />
+          <span>Catálogo</span>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
