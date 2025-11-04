@@ -10,7 +10,6 @@ const SiteFooter = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
                 <Image src="/logo-light.svg" alt="DigiCar Logo" width={40} height={40} />
-                <span className="text-2xl font-bold">DigiCar</span>
             </div>
             <p>Av. Principal No. 173</p>
             <p>Colonia Centro</p>

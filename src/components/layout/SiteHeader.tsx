@@ -49,7 +49,6 @@ const SiteHeader = () => {
         <div className="container mx-auto flex h-20 items-center justify-between px-4 gap-4">
           <Link href="/" className="flex items-center space-x-2">
             <Image src="/logo.svg" alt="DigiCar Logo" width={40} height={40} />
-            <span className="font-bold text-xl">DigiCar</span>
           </Link>
           
           <div className="flex-1 flex justify-center">

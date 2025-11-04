@@ -15,10 +15,7 @@ const BrandLogos = () => (
             <div className="flex justify-around items-center gap-4 flex-wrap">
                 <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="grayscale opacity-60" />
                 <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="grayscale opacity-60" />
-                <div className="flex items-center gap-2">
-                    <Image src="/logo.svg" alt="DigiCar" width={40} height={40}/>
-                    <span className="font-bold text-xl text-primary">DigiCar</span>
-                </div>
+                <Image src="/logo.svg" alt="DigiCar" width={40} height={40}/>
                 <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="grayscale opacity-60" />
             </div>
         </div>
