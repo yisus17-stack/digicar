@@ -121,7 +121,7 @@ export default function CarCatalogPage() {
           />
         </aside>
 
-        <main className="lg:col-span-3">
+        <main className="lg:col-span-3 flex flex-col">
             <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -141,24 +141,26 @@ export default function CarCatalogPage() {
             </div>
             
             { (isAiLoading || aiSummary) && <AiSummary summary={aiSummary} /> }
+            
+            <div className="flex-grow">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {paginatedCars.map(car => (
+                  <CarCard key={car.id} car={car} />
+                  ))}
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {paginatedCars.map(car => (
-                <CarCard key={car.id} car={car} />
-                ))}
+              {filteredCars.length === 0 && (
+                  <div className="text-center py-16">
+                      <X className="mx-auto h-12 w-12 text-muted-foreground" />
+                      <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
+                      <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
+                  </div>
+              )}
             </div>
 
-            {filteredCars.length === 0 && (
-                <div className="text-center py-16">
-                    <X className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
-                    <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
-                </div>
-            )}
-
-            <div className='h-20'>
+            <div className='pt-8'>
               {totalPages > 1 && (
-                  <Pagination className="mt-12">
+                  <Pagination className="mt-4">
                   <PaginationContent>
                       <PaginationItem>
                       <PaginationPrevious 
