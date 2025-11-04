@@ -26,10 +26,10 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-12 pt-2 md:pb-24">
-                <div className="flex justify-between items-center mb-2 text-xl font-medium">
+            <div className="container mx-auto px-12 pt-12 md:pb-24">
+                <div className="flex justify-between items-center mb-8 text-xl font-medium">
                     <div>
-                        <span className="font-semibold text-muted-foreground">Inicio</span>
+                        <span className="font-semibold text-primary">Inicio</span>
                     </div>
                     <VirtualAssistant />
                 </div>
@@ -56,7 +56,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto md:mt-20 lg:scale-125"
+                            className="w-full h-auto md:mt-20 lg:scale-105"
                             priority
                         />
                     </div>
