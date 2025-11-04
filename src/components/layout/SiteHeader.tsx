@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -113,7 +114,7 @@ const SiteHeader = () => {
                   <Input
                     type="search"
                     placeholder="Buscar"
-                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                     autoFocus
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
