@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
@@ -44,11 +43,6 @@ export default function CarCatalogPage() {
   const [showFilters, setShowFilters] = useState(true);
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -178,17 +172,15 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        {hasMounted && !isMobile && (
-          <aside className={cn('lg:w-1/4', !showFilters && 'hidden')}>
+        <aside className={cn('hidden lg:block lg:w-1/4', !showFilters && 'lg:hidden')}>
             {filterComponent}
-          </aside>
-        )}
+        </aside>
 
         <main className={cn('flex flex-1 flex-col', !showFilters && 'lg:w-full')}>
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>
-                {isMobile ? (
+                <div className='lg:hidden'>
                   <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm">
@@ -210,20 +202,14 @@ export default function CarCatalogPage() {
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
-                ) : !hasMounted ? (
-                  <div className='flex items-center gap-4'>
-                    <Skeleton className='h-9 w-36' />
-                    <Skeleton className='h-10 w-[220px]' />
-                  </div>
-                ) : (
-                  <>
+                </div>
+                <div className='hidden lg:flex items-center gap-4'>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
                       {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
                     </Button>
                     {sortOptions}
-                  </>
-                )}
+                </div>
               </div>
             </div>
 
