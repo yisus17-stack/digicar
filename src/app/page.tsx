@@ -1,5 +1,6 @@
 
 
+
 import CarCatalog from '@/components/catalog/CarCatalog';
 import VirtualAssistant from '@/components/assistant/VirtualAssistant';
 import { cars } from '@/lib/data';
@@ -28,39 +29,38 @@ export default function Home() {
     return (
         <>
             <div className="container mx-auto px-4 pt-16 pb-8">
-                <div className="flex flex-col items-center text-center gap-8">
-                    <div className="w-full relative">
+                <div className="grid md:grid-cols-2 gap-8 items-center">
+                    <div className="relative">
                         <div className="text-left mb-4">
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
                         </div>
-                        <h1 className="text-6xl md:text-8xl font-bold mt-4 leading-tight">
+                        <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
                             Conduce tu historia <br /> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+                        <p className="mt-6 text-lg text-muted-foreground max-w-xl">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex gap-4 justify-center">
-                            <Button size="lg" className="text-lg px-10 py-6" asChild>
-                                <Link href="/#popular">Explorar</Link>
+                        <div className="mt-8 flex gap-4">
+                            <Button size="lg" className="text-lg px-10 py-6">
+                                Explorar
                             </Button>
-                            <Button size="lg" variant="outline" className="text-lg px-10 py-6" asChild>
-                                <Link href="/">Ver catálogo</Link>
+                            <Button size="lg" variant="outline" className="text-lg px-10 py-6">
+                                Ver catálogo
                             </Button>
                         </div>
                         <VirtualAssistant />
                     </div>
+                    <div>
+                        <Image
+                            src="/auto-inicio.png"
+                            alt="Coche principal"
+                            width={800}
+                            height={600}
+                            className="w-full h-auto"
+                            priority
+                        />
+                    </div>
                 </div>
-            </div>
-
-            <div className="w-full -mt-32">
-                <Image
-                    src="/fondo-inicio.png"
-                    alt="Coche principal"
-                    width={1920}
-                    height={1080}
-                    className="w-full h-auto"
-                    priority
-                />
             </div>
             
             <BrandLogos />
