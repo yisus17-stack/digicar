@@ -50,17 +50,17 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="flex items-center justify-between text-primary font-bold text-lg mb-4">
             <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm text-muted-foreground border-t pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">
-            <GitCommitHorizontal className="w-5 h-5 sm:w-4 sm:h-4" />
+            <GitCommitHorizontal className="w-4 h-4" />
             <span>{transmissionMap[car.transmission]}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Fuel className="w-5 h-5 sm:w-4 sm:h-4" />
+            <Fuel className="w-4 h-4" />
             <span>{fuelTypeMap[car.fuelType]}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 sm:w-4 sm:h-4" />
+            <Users className="w-4 h-4" />
             <span>{car.passengers} Pasajeros</span>
           </div>
         </div>
