@@ -170,7 +170,7 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="lg:flex lg:gap-8 lg:items-start">
-        <aside className={cn('lg:w-1/4 lg:block mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
+        <aside className={cn('lg:w-1/4 lg:flex lg:flex-col mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
             {!isMobile && filterComponent}
         </aside>
 
