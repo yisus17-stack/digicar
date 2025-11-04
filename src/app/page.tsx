@@ -27,10 +27,7 @@ export default function Home() {
     return (
         <>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 overflow-x-hidden">
-                <div className="flex justify-between items-center mb-8 text-base font-medium">
-                    <div>
-                        <span className="font-semibold text-primary">Inicio</span>
-                    </div>
+                <div className="flex justify-end items-center mb-8 text-base font-medium">
                     <VirtualAssistant />
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 items-center">
