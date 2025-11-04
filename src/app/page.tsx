@@ -29,9 +29,7 @@ export default function Home() {
             <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center text-lg font-medium">
-                        <Link href="#" className="text-primary hover:underline">Inicio</Link>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground mx-1" />
-                        <span className="text-muted-foreground">Catálogo</span>
+                        <span className="text-primary">Inicio</span>
                     </div>
                     <VirtualAssistant />
                 </div>
