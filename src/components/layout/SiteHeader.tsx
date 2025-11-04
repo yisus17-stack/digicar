@@ -64,7 +64,7 @@ const SiteHeader = () => {
               <Link href="/" className="text-primary font-bold">
                 Inicio
               </Link>
-              <Link href="/" className="transition-colors hover:text-primary">
+              <Link href="/catalog" className="transition-colors hover:text-primary">
                 Catálogo
               </Link>
               <Link
@@ -142,7 +142,7 @@ const SiteHeader = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full sm:hidden"
                         onClick={handleClearSearch}
                       >
                         <X className="h-5 w-5 text-muted-foreground" />

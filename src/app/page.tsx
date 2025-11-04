@@ -11,10 +11,10 @@ const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} />
-                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} />
+                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="filter invert" />
+                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="filter invert" />
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50}/>
-                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} />
+                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="filter invert" />
             </div>
         </div>
     </div>
@@ -45,8 +45,8 @@ export default function Home() {
                             <Button size="sm" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
                                 Explorar
                             </Button>
-                            <Button size="sm" variant="outline" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
-                                Ver catálogo
+                            <Button asChild size="sm" variant="outline" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
+                                <Link href="/catalog">Ver catálogo</Link>
                             </Button>
                         </div>
                     </div>
@@ -76,7 +76,7 @@ export default function Home() {
             
             <div className="text-center mb-16 px-4">
               <Button asChild variant="outline">
-                <Link href="/">
+                <Link href="/catalog">
                   Ver todos los vehículos <ChevronRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

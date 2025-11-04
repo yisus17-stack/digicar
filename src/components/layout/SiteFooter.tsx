@@ -18,7 +18,7 @@ const SiteFooter = () => {
           <div className="text-center">
             <h3 className="font-bold text-lg mb-4">Enlaces</h3>
             <ul className="space-y-2">
-              <li><Link href="/" className="hover:underline">Catálogo</Link></li>
+              <li><Link href="/catalog" className="hover:underline">Catálogo</Link></li>
               <li><Link href="/simulator" className="hover:underline">Simulador</Link></li>
               <li><Link href="/compare" className="hover:underline">Comparador</Link></li>
               <li><Link href="#" className="hover:underline">Chat</Link></li>
