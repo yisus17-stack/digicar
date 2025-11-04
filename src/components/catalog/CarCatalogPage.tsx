@@ -22,6 +22,10 @@ export default function CarCatalogPage() {
     transmission: 'all',
     priceRange: [0, 200000],
     year: 'all',
+    type: 'all',
+    engineCylinders: 'all',
+    color: 'all',
+    passengers: 'all',
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -32,12 +36,16 @@ export default function CarCatalogPage() {
 
   const filteredCars = useMemo(() => {
     let filtered = cars.filter(car => {
-      const { brand, fuelType, transmission, priceRange, year } = filters;
+      const { brand, fuelType, transmission, priceRange, year, type, engineCylinders, color, passengers } = filters;
       if (brand !== 'all' && car.brand !== brand) return false;
       if (fuelType !== 'all' && car.fuelType !== fuelType) return false;
       if (transmission !== 'all' && car.transmission !== transmission) return false;
       if (car.price < priceRange[0] || car.price > priceRange[1]) return false;
       if (year !== 'all' && car.year !== parseInt(year)) return false;
+      if (type !== 'all' && car.type !== type) return false;
+      if (engineCylinders !== 'all' && car.engineCylinders !== parseInt(engineCylinders)) return false;
+      if (color !== 'all' && car.color !== color) return false;
+      if (passengers !== 'all' && car.passengers !== parseInt(passengers)) return false;
       return true;
     });
 
@@ -71,6 +79,10 @@ export default function CarCatalogPage() {
       transmission: 'all',
       priceRange: [0, 200000],
       year: 'all',
+      type: 'all',
+      engineCylinders: 'all',
+      color: 'all',
+      passengers: 'all',
     });
     setSearchTerm('');
     setAiSummary('');

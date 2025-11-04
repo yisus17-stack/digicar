@@ -61,7 +61,7 @@ export default function CarCard({ car }: CarCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-            <span>5 Pasajeros</span>
+            <span>{car.passengers} Pasajeros</span>
           </div>
         </div>
         <Button className="w-full mt-4">Ver detalles</Button>

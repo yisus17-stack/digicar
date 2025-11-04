@@ -11,4 +11,8 @@ export type Car = {
   horsepower: number;
   features: string[];
   image: string;
+  type: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
+  engineCylinders: number;
+  color: string;
+  passengers: number;
 };
