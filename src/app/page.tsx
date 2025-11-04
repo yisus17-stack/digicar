@@ -27,7 +27,7 @@ const BrandLogos = () => (
 
 export default function Home() {
     const heroCarImage = findPlaceholderImage('prestige-x10');
-    const popularCars = cars.slice(0, 2);
+    const popularCars = cars.slice(0, 3);
 
     return (
         <>
