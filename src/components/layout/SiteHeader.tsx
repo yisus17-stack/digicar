@@ -116,7 +116,6 @@ const SiteHeader = () => {
 
           <div
             className="flex items-center justify-end gap-1 sm:gap-4"
-            style={{ minWidth: '100px' }}
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
               <Search className="h-7 w-7 md:h-5 md:w-5" />
@@ -141,8 +140,8 @@ const SiteHeader = () => {
                         <Image
                           src="/logo.png"
                           alt="DigiCar Logo"
-                          width={150}
-                          height={50}
+                          width={120}
+                          height={40}
                         />
                       </Link>
                     </SheetTitle>
@@ -158,7 +157,7 @@ const SiteHeader = () => {
                             className={cn(
                               'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:bg-muted',
                               pathname === link.href
-                                ? 'bg-muted font-bold text-primary'
+                                ? 'font-bold text-primary'
                                 : ''
                             )}
                           >
