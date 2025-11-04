@@ -25,8 +25,8 @@ export default function CarCard({ car }: CarCardProps) {
               width={600}
               height={400}
               className={cn(
-                "w-full h-full transition-transform duration-300 group-hover:scale-105",
-                placeholder.imageUrl.includes('unsplash') ? 'object-cover' : 'object-contain'
+                "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105",
+                !placeholder.imageUrl.includes('unsplash') && 'object-contain'
               )}
               data-ai-hint={placeholder.imageHint}
             />
