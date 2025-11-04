@@ -29,6 +29,7 @@ export default function Home() {
             <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="relative">
+                        <VirtualAssistant />
                         <div className="text-left mb-4">
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
                         </div>
@@ -46,7 +47,6 @@ export default function Home() {
                                 Ver catálogo
                             </Button>
                         </div>
-                        <VirtualAssistant />
                     </div>
                     <div>
                         <Image
