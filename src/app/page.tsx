@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 overflow-x-hidden">
                 <div className="flex justify-between items-center mb-8 text-base font-medium">
                     <div>
                         <span className="font-semibold text-primary">Inicio</span>
@@ -35,17 +35,17 @@ export default function Home() {
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mt-4 leading-tight">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4 leading-tight">
                             <span>Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-4 text-md sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
+                        <p className="mt-4 text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <Button size="lg" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
+                            <Button size="sm" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
                                 Explorar
                             </Button>
-                            <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
+                            <Button size="sm" variant="outline" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
                                 Ver catálogo
                             </Button>
                         </div>
@@ -56,7 +56,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto md:scale-105"
+                            className="w-full h-auto scale-90 sm:scale-100 md:scale-105"
                             priority
                         />
                     </div>
@@ -66,8 +66,8 @@ export default function Home() {
             <BrandLogos />
 
             <div id="popular" className="container mx-auto px-4 py-16">
-                <div className="text-left mb-12">
-                    <h2 className="text-4xl font-bold tracking-tight">
+                <div className="text-center md:text-left mb-12">
+                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
                 </div>
