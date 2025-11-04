@@ -28,24 +28,32 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
             <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook">
-                <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="p-1.5" />
+                <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
+                    <Image src="/facebook.svg" alt="Facebook" width={20} height={20} />
+                </div>
               </Link>
               <Link href="#" aria-label="Instagram">
-                 <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="p-1.5" />
+                <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
+                    <Image src="/instagram.svg" alt="Instagram" width={20} height={20} />
+                </div>
               </Link>
               <Link href="#" aria-label="Twitter">
-                 <Image src="/x.svg" alt="X" width={32} height={32} className="p-1.5" />
+                <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
+                    <Image src="/x.svg" alt="X" width={20} height={20} />
+                </div>
               </Link>
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-center">
-            <p className="text-center md:text-left md:flex-1">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-            <div className="flex gap-2 mt-4 md:mt-0 text-xs justify-center md:justify-end md:flex-1">
+        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="flex-1 mb-4 md:mb-0 text-center md:text-left">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
+            <div className="flex-1 flex justify-center md:justify-end text-xs gap-2">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
                 <Link href="#" className="hover:underline">Política de Privacidad</Link>
             </div>
+          </div>
         </div>
       </div>
     </footer>
