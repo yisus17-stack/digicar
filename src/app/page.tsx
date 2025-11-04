@@ -29,17 +29,17 @@ export default function Home() {
                 
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4 leading-tight">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mt-4 leading-tight">
                             <span>Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-4 text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
+                        <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <Button size="sm" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
+                            <Button size="lg">
                                 Explorar
                             </Button>
-                            <Button asChild size="sm" variant="outline" className="text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6">
+                            <Button asChild size="lg" variant="outline">
                                 <Link href="/catalog">Ver catálogo</Link>
                             </Button>
                         </div>
