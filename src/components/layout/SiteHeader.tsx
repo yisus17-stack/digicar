@@ -124,7 +124,7 @@ const SiteHeader = () => {
             <Button variant="ghost" size="icon">
               <User className="h-7 w-7 md:h-5 md:w-5" />
             </Button>
-
+            
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
@@ -134,19 +134,19 @@ const SiteHeader = () => {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-3/4">
-                  <SheetHeader>
-                    <SheetTitle>
-                      <Link href="/" className="flex items-center space-x-2 justify-end">
-                        <Image
-                          src="/logo.png"
-                          alt="DigiCar Logo"
-                          width={120}
-                          height={40}
-                        />
-                      </Link>
-                    </SheetTitle>
-                  </SheetHeader>
                   <div className="p-4">
+                    <SheetHeader className="pb-4">
+                        <SheetTitle className="p-3">
+                          <Link href="/" className="flex items-center">
+                            <Image
+                              src="/logo.png"
+                              alt="DigiCar Logo"
+                              width={120}
+                              height={40}
+                            />
+                          </Link>
+                        </SheetTitle>
+                    </SheetHeader>
                     <nav className="flex flex-col space-y-2">
                       {navLinks.map((link) => {
                         const Icon = link.icon;
@@ -158,7 +158,7 @@ const SiteHeader = () => {
                               'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:text-primary',
                               pathname === link.href
                                 ? 'font-bold text-primary'
-                                : ''
+                                : 'text-foreground'
                             )}
                           >
                             <Icon className="h-5 w-5" />
