@@ -29,10 +29,10 @@ export default function Home() {
             <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div>
-                        <div className="text-left mb-4">
+                        <div className="flex justify-between items-start mb-4">
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
+                            <VirtualAssistant />
                         </div>
-                        <VirtualAssistant />
                         <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
