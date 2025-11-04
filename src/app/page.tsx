@@ -10,7 +10,7 @@ import { ChevronRight } from 'lucide-react';
 const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
-            <div className="flex justify-around items-center gap-4 flex-wrap">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
                 <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
                 <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="opacity-60"/>
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50}/>
@@ -67,7 +67,7 @@ export default function Home() {
 
             <div id="popular" className="container mx-auto px-4 py-16">
                 <div className="text-center md:text-left mb-12">
-                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-center md:text-left">
                         Los autos más populares
                     </h2>
                 </div>
