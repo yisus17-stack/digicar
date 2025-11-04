@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
+import { Skeleton } from '../ui/skeleton';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
@@ -176,13 +177,13 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        {hasMounted && !isMobile && showFilters && (
-            <aside className='lg:w-1/4'>
-                {filterComponent}
-            </aside>
+        {hasMounted && !isMobile && (
+          <aside className={cn('lg:w-1/4', !showFilters && 'hidden')}>
+            {filterComponent}
+          </aside>
         )}
 
-        <main className={cn('flex flex-1 flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
+        <main className={cn('flex flex-1 flex-col', !showFilters && 'lg:w-full')}>
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>
@@ -208,14 +209,19 @@ export default function CarCatalogPage() {
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
-                ) : (
-                  hasMounted && <>
+                ) : hasMounted ? (
+                  <>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
                       {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
                     </Button>
                     {sortOptions}
                   </>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-9 w-32" />
+                    <Skeleton className="h-10 w-[220px]" />
+                  </div>
                 )}
               </div>
             </div>
@@ -229,7 +235,7 @@ export default function CarCatalogPage() {
                   ))}
               </div>
 
-              {filteredCars.length === 0 && (
+              {filteredCars.length === 0 && !isAiLoading && (
                   <div className="text-center py-16">
                       <X className="mx-auto h-12 w-12 text-muted-foreground" />
                       <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
@@ -275,5 +281,6 @@ export default function CarCatalogPage() {
       </div>
     </div>
   );
+}
 
     
