@@ -12,6 +12,7 @@ import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
 import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
+import Link from 'next/link';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
@@ -106,7 +107,7 @@ export default function CarCatalogPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-4">
         <p className="text-sm text-muted-foreground">
-          <span className="text-primary font-medium">Inicio</span> &gt; Catálogo
+          <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link> &gt; Catálogo
         </p>
       </div>
 
@@ -160,9 +161,9 @@ export default function CarCatalogPage() {
               )}
             </div>
 
-            <div className='pt-8'>
+            <div className='pt-8 mt-auto'>
               {totalPages > 1 && (
-                  <Pagination className="mt-4">
+                  <Pagination>
                   <PaginationContent>
                       <PaginationItem>
                       <PaginationPrevious 
