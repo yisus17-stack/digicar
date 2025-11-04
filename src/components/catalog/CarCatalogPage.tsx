@@ -15,7 +15,7 @@ import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 
@@ -209,7 +209,7 @@ export default function CarCatalogPage() {
                     </SheetContent>
                   </Sheet>
                 ) : (
-                  <>
+                  hasMounted && <>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
                       {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
