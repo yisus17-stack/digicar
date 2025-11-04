@@ -9,7 +9,7 @@ import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 
 const popularSearches = [
   'Prestige X10',
@@ -80,10 +80,14 @@ const SiteHeader = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle>
+                    <Link href="/" className="flex items-center space-x-2">
+                      <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
                 <div className="p-4">
-                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                    <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
-                  </Link>
                   <nav className="flex flex-col space-y-4">
                     {navLinks.map((link) => (
                       <Link

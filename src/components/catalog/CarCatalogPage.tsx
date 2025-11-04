@@ -43,6 +43,11 @@ export default function CarCatalogPage() {
   const [showFilters, setShowFilters] = useState(true);
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -174,7 +179,7 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
-        <aside className={cn('hidden lg:block lg:w-1/4', !showFilters && 'lg:hidden')}>
+        <aside className={cn('lg:w-1/4', !showFilters && 'hidden')}>
             {filterComponent}
         </aside>
 
