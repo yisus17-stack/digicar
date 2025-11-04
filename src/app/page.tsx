@@ -38,7 +38,7 @@ export default function Home() {
                         <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-xl text-black max-w-xl">
+                        <p className="mt-6 text-lg text-black max-w-xl">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex gap-4">
@@ -56,7 +56,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto md:mt-40 lg:scale-110"
+                            className="w-full h-auto md:mt-20 lg:scale-125"
                             priority
                         />
                     </div>
