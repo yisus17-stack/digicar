@@ -29,13 +29,13 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
             <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook">
-                <Facebook className="h-6 w-6 border rounded-full p-1" />
+                <Facebook className="h-8 w-8 border rounded-full p-1.5" />
               </Link>
               <Link href="#" aria-label="Instagram">
-                <Instagram className="h-6 w-6 border rounded-full p-1" />
+                <Instagram className="h-8 w-8 border rounded-full p-1.5" />
               </Link>
               <Link href="#" aria-label="Twitter">
-                <Twitter className="h-6 w-6 border rounded-full p-1" />
+                <Twitter className="h-8 w-8 border rounded-full p-1.5" />
               </Link>
             </div>
           </div>
