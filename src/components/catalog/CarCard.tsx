@@ -28,19 +28,19 @@ export default function CarCard({ car }: CarCardProps) {
                 "object-cover group-hover:scale-105 transition-transform duration-300",
                 !placeholder.imageUrl.includes('unsplash') && 'object-contain'
               )}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               data-ai-hint={placeholder.imageHint}
               priority={true}
             />
           )}
         </div>
-      <CardContent className="p-6 flex-grow flex flex-col">
-        <div className="text-sm uppercase text-muted-foreground">{car.brand}</div>
-        <p className="text-lg font-bold mb-2">{car.model}</p>
-        <div className="flex items-center justify-between text-primary font-bold text-lg mb-4">
+      <CardContent className="p-4 flex-grow flex flex-col">
+        <div className="text-xs uppercase text-muted-foreground">{car.brand}</div>
+        <p className="text-lg font-bold mb-2 leading-tight">{car.model}</p>
+        <div className="text-primary font-bold text-base mb-4">
             <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
-        <div className="flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground border-t pt-4">
+        <div className="space-y-2 text-sm text-muted-foreground border-t pt-3 mb-4">
           <div className="flex items-center gap-2">
             <GitCommitHorizontal className="w-4 h-4" />
             <span>{translations.transmission[car.transmission]}</span>
@@ -54,7 +54,7 @@ export default function CarCard({ car }: CarCardProps) {
             <span>{car.passengers} Pasajeros</span>
           </div>
         </div>
-        <Button className="w-full mt-4">Ver detalles</Button>
+        <Button size="sm" className="w-full mt-auto">Ver detalles</Button>
       </CardContent>
     </Card>
   );
