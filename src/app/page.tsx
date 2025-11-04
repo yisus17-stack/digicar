@@ -1,6 +1,5 @@
 
 import CarCatalog from '@/components/catalog/CarCatalog';
-import VirtualAssistant from '@/components/assistant/VirtualAssistant';
 import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -26,7 +25,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 overflow-x-hidden">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-24 overflow-x-hidden">
                 
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
