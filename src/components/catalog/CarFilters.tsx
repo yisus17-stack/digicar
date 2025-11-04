@@ -11,6 +11,7 @@ import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
 import { Car } from '@/lib/types';
+import { ScrollArea } from '../ui/scroll-area';
 
 interface CarFiltersProps {
   filters: any;
@@ -39,109 +40,111 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars }: C
 
 
   return (
-    <div className="p-6 border rounded-lg bg-card">
+    <div className="p-6 border rounded-lg bg-card h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Filtros</h3>
-      <div className="space-y-6">
-        <div>
-            <Label>Marca</Label>
-            <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todas las marcas</SelectItem>
-                    {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+      <ScrollArea className="flex-grow">
+        <div className="space-y-6 pr-4">
+          <div>
+              <Label>Marca</Label>
+              <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todas las marcas</SelectItem>
+                      {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Tipo</Label>
-            <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los tipos</SelectItem>
-                    {uniqueTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Tipo</Label>
+              <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los tipos</SelectItem>
+                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Año</Label>
-            <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los años</SelectItem>
-                    {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Año</Label>
+              <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los años</SelectItem>
+                      {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Rango de Precio: ${filters.priceRange[0].toLocaleString()} - ${filters.priceRange[1].toLocaleString()}</Label>
-            <Slider
-                min={0}
-                max={200000}
-                step={5000}
-                value={filters.priceRange}
-                onValueChange={handleSliderChange}
-                className="mt-2"
-            />
-        </div>
+          <div>
+              <Label>Rango de Precio: ${filters.priceRange[0].toLocaleString()} - ${filters.priceRange[1].toLocaleString()}</Label>
+              <Slider
+                  min={0}
+                  max={200000}
+                  step={5000}
+                  value={filters.priceRange}
+                  onValueChange={handleSliderChange}
+                  className="mt-2"
+              />
+          </div>
 
-        <div>
-            <Label>Combustible</Label>
-            <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los combustibles</SelectItem>
-                    {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Combustible</Label>
+              <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los combustibles</SelectItem>
+                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Cilindros</Label>
-            <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los cilindros</SelectItem>
-                    {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Cilindros</Label>
+              <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los cilindros</SelectItem>
+                      {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Color</Label>
-            <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los colores</SelectItem>
-                    {uniqueColors.map(color => <SelectItem key={color} value={color}>{color}</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Color</Label>
+              <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los colores</SelectItem>
+                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{color}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Personas</Label>
-            <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Cualquier capacidad</SelectItem>
-                    {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
-                </SelectContent>
-            </Select>
-        </div>
+          <div>
+              <Label>Personas</Label>
+              <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Cualquier capacidad</SelectItem>
+                      {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
 
-        <div>
-            <Label>Transmisión</Label>
-            <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todas las transmisiones</SelectItem>
-                    {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                </SelectContent>
-            </Select>
+          <div>
+              <Label>Transmisión</Label>
+              <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todas las transmisiones</SelectItem>
+                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+          </div>
         </div>
-      </div>
+      </ScrollArea>
       <Button variant="outline" className="w-full mt-8" onClick={onReset}>
         Restablecer Filtros
       </Button>

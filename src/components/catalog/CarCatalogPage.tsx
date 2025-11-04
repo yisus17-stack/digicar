@@ -111,17 +111,19 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1">
-          <CarFilters 
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={handleResetFilters}
-            cars={cars}
-          />
+      <div className="grid lg:flex lg:gap-8">
+        <aside className="lg:w-1/4 mb-8 lg:mb-0">
+          <div className="lg:sticky lg:top-24">
+            <CarFilters 
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onReset={handleResetFilters}
+              cars={cars}
+            />
+          </div>
         </aside>
 
-        <main className="lg:col-span-3 flex flex-col">
+        <main className="lg:w-3/4 flex flex-col">
             <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -158,7 +160,7 @@ export default function CarCatalogPage() {
               )}
             </div>
 
-            <div className='pt-8'>
+            <div className='pt-8 min-h-[60px]'>
               {totalPages > 1 && (
                   <Pagination className="mt-4">
                   <PaginationContent>
