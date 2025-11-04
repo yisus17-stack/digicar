@@ -170,26 +170,28 @@ export default function CarCatalogPage() {
       </div>
 
       <div className="lg:flex lg:gap-8 lg:items-start">
-        <aside className={cn('lg:w-1/4 lg:flex-col lg:mb-0 transition-all duration-300', 
+         <aside className={cn('lg:w-1/4 lg:flex-col lg:mb-0 transition-all duration-300', 
             isMobile ? "hidden" : "flex",
             !showFilters && !isMobile ? "hidden" : "flex"
           )}>
             {!isMobile && filterComponent}
         </aside>
 
-        <main className={cn('flex-1 flex flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
-            <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                type="text"
-                placeholder="Describe tu auto ideal y usa la IA..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-24 h-12 text-base focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
+        <main className={cn('flex flex-1 flex-col', !showFilters ? 'lg:w-full' : 'lg:w-3/4')}>
+            <div className="flex flex-col md:flex-row md:relative mb-6 gap-2">
+                <div className="relative flex-grow">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                    type="text"
+                    placeholder="Describe tu auto ideal y usa la IA..."
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 h-12 text-base focus-visible:ring-0 focus-visible:ring-offset-0 md:pr-40"
+                    />
+                </div>
                 <Button 
                   onClick={handleSearchWithAI}
-                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  className="w-full md:w-auto md:absolute md:right-2 md:top-1/2 md:-translate-y-1/2"
                   disabled={isAiLoading}
                 >
                   {isAiLoading ? 'Analizando...' : 'Buscar con IA'}
@@ -207,7 +209,7 @@ export default function CarCatalogPage() {
                         Filtrar y Ordenar
                       </Button>
                     </SheetTrigger>
-                    <SheetContent className="flex flex-col">
+                    <SheetContent className="flex flex-col w-full">
                       <SheetHeader>
                         <SheetTitle>Filtrar y Ordenar</SheetTitle>
                       </SheetHeader>
@@ -289,3 +291,5 @@ export default function CarCatalogPage() {
     </div>
   );
 }
+
+    
