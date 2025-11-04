@@ -50,7 +50,7 @@ export default function CarCard({ car }: CarCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" />
-            <span>{car.mileage} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
+            <span>{car.mileage} km/h</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4" />
