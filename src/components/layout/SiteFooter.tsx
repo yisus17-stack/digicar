@@ -6,10 +6,10 @@ const SiteFooter = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+          <div className="col-span-1">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                <Image src="/logo-light.svg" alt="DigiCar Logo" width={150} height={50} />
+                <Image src="/logo-light.png" alt="DigiCar Logo" width={150} height={50} />
             </div>
             <p>Av. Principal No. 173</p>
             <p>Colonia Centro</p>
@@ -40,13 +40,14 @@ const SiteFooter = () => {
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <p>© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-            <div className="flex gap-2 mt-4 md:mt-0 text-xs">
+        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-center">
+            <p className="md:flex-1 md:text-left">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
+            <div className="flex gap-2 mt-4 md:mt-0 text-xs justify-center flex-1">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
                 <Link href="#" className="hover:underline">Política de Privacidad</Link>
             </div>
+            <div className="md:flex-1"></div>
         </div>
       </div>
     </footer>
