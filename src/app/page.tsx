@@ -54,7 +54,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto md:mt-8"
+                            className="w-full h-auto md:mt-16"
                             priority
                         />
                     </div>
