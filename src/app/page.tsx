@@ -27,8 +27,12 @@ export default function Home() {
     return (
         <>
             <div className="container mx-auto px-4 pt-16 pb-12 md:py-24">
-                <div className="flex justify-between items-start mb-4">
-                    <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
+                <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center text-lg font-medium">
+                        <Link href="#" className="text-primary hover:underline">Inicio</Link>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground mx-1" />
+                        <span className="text-muted-foreground">Catálogo</span>
+                    </div>
                     <VirtualAssistant />
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 items-center">
