@@ -41,16 +41,16 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="text-base mt-2 mb-4">
             <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
-        <div className="flex flex-col md:flex-row md:justify-between text-sm text-muted-foreground border-t pt-3 mt-auto space-y-2 md:space-y-0 md:space-x-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row text-sm text-muted-foreground border-t pt-3 mt-auto space-y-2 md:space-y-0">
+          <div className="flex items-center gap-2 md:w-1/3">
             <GitCommitHorizontal className="w-4 h-4" />
             <span>{translations.transmission[car.transmission]}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:w-1/3">
             <Fuel className="w-4 h-4" />
             <span>{translations.fuelType[car.fuelType]}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:w-1/3 md:justify-end">
             <Users className="w-4 h-4" />
             <span>{car.passengers} Pasajeros</span>
           </div>
