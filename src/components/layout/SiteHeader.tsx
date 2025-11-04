@@ -96,7 +96,7 @@ const SiteHeader = () => {
                   <Input
                     type="text"
                     placeholder="Buscar"
-                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full"
+                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted border-none rounded-full focus-visible:ring-0 focus-visible:ring-offset-0"
                     autoFocus
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
