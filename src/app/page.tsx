@@ -31,9 +31,7 @@ export default function Home() {
                     <div>
                         <div className="flex justify-between items-start mb-4">
                             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">Inicio &gt;</Link>
-                            <div className="w-full flex justify-end">
-                                <VirtualAssistant />
-                            </div>
+                            <VirtualAssistant />
                         </div>
                         <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
