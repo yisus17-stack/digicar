@@ -4,7 +4,7 @@ export const cars: Car[] = [
   {
     id: 'prestige-x10',
     brand: 'Prestige',
-    model: 'X10',
+    model: 'Prestige',
     year: 2024,
     price: 1850000,
     mileage: 15,
@@ -22,7 +22,7 @@ export const cars: Car[] = [
   {
     id: 'aurora-gt',
     brand: 'Aurora',
-    model: 'GT',
+    model: 'Aurora',
     year: 2023,
     price: 1720000,
     mileage: 18,
@@ -40,7 +40,7 @@ export const cars: Car[] = [
   {
     id: 'volta-ev-pro',
     brand: 'Volta',
-    model: 'EV Pro',
+    model: 'Volta',
     year: 2024,
     price: 1650000,
     mileage: 350,
@@ -94,7 +94,7 @@ export const cars: Car[] = [
   {
     id: 'comet-r',
     brand: 'Comet',
-    model: 'R',
+    model: 'Comet',
     year: 2023,
     price: 420000,
     mileage: 28,
