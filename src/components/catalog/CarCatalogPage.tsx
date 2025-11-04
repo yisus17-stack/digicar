@@ -93,10 +93,15 @@ export default function CarCatalogPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
     if (!isMobile) {
-      setCurrentPage(1);
+      handlePageChange(1);
     }
   };
   
@@ -114,12 +119,12 @@ export default function CarCatalogPage() {
     });
     setSearchTerm('');
     setAiSummary('');
-    setCurrentPage(1);
+    handlePageChange(1);
     setSortOrder('relevance');
   };
   
   const handleApplyMobileFilters = () => {
-    setCurrentPage(1);
+    handlePageChange(1);
     setIsSheetOpen(false);
   }
 
@@ -245,7 +250,7 @@ export default function CarCatalogPage() {
                       <PaginationItem>
                       <PaginationPrevious 
                           href="#"
-                          onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.max(1, p - 1)); }}
+                          onClick={(e) => { e.preventDefault(); handlePageChange(Math.max(1, currentPage - 1)); }}
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                       />
                       </PaginationItem>
@@ -254,7 +259,7 @@ export default function CarCatalogPage() {
                           <PaginationLink 
                               href="#"
                               isActive={currentPage === i + 1}
-                              onClick={(e) => { e.preventDefault(); setCurrentPage(i + 1); }}
+                              onClick={(e) => { e.preventDefault(); handlePageChange(i + 1); }}
                           >
                           {i + 1}
                           </PaginationLink>
@@ -263,7 +268,7 @@ export default function CarCatalogPage() {
                       <PaginationItem>
                       <PaginationNext 
                           href="#"
-                          onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.min(totalPages, p + 1)); }}
+                          onClick={(e) => { e.preventDefault(); handlePageChange(Math.min(totalPages, currentPage + 1)); }}
                           className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                       />
                       </PaginationItem>
