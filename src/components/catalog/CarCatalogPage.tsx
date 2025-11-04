@@ -112,8 +112,8 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
-        <aside className="lg:w-1/4 mb-8 lg:mb-0 lg:sticky lg:top-24">
+      <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-stretch">
+        <aside className="lg:w-1/4 mb-8 lg:mb-0">
             <CarFilters 
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -160,7 +160,7 @@ export default function CarCatalogPage() {
               )}
             </div>
 
-            <div className='pt-8 min-h-[76px] flex items-end'>
+            <div className='pt-8 flex items-end'>
               {totalPages > 1 && (
                   <Pagination className="mt-4">
                   <PaginationContent>
