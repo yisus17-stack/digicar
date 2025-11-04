@@ -156,37 +156,39 @@ export default function CarCatalogPage() {
                 </div>
             )}
 
-            {totalPages > 1 && (
-                <Pagination className="mt-12">
-                <PaginationContent>
-                    <PaginationItem>
-                    <PaginationPrevious 
-                        href="#"
-                        onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.max(1, p - 1)); }}
-                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                    />
-                    </PaginationItem>
-                    {[...Array(totalPages)].map((_, i) => (
-                    <PaginationItem key={i}>
-                        <PaginationLink 
-                            href="#"
-                            isActive={currentPage === i + 1}
-                            onClick={(e) => { e.preventDefault(); setCurrentPage(i + 1); }}
-                        >
-                        {i + 1}
-                        </PaginationLink>
-                    </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                    <PaginationNext 
-                        href="#"
-                        onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.min(totalPages, p + 1)); }}
-                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                    />
-                    </PaginationItem>
-                </PaginationContent>
-                </Pagination>
-            )}
+            <div className='h-20'>
+              {totalPages > 1 && (
+                  <Pagination className="mt-12">
+                  <PaginationContent>
+                      <PaginationItem>
+                      <PaginationPrevious 
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.max(1, p - 1)); }}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                      />
+                      </PaginationItem>
+                      {[...Array(totalPages)].map((_, i) => (
+                      <PaginationItem key={i}>
+                          <PaginationLink 
+                              href="#"
+                              isActive={currentPage === i + 1}
+                              onClick={(e) => { e.preventDefault(); setCurrentPage(i + 1); }}
+                          >
+                          {i + 1}
+                          </PaginationLink>
+                      </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                      <PaginationNext 
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.min(totalPages, p + 1)); }}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      />
+                      </PaginationItem>
+                  </PaginationContent>
+                  </Pagination>
+              )}
+            </div>
         </main>
       </div>
     </div>
