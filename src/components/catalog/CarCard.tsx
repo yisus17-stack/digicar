@@ -32,7 +32,7 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="text-sm uppercase text-muted-foreground">{car.brand}</div>
         <p className="text-lg font-bold mb-2">{car.model}</p>
         <div className="flex items-center justify-between text-primary font-bold text-lg mb-4">
-            <span>${car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
+            <span>{car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</span>
         </div>
         <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">

@@ -3,8 +3,8 @@
     {
       "id": "prestige-x10",
       "description": "Un sedán de lujo en una ciudad de noche.",
-      "imageUrl": "https://images.unsplash.com/photo-1698816688678-a3f838fd4fe0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBzZWRhbnxlbnwwfHx8fDE3NjIyMTE1NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "sedán de lujo"
+      "imageUrl": "/auto-rojo.png",
+      "imageHint": "sedán de lujo rojo"
     },
     {
       "id": "aurora-gt",
