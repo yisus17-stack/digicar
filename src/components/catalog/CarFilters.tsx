@@ -18,15 +18,16 @@ interface CarFiltersProps {
   onFilterChange: (filters: any) => void;
   onReset: () => void;
   cars: Car[];
+  maxPrice: number;
 }
 
-export default function CarFilters({ filters, onFilterChange, onReset, cars }: CarFiltersProps) {
+export default function CarFilters({ filters, onFilterChange, onReset, cars, maxPrice }: CarFiltersProps) {
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
   };
   
   const handleSliderChange = (value: number[]) => {
-    onFilterChange({ ...filters, priceRange: value });
+    onFilterChange({ ...filters, price: value[0] });
   };
 
   const uniqueBrands = [...new Set(cars.map(car => car.brand))];
@@ -42,8 +43,8 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars }: C
   return (
     <div className="p-6 border rounded-lg bg-card h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Filtros</h3>
-      <ScrollArea className="flex-grow">
-        <div className="space-y-6 pr-4">
+      <ScrollArea className="flex-grow pr-4 -mr-4">
+        <div className="space-y-6">
           <div>
               <Label>Marca</Label>
               <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
@@ -53,6 +54,18 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars }: C
                       {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
                   </SelectContent>
               </Select>
+          </div>
+
+          <div>
+            <Label>Precio máximo: ${filters.price.toLocaleString()}</Label>
+            <Slider
+                min={0}
+                max={maxPrice}
+                step={50000}
+                value={[filters.price]}
+                onValueChange={handleSliderChange}
+                className="mt-2"
+            />
           </div>
 
           <div>
@@ -75,18 +88,6 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars }: C
                       {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                   </SelectContent>
               </Select>
-          </div>
-
-          <div>
-              <Label>Rango de Precio: ${filters.priceRange[0].toLocaleString()} - ${filters.priceRange[1].toLocaleString()}</Label>
-              <Slider
-                  min={0}
-                  max={200000}
-                  step={5000}
-                  value={filters.priceRange}
-                  onValueChange={handleSliderChange}
-                  className="mt-2"
-              />
           </div>
 
           <div>

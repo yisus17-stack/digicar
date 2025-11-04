@@ -14,13 +14,14 @@ import AiSummary from './AiSummary';
 import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 
 const ITEMS_PER_PAGE = 6;
+const MAX_PRICE = 2000000;
 
 export default function CarCatalogPage() {
   const [filters, setFilters] = useState({
     brand: 'all',
     fuelType: 'all',
     transmission: 'all',
-    priceRange: [0, 200000],
+    price: MAX_PRICE,
     year: 'all',
     type: 'all',
     engineCylinders: 'all',
@@ -36,11 +37,11 @@ export default function CarCatalogPage() {
 
   const filteredCars = useMemo(() => {
     let filtered = cars.filter(car => {
-      const { brand, fuelType, transmission, priceRange, year, type, engineCylinders, color, passengers } = filters;
+      const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
       if (brand !== 'all' && car.brand !== brand) return false;
       if (fuelType !== 'all' && car.fuelType !== fuelType) return false;
       if (transmission !== 'all' && car.transmission !== transmission) return false;
-      if (car.price < priceRange[0] || car.price > priceRange[1]) return false;
+      if (car.price > price) return false;
       if (year !== 'all' && car.year !== parseInt(year)) return false;
       if (type !== 'all' && car.type !== type) return false;
       if (engineCylinders !== 'all' && car.engineCylinders !== parseInt(engineCylinders)) return false;
@@ -77,7 +78,7 @@ export default function CarCatalogPage() {
       brand: 'all',
       fuelType: 'all',
       transmission: 'all',
-      priceRange: [0, 200000],
+      price: MAX_PRICE,
       year: 'all',
       type: 'all',
       engineCylinders: 'all',
@@ -111,16 +112,15 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="grid lg:flex lg:gap-8">
+      <div className="lg:flex lg:gap-8">
         <aside className="lg:w-1/4 mb-8 lg:mb-0">
-          <div className="lg:sticky lg:top-24">
             <CarFilters 
               filters={filters}
               onFilterChange={handleFilterChange}
               onReset={handleResetFilters}
               cars={cars}
+              maxPrice={MAX_PRICE}
             />
-          </div>
         </aside>
 
         <main className="lg:w-3/4 flex flex-col">
