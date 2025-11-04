@@ -29,24 +29,24 @@ const SiteFooter = () => {
             <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook">
                 <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
-                    <Image src="/facebook.svg" alt="Facebook" width={20} height={20} />
+                    <Image src="/facebook.svg" alt="Facebook" width={20} height={20} className="filter invert" />
                 </div>
               </Link>
               <Link href="#" aria-label="Instagram">
                 <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
-                    <Image src="/instagram.svg" alt="Instagram" width={20} height={20} />
+                    <Image src="/instagram.svg" alt="Instagram" width={20} height={20} className="filter invert" />
                 </div>
               </Link>
               <Link href="#" aria-label="Twitter">
                 <div className="w-10 h-10 rounded-full border border-primary-foreground flex items-center justify-center">
-                    <Image src="/x.svg" alt="X" width={20} height={20} />
+                    <Image src="/x.svg" alt="X" width={20} height={20} className="filter invert" />
                 </div>
               </Link>
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm text-center md:text-left">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm">
+          <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <p className="flex-1 mb-4 md:mb-0 text-center md:text-left">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
             <div className="flex-1 flex justify-center md:justify-end text-xs gap-2">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
