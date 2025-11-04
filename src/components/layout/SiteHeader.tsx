@@ -97,77 +97,89 @@ const SiteHeader = () => {
         </div>
       </header>
 
-      {/* Animación fluida del buscador */}
-      {isSearchVisible && (
-        <div
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
-          onClick={closeSearch}
-        >
-          <div
-            className="bg-background border-b"
-            onClick={(e) => e.stopPropagation()}
+      {/* Animación fluida con Framer Motion */}
+      <AnimatePresence>
+        {isSearchVisible && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
+            onClick={closeSearch}
           >
-            <div className="container mx-auto px-12 pt-8 md:pt-16">
-              <div className="flex items-center h-20 gap-4">
-                <Link href="/" className="flex items-center space-x-2">
-                  <Image
-                    src="/logo.png"
-                    alt="DigiCar Logo"
-                    width={150}
-                    height={40}
-                  />
-                </Link>
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Buscar"
-                    className="w-full h-12 pl-10 pr-10 text-lg bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
-                    autoFocus
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  {searchValue && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
-                      onClick={handleClearSearch}
-                    >
-                      <X className="h-5 w-5 text-muted-foreground" />
-                    </Button>
-                  )}
+            <motion.div
+              key="panel"
+              initial={{ y: -40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -40, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className="bg-background border-b"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="container mx-auto px-12 pt-8 md:pt-16">
+                <div className="flex items-center h-20 gap-4">
+                  <Link href="/" className="flex items-center space-x-2">
+                    <Image
+                      src="/logo.png"
+                      alt="DigiCar Logo"
+                      width={150}
+                      height={40}
+                    />
+                  </Link>
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="search"
+                      placeholder="Buscar"
+                      className="w-full h-12 pl-10 pr-10 text-lg bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      autoFocus
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    {searchValue && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                        onClick={handleClearSearch}
+                      >
+                        <X className="h-5 w-5 text-muted-foreground" />
+                      </Button>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={closeSearch}
+                    className="text-muted-foreground"
+                  >
+                    <X className="h-5 w-5 md:hidden" />
+                    <span className="hidden md:inline">Cancelar</span>
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  onClick={closeSearch}
-                  className="text-muted-foreground"
-                >
-                  <X className="h-5 w-5 md:hidden" />
-                  <span className="hidden md:inline">Cancelar</span>
-                </Button>
-              </div>
-              <div className="mt-8 pb-12">
-                <p className="font-semibold mb-4 text-muted-foreground">
-                  Búsquedas Populares
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {popularSearches.map((term) => (
-                    <Button
-                      key={term}
-                      variant="secondary"
-                      size="sm"
-                      className="rounded-full font-normal"
-                    >
-                      {term}
-                    </Button>
-                  ))}
+                <div className="mt-8 pb-12">
+                  <p className="font-semibold mb-4 text-muted-foreground">
+                    Búsquedas Populares
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {popularSearches.map((term) => (
+                      <Button
+                        key={term}
+                        variant="secondary"
+                        size="sm"
+                        className="rounded-full font-normal"
+                      >
+                        {term}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
