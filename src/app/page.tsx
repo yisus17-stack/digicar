@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 overflow-x-hidden">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
                 <div className="flex justify-between items-center mb-8 text-base font-medium">
                     <div>
                         <span className="font-semibold text-primary">Inicio</span>
@@ -36,7 +36,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mt-4 leading-tight">
-                            <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
+                            <span>Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
                         <p className="mt-4 text-md sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
@@ -56,7 +56,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto scale-90 md:scale-105"
+                            className="w-full h-auto md:scale-105"
                             priority
                         />
                     </div>
