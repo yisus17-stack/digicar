@@ -1,4 +1,5 @@
 
+
 import CarCatalog from '@/components/catalog/CarCatalog';
 import VirtualAssistant from '@/components/assistant/VirtualAssistant';
 import { cars } from '@/lib/data';
@@ -26,7 +27,7 @@ const BrandLogos = () => (
 
 
 export default function Home() {
-    const heroCarImage = findPlaceholderImage('prestige-x10');
+    const heroCarImage = findPlaceholderImage('horizon-suv');
     const popularCars = cars.slice(0, 3);
 
     return (
@@ -61,7 +62,7 @@ export default function Home() {
                                 width={800}
                                 height={600}
                                 className="rounded-lg object-contain w-full h-auto"
-                                data-ai-hint="sedán de lujo"
+                                data-ai-hint="suv montañas"
                                 priority
                             />
                         )}
