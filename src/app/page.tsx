@@ -26,9 +26,9 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-6 md:px-8 pt-4 pb-12 md:pt-8 md:pb-24">
-                <div className="flex justify-between items-center mb-4 text-lg font-medium">
-                    <div>
+            <div className="container mx-auto px-6 md:px-8 pt-4 pb-12 md:pb-24">
+                <div className="flex justify-between items-center mb-2 text-lg font-medium">
+                    <div className="text-lg font-medium">
                         <span className="text-primary">Inicio</span>
                     </div>
                     <VirtualAssistant />
@@ -38,7 +38,7 @@ export default function Home() {
                         <h1 className="text-6xl md:text-7xl font-bold mt-4 leading-tight">
                             <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-lg text-muted-foreground max-w-xl">
+                        <p className="mt-6 text-xl text-foreground max-w-xl">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex gap-4">
@@ -56,7 +56,7 @@ export default function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-full h-auto md:mt-16"
+                            className="w-full h-auto md:mt-24"
                             priority
                         />
                     </div>
