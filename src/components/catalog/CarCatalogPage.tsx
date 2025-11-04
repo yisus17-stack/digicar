@@ -187,7 +187,7 @@ export default function CarCatalogPage() {
             <div className='flex justify-between items-center mb-6'>
               <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
               <div className='flex items-center gap-4'>
-                {isMobile ? (
+                {hasMounted && isMobile ? (
                   <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm">
@@ -209,7 +209,7 @@ export default function CarCatalogPage() {
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
-                ) : hasMounted ? (
+                ) : hasMounted && !isMobile ? (
                   <>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
@@ -282,5 +282,3 @@ export default function CarCatalogPage() {
     </div>
   );
 }
-
-    
