@@ -40,9 +40,9 @@ const SiteFooter = () => {
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <p>© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
+            <div className="flex gap-2 mt-4 md:mt-0 text-xs">
                 <Link href="#" className="hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
                 <Link href="#" className="hover:underline">Política de Privacidad</Link>
