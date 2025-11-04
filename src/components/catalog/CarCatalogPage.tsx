@@ -32,11 +32,11 @@ export default function CarCatalogPage() {
 
   const filteredCars = useMemo(() => {
     let filtered = cars.filter(car => {
-      const { brand, fuelType, transmission, price, year } = filters;
+      const { brand, fuelType, transmission, priceRange, year } = filters;
       if (brand !== 'all' && car.brand !== brand) return false;
       if (fuelType !== 'all' && car.fuelType !== fuelType) return false;
       if (transmission !== 'all' && car.transmission !== transmission) return false;
-      if (car.price < filters.priceRange[0] || car.price > filters.priceRange[1]) return false;
+      if (car.price < priceRange[0] || car.price > priceRange[1]) return false;
       if (year !== 'all' && car.year !== parseInt(year)) return false;
       return true;
     });
