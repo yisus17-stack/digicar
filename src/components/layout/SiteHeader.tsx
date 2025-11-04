@@ -125,7 +125,7 @@ const SiteHeader = () => {
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left">
+                <SheetContent side="right">
                   <SheetHeader>
                     <SheetTitle>
                       <Link href="/" className="flex items-center space-x-2">
