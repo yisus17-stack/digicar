@@ -57,7 +57,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
           </div>
 
           <div>
-            <Label>Precio máximo: ${filters.price.toLocaleString()}</Label>
+            <Label>Precio: ${filters.price.toLocaleString()}</Label>
             <Slider
                 min={0}
                 max={maxPrice}

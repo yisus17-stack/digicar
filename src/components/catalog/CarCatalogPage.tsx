@@ -112,7 +112,7 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="lg:flex lg:gap-8">
+      <div className="lg:flex lg:gap-8 lg:items-start">
         <aside className="lg:w-1/4 mb-8 lg:mb-0">
             <CarFilters 
               filters={filters}
