@@ -15,6 +15,11 @@ interface CarCardProps {
 export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
 
+  const transmissionMap = {
+    'Automatic': 'Automática',
+    'Manual': 'Manual'
+  }
+
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg duration-300 ease-in-out group">
         <div className="overflow-hidden aspect-[4/3] bg-gray-50">
@@ -41,15 +46,15 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">
             <GitCommitHorizontal className="w-4 h-4" />
-            <span>{car.transmission}</span>
+            <span>{transmissionMap[car.transmission]}</span>
           </div>
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" />
-            <span>{car.horsepower} km/h</span>
+            <span>{car.horsepower} HP</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4" />
-            <span>5</span>
+            <span>5 Pasajeros</span>
           </div>
         </div>
         <Button className="w-full mt-4">Ver detalles</Button>
