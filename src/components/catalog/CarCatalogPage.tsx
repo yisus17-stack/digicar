@@ -7,15 +7,19 @@ import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import { Input } from '../ui/input';
-import { Search, X } from 'lucide-react';
+import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
 import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
+
+type SortOrder = 'relevance' | 'price-asc' | 'price-desc';
 
 export default function CarCatalogPage() {
   const [filters, setFilters] = useState({
@@ -32,6 +36,8 @@ export default function CarCatalogPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
+  const [showFilters, setShowFilters] = useState(true);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -59,9 +65,15 @@ export default function CarCatalogPage() {
         car.features.some(f => f.toLowerCase().includes(lowercasedTerm))
       );
     }
+
+    if (sortOrder === 'price-asc') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sortOrder === 'price-desc') {
+      filtered.sort((a, b) => b.price - a.price);
+    }
     
     return filtered;
-  }, [filters, debouncedSearchTerm]);
+  }, [filters, debouncedSearchTerm, sortOrder]);
 
   const totalPages = Math.ceil(filteredCars.length / ITEMS_PER_PAGE);
   const paginatedCars = filteredCars.slice(
@@ -89,6 +101,7 @@ export default function CarCatalogPage() {
     setSearchTerm('');
     setAiSummary('');
     setCurrentPage(1);
+    setSortOrder('relevance');
   };
 
   const handleSearchWithAI = () => {
@@ -111,8 +124,8 @@ export default function CarCatalogPage() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-stretch">
-        <aside className="lg:w-1/4 mb-8 lg:mb-0">
+      <div className="flex gap-8 items-start">
+        <aside className={cn('lg:w-1/4 mb-8 lg:mb-0 transition-all duration-300', !showFilters && 'hidden')}>
             <CarFilters 
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -124,7 +137,7 @@ export default function CarCatalogPage() {
             />
         </aside>
 
-        <main className="lg:w-3/4 flex flex-col">
+        <main className={cn('flex-1 flex flex-col transition-all duration-300', showFilters ? 'lg:w-3/4' : 'lg:w-full')}>
             <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -132,7 +145,7 @@ export default function CarCatalogPage() {
                 placeholder="Describe tu auto ideal y usa la IA..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-24 h-12 text-base"
+                className="w-full pl-10 pr-24 h-12 text-base focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
                 <Button 
                   onClick={handleSearchWithAI}
@@ -143,6 +156,26 @@ export default function CarCatalogPage() {
                 </Button>
             </div>
             
+            <div className='flex justify-between items-center mb-6'>
+              <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
+              <div className='flex items-center gap-4'>
+                <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
+                  <SlidersHorizontal className='mr-2 h-4 w-4' />
+                  {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
+                </Button>
+                <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
+                  <SelectTrigger className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0">
+                    <SelectValue placeholder="Ordenar por" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="relevance">Relevancia</SelectItem>
+                    <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
+                    <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             { (isAiLoading || aiSummary) && <AiSummary summary={aiSummary} /> }
             
             <div className="flex-grow">
