@@ -85,7 +85,7 @@ const SiteHeader = () => {
 
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-in fade-in-0" onClick={() => setIsSearchOpen(false)}>
-          <div className='bg-background border-b' onClick={(e) => e.stopPropagation()}>
+          <div className='bg-background border-b animate-in slide-in-from-top-4 duration-300' onClick={(e) => e.stopPropagation()}>
             <div className="container mx-auto px-12 pt-8 md:pt-16">
               <div className="flex items-center h-20 gap-4">
                 <Link href="/" className="flex items-center space-x-2">
