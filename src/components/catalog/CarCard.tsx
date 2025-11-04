@@ -19,7 +19,7 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-2">
-      <div className="absolute top-3 right-3 z-10 rounded-full bg-background/80 px-3 py-1 text-sm font-semibold backdrop-blur-sm transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100">
+      <div className="absolute top-3 right-3 z-10 rounded-full bg-background/80 px-3 py-1 text-sm font-semibold backdrop-blur-sm transition-opacity duration-300">
         {car.year}
       </div>
 
@@ -54,39 +54,37 @@ export default function CarCard({ car }: CarCardProps) {
           </p>
         </div>
 
-        <div className="mt-auto border-t pt-4">
-          <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
+        <div className="border-t pt-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
               <GitCommitHorizontal className="h-5 w-5" />
               <span>{translations.transmission[car.transmission]}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Fuel className="h-5 w-5" />
               <span>{translations.fuelType[car.fuelType]}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Users className="h-5 w-5" />
               <span className="whitespace-nowrap">{car.passengers} Pasajeros</span>
             </div>
           </div>
         </div>
-      </CardContent>
 
-      <div className="absolute inset-0 z-20 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="flex w-full gap-2">
-          <Button asChild className="w-full">
-            <Link href={`/car/${car.id}`}>
-              <Eye className="mr-2" /> Ver Detalles
-            </Link>
-          </Button>
-          <Button variant="secondary" size="icon" asChild>
-            <Link href={`/compare?ids=${car.id}`}>
-              <GitCompareArrows />
-              <span className="sr-only">Comparar</span>
-            </Link>
-          </Button>
+        <div className="mt-auto border-t pt-4 flex w-full gap-2">
+            <Button asChild className="w-full">
+                <Link href={`/car/${car.id}`}>
+                <Eye className="mr-2" /> Ver Detalles
+                </Link>
+            </Button>
+            <Button variant="secondary" size="icon" asChild>
+                <Link href={`/compare?ids=${car.id}`}>
+                <GitCompareArrows />
+                <span className="sr-only">Comparar</span>
+                </Link>
+            </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }
