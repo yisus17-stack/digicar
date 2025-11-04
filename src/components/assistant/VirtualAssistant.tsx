@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 export default function VirtualAssistant() {
   return (
-    <div className="absolute top-0 right-0">
+    <div className="flex justify-end mb-4">
         <Button variant="ghost" className="flex items-center gap-2 text-primary hover:text-primary">
             <Bot className="h-8 w-8 p-1.5 border-2 border-primary rounded-full" />
             <span className="font-bold">Chatbot</span>
