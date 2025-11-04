@@ -59,7 +59,7 @@ const SiteHeader = () => {
       <header className="bg-background/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex h-20 items-center justify-between px-12 gap-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50} />
+            <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
           </Link>
           
           <div className="flex-1 flex justify-center">
@@ -89,7 +89,7 @@ const SiteHeader = () => {
             <div className="container mx-auto px-12 pt-8 md:pt-16">
               <div className="flex items-center h-20 gap-4">
                 <Link href="/" className="flex items-center space-x-2">
-                  <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={40} />
+                  <Image src="/logo.png" alt="DigiCar Logo" width={150} height={40} />
                 </Link>
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
