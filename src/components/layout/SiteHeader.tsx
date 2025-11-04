@@ -1,7 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, User, X, Menu } from 'lucide-react';
+import {
+  Search,
+  User,
+  X,
+  Menu,
+  Home,
+  LayoutGrid,
+  GitCompareArrows,
+  Wand2,
+} from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { useState, useEffect } from 'react';
@@ -34,10 +43,10 @@ const SiteHeader = () => {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: '/', label: 'Inicio' },
-    { href: '/catalog', label: 'Catálogo' },
-    { href: '/compare', label: 'Comparar' },
-    { href: '/simulator', label: 'Simulador' },
+    { href: '/', label: 'Inicio', icon: Home },
+    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
+    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
+    { href: '/simulator', label: 'Simulador', icon: Wand2 },
   ];
 
   const openSearch = () => {
@@ -139,21 +148,25 @@ const SiteHeader = () => {
                     </SheetTitle>
                   </SheetHeader>
                   <div className="p-4">
-                    <nav className="flex flex-col space-y-4">
-                      {navLinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className={cn(
-                            'text-lg transition-colors hover:text-primary',
-                            pathname === link.href
-                              ? 'text-primary font-bold'
-                              : ''
-                          )}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
+                    <nav className="flex flex-col space-y-2">
+                      {navLinks.map((link) => {
+                        const Icon = link.icon;
+                        return (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className={cn(
+                              'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:bg-muted',
+                              pathname === link.href
+                                ? 'bg-muted font-bold text-primary'
+                                : ''
+                            )}
+                          >
+                            <Icon className="h-5 w-5" />
+                            <span>{link.label}</span>
+                          </Link>
+                        );
+                      })}
                     </nav>
                   </div>
                 </SheetContent>
