@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Facebook, Instagram, Twitter } from 'lucide-react';
 import Image from "next/image";
 
 const SiteFooter = () => {
@@ -29,13 +28,13 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
             <div className="flex gap-4 justify-center md:justify-end">
               <Link href="#" aria-label="Facebook">
-                <Facebook className="h-8 w-8 border rounded-full p-1.5" />
+                <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="p-1.5" />
               </Link>
               <Link href="#" aria-label="Instagram">
-                <Instagram className="h-8 w-8 border rounded-full p-1.5" />
+                 <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="p-1.5" />
               </Link>
               <Link href="#" aria-label="Twitter">
-                <Twitter className="h-8 w-8 border rounded-full p-1.5" />
+                 <Image src="/x.svg" alt="X" width={32} height={32} className="p-1.5" />
               </Link>
             </div>
           </div>
