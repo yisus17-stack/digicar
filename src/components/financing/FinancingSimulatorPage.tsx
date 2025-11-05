@@ -17,6 +17,7 @@ import { Slider } from '@/components/ui/slider';
 import { Download, Save, Loader } from 'lucide-react';
 import PaymentChart from './PaymentChart';
 import { useToast } from '@/hooks/use-toast';
+import { useMounted } from '@/hooks/use-mounted';
 
 const formSchema = z.object({
   carId: z.string().nonempty({ message: 'Por favor, selecciona un vehículo.' }),
@@ -43,6 +44,7 @@ const INTEREST_RATE = 0.125; // Tasa de interés anual fija del 12.5%
 export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageProps) {
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const { toast } = useToast();
+  const isMounted = useMounted();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -57,6 +59,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
   const selectedCarId = form.watch('carId');
   const downPaymentValue = form.watch('downPayment');
   const selectedTerm = form.watch('term');
+  const financingType = form.watch('financingType');
 
   const selectedCar = useMemo(() => cars.find(c => c.id === selectedCarId), [selectedCarId, cars]);
   const maxDownPayment = useMemo(() => selectedCar ? selectedCar.price * 0.9 : 100000, [selectedCar]);
@@ -104,42 +107,128 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
       });
       return;
     }
-
+  
     const doc = new jsPDF();
-    
-    doc.text("Resumen de Financiamiento - DigiCar", 14, 20);
+    const primaryColor = '#F29900'; // Naranja primario de la marca
+  
+    // --- Encabezado ---
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text("DigiCar", 14, 22);
+  
+    doc.setFontSize(18);
+    doc.text("Simulación de Financiamiento", 196, 22, { align: 'right' });
+  
+    doc.setDrawColor(200);
+    doc.line(14, 28, 196, 28);
+  
+    // --- Detalles de la Simulación ---
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 196, 35, { align: 'right' });
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 196, 40, { align: 'right' });
+  
     doc.setFontSize(12);
-    doc.text(`Vehículo: ${selectedCar.brand} ${selectedCar.model} ${selectedCar.year}`, 14, 30);
-
+    doc.setFont('helvetica', 'bold');
+    doc.text("Vehículo Seleccionado:", 14, 45);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${selectedCar.brand} ${selectedCar.model} ${selectedCar.year}`, 14, 52);
+  
+    // --- Tabla de Resumen ---
     const tableData = [
-      ["Precio del Vehículo", `$${selectedCar.price.toLocaleString('es-MX')}`],
-      ["Enganche Inicial", `$${downPaymentValue.toLocaleString('es-MX')}`],
-      ["Monto a Financiar (Capital)", `$${simulationResult.principal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
-      ["Plazo", `${selectedTerm} meses`],
-      ["Tasa de Interés Anual", `${(INTEREST_RATE * 100).toFixed(1)}%`],
-      ["", ""], // Separador
-      ["Pago Mensual Estimado", `$${simulationResult.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
-      ["Total de Intereses", `$${simulationResult.totalInterest.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
-      ["Costo Total del Vehículo", `$${simulationResult.totalPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Precio del Vehículo:", `$${selectedCar.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Enganche Inicial:", `$${downPaymentValue.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Monto a Financiar (Capital):", `$${simulationResult.principal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Plazo:", `${selectedTerm} meses`],
+      ["Tasa de Interés Anual Fija:", `${(INTEREST_RATE * 100).toFixed(1)}%`],
+      ["Tipo de Financiamiento:", financingType === 'credit' ? 'Crédito Automotriz' : 'Arrendamiento'],
     ];
-
+  
     autoTable(doc, {
-      startY: 40,
+      startY: 65,
       head: [['Concepto', 'Monto']],
       body: tableData,
       theme: 'striped',
-      headStyles: { fillColor: [35, 84, 51] }, // Color primario
-      styles: { fontSize: 10 },
+      headStyles: { 
+        fillColor: [35, 38, 43], // Un gris oscuro para el encabezado
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      styles: { 
+        fontSize: 10,
+        cellPadding: 3,
+      },
       columnStyles: {
-        0: { fontStyle: 'bold' }
+        0: { fontStyle: 'bold', cellWidth: 70 },
+        1: { halign: 'right' }
+      },
+      didParseCell: function (data) {
+        if (data.row.index >= tableData.length - 3) {
+            data.cell.styles.fontStyle = 'bold';
+        }
       }
     });
-
-    doc.setFontSize(10);
-    doc.text("Nota: Esta es una simulación y los valores son aproximados. No constituye una oferta formal.", 14, (doc as any).lastAutoTable.finalY + 10);
-
-
-    doc.save("simulacion-digicar.pdf");
+  
+    const finalY = (doc as any).lastAutoTable.finalY;
+  
+    // --- Totales Destacados ---
+    const summaryData = [
+      ['Total de Intereses', `$${simulationResult.totalInterest.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ['Costo Total del Vehículo', `$${simulationResult.totalPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+    ];
+  
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: summaryData,
+      theme: 'plain',
+      tableWidth: 80,
+      margin: { left: 116 },
+      styles: {
+        fontSize: 10,
+        cellPadding: 2,
+      },
+      columnStyles: {
+        0: { fontStyle: 'bold', halign: 'right'},
+        1: { halign: 'right' }
+      }
+    });
+  
+    // --- Mensualidad (el más importante) ---
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY,
+      body: [['Pago Mensual Estimado', `$${simulationResult.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`]],
+      theme: 'plain',
+      tableWidth: 80,
+      margin: { left: 116 },
+      styles: {
+        fontSize: 12,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: primaryColor,
+        textColor: [255, 255, 255],
+      },
+      columnStyles: {
+        0: { fontStyle: 'bold', halign: 'right'},
+        1: { fontStyle: 'bold', halign: 'right'}
+      },
+      didParseCell(data) {
+          if(data.section === 'body') {
+              data.cell.styles.fillColor = primaryColor;
+              data.cell.styles.textColor = [255, 255, 255];
+          }
+      }
+    });
+  
+  
+    // --- Pie de Página ---
+    const pageHeight = doc.internal.pageSize.height;
+    doc.setFontSize(9);
+    doc.setTextColor(150);
+    doc.text("Esta es una simulación y los valores son aproximados. No constituye una oferta formal de crédito.", 14, pageHeight - 20);
+    doc.text("Gracias por usar el simulador de DigiCar.", 14, pageHeight - 15);
+  
+    doc.save(`simulacion-digicar-${selectedCar.brand}-${selectedCar.model}.pdf`);
   }
 
 
@@ -188,7 +277,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
                 name="downPayment"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Enganche Inicial: ${field.value.toLocaleString('es-MX')}</FormLabel>
+                    <FormLabel>Enganche Inicial: ${isMounted ? field.value.toLocaleString('es-MX') : field.value}</FormLabel>
                     <FormControl>
                       <Slider
                         min={0}
@@ -301,10 +390,10 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
           {simulationResult && (
             <CardFooter className="flex justify-end gap-2">
                 <Button variant="outline" onClick={handleSave}>
-                    <Save className="mr-2" /> Guardar
+                    <Save className="mr-2 h-4 w-4" /> Guardar
                 </Button>
                 <Button onClick={handleDownload}>
-                    <Download className="mr-2" /> Descargar PDF
+                    <Download className="mr-2 h-4 w-4" /> Descargar PDF
                 </Button>
             </CardFooter>
           )}
