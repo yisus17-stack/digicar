@@ -121,18 +121,18 @@ const SiteHeader = () => {
             className="flex items-center justify-end gap-1 sm:gap-4"
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
-              <Search className="h-6 w-6" />
+              <Search className="h-5 w-5" />
             </Button>
 
             <Button variant="ghost" size="icon">
-              <User className="h-6 w-6" />
+              <User className="h-5 w-5" />
             </Button>
             
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
+                    <Menu className="h-5 w-5" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
