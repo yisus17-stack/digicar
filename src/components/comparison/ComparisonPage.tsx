@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -17,7 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Sparkles } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
 import LeadCaptureForm from '../shared/LeadCaptureForm';
-import { useMounted } from '@/hooks/use-mounted';
 
 interface ComparisonPageProps {
   cars: [Car, Car];
@@ -29,7 +29,6 @@ type Summary = {
 }
 
 export default function ComparisonPage({ cars }: ComparisonPageProps) {
-  const isMounted = useMounted();
   const [car1, car2] = cars;
   const car1Image = findPlaceholderImage(car1.image);
   const car2Image = findPlaceholderImage(car2.image);
@@ -64,9 +63,8 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
   ];
 
   const formatValue = (key: string, value: any, car: Car) => {
-    if (!isMounted) return value;
-    if (key === 'price') return `$${Number(value).toLocaleString()}`;
-    if (key === 'mileage') return `${Number(value).toLocaleString()} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}`;
+    if (key === 'price') return `$${Number(value).toLocaleString('es-MX')}`;
+    if (key === 'mileage') return `${Number(value).toLocaleString('es-MX')} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}`;
     if (key === 'horsepower') return `${value} HP`;
     return value;
   }

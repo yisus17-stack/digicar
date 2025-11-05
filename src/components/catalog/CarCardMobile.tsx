@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -8,7 +9,6 @@ import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows } from 'lucide-react';
-import { useMounted } from '@/hooks/use-mounted';
 
 interface CarCardMobileProps {
   car: Car;
@@ -16,7 +16,6 @@ interface CarCardMobileProps {
 
 export default function CarCardMobile({ car }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.image);
-  const isMounted = useMounted();
 
   return (
     <div className="overflow-hidden bg-card border-b">
@@ -47,7 +46,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                 {car.year} - {translations.type[car.type as keyof typeof translations.type]}
               </p>
               <p className="mt-2 text-lg text-foreground">
-                ${isMounted ? car.price.toLocaleString() : car.price}
+                ${car.price.toLocaleString('es-MX')}
               </p>
             </div>
           </div>

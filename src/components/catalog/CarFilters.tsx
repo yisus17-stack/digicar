@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -94,7 +95,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         </div>
 
         <div>
-            <Label>Precio: ${isMounted ? filters.price.toLocaleString() : filters.price}</Label>
+            <Label>Precio: ${filters.price.toLocaleString('es-MX')}</Label>
             {isMounted ? (
               <Slider
                   min={0}
