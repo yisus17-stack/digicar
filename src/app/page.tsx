@@ -30,7 +30,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4 leading-tight">
-                            <span>Conduce tu historia</span>
+                            <span className="whitespace-nowrap">Conduce tu historia</span>
                             <span className="block">con <span className="text-primary">DigiCar</span></span>
                         </h1>
                         <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
