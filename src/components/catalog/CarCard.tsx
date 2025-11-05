@@ -10,6 +10,7 @@ import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows } from 'lucide-react';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface CarCardProps {
   car: Car;
@@ -17,6 +18,7 @@ interface CarCardProps {
 
 export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
+  const isMounted = useMounted();
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 rounded-none">
@@ -44,7 +46,7 @@ export default function CarCard({ car }: CarCardProps) {
             {car.year} - {translations.type[car.type as keyof typeof translations.type]}
         </p>
         <p className="mt-2 text-lg text-foreground">
-          ${car.price.toLocaleString()}
+          ${isMounted ? car.price.toLocaleString() : car.price}
         </p>
         
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
