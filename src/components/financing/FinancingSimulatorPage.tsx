@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -5,6 +6,8 @@ import type { Car } from '@/lib/types';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -53,6 +56,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
 
   const selectedCarId = form.watch('carId');
   const downPaymentValue = form.watch('downPayment');
+  const selectedTerm = form.watch('term');
 
   const selectedCar = useMemo(() => cars.find(c => c.id === selectedCarId), [selectedCarId, cars]);
   const maxDownPayment = useMemo(() => selectedCar ? selectedCar.price * 0.9 : 100000, [selectedCar]);
@@ -92,10 +96,50 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
   }
 
   const handleDownload = () => {
-    toast({
-        title: "Descarga Iniciada",
-        description: "El resumen de tu simulación se está generando en PDF.",
+    if (!selectedCar || !simulationResult) {
+      toast({
+        title: "Error",
+        description: "Por favor, primero genera una simulación.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const doc = new jsPDF();
+    
+    doc.text("Resumen de Financiamiento - DigiCar", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`Vehículo: ${selectedCar.brand} ${selectedCar.model} ${selectedCar.year}`, 14, 30);
+
+    const tableData = [
+      ["Precio del Vehículo", `$${selectedCar.price.toLocaleString('es-MX')}`],
+      ["Enganche Inicial", `$${downPaymentValue.toLocaleString('es-MX')}`],
+      ["Monto a Financiar (Capital)", `$${simulationResult.principal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Plazo", `${selectedTerm} meses`],
+      ["Tasa de Interés Anual", `${(INTEREST_RATE * 100).toFixed(1)}%`],
+      ["", ""], // Separador
+      ["Pago Mensual Estimado", `$${simulationResult.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Total de Intereses", `$${simulationResult.totalInterest.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Costo Total del Vehículo", `$${simulationResult.totalPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+    ];
+
+    autoTable(doc, {
+      startY: 40,
+      head: [['Concepto', 'Monto']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [35, 84, 51] }, // Color primario
+      styles: { fontSize: 10 },
+      columnStyles: {
+        0: { fontStyle: 'bold' }
+      }
     });
+
+    doc.setFontSize(10);
+    doc.text("Nota: Esta es una simulación y los valores son aproximados. No constituye una oferta formal.", 14, (doc as any).lastAutoTable.finalY + 10);
+
+
+    doc.save("simulacion-digicar.pdf");
   }
 
 
