@@ -23,7 +23,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
       <CardContent className="flex flex-1 flex-col p-4">
         <Link href={`/car/${car.id}`} className="block">
           <div className="flex gap-4">
-            <div className="relative w-1/3 flex-shrink-0 aspect-[4/3]">
+            <div className="relative w-2/5 flex-shrink-0 aspect-[4/3]">
                 {placeholder && (
                 <Image
                     src={placeholder.imageUrl}
@@ -33,7 +33,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                         'object-cover rounded-md',
                         !placeholder.imageUrl.includes('unsplash') && 'object-contain'
                     )}
-                    sizes="33vw"
+                    sizes="40vw"
                     data-ai-hint={placeholder.imageHint}
                 />
                 )}
