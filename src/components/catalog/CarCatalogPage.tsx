@@ -95,9 +95,7 @@ export default function CarCatalogPage() {
 
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
-    if (!isMobile) {
-      handlePageChange(1);
-    }
+    setCurrentPage(1);
   };
   
   const handleResetFilters = () => {
@@ -114,12 +112,12 @@ export default function CarCatalogPage() {
     });
     setSearchTerm('');
     setAiSummary('');
-    handlePageChange(1);
+    setCurrentPage(1);
     setSortOrder('relevance');
   };
   
   const handleApplyMobileFilters = () => {
-    handlePageChange(1);
+    setCurrentPage(1);
     setIsSheetOpen(false);
   }
 
@@ -224,11 +222,12 @@ export default function CarCatalogPage() {
             
             <div className="flex-grow">
                 {/* Mobile View */}
-                <div className="grid grid-cols-1 gap-6 md:hidden">
-                    {paginatedCars.map(car => (
-                        <CarCardMobile key={`mobile-${car.id}`} car={car} />
-                    ))}
+                <div className="md:hidden border rounded-lg overflow-hidden">
+                  {paginatedCars.map(car => (
+                    <CarCardMobile key={`mobile-${car.id}`} car={car} />
+                  ))}
                 </div>
+
 
                 {/* Desktop View */}
                 <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
