@@ -20,7 +20,7 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 rounded-none">
-      <div className="relative aspect-video overflow-hidden bg-gray-50">
+      <div className="relative h-52 overflow-hidden bg-gray-50">
         {placeholder && (
           <Image
             src={placeholder.imageUrl}

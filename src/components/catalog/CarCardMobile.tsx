@@ -22,7 +22,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
       <div className="flex flex-1 flex-col p-4">
         <Link href={`/car/${car.id}`} className="block">
           <div className="flex gap-4">
-            <div className="relative w-2/5 flex-shrink-0 aspect-[4/3]">
+            <div className="relative w-2/5 flex-shrink-0 h-28">
                 {placeholder && (
                 <Image
                     src={placeholder.imageUrl}
