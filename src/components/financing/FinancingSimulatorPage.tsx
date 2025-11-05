@@ -153,10 +153,10 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
                 ],
                 theme: 'plain', margin: { left: 10, right: 10 },
                 styles: { fontSize: 8 },
-                columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
+                columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' },
             });
             
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+            const primaryColor = '#D4A24E';
             doc.setFillColor(primaryColor);
             doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
             doc.setTextColor(255, 255, 255);
@@ -323,6 +323,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona el plazo" />
                         </SelectTrigger>
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="12">12 meses</SelectItem>
                           <SelectItem value="24">24 meses</SelectItem>
@@ -425,3 +426,5 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
     </div>
   );
 }
+
+    
