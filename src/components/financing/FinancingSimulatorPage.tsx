@@ -159,7 +159,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
             },
         });
         
-        const primaryColor = '#50589c';
+        const primaryColor = '#ffa802';
         doc.setFillColor(primaryColor);
         doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
         doc.setTextColor(255, 255, 255);
