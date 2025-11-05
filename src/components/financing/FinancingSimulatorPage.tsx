@@ -81,7 +81,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: [80, 210]
+      format: [80, 190]
     });
     
     const addContent = (logoBase64: string | ArrayBuffer | null) => {
