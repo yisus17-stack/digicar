@@ -107,129 +107,114 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
       });
       return;
     }
-  
-    const doc = new jsPDF();
-    const primaryColor = '#F29900'; // Naranja primario de la marca
-  
+    
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [80, 210] // Ancho de 80mm (tipo ticket) y alto suficiente
+    });
+
+    const primaryColor = '#F29900';
+    const logoUrl = '/logo.png'; // Asegúrate que esta ruta es accesible públicamente
+
     // --- Encabezado ---
-    doc.setFontSize(22);
+    // Para el logo, necesitaríamos tenerlo en base64 o una URL pública para usarlo
+    // Simulación: doc.addImage(logoBase64, 'PNG', 10, 10, 25, 8);
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text("DigiCar", 14, 22);
-  
-    doc.setFontSize(18);
-    doc.text("Simulación de Financiamiento", 196, 22, { align: 'right' });
-  
-    doc.setDrawColor(200);
-    doc.line(14, 28, 196, 28);
-  
-    // --- Detalles de la Simulación ---
+    doc.text("DigiCar", doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
+
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 196, 35, { align: 'right' });
-    doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 196, 40, { align: 'right' });
-  
-    doc.setFontSize(12);
+    doc.text("Simulación de Financiamiento", doc.internal.pageSize.getWidth() / 2, 22, { align: 'center' });
+
+    doc.setDrawColor(200);
+    doc.line(10, 28, 70, 28);
+    
+    doc.setFontSize(8);
+    doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 10, 35);
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 70, 35, { align: 'right' });
+
+
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text("Vehículo Seleccionado:", 14, 45);
+    doc.text("Vehículo Seleccionado:", 10, 45);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${selectedCar.brand} ${selectedCar.model} ${selectedCar.year}`, 14, 52);
-  
-    // --- Tabla de Resumen ---
+    doc.text(`${selectedCar.brand} ${selectedCar.model} ${selectedCar.year}`, 10, 50);
+
     const tableData = [
       ["Precio del Vehículo:", `$${selectedCar.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
       ["Enganche Inicial:", `$${downPaymentValue.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
-      ["Monto a Financiar (Capital):", `$${simulationResult.principal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+      ["Monto a Financiar:", `$${simulationResult.principal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
       ["Plazo:", `${selectedTerm} meses`],
-      ["Tasa de Interés Anual Fija:", `${(INTEREST_RATE * 100).toFixed(1)}%`],
-      ["Tipo de Financiamiento:", financingType === 'credit' ? 'Crédito Automotriz' : 'Arrendamiento'],
+      ["Tasa Anual Fija:", `${(INTEREST_RATE * 100).toFixed(1)}%`],
+      ["Tipo:", financingType === 'credit' ? 'Crédito' : 'Arrendamiento'],
     ];
-  
+
     autoTable(doc, {
-      startY: 65,
-      head: [['Concepto', 'Monto']],
-      body: tableData,
-      theme: 'striped',
-      headStyles: { 
-        fillColor: [35, 38, 43], // Un gris oscuro para el encabezado
-        textColor: [255, 255, 255],
-        fontStyle: 'bold'
-      },
-      styles: { 
-        fontSize: 10,
-        cellPadding: 3,
-      },
-      columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: 70 },
-        1: { halign: 'right' }
-      },
-      didParseCell: function (data) {
-        if (data.row.index >= tableData.length - 3) {
-            data.cell.styles.fontStyle = 'bold';
-        }
-      }
+        startY: 55,
+        head: [['Concepto', 'Monto']],
+        body: tableData,
+        theme: 'striped',
+        margin: { left: 10, right: 10 },
+        headStyles: { 
+            fillColor: [35, 38, 43],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 8,
+        },
+        styles: { 
+            fontSize: 8,
+            cellPadding: 2,
+        },
+        columnStyles: {
+            0: { fontStyle: 'bold' },
+            1: { halign: 'right' }
+        },
     });
-  
+
     const finalY = (doc as any).lastAutoTable.finalY;
-  
-    // --- Totales Destacados ---
-    const summaryData = [
-      ['Total de Intereses', `$${simulationResult.totalInterest.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
-      ['Costo Total del Vehículo', `$${simulationResult.totalPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+
+    // --- Totales ---
+    const totalsData = [
+        ['Intereses Totales:', `$${simulationResult.totalInterest.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
+        ['Costo Total:', `$${simulationResult.totalPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`],
     ];
-  
+
     autoTable(doc, {
-      startY: finalY + 5,
-      body: summaryData,
-      theme: 'plain',
-      tableWidth: 80,
-      margin: { left: 116 },
-      styles: {
-        fontSize: 10,
-        cellPadding: 2,
-      },
-      columnStyles: {
-        0: { fontStyle: 'bold', halign: 'right'},
-        1: { halign: 'right' }
-      }
+        startY: finalY + 5,
+        body: totalsData,
+        theme: 'plain',
+        margin: { left: 10, right: 10 },
+        styles: { 
+            fontSize: 8,
+        },
+        columnStyles: {
+            0: { fontStyle: 'bold' },
+            1: { halign: 'right' }
+        },
     });
-  
-    // --- Mensualidad (el más importante) ---
-    autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY,
-      body: [['Pago Mensual Estimado', `$${simulationResult.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`]],
-      theme: 'plain',
-      tableWidth: 80,
-      margin: { left: 116 },
-      styles: {
-        fontSize: 12,
-        cellPadding: 3,
-      },
-      headStyles: {
-        fillColor: primaryColor,
-        textColor: [255, 255, 255],
-      },
-      columnStyles: {
-        0: { fontStyle: 'bold', halign: 'right'},
-        1: { fontStyle: 'bold', halign: 'right'}
-      },
-      didParseCell(data) {
-          if(data.section === 'body') {
-              data.cell.styles.fillColor = primaryColor;
-              data.cell.styles.textColor = [255, 255, 255];
-          }
-      }
-    });
-  
-  
+
+    // --- Mensualidad Destacada ---
+    doc.setFillColor(primaryColor);
+    doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text("Pago Mensual Estimado", 12, (doc as any).lastAutoTable.finalY + 8);
+    doc.setFontSize(10);
+    doc.text(`$${simulationResult.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`, 68, (doc as any).lastAutoTable.finalY + 8, { align: 'right' });
+
+
     // --- Pie de Página ---
     const pageHeight = doc.internal.pageSize.height;
-    doc.setFontSize(9);
+    doc.setFontSize(7);
     doc.setTextColor(150);
-    doc.text("Esta es una simulación y los valores son aproximados. No constituye una oferta formal de crédito.", 14, pageHeight - 20);
-    doc.text("Gracias por usar el simulador de DigiCar.", 14, pageHeight - 15);
-  
+    const footerText = "Esta es una simulación y los valores son aproximados. No constituye una oferta formal de crédito.\nGracias por usar el simulador de DigiCar.";
+    doc.text(footerText, doc.internal.pageSize.getWidth() / 2, pageHeight - 15, { align: 'center', baseline: 'bottom' });
+
     doc.save(`simulacion-digicar-${selectedCar.brand}-${selectedCar.model}.pdf`);
-  }
+}
 
 
   return (

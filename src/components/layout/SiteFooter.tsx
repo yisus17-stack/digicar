@@ -8,7 +8,7 @@ const SiteFooter = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                <Image src="/logo-light.png" alt="DigiCar Logo" width={150} height={50} />
+                <Image src="/logo.png" alt="DigiCar Logo" width={150} height={50} />
             </div>
             <p>Av. Principal No. 173</p>
             <p>Colonia Centro</p>
