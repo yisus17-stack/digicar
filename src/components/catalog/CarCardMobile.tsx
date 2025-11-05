@@ -43,14 +43,14 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
               <p className="mt-1 text-sm text-muted-foreground">
                 {car.year} - {translations.type[car.type as keyof typeof translations.type]}
               </p>
-              <p className="mt-2 text-lg font-bold text-foreground">
+              <p className="mt-2 text-lg text-foreground">
                 ${car.price.toLocaleString()}
               </p>
             </div>
           </div>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-2 px-4 pb-4 pt-0">
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4 pt-2">
         <Button asChild size="sm">
           <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>
