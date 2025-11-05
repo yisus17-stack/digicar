@@ -153,7 +153,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
                 ],
                 theme: 'plain', margin: { left: 10, right: 10 },
                 styles: { fontSize: 8 },
-                columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' },
+                columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
             });
             
             const primaryColor = '#D4A24E';
@@ -426,5 +426,3 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
     </div>
   );
 }
-
-    
