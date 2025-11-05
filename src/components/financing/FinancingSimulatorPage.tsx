@@ -14,11 +14,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
-import { Download, Save, Loader, Eye } from 'lucide-react';
+import { Download, Save, Eye } from 'lucide-react';
 import PaymentChart from './PaymentChart';
 import { useToast } from '@/hooks/use-toast';
 import { useMounted } from '@/hooks/use-mounted';
-import QRCode from 'qrcode';
 
 const formSchema = z.object({
   carId: z.string().nonempty({ message: 'Por favor, selecciona un vehículo.' }),
@@ -99,14 +98,19 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
         
         doc.setFontSize(8);
         doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 10, 38);
-        doc.text(`Fecha: ${new Date().toLocaleString('es-MX')}`, 70, 38, { align: 'right' });
+        
+        const now = new Date();
+        const date = now.toLocaleDateString('es-MX');
+        const time = now.toLocaleTimeString('es-MX');
+        doc.text(`Fecha: ${date}`, 70, 38, { align: 'right' });
+        doc.text(`Hora: ${time}`, 70, 42, { align: 'right' });
 
 
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
-        doc.text("Vehículo Seleccionado:", 10, 48);
+        doc.text("Vehículo Seleccionado:", 10, 52);
         doc.setFont('helvetica', 'normal');
-        doc.text(`${car.brand} ${car.model} ${car.year}`, 10, 53);
+        doc.text(`${car.brand} ${car.model} ${car.year}`, 10, 57);
 
         const tableData = [
           ["Precio:", `$${car.price.toLocaleString('es-MX')}`],
@@ -118,7 +122,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
         ];
 
         autoTable(doc, {
-            startY: 60,
+            startY: 64,
             head: [['Concepto', 'Monto']],
             body: tableData,
             theme: 'striped',
