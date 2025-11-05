@@ -15,7 +15,7 @@ interface CarCardMobileProps {
 }
 
 export default function CarCardMobile({ car }: CarCardMobileProps) {
-  const placeholder = findPlaceholderImage(car.image);
+  const placeholder = findPlaceholderImage(car.id);
 
   return (
     <div className="overflow-hidden bg-card border-b">
@@ -30,7 +30,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                   width={placeholder.width}
                   height={placeholder.height}
                   className={cn(
-                    'object-cover rounded-none bg-gray-50',
+                    'object-cover rounded-none',
                   )}
                   sizes="120px"
                   data-ai-hint={placeholder.imageHint}
