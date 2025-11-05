@@ -416,14 +416,14 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
             )}
           </CardContent>
           {simulationResult && (
-            <CardFooter className="flex justify-end gap-2">
-                <Button variant="outline" onClick={handleSave}>
+            <CardFooter className="flex flex-col sm:flex-row sm:justify-end gap-2">
+                <Button variant="outline" onClick={handleSave} className="w-full sm:w-auto">
                     <Save className="mr-2 h-4 w-4" /> Guardar
                 </Button>
-                 <Button variant="outline" onClick={handlePreview} disabled={!pdfUrl}>
+                 <Button variant="outline" onClick={handlePreview} disabled={!pdfUrl} className="w-full sm:w-auto">
                     <Eye className="mr-2 h-4 w-4" /> Visualizar
                 </Button>
-                <Button onClick={handleDownload} disabled={!pdfUrl}>
+                <Button onClick={handleDownload} disabled={!pdfUrl} className="w-full sm:w-auto">
                     <Download className="mr-2 h-4 w-4" /> Descargar PDF
                 </Button>
             </CardFooter>
