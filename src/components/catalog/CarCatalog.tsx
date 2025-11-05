@@ -12,7 +12,7 @@ export default function CarCatalog({ cars }: CarCatalogProps) {
   return (
     <>
       {/* Mobile View */}
-      <div className="grid grid-cols-1 gap-6 md:hidden">
+      <div className="md:hidden border rounded-lg overflow-hidden">
         {cars.map(car => (
           <CarCardMobile key={`mobile-${car.id}`} car={car} />
         ))}

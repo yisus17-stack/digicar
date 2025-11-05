@@ -4,7 +4,6 @@
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
-import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
@@ -19,8 +18,8 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-md rounded-none">
-      <CardContent className="flex flex-1 flex-col p-4">
+    <div className="flex flex-col overflow-hidden bg-card border-b">
+      <div className="flex flex-1 flex-col p-4">
         <Link href={`/car/${car.id}`} className="block">
           <div className="flex gap-4">
             <div className="relative w-2/5 flex-shrink-0 aspect-[4/3]">
@@ -49,8 +48,8 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
             </div>
           </div>
         </Link>
-      </CardContent>
-      <div className="mt-auto grid grid-cols-2 gap-2 p-2 border-t">
+      </div>
+      <div className="grid grid-cols-2 gap-2 p-2 pt-0">
         <Button asChild size="sm">
             <Link href={`/car/${car.id}`}>
                 Ver Detalles
@@ -61,6 +60,6 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
             Comparar
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }
