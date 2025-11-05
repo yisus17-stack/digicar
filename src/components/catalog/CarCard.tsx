@@ -10,6 +10,7 @@ import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows } from 'lucide-react';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface CarCardProps {
   car: Car;
@@ -17,10 +18,11 @@ interface CarCardProps {
 
 export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
+  const isMounted = useMounted();
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 rounded-none">
-      <div className="relative overflow-hidden bg-gray-50">
+      <div className="relative overflow-hidden bg-gray-50 flex justify-center items-center">
         {placeholder && (
           <Image
             src={placeholder.imageUrl}
@@ -28,7 +30,7 @@ export default function CarCard({ car }: CarCardProps) {
             width={placeholder.width}
             height={placeholder.height}
             className={cn(
-              'object-cover transition-transform duration-300 group-hover:scale-105 w-full h-auto',
+              'object-cover transition-transform duration-300 group-hover:scale-105',
               !placeholder.imageUrl.includes('unsplash') && 'object-contain'
             )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -44,7 +46,7 @@ export default function CarCard({ car }: CarCardProps) {
             {car.year} - {translations.type[car.type as keyof typeof translations.type]}
         </p>
         <p className="mt-2 text-lg text-foreground">
-          ${car.price.toLocaleString('es-MX')}
+          {isMounted ? `$${car.price.toLocaleString('es-MX')}` : `$${car.price}`}
         </p>
         
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4">

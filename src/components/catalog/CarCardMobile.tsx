@@ -9,6 +9,7 @@ import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows } from 'lucide-react';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface CarCardMobileProps {
   car: Car;
@@ -16,13 +17,14 @@ interface CarCardMobileProps {
 
 export default function CarCardMobile({ car }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.image);
+  const isMounted = useMounted();
 
   return (
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
         <Link href={`/car/${car.id}`} className="block">
           <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
-            <div className="relative w-full">
+            <div className="relative">
               {placeholder && (
                 <Image
                   src={placeholder.imageUrl}
@@ -30,7 +32,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                   width={placeholder.width}
                   height={placeholder.height}
                   className={cn(
-                    'object-cover rounded-none w-full h-auto',
+                    'object-cover rounded-none',
                     !placeholder.imageUrl.includes('unsplash') && 'object-contain'
                   )}
                   sizes="120px"
@@ -46,7 +48,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                 {car.year} - {translations.type[car.type as keyof typeof translations.type]}
               </p>
               <p className="mt-2 text-lg text-foreground">
-                ${car.price.toLocaleString('es-MX')}
+                {isMounted ? `$${car.price.toLocaleString('es-MX')}` : `$${car.price}`}
               </p>
             </div>
           </div>
