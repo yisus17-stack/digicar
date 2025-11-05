@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -36,7 +37,7 @@ export default function CarCard({ car }: CarCardProps) {
       </div>
 
       <CardContent className="flex flex-grow flex-col p-6">
-        <h3 className="text-2xl font-bold leading-tight">{car.model}</h3>
+        <h3 className="text-2xl leading-tight">{car.model}</h3>
         <div className="my-2 h-1 w-10 bg-primary"></div>
         <p className="text-sm text-muted-foreground">
             {car.brand} - {translations.type[car.type as keyof typeof translations.type]}

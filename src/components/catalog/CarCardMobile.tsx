@@ -36,7 +36,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                 )}
             </div>
             <CardContent className="flex flex-col justify-center p-4">
-                <h3 className="text-base font-semibold leading-tight line-clamp-2">{car.brand} {car.model}</h3>
+                <h3 className="text-base leading-tight line-clamp-2">{car.brand} {car.model}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                     {car.year} - {translations.type[car.type as keyof typeof translations.type]}
                 </p>
