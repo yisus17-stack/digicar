@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   GitCompareArrows,
   Wand2,
+  Landmark,
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -47,6 +48,7 @@ const SiteHeader = () => {
     { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
     { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
     { href: '/simulator', label: 'Simulador', icon: Wand2 },
+    { href: '/financing', label: 'Financiamiento', icon: Landmark },
   ];
 
   const openSearch = () => {
