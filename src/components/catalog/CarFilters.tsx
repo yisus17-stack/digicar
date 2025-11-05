@@ -94,15 +94,15 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         </div>
 
         <div>
-          <Label>Precio: ${filters.price.toLocaleString()}</Label>
-          <Slider
-              min={0}
-              max={maxPrice}
-              step={50000}
-              value={[filters.price]}
-              onValueChange={handleSliderChange}
-              className="mt-2"
-          />
+            <Label>Precio: ${isMounted ? filters.price.toLocaleString() : filters.price}</Label>
+            <Slider
+                min={0}
+                max={maxPrice}
+                step={50000}
+                value={[filters.price]}
+                onValueChange={handleSliderChange}
+                className="mt-2"
+            />
         </div>
 
         <div>
