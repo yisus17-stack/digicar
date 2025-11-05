@@ -15,6 +15,8 @@ import { translations } from '@/lib/translations';
 import { Loader, Sparkles } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Input } from '../ui/input';
+import { useMounted } from '@/hooks/use-mounted';
+import { Skeleton } from '../ui/skeleton';
 
 interface CarFiltersProps {
   filters: any;
@@ -29,7 +31,11 @@ interface CarFiltersProps {
   setSearchTerm: (term: string) => void;
 }
 
+const FilterSkeleton = () => <Skeleton className="h-10 w-full" />;
+
 export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
+  const isMounted = useMounted();
+  
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
   };
@@ -55,7 +61,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
             <>
               <div>
                   <Label>Ordenar por</Label>
-                  {sortComponent}
+                  {isMounted ? sortComponent : <FilterSkeleton />}
               </div>
               <Separator />
             </>
@@ -76,13 +82,15 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         
         <div>
             <Label>Marca</Label>
-            <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todas las marcas</SelectItem>
-                    {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todas las marcas"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todas las marcas</SelectItem>
+                      {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
@@ -99,79 +107,93 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
 
         <div>
             <Label>Tipo</Label>
-            <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los tipos</SelectItem>
-                    {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type]}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todos los tipos"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los tipos</SelectItem>
+                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type]}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Año</Label>
-            <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los años</SelectItem>
-                    {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todos los años"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los años</SelectItem>
+                      {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Combustible</Label>
-            <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los combustibles</SelectItem>
-                    {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType]}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todos los combustibles"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los combustibles</SelectItem>
+                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType]}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Cilindros</Label>
-            <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los cilindros</SelectItem>
-                    {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todos los cilindros"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los cilindros</SelectItem>
+                      {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Color</Label>
-            <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los colores</SelectItem>
-                    {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color]}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todos los colores"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todos los colores</SelectItem>
+                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color]}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Personas</Label>
-            <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Cualquier capacidad</SelectItem>
-                    {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
+                  <SelectTrigger><SelectValue placeholder="Cualquier capacidad"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Cualquier capacidad</SelectItem>
+                      {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Transmisión</Label>
-            <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todas las transmisiones</SelectItem>
-                    {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission]}</SelectItem>)}
-                </SelectContent>
-            </Select>
+            {isMounted ? (
+              <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
+                  <SelectTrigger><SelectValue placeholder="Todas las transmisiones"/></SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">Todas las transmisiones</SelectItem>
+                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission]}</SelectItem>)}
+                  </SelectContent>
+              </Select>
+            ) : <FilterSkeleton />}
         </div>
       </div>
       <div className='space-y-2 mt-auto pt-8'>
