@@ -29,28 +29,37 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
             <div className="flex gap-4 justify-center">
               <Link href="#" aria-label="Facebook" className="group">
-                <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-8 h-8">
-                        <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/facebook.svg" alt="Facebook" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }} />
-                    </div>
-                </div>
+                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <Image 
+                          src="/facebook.svg" 
+                          alt="Facebook" 
+                          width={32} 
+                          height={32} 
+                          className="filter invert transition-all duration-300 group-hover:invert-0" 
+                      />
+                  </div>
               </Link>
               <Link href="#" aria-label="Instagram" className="group">
-                <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-8 h-8">
-                        <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/instagram.svg" alt="Instagram" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
-                    </div>
-                </div>
+                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <Image 
+                          src="/instagram.svg" 
+                          alt="Instagram" 
+                          width={32} 
+                          height={32} 
+                          className="filter invert transition-all duration-300 group-hover:invert-0"
+                      />
+                  </div>
               </Link>
               <Link href="#" aria-label="Twitter" className="group">
-                <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                    <div className="relative w-8 h-8">
-                        <Image src="/x.svg" alt="X" width={32} height={32} className="filter invert absolute transition-opacity duration-300 group-hover:opacity-0" />
-                        <Image src="/x.svg" alt="X" width={32} height={32} className="absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ filter: 'invert(58%) sepia(98%) saturate(416%) hue-rotate(352deg) brightness(97%) contrast(98%)' }}/>
-                    </div>
-                </div>
+                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <Image 
+                          src="/x.svg" 
+                          alt="X" 
+                          width={32} 
+                          height={32} 
+                          className="filter invert transition-all duration-300 group-hover:invert-0"
+                      />
+                  </div>
               </Link>
             </div>
           </div>
