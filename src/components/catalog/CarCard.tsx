@@ -18,14 +18,6 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
-      <div className="absolute top-0 left-0 z-10 -mt-4 -ml-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg">
-        <div className="text-center">
-            <span className="block text-lg font-bold leading-tight">
-            ${(car.price / 1000).toFixed(0)}K
-            </span>
-        </div>
-      </div>
-
       <div className="relative aspect-video overflow-hidden bg-gray-50">
         {placeholder && (
           <Image
@@ -48,6 +40,9 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="my-2 h-1 w-10 bg-primary"></div>
         <p className="text-sm text-muted-foreground">
             {car.brand} - {translations.type[car.type as keyof typeof translations.type]}
+        </p>
+        <p className="mt-2 text-xl font-extrabold text-foreground">
+          ${car.price.toLocaleString()}
         </p>
         
         <div className="mt-auto flex w-full pt-4">
