@@ -48,7 +48,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
           </div>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-2 p-2 pt-0">
+      <div className="grid grid-cols-2 gap-2 p-4 pt-2">
         <Button asChild size="sm">
             <Link href={`/car/${car.id}`}>
                 Ver Detalles
