@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { GitCompareArrows } from 'lucide-react';
 
 interface CarCardProps {
   car: Car;
@@ -46,11 +47,15 @@ export default function CarCard({ car }: CarCardProps) {
           ${car.price.toLocaleString()}
         </p>
         
-        <div className="mt-auto flex w-full pt-4">
-            <Button asChild className="w-full">
+        <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
+            <Button asChild>
                 <Link href={`/car/${car.id}`}>
                     Ver Detalles
                 </Link>
+            </Button>
+            <Button variant="outline">
+                <GitCompareArrows className="mr-2 h-4 w-4" />
+                Comparar
             </Button>
         </div>
       </CardContent>
