@@ -20,15 +20,16 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
         <Link href={`/car/${car.id}`} className="block">
-          <div className="grid grid-cols-[120px_1fr] gap-4">
-            <div className="relative w-full h-24">
+          <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
+            <div className="relative w-full">
               {placeholder && (
                 <Image
                   src={placeholder.imageUrl}
                   alt={`${car.brand} ${car.model}`}
-                  fill
+                  width={placeholder.width}
+                  height={placeholder.height}
                   className={cn(
-                    'object-cover rounded-none',
+                    'object-cover rounded-none w-full h-auto',
                     !placeholder.imageUrl.includes('unsplash') && 'object-contain'
                   )}
                   sizes="120px"
@@ -50,7 +51,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
           </div>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-2 px-4 pb-4 pt-2">
+      <div className="grid grid-cols-2 gap-2 p-4 pt-2">
         <Button asChild size="sm">
           <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>

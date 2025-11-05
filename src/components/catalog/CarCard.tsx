@@ -20,14 +20,15 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 rounded-none">
-      <div className="relative h-52 overflow-hidden bg-gray-50">
+      <div className="relative overflow-hidden bg-gray-50">
         {placeholder && (
           <Image
             src={placeholder.imageUrl}
             alt={`${car.brand} ${car.model}`}
-            fill
+            width={placeholder.width}
+            height={placeholder.height}
             className={cn(
-              'object-cover transition-transform duration-300 group-hover:scale-105',
+              'object-cover transition-transform duration-300 group-hover:scale-105 w-full h-auto',
               !placeholder.imageUrl.includes('unsplash') && 'object-contain'
             )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

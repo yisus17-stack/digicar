@@ -4,49 +4,65 @@
       "id": "prestige-x10",
       "description": "Un sedán de lujo en una ciudad de noche.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "sedán de lujo rojo"
+      "imageHint": "sedán de lujo rojo",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "aurora-gt",
       "description": "Un auto deportivo en una carretera sinuosa.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "auto deportivo"
+      "imageHint": "auto deportivo",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "volta-ev-pro",
       "description": "Un auto eléctrico cargando en un garaje futurista.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "auto eléctrico"
+      "imageHint": "auto eléctrico",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "horizon-suv",
       "description": "Un SUV estacionado con vista a la montaña de fondo.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "suv montañas"
+      "imageHint": "suv montañas",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "nomad-cruiser",
       "description": "Un sedán cómodo en una calle suburbana.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "sedán familiar"
+      "imageHint": "sedán familiar",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "comet-r",
       "description": "Un auto deportivo compacto en una pista de carreras.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "hatchback deportivo"
+      "imageHint": "hatchback deportivo",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "stratus-sedan",
       "description": "Un sedán híbrido conduciendo por un paisaje verde.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "auto híbrido"
+      "imageHint": "auto híbrido",
+      "width": 800,
+      "height": 600
     },
     {
       "id": "terra-truck",
       "description": "Una camioneta en un camino de tierra en el desierto.",
       "imageUrl": "/auto-rojo.png",
-      "imageHint": "camioneta pickup"
+      "imageHint": "camioneta pickup",
+      "width": 800,
+      "height": 600
     }
   ]
 }
