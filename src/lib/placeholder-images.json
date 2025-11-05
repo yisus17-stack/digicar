@@ -9,7 +9,7 @@
     {
       "id": "aurora-gt",
       "description": "Un auto deportivo en una carretera sinuosa.",
-      "imageUrl": "/auto-inicio.png",
+      "imageUrl": "/auto-rojo.png",
       "imageHint": "auto deportivo"
     },
     {
@@ -21,7 +21,7 @@
     {
       "id": "horizon-suv",
       "description": "Un SUV estacionado con vista a la montaña de fondo.",
-      "imageUrl": "/auto-inicio.png",
+      "imageUrl": "/auto-rojo.png",
       "imageHint": "suv montañas"
     },
     {
@@ -33,7 +33,7 @@
     {
       "id": "comet-r",
       "description": "Un auto deportivo compacto en una pista de carreras.",
-      "imageUrl": "/auto-inicio.png",
+      "imageUrl": "/auto-rojo.png",
       "imageHint": "hatchback deportivo"
     },
     {
@@ -45,7 +45,7 @@
     {
       "id": "terra-truck",
       "description": "Una camioneta en un camino de tierra en el desierto.",
-      "imageUrl": "/auto-inicio.png",
+      "imageUrl": "/auto-rojo.png",
       "imageHint": "camioneta pickup"
     }
   ]
