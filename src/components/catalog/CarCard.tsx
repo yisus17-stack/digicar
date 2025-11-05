@@ -4,7 +4,6 @@ import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
-import { GitCommitHorizontal, Users, Fuel, Eye, GitCompareArrows } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
@@ -18,9 +17,13 @@ export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-2">
-      <div className="absolute top-3 right-3 z-10 rounded-full bg-background/80 px-3 py-1 text-sm font-semibold backdrop-blur-sm transition-opacity duration-300">
-        {car.year}
+    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
+      <div className="absolute top-0 left-0 z-10 -mt-4 -ml-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg">
+        <div className="text-center">
+            <span className="block text-lg font-bold leading-tight">
+            ${(car.price / 1000).toFixed(0)}K
+            </span>
+        </div>
       </div>
 
       <div className="relative aspect-video overflow-hidden bg-gray-50">
@@ -30,7 +33,7 @@ export default function CarCard({ car }: CarCardProps) {
             alt={`${car.brand} ${car.model}`}
             fill
             className={cn(
-              'object-cover transition-transform duration-300 group-hover:scale-110',
+              'object-cover transition-transform duration-300 group-hover:scale-105',
               !placeholder.imageUrl.includes('unsplash') && 'object-contain'
             )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -40,47 +43,17 @@ export default function CarCard({ car }: CarCardProps) {
         )}
       </div>
 
-      <CardContent className="flex flex-grow flex-col p-4">
-        <div>
-          <p className="text-xl font-bold leading-tight truncate">{car.model}</p>
-          <p className="text-sm text-muted-foreground">
+      <CardContent className="flex flex-grow flex-col p-6">
+        <h3 className="text-2xl font-bold leading-tight">{car.model}</h3>
+        <div className="my-2 h-1 w-10 bg-primary"></div>
+        <p className="text-sm text-muted-foreground">
             {car.brand} - {translations.type[car.type as keyof typeof translations.type]}
-          </p>
-        </div>
-
-        <div className="mt-4 mb-4">
-          <p className="text-2xl font-extrabold text-primary">
-            {car.price.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
-          </p>
-        </div>
-
-        <div className="border-t pt-4">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <GitCommitHorizontal className="h-5 w-5" />
-              <span>{translations.transmission[car.transmission]}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Fuel className="h-5 w-5" />
-              <span>{translations.fuelType[car.fuelType]}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Users className="h-5 w-5" />
-              <span className="whitespace-nowrap">{car.passengers} Pasajeros</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-auto border-t pt-4 flex w-full gap-2">
+        </p>
+        
+        <div className="mt-auto flex w-full pt-4">
             <Button asChild className="w-full">
                 <Link href={`/car/${car.id}`}>
-                <Eye className="mr-2" /> Ver Detalles
-                </Link>
-            </Button>
-            <Button variant="secondary" size="icon" asChild>
-                <Link href={`/compare?ids=${car.id}`}>
-                <GitCompareArrows />
-                <span className="sr-only">Comparar</span>
+                    Ver Detalles
                 </Link>
             </Button>
         </div>
