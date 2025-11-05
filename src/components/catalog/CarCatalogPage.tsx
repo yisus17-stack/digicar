@@ -43,11 +43,6 @@ export default function CarCatalogPage() {
   const [showFilters, setShowFilters] = useState(true);
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
@@ -228,19 +223,27 @@ export default function CarCatalogPage() {
             { (isAiLoading || aiSummary) && <AiSummary summary={aiSummary} /> }
             
             <div className="flex-grow">
-              <div className={cn("grid grid-cols-1 gap-6", !isMobile && "sm:grid-cols-2 xl:grid-cols-3")}>
-                  {hasMounted && paginatedCars.map(car => (
-                    isMobile ? <CarCardMobile key={car.id} car={car} /> : <CarCard key={car.id} car={car} />
-                  ))}
-              </div>
+                {/* Mobile View */}
+                <div className="grid grid-cols-1 gap-6 md:hidden">
+                    {paginatedCars.map(car => (
+                        <CarCardMobile key={`mobile-${car.id}`} car={car} />
+                    ))}
+                </div>
 
-              {filteredCars.length === 0 && !isAiLoading && (
-                  <div className="text-center py-16">
-                      <X className="mx-auto h-12 w-12 text-muted-foreground" />
-                      <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
-                      <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
-                  </div>
-              )}
+                {/* Desktop View */}
+                <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {paginatedCars.map(car => (
+                        <CarCard key={`desktop-${car.id}`} car={car} />
+                    ))}
+                </div>
+
+                {filteredCars.length === 0 && !isAiLoading && (
+                    <div className="text-center py-16">
+                        <X className="mx-auto h-12 w-12 text-muted-foreground" />
+                        <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
+                        <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
+                    </div>
+                )}
             </div>
 
             <div className='pt-8 mt-auto'>
