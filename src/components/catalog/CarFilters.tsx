@@ -25,9 +25,11 @@ interface CarFiltersProps {
   cars: Car[];
   maxPrice: number;
   sortComponent?: React.ReactNode;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
-export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent }: CarFiltersProps) {
+export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
   };
@@ -66,8 +68,8 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
           <Input
             type="text"
             placeholder="Ej: Un SUV familiar para 7 personas..."
-            // value={searchTerm} // This needs to be managed in CarCatalogPage
-            // onChange={e => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full text-base focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>

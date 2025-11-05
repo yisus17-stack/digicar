@@ -229,7 +229,7 @@ export default function CarCatalogPage() {
             
             <div className="flex-grow">
               <div className={cn("grid grid-cols-1 gap-6", !isMobile && "sm:grid-cols-2 xl:grid-cols-3")}>
-                  {paginatedCars.map(car => (
+                  {hasMounted && paginatedCars.map(car => (
                     isMobile ? <CarCardMobile key={car.id} car={car} /> : <CarCard key={car.id} car={car} />
                   ))}
               </div>
