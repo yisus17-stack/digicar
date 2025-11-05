@@ -16,7 +16,6 @@ import { translations } from '@/lib/translations';
 import { Loader, Sparkles } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Input } from '../ui/input';
-import { useMounted } from '@/hooks/use-mounted';
 import { Skeleton } from '../ui/skeleton';
 
 interface CarFiltersProps {
@@ -35,7 +34,6 @@ interface CarFiltersProps {
 const FilterSkeleton = () => <Skeleton className="h-10 w-full" />;
 
 export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
-  const isMounted = useMounted();
   
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
@@ -62,7 +60,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
             <>
               <div>
                   <Label>Ordenar por</Label>
-                  {isMounted ? sortComponent : <FilterSkeleton />}
+                  {sortComponent}
               </div>
               <Separator />
             </>
@@ -83,7 +81,6 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         
         <div>
             <Label>Marca</Label>
-            {isMounted ? (
               <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
                   <SelectTrigger><SelectValue placeholder="Todas las marcas"/></SelectTrigger>
                   <SelectContent>
@@ -91,12 +88,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Precio: ${filters.price.toLocaleString('es-MX')}</Label>
-            {isMounted ? (
               <Slider
                   min={0}
                   max={maxPrice}
@@ -105,12 +100,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   onValueChange={handleSliderChange}
                   className="mt-2"
               />
-            ) : <Skeleton className='h-5 w-full mt-2' />}
         </div>
 
         <div>
             <Label>Tipo</Label>
-            {isMounted ? (
               <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
                   <SelectTrigger><SelectValue placeholder="Todos los tipos"/></SelectTrigger>
                   <SelectContent>
@@ -118,12 +111,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type]}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Año</Label>
-            {isMounted ? (
               <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
                   <SelectTrigger><SelectValue placeholder="Todos los años"/></SelectTrigger>
                   <SelectContent>
@@ -131,12 +122,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Combustible</Label>
-            {isMounted ? (
               <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
                   <SelectTrigger><SelectValue placeholder="Todos los combustibles"/></SelectTrigger>
                   <SelectContent>
@@ -144,12 +133,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType]}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Cilindros</Label>
-            {isMounted ? (
               <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
                   <SelectTrigger><SelectValue placeholder="Todos los cilindros"/></SelectTrigger>
                   <SelectContent>
@@ -157,12 +144,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Color</Label>
-            {isMounted ? (
               <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
                   <SelectTrigger><SelectValue placeholder="Todos los colores"/></SelectTrigger>
                   <SelectContent>
@@ -170,12 +155,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color]}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Personas</Label>
-            {isMounted ? (
               <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
                   <SelectTrigger><SelectValue placeholder="Cualquier capacidad"/></SelectTrigger>
                   <SelectContent>
@@ -183,12 +166,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
 
         <div>
             <Label>Transmisión</Label>
-            {isMounted ? (
               <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
                   <SelectTrigger><SelectValue placeholder="Todas las transmisiones"/></SelectTrigger>
                   <SelectContent>
@@ -196,7 +177,6 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                       {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission]}</SelectItem>)}
                   </SelectContent>
               </Select>
-            ) : <FilterSkeleton />}
         </div>
       </div>
       <div className='space-y-2 mt-auto pt-8'>
