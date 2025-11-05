@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -120,18 +121,18 @@ const SiteHeader = () => {
             className="flex items-center justify-end gap-1 sm:gap-4"
           >
             <Button variant="ghost" size="icon" onClick={openSearch}>
-              <Search className="h-7 w-7 md:h-5 md:w-5" />
+              <Search className="h-6 w-6" />
             </Button>
 
             <Button variant="ghost" size="icon">
-              <User className="h-7 w-7 md:h-5 md:w-5" />
+              <User className="h-6 w-6" />
             </Button>
             
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Menu className="h-7 w-7" />
+                    <Menu className="h-6 w-6" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
