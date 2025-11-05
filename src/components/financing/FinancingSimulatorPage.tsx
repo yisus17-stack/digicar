@@ -18,6 +18,7 @@ import { Download, Save, Loader, Eye } from 'lucide-react';
 import PaymentChart from './PaymentChart';
 import { useToast } from '@/hooks/use-toast';
 import { useMounted } from '@/hooks/use-mounted';
+import QRCode from 'qrcode';
 
 const formSchema = z.object({
   carId: z.string().nonempty({ message: 'Por favor, selecciona un vehículo.' }),
@@ -69,7 +70,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
     const doc = await generatePdfDoc(currentCar, currentResult, currentDownPayment, currentTerm, currentFinancingType);
     if (doc) {
       const url = doc.output('bloburl');
-      setPdfUrl(url);
+      setPdfUrl(url.toString());
     } else {
       setPdfUrl(null);
     }
@@ -84,112 +85,112 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
       format: [80, 210]
     });
     
+    const addContent = (logoBase64: string | ArrayBuffer | null) => {
+        if (logoBase64) {
+          doc.addImage(logoBase64.toString(), 'PNG', (doc.internal.pageSize.getWidth() - 30) / 2, 10, 30, 10);
+        }
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text("Simulación de Financiamiento", doc.internal.pageSize.getWidth() / 2, 28, { align: 'center' });
+
+        doc.setDrawColor(200);
+        doc.line(10, 32, 70, 32);
+        
+        doc.setFontSize(8);
+        doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 10, 38);
+        doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 70, 38, { align: 'right' });
+
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Vehículo Seleccionado:", 10, 48);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${car.brand} ${car.model} ${car.year}`, 10, 53);
+
+        const tableData = [
+          ["Precio:", `$${car.price.toLocaleString('es-MX')}`],
+          ["Enganche:", `$${downPayment.toLocaleString('es-MX')}`],
+          ["Monto a Financiar:", `$${result.principal.toLocaleString('es-MX')}`],
+          ["Plazo:", `${term} meses`],
+          ["Tasa Anual Fija:", `${(INTEREST_RATE * 100).toFixed(1)}%`],
+          ["Tipo:", financing === 'credit' ? 'Crédito' : 'Arrendamiento'],
+        ];
+
+        autoTable(doc, {
+            startY: 60,
+            head: [['Concepto', 'Monto']],
+            body: tableData,
+            theme: 'striped',
+            margin: { left: 10, right: 10 },
+            headStyles: { 
+                fillColor: [35, 38, 43],
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                fontSize: 8,
+            },
+            styles: { 
+                fontSize: 8,
+                cellPadding: 2,
+            },
+            columnStyles: {
+                0: { fontStyle: 'bold' },
+                1: { halign: 'right' }
+            },
+        });
+
+        const finalY = (doc as any).lastAutoTable.finalY;
+
+        autoTable(doc, {
+            startY: finalY + 5,
+            body: [
+                ['Intereses Totales:', `$${result.totalInterest.toLocaleString('es-MX')}`],
+                ['Costo Total:', `$${result.totalPayment.toLocaleString('es-MX')}`],
+            ],
+            theme: 'plain', margin: { left: 10, right: 10 },
+            styles: { fontSize: 8 },
+            columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
+        });
+        
+        const primaryColor = '#D4A24E';
+        doc.setFillColor(primaryColor);
+        doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text("Pago Mensual Estimado", 12, (doc as any).lastAutoTable.finalY + 8);
+        doc.setFontSize(10);
+        doc.text(`$${result.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`, 68, (doc as any).lastAutoTable.finalY + 8, { align: 'right' });
+
+
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(7);
+        doc.setTextColor(150);
+        const footerText = "Esta es una simulación y los valores son aproximados. No constituye una oferta formal de crédito. Gracias por usar el simulador de DigiCar.";
+        const splitFooter = doc.splitTextToSize(footerText, 60);
+        doc.text(splitFooter, doc.internal.pageSize.getWidth() / 2, pageHeight - 15, { align: 'center', baseline: 'bottom' });
+    };
+    
     try {
         const response = await fetch('/logo.png');
         const blob = await response.blob();
-        const reader = new FileReader();
-        
-        const addContent = (logoBase64: string | ArrayBuffer | null) => {
-            if (logoBase64) {
-              doc.addImage(logoBase64.toString(), 'PNG', (doc.internal.pageSize.getWidth() - 30) / 2, 10, 30, 10);
-            }
-
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'normal');
-            doc.text("Simulación de Financiamiento", doc.internal.pageSize.getWidth() / 2, 28, { align: 'center' });
-
-            doc.setDrawColor(200);
-            doc.line(10, 32, 70, 32);
-            
-            doc.setFontSize(8);
-            doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 10, 38);
-            doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 70, 38, { align: 'right' });
-
-
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'bold');
-            doc.text("Vehículo Seleccionado:", 10, 48);
-            doc.setFont('helvetica', 'normal');
-            doc.text(`${car.brand} ${car.model} ${car.year}`, 10, 53);
-
-            const tableData = [
-              ["Precio:", `$${car.price.toLocaleString('es-MX')}`],
-              ["Enganche:", `$${downPayment.toLocaleString('es-MX')}`],
-              ["Monto a Financiar:", `$${result.principal.toLocaleString('es-MX')}`],
-              ["Plazo:", `${term} meses`],
-              ["Tasa Anual Fija:", `${(INTEREST_RATE * 100).toFixed(1)}%`],
-              ["Tipo:", financing === 'credit' ? 'Crédito' : 'Arrendamiento'],
-            ];
-
-            autoTable(doc, {
-                startY: 60,
-                head: [['Concepto', 'Monto']],
-                body: tableData,
-                theme: 'striped',
-                margin: { left: 10, right: 10 },
-                headStyles: { 
-                    fillColor: [35, 38, 43],
-                    textColor: [255, 255, 255],
-                    fontStyle: 'bold',
-                    fontSize: 8,
-                },
-                styles: { 
-                    fontSize: 8,
-                    cellPadding: 2,
-                },
-                columnStyles: {
-                    0: { fontStyle: 'bold' },
-                    1: { halign: 'right' }
-                },
-            });
-
-            const finalY = (doc as any).lastAutoTable.finalY;
-
-            autoTable(doc, {
-                startY: finalY + 5,
-                body: [
-                    ['Intereses Totales:', `$${result.totalInterest.toLocaleString('es-MX')}`],
-                    ['Costo Total:', `$${result.totalPayment.toLocaleString('es-MX')}`],
-                ],
-                theme: 'plain', margin: { left: 10, right: 10 },
-                styles: { fontSize: 8 },
-                columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
-            });
-            
-            const primaryColor = '#D4A24E';
-            doc.setFillColor(primaryColor);
-            doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9);
-            doc.text("Pago Mensual Estimado", 12, (doc as any).lastAutoTable.finalY + 8);
-            doc.setFontSize(10);
-            doc.text(`$${result.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`, 68, (doc as any).lastAutoTable.finalY + 8, { align: 'right' });
-
-
-            const pageHeight = doc.internal.pageSize.height;
-            doc.setFontSize(7);
-            doc.setTextColor(150);
-            const footerText = "Esta es una simulación y los valores son aproximados. No constituye una oferta formal de crédito. Gracias por usar el simulador de DigiCar.";
-            const splitFooter = doc.splitTextToSize(footerText, 60);
-            doc.text(splitFooter, doc.internal.pageSize.getWidth() / 2, pageHeight - 15, { align: 'center', baseline: 'bottom' });
-        };
-        
         return new Promise((resolve) => {
+            const reader = new FileReader();
             reader.onloadend = () => {
                 addContent(reader.result);
                 resolve(doc);
             };
             reader.onerror = () => {
-                addContent(null);
+                console.error("Error al leer el logo");
+                addContent(null); // Genera el PDF sin logo si hay error
                 resolve(doc);
             };
             reader.readAsDataURL(blob);
         });
-
     } catch (error) {
         console.error("Error al cargar el logo para el PDF:", error);
-        return null;
+        addContent(null); // Genera el PDF sin logo si hay error
+        return doc;
     }
   }
 
@@ -322,7 +323,6 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
                       <Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona el plazo" />
-                        </SelectTrigger>
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="12">12 meses</SelectItem>
