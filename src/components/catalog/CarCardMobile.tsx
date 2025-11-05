@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -18,46 +17,46 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <div className="flex flex-col overflow-hidden bg-card border-b">
-      <div className="flex flex-1 flex-col p-4">
+    <div className="overflow-hidden bg-card border-b">
+      <div className="p-4">
         <Link href={`/car/${car.id}`} className="block">
-          <div className="flex gap-4">
-            <div className="relative w-2/5 flex-shrink-0 h-28">
-                {placeholder && (
+          <div className="grid grid-cols-[80px_1fr] gap-4">
+            <div className="relative w-full h-20">
+              {placeholder && (
                 <Image
-                    src={placeholder.imageUrl}
-                    alt={`${car.brand} ${car.model}`}
-                    fill
-                    className={cn(
-                        'object-cover rounded-none',
-                        !placeholder.imageUrl.includes('unsplash') && 'object-contain'
-                    )}
-                    sizes="40vw"
-                    data-ai-hint={placeholder.imageHint}
+                  src={placeholder.imageUrl}
+                  alt={`${car.brand} ${car.model}`}
+                  fill
+                  className={cn(
+                    'object-cover rounded-none',
+                    !placeholder.imageUrl.includes('unsplash') && 'object-contain'
+                  )}
+                  sizes="80px"
+                  data-ai-hint={placeholder.imageHint}
                 />
-                )}
+              )}
             </div>
-            <div className="flex flex-1 flex-col justify-center">
-                <h3 className="text-base leading-tight line-clamp-2">{car.brand} {car.model}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                    {car.year} - {translations.type[car.type as keyof typeof translations.type]}
-                </p>
-                <p className="mt-2 text-lg text-foreground">
-                    ${car.price.toLocaleString()}
-                </p>
+            <div className="flex flex-col justify-center">
+              <h3 className="text-base font-semibold leading-tight line-clamp-2">
+                {car.brand} {car.model}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {car.year} - {translations.type[car.type as keyof typeof translations.type]}
+              </p>
+              <p className="mt-2 text-lg font-bold text-foreground">
+                ${car.price.toLocaleString()}
+              </p>
             </div>
           </div>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-2 p-4 pt-2">
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4 pt-0">
         <Button asChild size="sm">
-            <Link href={`/car/${car.id}`}>
-                Ver Detalles
-            </Link>
+          <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>
         <Button variant="outline" size="sm">
-            <GitCompareArrows className="mr-2 h-4 w-4" />
-            Comparar
+          <GitCompareArrows className="mr-2 h-4 w-4" />
+          Comparar
         </Button>
       </div>
     </div>
