@@ -38,11 +38,11 @@ export default function CarCard({ car }: CarCardProps) {
       </div>
 
       <CardContent className="flex flex-grow flex-col p-6">
-        <h3 className="text-2xl leading-tight">{car.brand} {car.model}</h3>
+        <h3 className="text-xl leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
             {car.year} - {translations.type[car.type as keyof typeof translations.type]}
         </p>
-        <p className="mt-2 text-xl text-foreground">
+        <p className="mt-2 text-lg text-foreground">
           ${car.price.toLocaleString()}
         </p>
         
