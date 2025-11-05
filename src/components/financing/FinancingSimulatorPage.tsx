@@ -99,7 +99,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
         
         doc.setFontSize(8);
         doc.text(`Simulación #${Math.floor(Math.random() * 90000) + 10000}`, 10, 38);
-        doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 70, 38, { align: 'right' });
+        doc.text(`Fecha: ${new Date().toLocaleString('es-MX')}`, 70, 38, { align: 'right' });
 
 
         doc.setFontSize(9);
@@ -149,7 +149,10 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
             ],
             theme: 'plain', margin: { left: 10, right: 10 },
             styles: { fontSize: 8 },
-            columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
+            columnStyles: { 
+                0: { fontStyle: 'bold' }, 
+                1: { halign: 'right' } 
+            },
         });
         
         const primaryColor = '#D4A24E';
