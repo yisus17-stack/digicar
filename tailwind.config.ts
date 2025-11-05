@@ -1,4 +1,5 @@
 import type {Config} from 'tailwindcss';
+const plugin = require('tailwindcss/plugin');
 
 export default {
   darkMode: ['class'],
@@ -83,5 +84,29 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ addUtilities }: { addUtilities: any }) {
+      addUtilities({
+        '.mask-facebook': {
+          'mask-image': 'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>\')',
+          'mask-repeat': 'no-repeat',
+          'mask-position': 'center',
+          'mask-size': 'contain',
+        },
+        '.mask-instagram': {
+          'mask-image': 'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>\')',
+          'mask-repeat': 'no-repeat',
+          'mask-position': 'center',
+          'mask-size': 'contain',
+        },
+        '.mask-x': {
+          'mask-image': 'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83-8.6-9.86h7.504l5.247 7.043L18.901 1.153Zm-1.65 19.5h2.64l-11.2-12.719H7.027l11.224 12.719Z"></path></svg>\')',
+          'mask-repeat': 'no-repeat',
+          'mask-position': 'center',
+          'mask-size': 'contain',
+        },
+      });
+    }),
+  ],
 } satisfies Config;
