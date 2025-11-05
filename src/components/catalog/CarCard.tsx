@@ -41,7 +41,7 @@ export default function CarCard({ car }: CarCardProps) {
         <p className="text-sm text-muted-foreground">
             {car.brand} - {translations.type[car.type as keyof typeof translations.type]}
         </p>
-        <p className="mt-2 text-xl font-extrabold text-foreground">
+        <p className="mt-2 text-xl text-foreground">
           ${car.price.toLocaleString()}
         </p>
         
