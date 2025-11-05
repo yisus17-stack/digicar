@@ -6,6 +6,7 @@ import { cars } from '@/lib/data';
 import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
+import CarCardMobile from './CarCardMobile';
 import { X, SlidersHorizontal, Loader, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
@@ -17,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
-import { Skeleton } from '../ui/skeleton';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
@@ -228,9 +228,9 @@ export default function CarCatalogPage() {
             { (isAiLoading || aiSummary) && <AiSummary summary={aiSummary} /> }
             
             <div className="flex-grow">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className={cn("grid grid-cols-1 gap-6", !isMobile && "sm:grid-cols-2 xl:grid-cols-3")}>
                   {paginatedCars.map(car => (
-                  <CarCard key={car.id} car={car} />
+                    isMobile ? <CarCardMobile key={car.id} car={car} /> : <CarCard key={car.id} car={car} />
                   ))}
               </div>
 
