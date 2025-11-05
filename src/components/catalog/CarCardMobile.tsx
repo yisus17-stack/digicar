@@ -19,7 +19,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-md">
+    <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-md rounded-none">
       <CardContent className="flex flex-1 flex-col p-4">
         <Link href={`/car/${car.id}`} className="block">
           <div className="flex gap-4">
@@ -30,7 +30,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                     alt={`${car.brand} ${car.model}`}
                     fill
                     className={cn(
-                        'object-cover rounded-md',
+                        'object-cover rounded-none',
                         !placeholder.imageUrl.includes('unsplash') && 'object-contain'
                     )}
                     sizes="40vw"
