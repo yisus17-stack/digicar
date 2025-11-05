@@ -20,8 +20,9 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
 
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-md">
-      <Link href={`/car/${car.id}`} className="block">
-        <div className="flex">
+      <CardContent className="flex flex-1 flex-col p-4">
+        <Link href={`/car/${car.id}`} className="block">
+          <div className="flex gap-4">
             <div className="relative w-1/3 flex-shrink-0 aspect-[4/3]">
                 {placeholder && (
                 <Image
@@ -29,7 +30,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                     alt={`${car.brand} ${car.model}`}
                     fill
                     className={cn(
-                        'object-cover',
+                        'object-cover rounded-md',
                         !placeholder.imageUrl.includes('unsplash') && 'object-contain'
                     )}
                     sizes="33vw"
@@ -37,28 +38,29 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                 />
                 )}
             </div>
-            <CardContent className="flex flex-1 flex-col justify-center p-4">
-                <h3 className="text-base font-medium leading-tight line-clamp-2">{car.brand} {car.model}</h3>
+            <div className="flex flex-1 flex-col justify-center">
+                <h3 className="text-base leading-tight line-clamp-2">{car.brand} {car.model}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                     {car.year} - {translations.type[car.type as keyof typeof translations.type]}
                 </p>
                 <p className="mt-2 text-lg text-foreground">
                     ${car.price.toLocaleString()}
                 </p>
-            </CardContent>
-        </div>
-      </Link>
+            </div>
+          </div>
+        </Link>
+      </CardContent>
       <div className="mt-auto grid grid-cols-2 gap-2 p-2 border-t">
-            <Button asChild size="sm">
-                <Link href={`/car/${car.id}`}>
-                    Ver Detalles
-                </Link>
-            </Button>
-            <Button variant="outline" size="sm">
-                <GitCompareArrows className="mr-2 h-4 w-4" />
-                Comparar
-            </Button>
-        </div>
+        <Button asChild size="sm">
+            <Link href={`/car/${car.id}`}>
+                Ver Detalles
+            </Link>
+        </Button>
+        <Button variant="outline" size="sm">
+            <GitCompareArrows className="mr-2 h-4 w-4" />
+            Comparar
+        </Button>
+      </div>
     </Card>
   );
 }
