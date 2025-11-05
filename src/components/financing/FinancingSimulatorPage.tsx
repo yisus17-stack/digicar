@@ -159,7 +159,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
             },
         });
         
-        const primaryColor = '#D4A24E';
+        const primaryColor = '#50589c';
         doc.setFillColor(primaryColor);
         doc.rect(10, (doc as any).lastAutoTable.finalY + 2, 60, 10, 'F');
         doc.setTextColor(255, 255, 255);
@@ -416,7 +416,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
             )}
           </CardContent>
           {simulationResult && (
-            <CardFooter className="flex flex-col sm:flex-row sm:justify-end gap-2">
+            <CardFooter className="flex-col sm:flex-row flex-wrap justify-end gap-2">
                 <Button variant="outline" onClick={handleSave} className="w-full sm:w-auto">
                     <Save className="mr-2 h-4 w-4" /> Guardar
                 </Button>
