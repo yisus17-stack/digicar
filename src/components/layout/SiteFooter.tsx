@@ -29,18 +29,18 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Redes sociales</h3>
             <div className="flex gap-4 justify-center">
               <Link href="#" aria-label="Facebook" className="group">
-                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                      <div className="h-8 w-8 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-facebook"></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <div className="h-6 w-6 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-facebook"></div>
                   </div>
               </Link>
               <Link href="#" aria-label="Instagram" className="group">
-                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                      <div className="h-8 w-8 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-instagram"></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <div className="h-6 w-6 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-instagram"></div>
                   </div>
               </Link>
               <Link href="#" aria-label="Twitter" className="group">
-                  <div className="w-12 h-12 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
-                      <div className="h-8 w-8 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-x"></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-primary-foreground flex items-center justify-center transition-colors duration-300 group-hover:bg-primary-foreground">
+                      <div className="h-6 w-6 bg-primary-foreground transition-colors duration-300 group-hover:bg-primary mask-x"></div>
                   </div>
               </Link>
             </div>
