@@ -36,7 +36,7 @@ export default function Home() {
                         <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
                             <Button size="lg">
                                 Explorar
                             </Button>
