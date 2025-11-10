@@ -331,7 +331,7 @@ const SiteHeader = () => {
                   <Button
                     variant="link"
                     onClick={closeSearch}
-                    className="text-muted-foreground"
+                    className="text-muted-foreground hover:no-underline"
                   >
                     Cancelar
                   </Button>
