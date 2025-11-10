@@ -14,6 +14,8 @@ export { useDoc } from './firestore/use-doc';
 
 // Components
 export { FirebaseProvider, useFirebase, useFirebaseApp, useFirestore, useAuth } from './provider';
+export { FirebaseClientProvider } from './client-provider';
+
 
 // Initialize firebase
 export function initializeFirebase(config: FirebaseOptions = firebaseConfig): {

@@ -6,9 +6,9 @@ import type { Auth } from 'firebase/auth';
 import type { Firestore } from 'firebase/firestore';
 
 interface FirebaseContextValue {
-  firebaseApp: FirebaseApp;
-  auth: Auth;
-  firestore: Firestore;
+  firebaseApp: FirebaseApp | null;
+  auth: Auth | null;
+  firestore: Firestore | null;
 }
 
 const FirebaseContext = createContext<FirebaseContextValue | null>(null);
@@ -34,13 +34,25 @@ export const useFirebase = (): FirebaseContextValue => {
 }
 
 export const useFirebaseApp = (): FirebaseApp => {
-    return useFirebase().firebaseApp;
+    const context = useFirebase();
+    if (!context.firebaseApp) {
+        throw new Error('Firebase App not available');
+    }
+    return context.firebaseApp;
 }
 
 export const useAuth = (): Auth => {
-    return useFirebase().auth;
+    const context = useFirebase();
+    if (!context.auth) {
+        throw new Error('Firebase Auth not available');
+    }
+    return context.auth;
 }
 
 export const useFirestore = (): Firestore => {
-    return useFirebase().firestore;
+    const context = useFirebase();
+    if (!context.firestore) {
+        throw new Error('Firebase Firestore not available');
+    }
+    return context.firestore;
 }
