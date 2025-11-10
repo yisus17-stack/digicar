@@ -25,8 +25,8 @@ type Summary = {
 
 export default function ComparisonPage({ cars }: ComparisonPageProps) {
   const [car1, car2] = cars;
-  const car1Image = findPlaceholderImage(car1.image);
-  const car2Image = findPlaceholderImage(car2.image);
+  const car1Image = findPlaceholderImage(car1.id);
+  const car2Image = findPlaceholderImage(car2.id);
   
   const [summary, setSummary] = useState<Summary | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -179,5 +179,3 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
     </div>
   );
 }
-
-    
