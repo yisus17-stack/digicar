@@ -23,7 +23,7 @@ import { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Sheet,
   SheetContent,
@@ -39,7 +39,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser } from '@/firebase';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 
 const popularSearches = [
@@ -58,9 +60,29 @@ const SiteHeader = () => {
   const [searchValue, setSearchValue] = useState('');
   const pathname = usePathname();
   const { user } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
 
   // Simulación temporal: cualquier usuario logueado es admin
   const isAdmin = !!user;
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: 'Sesión cerrada',
+        description: 'Has cerrado sesión correctamente.',
+      });
+      router.push('/');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
+      });
+    }
+  };
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home },
@@ -153,14 +175,14 @@ const SiteHeader = () => {
                     <>
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Link href="/profile" className="flex items-center w-full">
+                        <DropdownMenuItem asChild>
+                          <Link href="/profile" className="flex items-center w-full cursor-pointer">
                             <User className="mr-2 h-4 w-4" />
                             <span>Mi Perfil</span>
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link href="/profile/simulations" className="flex items-center w-full">
+                        <DropdownMenuItem asChild>
+                          <Link href="/profile/simulations" className="flex items-center w-full cursor-pointer">
                             <Wand2 className="mr-2 h-4 w-4" />
                             <span>Mis Simulaciones</span>
                           </Link>
@@ -170,8 +192,8 @@ const SiteHeader = () => {
                             <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
-                                <DropdownMenuItem>
-                                <Link href="/admin/cars" className="flex items-center w-full">
+                                <DropdownMenuItem asChild>
+                                <Link href="/admin/cars" className="flex items-center w-full cursor-pointer">
                                     <ShieldCheck className="mr-2 h-4 w-4" />
                                     <span>Administrar Autos</span>
                                 </Link>
@@ -180,23 +202,23 @@ const SiteHeader = () => {
                         )}
                         
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                             <LogOut className="mr-2 h-4 w-4" />
-                            Cerrar Sesión
+                            <span>Cerrar Sesión</span>
                         </DropdownMenuItem>
                     </>
                 ) : (
                     <>
                         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Link href="/login" className="flex items-center w-full">
+                        <DropdownMenuItem asChild>
+                          <Link href="/login" className="flex items-center w-full cursor-pointer">
                             <LogIn className="mr-2 h-4 w-4" />
                             <span>Iniciar Sesión</span>
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link href="/register" className="flex items-center w-full">
+                        <DropdownMenuItem asChild>
+                          <Link href="/register" className="flex items-center w-full cursor-pointer">
                             <UserPlus className="mr-2 h-4 w-4" />
                             <span>Registrarse</span>
                           </Link>
@@ -351,5 +373,3 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
-
-    
