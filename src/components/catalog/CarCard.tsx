@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -9,21 +8,17 @@ import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
-import { Dictionary } from '@/lib/get-dictionary';
-import { usePathname } from 'next/navigation';
+import { translations } from '@/lib/translations';
 
 interface CarCardProps {
   car: Car;
   isSelected: boolean;
   onToggleCompare: (carId: string) => void;
-  dictionary: Dictionary;
 }
 
-export default function CarCard({ car, isSelected, onToggleCompare, dictionary }: CarCardProps) {
+export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.id);
-  const pathname = usePathname();
-  const locale = pathname.split('/')[1];
-  const carType = car.type as keyof (typeof dictionary.compare.features);
+  const carType = car.type as keyof (typeof translations.type);
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
@@ -42,7 +37,7 @@ export default function CarCard({ car, isSelected, onToggleCompare, dictionary }
       <CardContent className="flex flex-grow flex-col p-6">
         <h3 className="text-xl font-semibold leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-            {car.year} - {dictionary.compare.features[carType] || car.type}
+            {car.year} - {translations.type[carType] || car.type}
         </p>
         <p className="mt-2 text-2xl font-bold text-foreground">
           {`$${car.price.toLocaleString('es-MX')}`}
@@ -50,8 +45,8 @@ export default function CarCard({ car, isSelected, onToggleCompare, dictionary }
         
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
             <Button asChild>
-                <Link href={`/${locale}/car/${car.id}`}>
-                    {dictionary.car_card.view_details}
+                <Link href={`/car/${car.id}`}>
+                    Ver Detalles
                 </Link>
             </Button>
             <Button variant={isSelected ? 'secondary' : 'outline'} onClick={() => onToggleCompare(car.id)}>
@@ -60,7 +55,7 @@ export default function CarCard({ car, isSelected, onToggleCompare, dictionary }
                 ) : (
                     <GitCompareArrows className="mr-2 h-4 w-4" />
                 )}
-                {isSelected ? dictionary.car_card.selected : dictionary.car_card.compare}
+                {isSelected ? 'Seleccionado' : 'Comparar'}
             </Button>
         </div>
       </CardContent>

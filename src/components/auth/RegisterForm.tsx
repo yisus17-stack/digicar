@@ -19,8 +19,6 @@ import { useAuth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
-  GoogleAuthProvider,
-  signInWithPopup,
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -47,7 +45,6 @@ export default function RegisterForm() {
   const auth = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -88,29 +85,6 @@ export default function RegisterForm() {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: '¡Bienvenido!',
-        description: 'Has iniciado sesión con Google correctamente.',
-      });
-      router.push('/');
-    } catch (error: any) {
-      console.error(error);
-      toast({
-        variant: 'destructive',
-        title: 'Error de autenticación',
-        description:
-          'No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.',
-      });
-    } finally {
-      setIsGoogleLoading(false);
     }
   };
 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -42,8 +41,6 @@ import {
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { Locale } from '@/i18n-config';
-import { Dictionary } from '@/lib/get-dictionary';
 
 
 const popularSearches = [
@@ -56,7 +53,7 @@ const popularSearches = [
   'Familiar',
 ];
 
-const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictionary }) => {
+const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -76,7 +73,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
         title: 'Sesión cerrada',
         description: 'Has cerrado sesión correctamente.',
       });
-      router.push(`/${locale}`);
+      router.push('/');
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -86,12 +83,12 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
     }
   };
 
-  const navLinks = !dictionary ? [] : [
-    { href: '/', label: dictionary.nav.home, icon: Home },
-    { href: '/catalog', label: dictionary.nav.catalog, icon: LayoutGrid },
-    { href: '/compare', label: dictionary.nav.compare, icon: GitCompareArrows },
-    { href: '/simulator', label: dictionary.nav.simulator, icon: Wand2 },
-    { href: '/financing', label: dictionary.nav.financing, icon: Landmark },
+  const navLinks = [
+    { href: '/', label: 'Inicio', icon: Home },
+    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
+    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
+    { href: '/simulator', label: 'Simulador', icon: Wand2 },
+    { href: '/financing', label: 'Financiamiento', icon: Landmark },
   ];
 
   const openSearch = () => {
@@ -129,20 +126,16 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if(searchValue.trim()){
-      router.push(`/${locale}/catalog?search=${encodeURIComponent(searchValue.trim())}`);
+      router.push(`/catalog?search=${encodeURIComponent(searchValue.trim())}`);
       closeSearch();
     }
-  }
-
-  if (!dictionary) {
-    return null; // Or a loading skeleton
   }
 
   return (
     <>
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex items-center justify-between py-4 px-4 sm:px-6 lg:px-8">
-          <Link href={`/${locale}`} className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/logo.png"
               alt="DigiCar Logo"
@@ -156,10 +149,10 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={`/${locale}${link.href}`}
+                href={link.href}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname === `/${locale}${link.href}` || (link.href === '/' && pathname === `/${locale}`)
+                  pathname === link.href
                     ? 'text-primary font-semibold'
                     : ''
                 )}
@@ -186,13 +179,13 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href={`/${locale}/profile`} className="flex items-center w-full cursor-pointer">
+                          <Link href="/profile" className="flex items-center w-full cursor-pointer">
                             <User className="mr-2 h-4 w-4" />
                             <span>Mi Perfil</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/${locale}/profile/simulations`} className="flex items-center w-full cursor-pointer">
+                          <Link href="/profile/simulations" className="flex items-center w-full cursor-pointer">
                             <Wand2 className="mr-2 h-4 w-4" />
                             <span>Mis Simulaciones</span>
                           </Link>
@@ -203,7 +196,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
                                 <DropdownMenuItem asChild>
-                                <Link href={`/${locale}/admin/cars`} className="flex items-center w-full cursor-pointer">
+                                <Link href="/admin/cars" className="flex items-center w-full cursor-pointer">
                                     <ShieldCheck className="mr-2 h-4 w-4" />
                                     <span>Administrar Autos</span>
                                 </Link>
@@ -222,13 +215,13 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href={`/${locale}/login`} className="flex items-center w-full cursor-pointer">
+                          <Link href="/login" className="flex items-center w-full cursor-pointer">
                             <LogIn className="mr-2 h-4 w-4" />
                             <span>Iniciar Sesión</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/${locale}/register`} className="flex items-center w-full cursor-pointer">
+                          <Link href="/register" className="flex items-center w-full cursor-pointer">
                             <UserPlus className="mr-2 h-4 w-4" />
                             <span>Registrarse</span>
                           </Link>
@@ -251,7 +244,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                     <SheetHeader className="pb-4">
                       <SheetTitle>
                         <div className='p-3'>
-                          <Link href={`/${locale}`} className="flex items-center">
+                          <Link href="/" className="flex items-center">
                             <Image
                               src="/logo.png"
                               alt="DigiCar Logo"
@@ -268,10 +261,10 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                         return (
                           <Link
                             key={link.href}
-                            href={`/${locale}${link.href}`}
+                            href={link.href}
                             className={cn(
                               'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:text-primary',
-                              pathname === `/${locale}${link.href}`
+                              pathname === link.href
                                 ? 'font-bold text-primary'
                                 : 'text-foreground'
                             )}
@@ -315,7 +308,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center py-4 gap-4">
                   <div className="flex items-center space-x-2">
-                      <Link href={`/${locale}`}>
+                      <Link href="/">
                         <Image
                             src="/logo.png"
                             alt="DigiCar Logo"
@@ -366,7 +359,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                         size="sm"
                         className="rounded-full font-normal"
                         onClick={() => {
-                          router.push(`/${locale}/catalog?search=${encodeURIComponent(term)}`);
+                          router.push(`/catalog?search=${encodeURIComponent(term)}`);
                           closeSearch();
                         }}
                       >
@@ -432,7 +425,7 @@ const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictio
                         size="sm"
                         className="rounded-full font-normal"
                         onClick={() => {
-                          router.push(`/${locale}/catalog?search=${encodeURIComponent(term)}`);
+                          router.push(`/catalog?search=${encodeURIComponent(term)}`);
                           closeSearch();
                         }}
                       >

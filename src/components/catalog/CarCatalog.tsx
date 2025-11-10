@@ -3,16 +3,14 @@
 import { Car } from '@/lib/types';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
-import { Dictionary } from '@/lib/get-dictionary';
 
 interface CarCatalogProps {
   cars: Car[];
-  dictionary: Dictionary;
   comparisonIds?: string[];
   onToggleCompare?: (carId: string) => void;
 }
 
-export default function CarCatalog({ cars, dictionary, comparisonIds = [], onToggleCompare = () => {} }: CarCatalogProps) {
+export default function CarCatalog({ cars, comparisonIds = [], onToggleCompare = () => {} }: CarCatalogProps) {
   return (
     <>
       {/* Mobile View */}
@@ -23,7 +21,6 @@ export default function CarCatalog({ cars, dictionary, comparisonIds = [], onTog
             car={car}
             isSelected={comparisonIds.includes(car.id)}
             onToggleCompare={onToggleCompare}
-            dictionary={dictionary}
           />
         ))}
       </div>
@@ -36,7 +33,6 @@ export default function CarCatalog({ cars, dictionary, comparisonIds = [], onTog
             car={car}
             isSelected={comparisonIds.includes(car.id)}
             onToggleCompare={onToggleCompare}
-            dictionary={dictionary}
           />
         ))}
       </div>

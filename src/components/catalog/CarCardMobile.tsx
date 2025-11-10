@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -8,26 +7,22 @@ import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
-import { Dictionary } from '@/lib/get-dictionary';
-import { usePathname } from 'next/navigation';
+import { translations } from '@/lib/translations';
 
 interface CarCardMobileProps {
   car: Car;
   isSelected: boolean;
   onToggleCompare: (carId: string) => void;
-  dictionary: Dictionary;
 }
 
-export default function CarCardMobile({ car, isSelected, onToggleCompare, dictionary }: CarCardMobileProps) {
+export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.id);
-  const pathname = usePathname();
-  const locale = pathname.split('/')[1];
-  const carType = car.type as keyof (typeof dictionary.compare.features);
+  const carType = car.type as keyof (typeof translations.type);
 
   return (
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
-        <Link href={`/${locale}/car/${car.id}`} className="block">
+        <Link href={`/car/${car.id}`} className="block">
           <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
             <div className="relative">
               {placeholder && (
@@ -49,7 +44,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
                 {car.brand} {car.model}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                {car.year} - {dictionary.compare.features[carType] || car.type}
+                {car.year} - {translations.type[carType] || car.type}
               </p>
               <p className="mt-2 text-lg font-bold text-foreground">
                 {`$${car.price.toLocaleString('es-MX')}`}
@@ -60,7 +55,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
       </div>
       <div className="grid grid-cols-2 gap-2 p-4 pt-2">
         <Button asChild size="sm">
-          <Link href={`/${locale}/car/${car.id}`}>{dictionary.car_card.view_details}</Link>
+          <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>
         <Button variant={isSelected ? 'secondary' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
           {isSelected ? (
@@ -68,7 +63,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
           ) : (
             <GitCompareArrows className="mr-2 h-4 w-4" />
           )}
-          {isSelected ? dictionary.car_card.selected : dictionary.car_card.compare}
+          {isSelected ? 'Seleccionado' : 'Comparar'}
         </Button>
       </div>
     </div>
