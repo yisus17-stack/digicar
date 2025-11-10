@@ -19,7 +19,7 @@ export default function CarCard({ car }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.image);
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 rounded-none">
+    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
        {placeholder && (
           <Image
             src={placeholder.imageUrl}
@@ -33,11 +33,11 @@ export default function CarCard({ car }: CarCardProps) {
         )}
 
       <CardContent className="flex flex-grow flex-col p-6">
-        <h3 className="text-xl leading-tight">{car.brand} {car.model}</h3>
+        <h3 className="text-xl font-semibold leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
             {car.year} - {translations.type[car.type as keyof typeof translations.type]}
         </p>
-        <p className="mt-2 text-lg text-foreground">
+        <p className="mt-2 text-2xl font-bold text-foreground">
           {`$${car.price.toLocaleString('es-MX')}`}
         </p>
         

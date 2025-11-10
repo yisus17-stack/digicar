@@ -27,14 +27,14 @@ export default function Home() {
         <>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div className="text-left">
+                    <div className="text-center md:text-left">
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
                             Conduce tu historia con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl">
+                        <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex flex-row gap-4 justify-start">
+                        <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
                             <Button size="lg">
                                 Explorar
                             </Button>
@@ -59,7 +59,7 @@ export default function Home() {
             <BrandLogos />
 
             <div id="popular" className="container mx-auto px-4 py-16">
-                <div className="text-left mb-12">
+                <div className="text-center md:text-left mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-left">
                         Los autos más populares
                     </h2>

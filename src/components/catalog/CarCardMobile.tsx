@@ -30,7 +30,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
                   width={placeholder.width}
                   height={placeholder.height}
                   className={cn(
-                    'object-cover rounded-none',
+                    'object-cover',
                   )}
                   sizes="120px"
                   data-ai-hint={placeholder.imageHint}
@@ -44,7 +44,7 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
               <p className="mt-1 text-sm text-muted-foreground">
                 {car.year} - {translations.type[car.type as keyof typeof translations.type]}
               </p>
-              <p className="mt-2 text-lg text-foreground">
+              <p className="mt-2 text-lg font-bold text-foreground">
                 {`$${car.price.toLocaleString('es-MX')}`}
               </p>
             </div>

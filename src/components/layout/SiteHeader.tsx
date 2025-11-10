@@ -127,46 +127,40 @@ const SiteHeader = () => {
   return (
     <>
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-12 gap-4">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo.png"
-                alt="DigiCar Logo"
-                width={150}
-                height={50}
-                className="w-24 md:w-36"
-              />
-            </Link>
-          </div>
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="DigiCar Logo"
+              width={150}
+              height={50}
+              className="w-24 md:w-36"
+            />
+          </Link>
 
-          <div className="flex-1 flex justify-center">
-            <nav className="hidden md:flex items-center space-x-8 text-lg font-medium">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    'transition-colors hover:text-primary',
-                    pathname === link.href ? 'text-primary font-bold' : ''
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'transition-colors hover:text-primary',
+                  pathname === link.href ? 'text-primary font-semibold' : ''
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-          <div
-            className="flex items-center justify-end gap-1 sm:gap-4"
-          >
-            <Button variant="ghost" size="icon" onClick={openSearch}>
+          <div className="flex items-center justify-end gap-2 sm:gap-4">
+            <Button variant="ghost" size="icon" onClick={openSearch} className="h-9 w-9">
               <Search className="h-5 w-5" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="h-9 w-9">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -301,25 +295,14 @@ const SiteHeader = () => {
               className="bg-background border-b"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="container mx-auto px-4 sm:px-6 lg:px-12 pt-8 md:pt-16">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-20 gap-4">
-                  <Link
-                    href="/"
-                    className="hidden sm:flex items-center space-x-2"
-                  >
-                    <Image
-                      src="/logo.png"
-                      alt="DigiCar Logo"
-                      width={150}
-                      height={40}
-                    />
-                  </Link>
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder="Buscar"
-                      className="w-full h-12 pl-10 pr-10 text-lg bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      placeholder="Buscar modelos, características, etc."
+                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                       autoFocus
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -328,7 +311,7 @@ const SiteHeader = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full sm:hidden"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
                         onClick={handleClearSearch}
                       >
                         <X className="h-5 w-5 text-muted-foreground" />
@@ -338,13 +321,13 @@ const SiteHeader = () => {
                   <Button
                     variant="ghost"
                     onClick={closeSearch}
-                    className="text-muted-foreground"
+                    className="text-muted-foreground hidden sm:inline-flex"
                   >
-                    <span className="inline">Cancelar</span>
+                    Cancelar
                   </Button>
                 </div>
-                <div className="mt-8 pb-12">
-                  <p className="font-semibold mb-4 text-muted-foreground">
+                <div className="mt-4 pb-12">
+                  <p className="font-semibold mb-4 text-muted-foreground text-sm">
                     Búsquedas Populares
                   </p>
                   <div className="flex flex-wrap gap-2">
