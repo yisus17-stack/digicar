@@ -4,7 +4,7 @@ import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, MessageCircle } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 const BrandLogos = () => (
     <div className="bg-secondary/50">
@@ -12,7 +12,7 @@ const BrandLogos = () => (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
                 <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
                 <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="opacity-60"/>
-                <Image src="/logo.png" alt="DigiCar" width={150} height={50} className="opacity-60"/>
+                <Image src="/logo.png" alt="DigiCar" width={150} height={50} className="opacity-60" />
                 <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="opacity-60"/>
             </div>
         </div>
@@ -25,24 +25,13 @@ export default function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-28 overflow-x-hidden">
-                <div className="absolute top-28 right-28">
-                  <Button variant="ghost" className="text-muted-foreground">
-                    <MessageCircle className="mr-2 h-4 w-4 text-primary"/> Chatbot
-                  </Button>
-                </div>
-                
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-left">
-                        <div className="text-sm text-muted-foreground mb-4">
-                          <p>Inicio</p>
-                          <p>&gt;</p>
-                        </div>
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mt-4 leading-tight">
-                            <span>Conduce tu historia</span>
-                            <span className="block">con <span className="text-primary">DigiCar</span></span>
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                            Conduce tu historia con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl">
+                        <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex flex-row gap-4 justify-start">
