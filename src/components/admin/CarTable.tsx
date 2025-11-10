@@ -29,18 +29,21 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 interface CarTableProps {
   cars: Car[];
 }
 
 export default function CarTable({ cars: initialCars }: CarTableProps) {
-  const [cars, setCars] = useState<Car[]>(initialCars);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [carToDelete, setCarToDelete] = useState<string | null>(null);
-
+  const firestore = useFirestore();
+  const { toast } = useToast();
 
   const handleAdd = () => {
     setSelectedCar(null);
@@ -57,28 +60,32 @@ export default function CarTable({ cars: initialCars }: CarTableProps) {
     setIsAlertOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!carToDelete) return;
-
-    // Lógica para eliminar el auto (se conectará a Firebase más adelante)
-    setCars(cars.filter(car => car.id !== carToDelete));
-    console.log(`Eliminar auto con id: ${carToDelete}`);
-    setCarToDelete(null);
-    setIsAlertOpen(false);
+    try {
+      await deleteDoc(doc(firestore, 'cars', carToDelete));
+      toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
+    } catch (error: any) {
+      toast({ title: "Error", description: `No se pudo eliminar el auto: ${error.message}`, variant: "destructive" });
+    } finally {
+      setCarToDelete(null);
+      setIsAlertOpen(false);
+    }
   };
 
-  const handleSave = (data: Omit<Car, 'id' | 'image'>) => {
-    if (selectedCar) {
-      // Lógica para editar (se conectará a Firebase)
-      const updatedCar = { ...selectedCar, ...data };
-      setCars(cars.map(car => car.id === selectedCar.id ? updatedCar : car));
-      console.log('Auto editado:', updatedCar);
-    } else {
-      // Lógica para añadir (se conectará a Firebase)
-      const newCar = { ...data, id: `new-${Date.now()}`, image: `image-${Date.now()}` };
-       // @ts-ignore
-      setCars([newCar, ...cars]);
-      console.log('Auto añadido:', newCar);
+  const handleSave = async (data: Omit<Car, 'id' | 'image'>) => {
+    try {
+        if (selectedCar) {
+            const carRef = doc(firestore, 'cars', selectedCar.id);
+            await updateDoc(carRef, data);
+            toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
+        } else {
+            // Firestore genera el ID automáticamente, la propiedad 'image' debe gestionarse por separado
+            await addDoc(collection(firestore, 'cars'), { ...data, image: `image-${Date.now()}` });
+            toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
+        }
+    } catch (error: any) {
+        toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     }
   };
 
@@ -100,7 +107,7 @@ export default function CarTable({ cars: initialCars }: CarTableProps) {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {cars.map(car => (
+                {initialCars.map(car => (
                     <TableRow key={car.id}>
                     <TableCell className="font-medium">{car.brand}</TableCell>
                     <TableCell>{car.model}</TableCell>
@@ -119,7 +126,7 @@ export default function CarTable({ cars: initialCars }: CarTableProps) {
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => confirmDelete(car.id)} className="text-destructive">
+                            <DropdownMenuItem onClick={() => car.id && confirmDelete(car.id)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar
                             </DropdownMenuItem>
