@@ -138,7 +138,7 @@ const SiteHeader = () => {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center space-x-6 text-base font-medium">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
