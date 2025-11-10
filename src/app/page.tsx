@@ -60,7 +60,7 @@ export default function Home() {
 
             <div id="popular" className="container mx-auto px-4 py-16">
                 <div className="text-center md:text-left mb-12">
-                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-left">
+                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
                 </div>
