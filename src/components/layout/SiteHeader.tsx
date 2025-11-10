@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -13,6 +14,9 @@ import {
   Wand2,
   Landmark,
   ShieldCheck,
+  LogIn,
+  LogOut,
+  UserPlus
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -48,11 +52,20 @@ const popularSearches = [
   'Familiar',
 ];
 
+// Placeholder for user data and role checking
+const useUser = () => {
+    // En una aplicación real, esto vendría de Firebase Auth
+    const user = null; // o { displayName: 'Admin', email: 'admin@test.com', isAdmin: true }
+    return { user };
+};
+
+
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const pathname = usePathname();
+  const { user } = useUser(); // Hook simulado para obtener el usuario
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home },
@@ -141,32 +154,61 @@ const SiteHeader = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="#" className="flex items-center w-full">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Mi Perfil</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="#" className="flex items-center w-full">
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    <span>Mis Simulaciones</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Administración</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <Link href="/admin/cars" className="flex items-center w-full">
-                    <ShieldCheck className="mr-2 h-4 w-4" />
-                    <span>Administrar Autos</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    Cerrar Sesión
-                </DropdownMenuItem>
+                {user ? (
+                    <>
+                        <DropdownMenuLabel>Hola, {user.displayName || 'Usuario'}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Link href="/profile" className="flex items-center w-full">
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Mi Perfil</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/profile/simulations" className="flex items-center w-full">
+                            <Wand2 className="mr-2 h-4 w-4" />
+                            <span>Mis Simulaciones</span>
+                          </Link>
+                        </DropdownMenuItem>
+
+                        {/* @ts-ignore */}
+                        {user.isAdmin && (
+                            <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Administración</DropdownMenuLabel>
+                                <DropdownMenuItem>
+                                <Link href="/admin/cars" className="flex items-center w-full">
+                                    <ShieldCheck className="mr-2 h-4 w-4" />
+                                    <span>Administrar Autos</span>
+                                </Link>
+                                </DropdownMenuItem>
+                            </>
+                        )}
+                        
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Cerrar Sesión
+                        </DropdownMenuItem>
+                    </>
+                ) : (
+                    <>
+                        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Link href="/login" className="flex items-center w-full">
+                            <LogIn className="mr-2 h-4 w-4" />
+                            <span>Iniciar Sesión</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/register" className="flex items-center w-full">
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            <span>Registrarse</span>
+                          </Link>
+                        </DropdownMenuItem>
+                    </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             
@@ -315,7 +357,3 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
-
-    
-
-    
