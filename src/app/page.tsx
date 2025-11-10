@@ -29,7 +29,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
-                            Conduce tu historia con <span className="text-primary">DigiCar</span>
+                            <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
                         </h1>
                         <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
