@@ -32,6 +32,8 @@ import {
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 interface CarTableProps {
   cars: Car[];
@@ -62,26 +64,48 @@ export default function CarTable({ cars: initialCars }: CarTableProps) {
 
   const handleDelete = async () => {
     if (!carToDelete) return;
-    try {
-      await deleteDoc(doc(firestore, 'cars', carToDelete));
-      toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
-    } catch (error: any) {
-      toast({ title: "Error", description: `No se pudo eliminar el auto: ${error.message}`, variant: "destructive" });
-    } finally {
-      setCarToDelete(null);
-      setIsAlertOpen(false);
-    }
+    const carRef = doc(firestore, 'cars', carToDelete);
+    deleteDoc(carRef)
+      .then(() => {
+        toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
+      })
+      .catch((error) => {
+        const contextualError = new FirestorePermissionError({
+          operation: 'delete',
+          path: carRef.path,
+        });
+        errorEmitter.emit('permission-error', contextualError);
+      })
+      .finally(() => {
+        setCarToDelete(null);
+        setIsAlertOpen(false);
+      });
   };
 
   const handleSave = async (data: Omit<Car, 'id' | 'image'>) => {
     try {
         if (selectedCar) {
             const carRef = doc(firestore, 'cars', selectedCar.id);
-            await updateDoc(carRef, data);
+            updateDoc(carRef, data).catch((error) => {
+              const contextualError = new FirestorePermissionError({
+                operation: 'update',
+                path: carRef.path,
+                requestResourceData: data,
+              });
+              errorEmitter.emit('permission-error', contextualError);
+            });
             toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
+            const collectionRef = collection(firestore, 'cars');
             // Firestore genera el ID automáticamente, la propiedad 'image' debe gestionarse por separado
-            await addDoc(collection(firestore, 'cars'), { ...data, image: `image-${Date.now()}` });
+            addDoc(collectionRef, { ...data, image: `image-${Date.now()}` }).catch(error => {
+              const contextualError = new FirestorePermissionError({
+                operation: 'create',
+                path: collectionRef.path,
+                requestResourceData: data,
+              });
+              errorEmitter.emit('permission-error', contextualError);
+            });
             toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
         }
     } catch (error: any) {

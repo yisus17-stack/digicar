@@ -3,7 +3,7 @@
 import CarTable from "@/components/admin/CarTable";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { collection, query, orderBy } from 'firebase/firestore';
-import { useFirestore } from "@/firebase";
+import { useFirestore, useMemoFirebase } from "@/firebase";
 import { Car } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -33,16 +33,21 @@ function AdminCarsLoading() {
 
 export default function AdminCarsPage() {
     const firestore = useFirestore();
-    const carsQuery = query(collection(firestore, 'cars'), orderBy('brand', 'asc'));
+    const carsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'cars'), orderBy('brand', 'asc'));
+    }, [firestore]);
 
-    const { data: allCars, loading, error } = useCollection<Car>(carsQuery);
+    const { data: allCars, isLoading, error } = useCollection<Car>(carsQuery);
 
-    if (loading) {
+    if (isLoading) {
         return <AdminCarsLoading />;
     }
 
     if (error) {
-        return <div className="text-center py-12 text-destructive">Error: {error.message}</div>;
+        // The contextual error is thrown by the useCollection hook and caught by the error boundary
+        // so we don't need to display it here. We can show a generic message.
+        return <div className="text-center py-12 text-destructive">Ocurrió un error al cargar los autos.</div>;
     }
 
     return (
