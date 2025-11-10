@@ -274,7 +274,6 @@ const SiteHeader = () => {
         </div>
       </header>
 
-      {/* Animación fluida con Framer Motion */}
       <AnimatePresence>
         {isSearchVisible && (
           <motion.div
@@ -296,13 +295,22 @@ const SiteHeader = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center h-20 gap-4">
+                <div className="flex items-center justify-between h-20 gap-4">
+                  <Link href="/" className="hidden sm:flex items-center space-x-2">
+                      <Image
+                        src="/logo.png"
+                        alt="DigiCar Logo"
+                        width={150}
+                        height={50}
+                        className="w-24 md:w-36"
+                      />
+                  </Link>
                   <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="search"
                       placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-md sm:rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      className="w-full h-12 pl-12 pr-4 text-base bg-muted sm:rounded-full rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                       autoFocus
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -321,14 +329,7 @@ const SiteHeader = () => {
                   <Button
                     variant="link"
                     onClick={closeSearch}
-                    className="text-muted-foreground sm:hidden"
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={closeSearch}
-                    className="text-muted-foreground hidden sm:inline-flex"
+                    className="text-muted-foreground"
                   >
                     Cancelar
                   </Button>
