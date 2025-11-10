@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
@@ -20,7 +21,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Dictionary } from '@/lib/get-dictionary';
 
 const ITEMS_PER_PAGE = 6;
@@ -28,7 +29,7 @@ const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
-const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, dictionary }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, dictionary: Dictionary['catalog']['comparison_bar'] }) => {
+const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, dictionary, locale }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, dictionary: Dictionary['catalog']['comparison_bar'], locale: string }) => {
   const selectedCars = cars.filter(c => selectedIds.includes(c.id));
   if (selectedIds.length === 0) return null;
 
@@ -68,6 +69,11 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, dictionary }
 
 
 export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const locale = pathname.split('/')[1];
+
   const [filters, setFilters] = useState({
     brand: 'all',
     fuelType: 'all',
@@ -79,7 +85,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
     color: 'all',
     passengers: 'all',
   });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
@@ -87,7 +93,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
-  const router = useRouter();
+  
 
 
   const [aiSummary, setAiSummary] = useState('');
@@ -106,7 +112,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
   };
 
   const handleCompare = () => {
-    router.push(`/compare?ids=${comparisonIds.join(',')}`);
+    router.push(`/${locale}/compare?ids=${comparisonIds.join(',')}`);
   };
 
   const filteredCars = useMemo(() => {
@@ -233,7 +239,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
     <div className="container mx-auto px-4 py-8 pb-32">
       <div className="mb-4">
         <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/" className="text-primary font-medium hover:underline">{dictionary.breadcrumbs.home}</Link>
+          <Link href={`/${locale}`} className="text-primary font-medium hover:underline">{dictionary.breadcrumbs.home}</Link>
           <ChevronRight className="h-4 w-4 mx-1" />
           <span>{dictionary.breadcrumbs.catalog}</span>
         </div>
@@ -361,6 +367,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
         onClear={() => setComparisonIds([])}
         onCompare={handleCompare}
         dictionary={dictionary.catalog.comparison_bar}
+        locale={locale}
       />
     </div>
   );

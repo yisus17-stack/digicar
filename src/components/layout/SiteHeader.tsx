@@ -82,7 +82,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
         title: 'Sesión cerrada',
         description: 'Has cerrado sesión correctamente.',
       });
-      router.push('/');
+      router.push(`/${locale}`);
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -131,6 +131,14 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
   const handleClearSearch = () => {
     setSearchValue('');
   };
+  
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(searchValue.trim()){
+      router.push(`/${locale}/catalog?search=${encodeURIComponent(searchValue.trim())}`);
+      closeSearch();
+    }
+  }
 
   if (!dictionary) {
     return null; // Or a loading skeleton
@@ -140,7 +148,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
     <>
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
         <div className="container mx-auto flex items-center justify-between py-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href={`/${locale}`} className="flex items-center space-x-2">
             <Image
               src="/logo.png"
               alt="DigiCar Logo"
@@ -157,7 +165,9 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                 href={`/${locale}${link.href}`}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname === `/${locale}${link.href}` ? 'text-primary font-semibold' : ''
+                  pathname === `/${locale}${link.href}` || (link.href === '/' && pathname === `/${locale}`)
+                    ? 'text-primary font-semibold'
+                    : ''
                 )}
               >
                 {link.label}
@@ -182,13 +192,13 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href="/profile" className="flex items-center w-full cursor-pointer">
+                          <Link href={`/${locale}/profile`} className="flex items-center w-full cursor-pointer">
                             <User className="mr-2 h-4 w-4" />
                             <span>Mi Perfil</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href="/profile/simulations" className="flex items-center w-full cursor-pointer">
+                          <Link href={`/${locale}/profile/simulations`} className="flex items-center w-full cursor-pointer">
                             <Wand2 className="mr-2 h-4 w-4" />
                             <span>Mis Simulaciones</span>
                           </Link>
@@ -199,7 +209,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
                                 <DropdownMenuItem asChild>
-                                <Link href="/admin/cars" className="flex items-center w-full cursor-pointer">
+                                <Link href={`/${locale}/admin/cars`} className="flex items-center w-full cursor-pointer">
                                     <ShieldCheck className="mr-2 h-4 w-4" />
                                     <span>Administrar Autos</span>
                                 </Link>
@@ -218,13 +228,13 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href="/login" className="flex items-center w-full cursor-pointer">
+                          <Link href={`/${locale}/login`} className="flex items-center w-full cursor-pointer">
                             <LogIn className="mr-2 h-4 w-4" />
                             <span>Iniciar Sesión</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href="/register" className="flex items-center w-full cursor-pointer">
+                          <Link href={`/${locale}/register`} className="flex items-center w-full cursor-pointer">
                             <UserPlus className="mr-2 h-4 w-4" />
                             <span>Registrarse</span>
                           </Link>
@@ -247,7 +257,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                     <SheetHeader className="pb-4">
                       <SheetTitle>
                         <div className='p-3'>
-                          <Link href="/" className="flex items-center">
+                          <Link href={`/${locale}`} className="flex items-center">
                             <Image
                               src="/logo.png"
                               alt="DigiCar Logo"
@@ -297,6 +307,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
             className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           >
+            <form onSubmit={handleSearchSubmit}>
             <div className='hidden md:block pt-4'>
             <motion.div
               key="panel"
@@ -308,9 +319,9 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center h-20 gap-4">
+                <div className="flex items-center py-4 gap-4">
                   <div className="flex items-center space-x-2">
-                      <Link href="/">
+                      <Link href={`/${locale}`}>
                         <Image
                             src="/logo.png"
                             alt="DigiCar Logo"
@@ -361,7 +372,8 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                         size="sm"
                         className="rounded-full font-normal"
                         onClick={() => {
-                          setSearchValue(term);
+                          router.push(`/${locale}/catalog?search=${encodeURIComponent(term)}`);
+                          closeSearch();
                         }}
                       >
                         {term}
@@ -426,7 +438,8 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
                         size="sm"
                         className="rounded-full font-normal"
                         onClick={() => {
-                          setSearchValue(term);
+                          router.push(`/${locale}/catalog?search=${encodeURIComponent(term)}`);
+                          closeSearch();
                         }}
                       >
                         {term}
@@ -437,6 +450,7 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
               </div>
             </motion.div>
             </div>
+            </form>
           </motion.div>
         )}
       </AnimatePresence>

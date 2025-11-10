@@ -10,6 +10,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
 import { Dictionary } from '@/lib/get-dictionary';
+import { usePathname } from 'next/navigation';
 
 interface CarCardMobileProps {
   car: Car;
@@ -20,11 +21,13 @@ interface CarCardMobileProps {
 
 export default function CarCardMobile({ car, isSelected, onToggleCompare, dictionary }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.id);
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1];
 
   return (
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
-        <Link href={`/car/${car.id}`} className="block">
+        <Link href={`/${locale}/car/${car.id}`} className="block">
           <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
             <div className="relative">
               {placeholder && (
@@ -57,7 +60,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
       </div>
       <div className="grid grid-cols-2 gap-2 p-4 pt-2">
         <Button asChild size="sm">
-          <Link href={`/car/${car.id}`}>{dictionary.car_card.view_details}</Link>
+          <Link href={`/${locale}/car/${car.id}`}>{dictionary.car_card.view_details}</Link>
         </Button>
         <Button variant={isSelected ? 'secondary' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
           {isSelected ? (

@@ -25,7 +25,7 @@ export default async function Compare({
         <h1 className="mt-4 text-3xl font-bold tracking-tight">{dictionary.compare.select_to_compare_title}</h1>
         <p className="mt-2 text-lg text-muted-foreground">{dictionary.compare.select_to_compare_description}</p>
         <Button asChild className="mt-6">
-          <Link href="/catalog">{dictionary.compare.go_to_catalog}</Link>
+          <Link href={`/${locale}/catalog`}>{dictionary.compare.go_to_catalog}</Link>
         </Button>
       </div>
     );
@@ -45,6 +45,7 @@ export default async function Compare({
           cars={carsToCompare as [Car] | [Car, Car]} 
           allCars={cars}
           dictionary={dictionary.compare}
+          locale={locale}
         />
     </div>
   );

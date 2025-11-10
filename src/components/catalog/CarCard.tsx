@@ -11,6 +11,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
 import { Dictionary } from '@/lib/get-dictionary';
+import { usePathname } from 'next/navigation';
 
 interface CarCardProps {
   car: Car;
@@ -21,6 +22,8 @@ interface CarCardProps {
 
 export default function CarCard({ car, isSelected, onToggleCompare, dictionary }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.id);
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1];
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
@@ -47,7 +50,7 @@ export default function CarCard({ car, isSelected, onToggleCompare, dictionary }
         
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
             <Button asChild>
-                <Link href={`/car/${car.id}`}>
+                <Link href={`/${locale}/car/${car.id}`}>
                     {dictionary.car_card.view_details}
                 </Link>
             </Button>

@@ -41,7 +41,7 @@ export default async function Home({ params: { locale } }: { params: { locale: L
                                 {dictionary.home.explore_button}
                             </Button>
                             <Button asChild size="lg" variant="outline">
-                                <Link href="/catalog">{dictionary.home.view_catalog_button}</Link>
+                                <Link href={`/${locale}/catalog`}>{dictionary.home.view_catalog_button}</Link>
                             </Button>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export default async function Home({ params: { locale } }: { params: { locale: L
             
             <div className="text-center mb-16 px-4">
               <Button asChild variant="outline">
-                <Link href="/catalog">
+                <Link href={`/${locale}/catalog`}>
                   {dictionary.home.view_all_vehicles_button} <ChevronRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

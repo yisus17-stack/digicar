@@ -14,13 +14,14 @@ import { Separator } from '../ui/separator';
 import { translations } from '@/lib/translations';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Dictionary } from '@/lib/get-dictionary';
 
 interface ComparisonPageProps {
-  cars: [Car] | [Car, Car];
+  cars: ([Car] | [Car, Car]) & Car[];
   allCars: Car[];
   dictionary: Dictionary['compare'];
+  locale: string;
 }
 
 type Summary = {
@@ -28,8 +29,9 @@ type Summary = {
     recommendation: string;
 }
 
-export default function ComparisonPage({ cars, allCars, dictionary }: ComparisonPageProps) {
+export default function ComparisonPage({ cars, allCars, dictionary, locale }: ComparisonPageProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [car1, car2] = cars;
   
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -44,7 +46,7 @@ export default function ComparisonPage({ cars, allCars, dictionary }: Comparison
     } else {
         newIds = [currentIds[0], carId].filter(Boolean);
     }
-    router.push(`/compare?ids=${newIds.join(',')}`);
+    router.push(`/${locale}/compare?ids=${newIds.join(',')}`);
   };
 
   const handleAiSummary = () => {
@@ -131,7 +133,7 @@ export default function ComparisonPage({ cars, allCars, dictionary }: Comparison
                 </SelectContent>
             </Select>
             <Button variant="link" asChild className="mt-2">
-                <Link href="/catalog">{dictionary.search_in_catalog}</Link>
+                <Link href={`/${locale}/catalog`}>{dictionary.search_in_catalog}</Link>
             </Button>
         </Card>
     );
