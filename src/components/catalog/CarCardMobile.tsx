@@ -5,7 +5,6 @@ import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
-import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
@@ -23,6 +22,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
   const placeholder = findPlaceholderImage(car.id);
   const pathname = usePathname();
   const locale = pathname.split('/')[1];
+  const carType = car.type as keyof (typeof dictionary.compare.features);
 
   return (
     <div className="overflow-hidden bg-card border-b">
@@ -49,7 +49,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare, dictio
                 {car.brand} {car.model}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                {car.year} - {translations.type[car.type as keyof typeof translations.type]}
+                {car.year} - {dictionary.compare.features[carType] || car.type}
               </p>
               <p className="mt-2 text-lg font-bold text-foreground">
                 {`$${car.price.toLocaleString('es-MX')}`}

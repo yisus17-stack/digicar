@@ -44,7 +44,7 @@ export default async function Compare({
         <ComparisonPage 
           cars={carsToCompare as [Car] | [Car, Car]} 
           allCars={cars}
-          dictionary={dictionary.compare}
+          dictionary={dictionary}
           locale={locale}
         />
     </div>

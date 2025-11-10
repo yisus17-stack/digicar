@@ -43,7 +43,7 @@ import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Locale } from '@/i18n-config';
-import { getDictionary } from '@/lib/get-dictionary';
+import { Dictionary } from '@/lib/get-dictionary';
 
 
 const popularSearches = [
@@ -56,8 +56,7 @@ const popularSearches = [
   'Familiar',
 ];
 
-const SiteHeader = ({ locale }: { locale: Locale }) => {
-  const [dictionary, setDictionary] = useState<any>(null);
+const SiteHeader = ({ locale, dictionary }: { locale: Locale, dictionary: Dictionary }) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -66,11 +65,6 @@ const SiteHeader = ({ locale }: { locale: Locale }) => {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    getDictionary(locale).then(setDictionary);
-  }, [locale]);
-
 
   // Simulación temporal: cualquier usuario logueado es admin
   const isAdmin = !!user;

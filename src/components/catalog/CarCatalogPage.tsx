@@ -230,7 +230,7 @@ export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary 
       sortComponent={isMobile ? sortOptions : undefined}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      dictionary={dictionary.catalog.filters}
+      dictionary={dictionary}
     />
   );
 

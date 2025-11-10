@@ -11,7 +11,6 @@ import { Loader, Sparkles, PlusCircle } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
 import LeadCaptureForm from '../shared/LeadCaptureForm';
 import { Separator } from '../ui/separator';
-import { translations } from '@/lib/translations';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useRouter, usePathname } from 'next/navigation';
@@ -20,7 +19,7 @@ import { Dictionary } from '@/lib/get-dictionary';
 interface ComparisonPageProps {
   cars: ([Car] | [Car, Car]) & Car[];
   allCars: Car[];
-  dictionary: Dictionary['compare'];
+  dictionary: Dictionary;
   locale: string;
 }
 
@@ -31,8 +30,8 @@ type Summary = {
 
 export default function ComparisonPage({ cars, allCars, dictionary, locale }: ComparisonPageProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const [car1, car2] = cars;
+  const d = dictionary.compare;
   
   const [summary, setSummary] = useState<Summary | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -67,30 +66,33 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
   };
 
   const features = [
-    { label: dictionary.features.price, key: 'price' },
-    { label: dictionary.features.year, key: 'year' },
-    { label: dictionary.features.type, key: 'type' },
-    { label: dictionary.features.mileage, key: 'mileage' },
-    { label: dictionary.features.fuel, key: 'fuelType' },
-    { label: dictionary.features.transmission, key: 'transmission' },
-    { label: dictionary.features.engine, key: 'engine' },
-    { label: dictionary.features.horsepower, key: 'horsepower' },
-    { label: dictionary.features.cylinders, key: 'engineCylinders' },
-    { label: dictionary.features.passengers, key: 'passengers' },
-    { label: dictionary.features.color, key: 'color' },
+    { label: d.features.price, key: 'price' },
+    { label: d.features.year, key: 'year' },
+    { label: d.features.type, key: 'type' },
+    { label: d.features.mileage, key: 'mileage' },
+    { label: d.features.fuel, key: 'fuelType' },
+    { label: d.features.transmission, key: 'transmission' },
+    { label: d.features.engine, key: 'engine' },
+    { label: d.features.horsepower, key: 'horsepower' },
+    { label: d.features.cylinders, key: 'engineCylinders' },
+    { label: d.features.passengers, key: 'passengers' },
+    { label: d.features.color, key: 'color' },
   ];
 
   const formatValue = (key: string, car?: Car) => {
     if (!car) return '-';
-    const value = car[key as keyof Car];
+    const value = car[key as keyof Car] as string | number;
+    const featureKey = key.toLowerCase() as keyof typeof d.features;
+    
     switch (key) {
       case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
       case 'mileage': return `${Number(value).toLocaleString('es-MX')} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}`;
       case 'horsepower': return `${value} HP`;
-      case 'type': return translations.type[value as keyof typeof translations.type];
-      case 'fuelType': return translations.fuelType[value as keyof typeof translations.fuelType];
-      case 'transmission': return translations.transmission[value as keyof typeof translations.transmission];
-      case 'color': return translations.color[value as keyof typeof translations.color];
+      case 'type': 
+      case 'fuelType': 
+      case 'transmission': 
+      case 'color':
+        return d.features[featureKey] || value;
       default: return value;
     }
   }
@@ -119,10 +121,10 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
     return (
         <Card className="w-full h-full min-h-[200px] flex flex-col items-center justify-center border-dashed p-4">
             <PlusCircle className="h-10 w-10 text-muted-foreground mb-4"/>
-            <p className="text-muted-foreground mb-4 text-center">{dictionary.add_car_to_compare}</p>
+            <p className="text-muted-foreground mb-4 text-center">{d.add_car_to_compare}</p>
             <Select onValueChange={(carId) => onSelect(position, carId)}>
                 <SelectTrigger className="w-full max-w-xs">
-                    <SelectValue placeholder={dictionary.select_car_placeholder} />
+                    <SelectValue placeholder={d.select_car_placeholder} />
                 </SelectTrigger>
                 <SelectContent>
                     {availableCars.map(car => (
@@ -133,7 +135,7 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
                 </SelectContent>
             </Select>
             <Button variant="link" asChild className="mt-2">
-                <Link href={`/${locale}/catalog`}>{dictionary.search_in_catalog}</Link>
+                <Link href={`/${locale}/catalog`}>{d.search_in_catalog}</Link>
             </Button>
         </Card>
     );
@@ -149,7 +151,7 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
 
       <Card>
         <CardHeader>
-          <CardTitle>{dictionary.specifications_title}</CardTitle>
+          <CardTitle>{d.specifications_title}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {features.map(feature => (
@@ -164,7 +166,7 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
           ))}
           <div>
             <div className="grid grid-cols-3 items-start gap-4">
-                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">{dictionary.features.title}</div>
+                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">{d.features.title}</div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
                         {car1?.features.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
@@ -184,22 +186,22 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
       <div className="text-center">
           <Button size="lg" onClick={handleAiSummary} disabled={isPending || !car1 || !car2}>
             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-            {dictionary.get_ai_summary_button}
+            {d.get_ai_summary_button}
           </Button>
       </div>
 
       {summary && (
         <Card className="shadow-lg animate-in fade-in duration-500">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> {dictionary.ai_analysis_title}</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> {d.ai_analysis_title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h3 className="font-bold mb-2">{dictionary.key_differences_title}</h3>
+                    <h3 className="font-bold mb-2">{d.key_differences_title}</h3>
                     <p className="text-muted-foreground">{summary.summary}</p>
                 </div>
                 <div>
-                    <h3 className="font-bold mb-2">{dictionary.recommendation_title}</h3>
+                    <h3 className="font-bold mb-2">{d.recommendation_title}</h3>
                     <p className="text-muted-foreground">{summary.recommendation}</p>
                 </div>
             </CardContent>
@@ -209,10 +211,10 @@ export default function ComparisonPage({ cars, allCars, dictionary, locale }: Co
       {(car1 || car2) && (
         <Card>
           <CardHeader>
-              <CardTitle>{dictionary.interested_title}</CardTitle>
+              <CardTitle>{d.interested_title}</CardTitle>
           </CardHeader>
           <CardContent>
-              <p className="text-muted-foreground mb-4">{dictionary.interested_subtitle}</p>
+              <p className="text-muted-foreground mb-4">{d.interested_subtitle}</p>
               <LeadCaptureForm interestedCars={[car1, car2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
           </CardContent>
         </Card>

@@ -12,7 +12,6 @@ import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
 import { Car } from '@/lib/types';
-import { translations } from '@/lib/translations';
 import { Loader, Sparkles } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Input } from '../ui/input';
@@ -30,12 +29,14 @@ interface CarFiltersProps {
   sortComponent?: React.ReactNode;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  dictionary: Dictionary['catalog']['filters'];
+  dictionary: Dictionary;
 }
 
 const FilterSkeleton = () => <Skeleton className="h-10 w-full" />;
 
 export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent, searchTerm, setSearchTerm, dictionary }: CarFiltersProps) {
+  const d = dictionary.catalog.filters;
+  const c = dictionary.compare.features;
   
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
@@ -61,20 +62,20 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         {sortComponent && (
             <>
               <div>
-                  <Label>{dictionary.sort_by_label}</Label>
+                  <Label>{d.sort_by_label}</Label>
                   {sortComponent}
               </div>
               <Separator />
             </>
         )}
-        <h3 className="text-2xl font-bold md:hidden">{dictionary.title}</h3>
-        <h3 className="text-2xl font-bold hidden md:block">{dictionary.title}</h3>
+        <h3 className="text-2xl font-bold md:hidden">{d.title}</h3>
+        <h3 className="text-2xl font-bold hidden md:block">{d.title}</h3>
         
         <div>
-          <Label>{dictionary.ai_search_label}</Label>
+          <Label>{d.ai_search_label}</Label>
           <Input
             type="text"
-            placeholder={dictionary.ai_search_placeholder}
+            placeholder={d.ai_search_placeholder}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="w-full text-base focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -82,18 +83,18 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         </div>
         
         <div>
-            <Label>{dictionary.brand_label}</Label>
+            <Label>{d.brand_label}</Label>
               <Select value={filters.brand} onValueChange={(value) => handleSelectChange('brand', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_brands}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_brands}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_brands}</SelectItem>
+                      <SelectItem value="all">{d.all_brands}</SelectItem>
                       {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.price_label}: ${filters.price.toLocaleString('es-MX')}</Label>
+            <Label>{d.price_label}: ${filters.price.toLocaleString('es-MX')}</Label>
               <Slider
                   min={0}
                   max={maxPrice}
@@ -105,78 +106,78 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         </div>
 
         <div>
-            <Label>{dictionary.type_label}</Label>
+            <Label>{d.type_label}</Label>
               <Select value={filters.type} onValueChange={(value) => handleSelectChange('type', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_types}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_types}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_types}</SelectItem>
-                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type]}</SelectItem>)}
+                      <SelectItem value="all">{d.all_types}</SelectItem>
+                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{c[type.toLowerCase() as keyof typeof c] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.year_label}</Label>
+            <Label>{d.year_label}</Label>
               <Select value={filters.year} onValueChange={(value) => handleSelectChange('year', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_years}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_years}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_years}</SelectItem>
+                      <SelectItem value="all">{d.all_years}</SelectItem>
                       {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.fuel_label}</Label>
+            <Label>{d.fuel_label}</Label>
               <Select value={filters.fuelType} onValueChange={(value) => handleSelectChange('fuelType', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_fuels}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_fuels}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_fuels}</SelectItem>
-                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType]}</SelectItem>)}
+                      <SelectItem value="all">{d.all_fuels}</SelectItem>
+                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{c[type.toLowerCase() as keyof typeof c] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.cylinders_label}</Label>
+            <Label>{d.cylinders_label}</Label>
               <Select value={filters.engineCylinders} onValueChange={(value) => handleSelectChange('engineCylinders', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_cylinders}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_cylinders}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_cylinders}</SelectItem>
+                      <SelectItem value="all">{d.all_cylinders}</SelectItem>
                       {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.color_label}</Label>
+            <Label>{d.color_label}</Label>
               <Select value={filters.color} onValueChange={(value) => handleSelectChange('color', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_colors}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_colors}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_colors}</SelectItem>
-                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color]}</SelectItem>)}
+                      <SelectItem value="all">{d.all_colors}</SelectItem>
+                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{c[color.toLowerCase() as keyof typeof c] || color}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.passengers_label}</Label>
+            <Label>{d.passengers_label}</Label>
               <Select value={filters.passengers} onValueChange={(value) => handleSelectChange('passengers', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.any_capacity}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.any_capacity}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.any_capacity}</SelectItem>
-                      {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} {dictionary.passengers_suffix}</SelectItem>)}
+                      <SelectItem value="all">{d.any_capacity}</SelectItem>
+                      {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} {d.passengers_suffix}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
 
         <div>
-            <Label>{dictionary.transmission_label}</Label>
+            <Label>{d.transmission_label}</Label>
               <Select value={filters.transmission} onValueChange={(value) => handleSelectChange('transmission', value)}>
-                  <SelectTrigger><SelectValue placeholder={dictionary.all_transmissions}/></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={d.all_transmissions}/></SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="all">{dictionary.all_transmissions}</SelectItem>
-                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission]}</SelectItem>)}
+                      <SelectItem value="all">{d.all_transmissions}</SelectItem>
+                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{c[type.toLowerCase() as keyof typeof c] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -184,10 +185,10 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
       <div className='space-y-2 mt-auto pt-8'>
         <Button onClick={onSearchWithAI} className="w-full" disabled={isLoading}>
           {isLoading ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-          {dictionary.ai_search_button}
+          {d.ai_search_button}
         </Button>
         <Button variant="outline" className="w-full" onClick={onReset}>
-            {dictionary.reset_button}
+            {d.reset_button}
         </Button>
       </div>
     </div>
