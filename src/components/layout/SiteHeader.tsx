@@ -138,7 +138,7 @@ const SiteHeader = () => {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6 text-base font-medium">
+          <nav className="hidden md:flex items-center space-x-6 text-lg font-medium">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -295,7 +295,7 @@ const SiteHeader = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20 gap-4">
+                <div className="flex items-center h-20 gap-4">
                   <div className="hidden sm:flex items-center space-x-2">
                       <Link href="/">
                         <Image
@@ -312,7 +312,7 @@ const SiteHeader = () => {
                     <Input
                       type="search"
                       placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-md sm:rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                       autoFocus
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
