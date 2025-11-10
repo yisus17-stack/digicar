@@ -12,6 +12,7 @@ import {
   GitCompareArrows,
   Wand2,
   Landmark,
+  ShieldCheck,
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -27,6 +28,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
 
 const popularSearches = [
   'Prestige X10',
@@ -124,9 +134,41 @@ const SiteHeader = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="#" className="flex items-center w-full">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Mi Perfil</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="#" className="flex items-center w-full">
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    <span>Mis Simulaciones</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Administración</DropdownMenuLabel>
+                <DropdownMenuItem>
+                  <Link href="/admin/cars" className="flex items-center w-full">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    <span>Administrar Autos</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                    Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -273,5 +315,7 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
+
+    
 
     
