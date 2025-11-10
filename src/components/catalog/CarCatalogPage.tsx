@@ -7,7 +7,7 @@ import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
-import { X, SlidersHorizontal, Loader, ChevronRight } from 'lucide-react';
+import { X, SlidersHorizontal, Loader, ChevronRight, GitCompareArrows } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -18,11 +18,53 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
+import { findPlaceholderImage } from '@/lib/placeholder-images';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
+
+const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void }) => {
+  const selectedCars = cars.filter(c => selectedIds.includes(c.id));
+  if (selectedIds.length === 0) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg z-50 animate-in slide-in-from-bottom duration-300">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex-1 flex items-center gap-4 overflow-x-auto">
+            <h3 className="text-lg font-semibold whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
+            <div className="flex items-center gap-4">
+              {selectedCars.map(car => {
+                const placeholder = findPlaceholderImage(car.id);
+                return (
+                  <div key={car.id} className="relative flex items-center gap-2 bg-muted p-2 rounded-lg">
+                    {placeholder && <Image src={placeholder.imageUrl} alt={car.model} width={40} height={30} className="rounded" />}
+                    <span className="text-sm font-medium hidden md:inline">{car.brand} {car.model}</span>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => onRemove(car.id)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button onClick={onCompare} disabled={selectedIds.length < 1} className="flex-1 sm:flex-none">
+              <GitCompareArrows className="mr-2 h-4 w-4" />
+              Comparar
+            </Button>
+            <Button variant="outline" onClick={onClear} className="flex-1 sm:flex-none">Limpiar</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 export default function CarCatalogPage() {
   const [filters, setFilters] = useState({
@@ -43,9 +85,28 @@ export default function CarCatalogPage() {
   const [showFilters, setShowFilters] = useState(true);
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [comparisonIds, setComparisonIds] = useState<string[]>([]);
+  const router = useRouter();
+
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
+
+  const handleToggleCompare = (carId: string) => {
+    setComparisonIds(prevIds => {
+      if (prevIds.includes(carId)) {
+        return prevIds.filter(id => id !== carId);
+      }
+      if (prevIds.length < 2) {
+        return [...prevIds, carId];
+      }
+      return prevIds; // No changes if already 2 cars selected
+    });
+  };
+
+  const handleCompare = () => {
+    router.push(`/compare?ids=${comparisonIds.join(',')}`);
+  };
 
   const filteredCars = useMemo(() => {
     let filtered = cars.filter(car => {
@@ -167,7 +228,7 @@ export default function CarCatalogPage() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 pb-32">
       <div className="mb-4">
         <div className="flex items-center text-sm text-muted-foreground">
           <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link>
@@ -224,7 +285,12 @@ export default function CarCatalogPage() {
                 {/* Mobile View */}
                 <div className="md:hidden border rounded-lg overflow-hidden">
                   {paginatedCars.map(car => (
-                    <CarCardMobile key={`mobile-${car.id}`} car={car} />
+                    <CarCardMobile 
+                      key={`mobile-${car.id}`} 
+                      car={car}
+                      isSelected={comparisonIds.includes(car.id)}
+                      onToggleCompare={handleToggleCompare}
+                    />
                   ))}
                 </div>
 
@@ -232,7 +298,12 @@ export default function CarCatalogPage() {
                 {/* Desktop View */}
                 <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
-                        <CarCard key={`desktop-${car.id}`} car={car} />
+                        <CarCard 
+                          key={`desktop-${car.id}`} 
+                          car={car}
+                          isSelected={comparisonIds.includes(car.id)}
+                          onToggleCompare={handleToggleCompare}
+                        />
                     ))}
                 </div>
 
@@ -280,6 +351,12 @@ export default function CarCatalogPage() {
             </div>
         </main>
       </div>
+      <ComparisonBar 
+        selectedIds={comparisonIds}
+        onRemove={handleToggleCompare}
+        onClear={() => setComparisonIds([])}
+        onCompare={handleCompare}
+      />
     </div>
   );
 }

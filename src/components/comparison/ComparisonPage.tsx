@@ -1,21 +1,24 @@
 
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useMemo } from 'react';
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Loader, Sparkles, PlusCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader, Sparkles, PlusCircle, X } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
 import LeadCaptureForm from '../shared/LeadCaptureForm';
 import { Separator } from '../ui/separator';
 import { translations } from '@/lib/translations';
 import Link from 'next/link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { useRouter } from 'next/navigation';
 
 interface ComparisonPageProps {
-  cars: [Car, Car];
+  cars: [Car] | [Car, Car];
+  allCars: Car[];
 }
 
 type Summary = {
@@ -23,15 +26,27 @@ type Summary = {
     recommendation: string;
 }
 
-export default function ComparisonPage({ cars }: ComparisonPageProps) {
+export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
+  const router = useRouter();
   const [car1, car2] = cars;
-  const car1Image = findPlaceholderImage(car1.id);
-  const car2Image = findPlaceholderImage(car2.id);
   
   const [summary, setSummary] = useState<Summary | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const handleSelectCar = (position: 'car1' | 'car2', carId: string) => {
+    const currentIds = cars.map(c => c.id);
+    let newIds: string[];
+
+    if (position === 'car1') {
+        newIds = [carId, currentIds[1]].filter(Boolean);
+    } else {
+        newIds = [currentIds[0], carId].filter(Boolean);
+    }
+    router.push(`/compare?ids=${newIds.join(',')}`);
+  };
+
   const handleAiSummary = () => {
+    if (!car1 || !car2) return;
     const car1Features = JSON.stringify(car1);
     const car2Features = JSON.stringify(car2);
     const userNeeds = "Quiero un auto equilibrado. Considera el precio, el rendimiento y las características.";
@@ -61,7 +76,8 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
     { label: 'Color', key: 'color' },
   ];
 
-  const formatValue = (key: string, car: Car) => {
+  const formatValue = (key: string, car?: Car) => {
+    if (!car) return '-';
     const value = car[key as keyof Car];
     switch (key) {
       case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
@@ -74,37 +90,57 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
       default: return value;
     }
   }
+  
+  const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Car, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
+    const availableCars = allCars.filter(c => c.id !== otherCarId);
+    
+    if (selectedCar) {
+      const image = findPlaceholderImage(selectedCar.id);
+      return (
+        <Card className="overflow-hidden md:col-span-1 w-full">
+          <div className="relative h-48 w-full">
+            {image && <Image src={image.imageUrl} alt={selectedCar.model} layout="fill" className="object-cover" data-ai-hint={image.imageHint}/>}
+          </div>
+          <CardHeader>
+            <CardTitle>{selectedCar.brand} {selectedCar.model}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{formatValue('price', selectedCar)}</p>
+            <p className="text-sm text-muted-foreground">{selectedCar.year}</p>
+          </CardContent>
+        </Card>
+      )
+    }
+
+    return (
+        <Card className="w-full h-full min-h-[200px] flex flex-col items-center justify-center border-dashed p-4">
+            <PlusCircle className="h-10 w-10 text-muted-foreground mb-4"/>
+            <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
+            <Select onValueChange={(carId) => onSelect(position, carId)}>
+                <SelectTrigger className="w-full max-w-xs">
+                    <SelectValue placeholder="Seleccionar un auto" />
+                </SelectTrigger>
+                <SelectContent>
+                    {availableCars.map(car => (
+                        <SelectItem key={car.id} value={car.id}>
+                            {car.brand} {car.model}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <Button variant="link" asChild className="mt-2">
+                <Link href="/catalog">O buscar en catálogo</Link>
+            </Button>
+        </Card>
+    );
+  };
+
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-        {[car1, car2].map((car, index) => {
-          const image = index === 0 ? car1Image : car2Image;
-          return (
-            <Card key={car.id} className="overflow-hidden md:col-span-1">
-              <div className="relative h-48 w-full">
-                {image && (
-                  <Image src={image.imageUrl} alt={car.model} layout="fill" className="object-cover" data-ai-hint={image.imageHint}/>
-                )}
-              </div>
-              <CardHeader>
-                <CardTitle>{car.brand} {car.model}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{formatValue('price', car)}</p>
-                <p className="text-sm text-muted-foreground">{car.year}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-        <div className="flex items-center justify-center h-full">
-          <Button asChild variant="outline" className="w-full h-full md:w-auto md:h-auto md:aspect-square flex-col gap-2 border-dashed">
-            <Link href="/catalog">
-              <PlusCircle className="h-6 w-6 text-muted-foreground"/>
-              <span className="text-muted-foreground">Añadir a la comparación</span>
-            </Link>
-          </Button>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <CarSelector selectedCar={car1} onSelect={handleSelectCar} position="car1" otherCarId={car2?.id} />
+        <CarSelector selectedCar={car2} onSelect={handleSelectCar} position="car2" otherCarId={car1?.id} />
       </div>
 
       <Card>
@@ -114,25 +150,25 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
         <CardContent className="space-y-4">
           {features.map(feature => (
             <div key={feature.key}>
-              <div className="grid grid-cols-3 items-center gap-4 text-center">
-                <div className="font-semibold text-left text-muted-foreground">{feature.label}</div>
-                <div>{formatValue(feature.key, car1)}</div>
-                <div>{formatValue(feature.key, car2)}</div>
+              <div className="grid grid-cols-3 items-center gap-4">
+                <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
+                <div className="text-center col-span-1">{formatValue(feature.key, car1)}</div>
+                <div className="text-center col-span-1">{formatValue(feature.key, car2)}</div>
               </div>
               <Separator className="mt-4"/>
             </div>
           ))}
           <div>
             <div className="grid grid-cols-3 items-start gap-4">
-                <div className="font-semibold text-left text-muted-foreground pt-1">Características</div>
-                <div className="text-center">
+                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
+                <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {car1.features.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
+                        {car1?.features.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
-                <div className="text-center">
+                <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {car2.features.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
+                        {car2?.features.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
             </div>
@@ -142,7 +178,7 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
       </Card>
       
       <div className="text-center">
-          <Button size="lg" onClick={handleAiSummary} disabled={isPending}>
+          <Button size="lg" onClick={handleAiSummary} disabled={isPending || !car1 || !car2}>
             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
             Obtener Resumen y Recomendación de IA
           </Button>
@@ -166,15 +202,17 @@ export default function ComparisonPage({ cars }: ComparisonPageProps) {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-            <CardTitle>¿Interesado?</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
-            <LeadCaptureForm interestedCars={`${car1.brand} ${car1.model}, ${car2.brand} ${car2.model}`} />
-        </CardContent>
-      </Card>
+      {(car1 || car2) && (
+        <Card>
+          <CardHeader>
+              <CardTitle>¿Interesado?</CardTitle>
+          </CardHeader>
+          <CardContent>
+              <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
+              <LeadCaptureForm interestedCars={[car1, car2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
+          </CardContent>
+        </Card>
+      )}
 
     </div>
   );

@@ -8,13 +8,15 @@ import { cn } from '@/lib/utils';
 import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { GitCompareArrows } from 'lucide-react';
+import { GitCompareArrows, CheckCircle } from 'lucide-react';
 
 interface CarCardMobileProps {
   car: Car;
+  isSelected: boolean;
+  onToggleCompare: (carId: string) => void;
 }
 
-export default function CarCardMobile({ car }: CarCardMobileProps) {
+export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarCardMobileProps) {
   const placeholder = findPlaceholderImage(car.id);
 
   return (
@@ -55,9 +57,13 @@ export default function CarCardMobile({ car }: CarCardMobileProps) {
         <Button asChild size="sm">
           <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>
-        <Button variant="outline" size="sm">
-          <GitCompareArrows className="mr-2 h-4 w-4" />
-          Comparar
+        <Button variant={isSelected ? 'secondary' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
+          {isSelected ? (
+            <CheckCircle className="mr-2 h-4 w-4 text-primary" />
+          ) : (
+            <GitCompareArrows className="mr-2 h-4 w-4" />
+          )}
+          {isSelected ? 'Seleccionado' : 'Comparar'}
         </Button>
       </div>
     </div>
