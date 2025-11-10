@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
 
 const BrandLogos = () => (
-    <div className="bg-secondary/50">
+    <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
                 <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
