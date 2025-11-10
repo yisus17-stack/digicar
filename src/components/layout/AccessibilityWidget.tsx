@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UniversalAccess, Text, Contrast, Languages } from 'lucide-react';
+import { Accessibility, Text, Contrast, Languages } from 'lucide-react';
 
 export default function AccessibilityWidget() {
   const [highContrast, setHighContrast] = useState(false);
@@ -31,7 +31,7 @@ export default function AccessibilityWidget() {
           className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
-          <UniversalAccess className="h-7 w-7" />
+          <Accessibility className="h-7 w-7" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80" side="top" align="end">
