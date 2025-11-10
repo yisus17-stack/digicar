@@ -127,7 +127,7 @@ const SiteHeader = () => {
   return (
     <>
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex items-center justify-between py-4 px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/logo.png"
@@ -296,21 +296,23 @@ const SiteHeader = () => {
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20 gap-4">
-                  <Link href="/" className="hidden sm:flex items-center space-x-2">
-                      <Image
-                        src="/logo.png"
-                        alt="DigiCar Logo"
-                        width={150}
-                        height={50}
-                        className="w-24 md:w-36"
-                      />
-                  </Link>
+                  <div className="hidden sm:flex items-center space-x-2">
+                      <Link href="/">
+                        <Image
+                            src="/logo.png"
+                            alt="DigiCar Logo"
+                            width={150}
+                            height={50}
+                            className="w-24 md:w-36"
+                        />
+                      </Link>
+                  </div>
                   <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="search"
                       placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted sm:rounded-full rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-full md:rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                       autoFocus
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -329,7 +331,7 @@ const SiteHeader = () => {
                   <Button
                     variant="link"
                     onClick={closeSearch}
-                    className="text-muted-foreground"
+                    className="text-muted-foreground hidden sm:inline-flex"
                   >
                     Cancelar
                   </Button>
