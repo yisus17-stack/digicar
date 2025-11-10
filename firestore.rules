@@ -1,0 +1,88 @@
+/**
+ * @fileoverview Firestore Security Rules for Prototyping.
+ *
+ * Core Philosophy: This ruleset prioritizes security by enforcing authentication
+ * and ownership where appropriate while remaining flexible on data shapes for rapid
+ * prototyping. Schema validation is minimized to allow for quick iteration.
+ *
+ * Data Structure:
+ * - /cars/{carId}: Publicly accessible car catalog.
+ * - /scenarios/{scenarioId}: Publicly accessible driving scenarios.
+ * - /recommendations/{recommendationId}: Publicly accessible car recommendations.
+ * - /leads/{leadId}: Customer leads, accessible only to authenticated users.
+ *
+ * Key Security Decisions:
+ * - Public read access to car, scenario, and recommendation data.
+ * - Leads are only accessible to authenticated users. No public listing is allowed.
+ * - No schema validation is performed beyond essential checks for authorization.
+ *
+ * Authorization Independence: Rules are designed to avoid hierarchical `get()` calls
+ * by ensuring all necessary authorization data is self-contained within each document or collection.
+ *
+ * Rules are not Filters: Publicly accessible data resides in collections without requiring
+ * complex filtering in rules.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows public read access to car data.
+     * @path /cars/{carId}
+     * @allow (get, list) Any user can read car data.
+     * @deny (create, update, delete) No user can create, update, or delete car data through the rules. These operations should be handled by backend logic.
+     * @principle Allows public read access while restricting write access.
+     */
+    match /cars/{carId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to scenario data.
+     * @path /scenarios/{scenarioId}
+     * @allow (get, list) Any user can read scenario data.
+     * @deny (create, update, delete) No user can create, update, or delete scenario data through the rules. These operations should be handled by backend logic.
+     * @principle Allows public read access while restricting write access.
+     */
+    match /scenarios/{scenarioId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to recommendation data.
+     * @path /recommendations/{recommendationId}
+     * @allow (get, list) Any user can read recommendation data.
+     * @deny (create, update, delete) No user can create, update, or delete recommendation data through the rules. These operations should be handled by backend logic.
+     * @principle Allows public read access while restricting write access.
+     */
+    match /recommendations/{recommendationId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows authenticated users to manage leads. No public listing allowed.
+     * @path /leads/{leadId}
+     * @allow (create, get, update, delete) Authenticated user can manage leads.
+     * @deny (list) No public listing of leads.
+     * @principle Requires authentication for lead data access.
+     */
+    match /leads/{leadId} {
+      allow create: if isSignedIn();
+      allow get: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+      allow list: if false;
+    }
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+  }
+}

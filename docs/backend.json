@@ -1,0 +1,262 @@
+{
+  "entities": {
+    "Car": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Car",
+      "type": "object",
+      "description": "Represents a car model in the catalog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the car."
+        },
+        "make": {
+          "type": "string",
+          "description": "The manufacturer of the car (e.g., Toyota, Ford)."
+        },
+        "model": {
+          "type": "string",
+          "description": "The model name of the car (e.g., Camry, F-150)."
+        },
+        "year": {
+          "type": "number",
+          "description": "The manufacturing year of the car."
+        },
+        "trim": {
+          "type": "string",
+          "description": "The trim level of the car (e.g., LE, XLE, Limited)."
+        },
+        "engine": {
+          "type": "string",
+          "description": "Description of the engine (e.g., 2.5L I4, 3.5L V6)."
+        },
+        "horsepower": {
+          "type": "number",
+          "description": "The horsepower of the car."
+        },
+        "mpg": {
+          "type": "number",
+          "description": "The miles per gallon of the car."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the car."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the car's image.",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the car."
+        }
+      },
+      "required": [
+        "id",
+        "make",
+        "model",
+        "year",
+        "trim",
+        "engine",
+        "horsepower",
+        "mpg",
+        "price",
+        "imageUrl",
+        "description"
+      ]
+    },
+    "Lead": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Lead",
+      "type": "object",
+      "description": "Represents a potential customer lead.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the lead."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the lead."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the lead."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the lead.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the lead."
+        },
+        "carOfInterestId": {
+          "type": "string",
+          "description": "Reference to the Car the lead is interested in. (Relationship: Lead N:1 Car)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any notes about the lead."
+        },
+        "dateCreated": {
+          "type": "string",
+          "description": "Date and time the lead was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "carOfInterestId",
+        "notes",
+        "dateCreated"
+      ]
+    },
+    "Scenario": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Scenario",
+      "type": "object",
+      "description": "Represents a driving scenario in the car simulator.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the scenario."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the scenario (e.g., 'City Driving', 'Highway Commute')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the scenario."
+        },
+        "parameters": {
+          "type": "string",
+          "description": "JSON string containing the parameters for the car simulator."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "parameters"
+      ]
+    },
+    "Recommendation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Recommendation",
+      "type": "object",
+      "description": "Represents a car recommendation based on a scenario.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the recommendation."
+        },
+        "carId": {
+          "type": "string",
+          "description": "Reference to the recommended Car. (Relationship: Recommendation N:1 Car)"
+        },
+        "scenarioId": {
+          "type": "string",
+          "description": "Reference to the Scenario used for the recommendation. (Relationship: Recommendation N:1 Scenario)"
+        },
+        "score": {
+          "type": "number",
+          "description": "A score indicating the suitability of the car for the scenario."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Explanation of why the car is recommended for the scenario."
+        }
+      },
+      "required": [
+        "id",
+        "carId",
+        "scenarioId",
+        "score",
+        "justification"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/cars/{carId}",
+        "definition": {
+          "entityName": "Car",
+          "schema": {
+            "$ref": "#/backend/entities/Car"
+          },
+          "description": "Stores car data. Publicly accessible.",
+          "params": [
+            {
+              "name": "carId",
+              "description": "Unique identifier for the car."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/scenarios/{scenarioId}",
+        "definition": {
+          "entityName": "Scenario",
+          "schema": {
+            "$ref": "#/backend/entities/Scenario"
+          },
+          "description": "Stores car simulator scenarios. Publicly accessible.",
+          "params": [
+            {
+              "name": "scenarioId",
+              "description": "Unique identifier for the car simulator scenario."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/recommendations/{recommendationId}",
+        "definition": {
+          "entityName": "Recommendation",
+          "schema": {
+            "$ref": "#/backend/entities/Recommendation"
+          },
+          "description": "Stores car recommendations based on scenarios. Publicly accessible.",
+          "params": [
+            {
+              "name": "recommendationId",
+              "description": "Unique identifier for the car recommendation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/leads/{leadId}",
+        "definition": {
+          "entityName": "Lead",
+          "schema": {
+            "$ref": "#/backend/entities/Lead"
+          },
+          "description": "Stores potential customer leads.  Requires authentication to read and write. No public listing allowed.",
+          "params": [
+            {
+              "name": "leadId",
+              "description": "Unique identifier for the customer lead."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to address the 'auth/unauthorized-domain' Firebase error, enable the core features (Car Catalog, Virtual Assistant, Car Comparison, Car Simulator, Lead Capture), and adhere to the core design principles. The error suggests an issue with the authorized domains configured in the Firebase Authentication settings. This is not directly related to the Firestore data structure but rather a configuration issue in the Firebase project. \n\nThe structure prioritizes Authorization Independence, Clarity of Intent, DBAC (Database Based Access Control), QAPs (Rules are not Filters), and Invariants.\n\n*   **Cars:** Stores car data. Publicly accessible for the Car Catalog and Virtual Assistant. Enables simple list operations (QAPs) without filtering in rules.\n*   **Scenarios:** Stores car simulator scenarios. Publicly accessible to any user for the Car Simulator feature. Enables simple list operations (QAPs) without filtering in rules.\n*   **Recommendations:** Stores car recommendations. Publicly accessible to any user using the Car Simulator. Enables simple list operations (QAPs) without filtering in rules.\n*   **Leads:** Stores potential customer leads. Each lead is associated with a specific car. This collection enables lead capture. Access is restricted to authenticated users (e.g., sales team) who can manage the leads. No public listing of leads is allowed. Requires authentication to write or read.\n\nThis structure ensures Authorization Independence by not relying on hierarchical `get()` calls. All authorization-related information is self-contained within each document or collection.\n\nQAPs are supported through structural segregation. Publicly accessible data (Cars, Scenarios, Recommendations) resides in collections without requiring complex filtering in rules. The Leads collection, containing private data, is secured with authentication requirements.\n\nOwnership and other invariants can be enforced through server-side functions or client-side validation before writing to Firestore."
+  }
+}
