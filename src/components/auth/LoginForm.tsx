@@ -22,8 +22,9 @@ import {
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader } from 'lucide-react';
+import { Loader, User, Lock } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const formSchema = z.object({
   email: z.string().email('Por favor, introduce un correo electrónico válido.'),
@@ -97,7 +98,14 @@ export default function LoginForm() {
   };
 
   return (
-    <>
+    <div className="space-y-6">
+       <Image src="/logo.png" alt="DigiCar" width={150} height={50} className="mx-auto" />
+      <div className="text-center">
+        <h1 className="text-2xl font-bold tracking-tight">Acceso a la Plataforma</h1>
+        <p className="text-muted-foreground">
+          Ingresa tus credenciales para continuar.
+        </p>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -107,11 +115,15 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Correo Electrónico</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="tu@correo.com"
-                    {...field}
-                  />
+                    <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="email"
+                            placeholder="tu@correo.com"
+                            className="pl-10 bg-secondary"
+                            {...field}
+                        />
+                    </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -124,31 +136,39 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
+                    <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input type="password" placeholder="••••••••" className="pl-10 bg-secondary" {...field} />
+                    </div>
                 </FormControl>
+                 <div className="text-right text-sm mt-2">
+                    <Link href="#" className="text-muted-foreground hover:text-foreground">
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-blue-800 hover:bg-blue-700 text-white rounded-full" disabled={isLoading}>
             {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-            Iniciar Sesión
+            Acceso
           </Button>
         </form>
       </Form>
-      <div className="relative my-4">
+       <div className="relative my-4">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            O continuar con
+          <span className="bg-card px-2 text-muted-foreground">
+            O iniciar sesión con
           </span>
         </div>
       </div>
-      <Button
+       <Button
         variant="outline"
-        className="w-full"
+        className="w-full rounded-full"
         onClick={handleGoogleSignIn}
         disabled={isGoogleLoading}
       >
@@ -176,15 +196,6 @@ export default function LoginForm() {
         )}
         Google
       </Button>
-      <p className="px-8 text-center text-sm text-muted-foreground">
-        ¿No tienes una cuenta?{' '}
-        <Link
-          href="/register"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Regístrate
-        </Link>
-      </p>
-    </>
+    </div>
   );
 }

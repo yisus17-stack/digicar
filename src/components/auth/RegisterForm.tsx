@@ -23,8 +23,9 @@ import {
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader } from 'lucide-react';
+import { Loader, User, Lock, Mail } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const formSchema = z
   .object({
@@ -115,7 +116,14 @@ export default function RegisterForm() {
   };
 
   return (
-    <>
+    <div className="space-y-6">
+      <Image src="/logo.png" alt="DigiCar" width={150} height={50} className="mx-auto" />
+      <div className="text-center">
+        <h1 className="text-2xl font-bold tracking-tight">Registro de Nueva Cuenta</h1>
+        <p className="text-muted-foreground">
+          Completa el formulario para unirte a la comunidad.
+        </p>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -125,7 +133,10 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Nombre Completo</FormLabel>
                 <FormControl>
-                  <Input placeholder="Juan Pérez" {...field} />
+                    <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input placeholder="Juan Pérez" {...field} className="pl-10 bg-secondary" />
+                    </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,11 +149,15 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Correo Electrónico</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="tu@correo.com"
-                    {...field}
-                  />
+                    <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="email"
+                            placeholder="tu@correo.com"
+                            {...field}
+                            className="pl-10 bg-secondary"
+                        />
+                    </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -155,7 +170,10 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
+                    <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input type="password" placeholder="••••••••" {...field} className="pl-10 bg-secondary"/>
+                    </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -168,13 +186,16 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Confirmar Contraseña</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
+                    <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input type="password" placeholder="••••••••" {...field} className="pl-10 bg-secondary"/>
+                    </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-blue-800 hover:bg-blue-700 text-white rounded-full" disabled={isLoading}>
             {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
             Crear Cuenta
           </Button>
@@ -185,14 +206,14 @@ export default function RegisterForm() {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            O continuar con
+          <span className="bg-card px-2 text-muted-foreground">
+            O registrarse con
           </span>
         </div>
       </div>
       <Button
         variant="outline"
-        className="w-full"
+        className="w-full rounded-full"
         onClick={handleGoogleSignIn}
         disabled={isGoogleLoading}
       >
@@ -220,15 +241,6 @@ export default function RegisterForm() {
         )}
         Google
       </Button>
-      <p className="px-8 text-center text-sm text-muted-foreground">
-        ¿Ya tienes una cuenta?{' '}
-        <Link
-          href="/login"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Inicia Sesión
-        </Link>
-      </p>
-    </>
+    </div>
   );
 }
