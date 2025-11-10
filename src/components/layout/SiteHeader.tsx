@@ -285,77 +285,79 @@ const SiteHeader = () => {
             className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           >
-            <motion.div
-              key="panel"
-              initial={{ y: -40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="bg-background border-b"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20 gap-4">
-                  <Link href="/" className="hidden sm:flex items-center space-x-2">
-                      <Image
-                        src="/logo.png"
-                        alt="DigiCar Logo"
-                        width={150}
-                        height={50}
-                        className="w-24 md:w-36"
+            <div className="flex w-full justify-center md:pt-4">
+              <motion.div
+                key="panel"
+                initial={{ y: -40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -40, opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                className="bg-background border-b w-full md:w-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="flex items-center justify-between h-20 gap-4">
+                    <Link href="/" className="hidden sm:flex items-center space-x-2">
+                        <Image
+                          src="/logo.png"
+                          alt="DigiCar Logo"
+                          width={150}
+                          height={50}
+                          className="w-24 md:w-36"
+                        />
+                    </Link>
+                    <div className="relative flex-1">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        placeholder="Buscar"
+                        className="w-full h-12 pl-12 pr-4 text-base bg-muted sm:rounded-full rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                        autoFocus
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
                       />
-                  </Link>
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted sm:rounded-full rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
-                      autoFocus
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    {searchValue && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
-                        onClick={handleClearSearch}
-                      >
-                        <X className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                    )}
+                      {searchValue && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full sm:hidden"
+                          onClick={handleClearSearch}
+                        >
+                          <X className="h-5 w-5 text-muted-foreground" />
+                        </Button>
+                      )}
+                    </div>
+                    <Button
+                      variant="link"
+                      onClick={closeSearch}
+                      className="text-muted-foreground"
+                    >
+                      Cancelar
+                    </Button>
                   </div>
-                  <Button
-                    variant="link"
-                    onClick={closeSearch}
-                    className="text-muted-foreground"
-                  >
-                    Cancelar
-                  </Button>
-                </div>
-                <div className="mt-4 pb-12">
-                  <p className="font-semibold mb-4 text-muted-foreground text-sm">
-                    Búsquedas Populares
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {popularSearches.map((term) => (
-                      <Button
-                        key={term}
-                        variant="secondary"
-                        size="sm"
-                        className="rounded-full font-normal"
-                        onClick={() => {
-                          setSearchValue(term);
-                        }}
-                      >
-                        {term}
-                      </Button>
-                    ))}
+                  <div className="mt-4 pb-12">
+                    <p className="font-semibold mb-4 text-muted-foreground text-sm">
+                      Búsquedas Populares
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {popularSearches.map((term) => (
+                        <Button
+                          key={term}
+                          variant="secondary"
+                          size="sm"
+                          className="rounded-full font-normal"
+                          onClick={() => {
+                            setSearchValue(term);
+                          }}
+                        >
+                          {term}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
