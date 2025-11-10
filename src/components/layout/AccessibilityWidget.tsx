@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -18,9 +18,25 @@ import {
 } from '@/components/ui/select';
 import { Accessibility, Text, Contrast, Languages } from 'lucide-react';
 
+type FontSize = 'small' | 'normal' | 'large';
+
 export default function AccessibilityWidget() {
   const [highContrast, setHighContrast] = useState(false);
-  const [fontSize, setFontSize] = useState('normal');
+  const [fontSize, setFontSize] = useState<FontSize>('normal');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (highContrast) {
+      root.setAttribute('data-contrast', 'high');
+    } else {
+      root.removeAttribute('data-contrast');
+    }
+  }, [highContrast]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-font-size', fontSize);
+  }, [fontSize]);
 
   return (
     <Popover>
