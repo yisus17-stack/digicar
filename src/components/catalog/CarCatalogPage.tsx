@@ -21,13 +21,14 @@ import { ScrollArea } from '../ui/scroll-area';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { Dictionary } from '@/lib/get-dictionary';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
-const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void }) => {
+const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, dictionary }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, dictionary: Dictionary['catalog']['comparison_bar'] }) => {
   const selectedCars = cars.filter(c => selectedIds.includes(c.id));
   if (selectedIds.length === 0) return null;
 
@@ -36,7 +37,7 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selected
       <div className="container mx-auto px-4 py-3">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex-1 flex items-center gap-4 overflow-x-auto">
-            <h3 className="text-lg font-semibold whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
+            <h3 className="text-lg font-semibold whitespace-nowrap">{dictionary.title} ({selectedIds.length}/2)</h3>
             <div className="flex items-center gap-4">
               {selectedCars.map(car => {
                 const placeholder = findPlaceholderImage(car.id);
@@ -55,9 +56,9 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selected
           <div className="flex gap-2 w-full sm:w-auto">
             <Button onClick={onCompare} disabled={selectedIds.length < 1} className="flex-1 sm:flex-none">
               <GitCompareArrows className="mr-2 h-4 w-4" />
-              Comparar
+              {dictionary.compare_button}
             </Button>
-            <Button variant="outline" onClick={onClear} className="flex-1 sm:flex-none">Limpiar</Button>
+            <Button variant="outline" onClick={onClear} className="flex-1 sm:flex-none">{dictionary.clear_button}</Button>
           </div>
         </div>
       </div>
@@ -66,7 +67,7 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selected
 };
 
 
-export default function CarCatalogPage() {
+export default function CarCatalogPage({ dictionary }: { dictionary: Dictionary }) {
   const [filters, setFilters] = useState({
     brand: 'all',
     fuelType: 'all',
@@ -200,13 +201,13 @@ export default function CarCatalogPage() {
   const sortOptions = (
     <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
       <SelectTrigger className="w-full md:w-[220px] focus-visible:ring-0 focus-visible:ring-offset-0">
-        <SelectValue placeholder="Ordenar por" />
+        <SelectValue placeholder={dictionary.catalog.sort_by.placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="relevance">Relevancia</SelectItem>
-        <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
-        <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
-        <SelectItem value="year-desc">Año: Más reciente primero</SelectItem>
+        <SelectItem value="relevance">{dictionary.catalog.sort_by.relevance}</SelectItem>
+        <SelectItem value="price-asc">{dictionary.catalog.sort_by.price_asc}</SelectItem>
+        <SelectItem value="price-desc">{dictionary.catalog.sort_by.price_desc}</SelectItem>
+        <SelectItem value="year-desc">{dictionary.catalog.sort_by.year_desc}</SelectItem>
       </SelectContent>
     </Select>
   );
@@ -223,6 +224,7 @@ export default function CarCatalogPage() {
       sortComponent={isMobile ? sortOptions : undefined}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      dictionary={dictionary.catalog.filters}
     />
   );
 
@@ -231,9 +233,9 @@ export default function CarCatalogPage() {
     <div className="container mx-auto px-4 py-8 pb-32">
       <div className="mb-4">
         <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link>
+          <Link href="/" className="text-primary font-medium hover:underline">{dictionary.breadcrumbs.home}</Link>
           <ChevronRight className="h-4 w-4 mx-1" />
-          <span>Catálogo</span>
+          <span>{dictionary.breadcrumbs.catalog}</span>
         </div>
       </div>
 
@@ -244,19 +246,19 @@ export default function CarCatalogPage() {
 
         <main className={cn('flex flex-1 flex-col', !showFilters && 'lg:w-full')}>
             <div className='flex justify-between items-center mb-6'>
-              <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
+              <p className="text-sm text-muted-foreground">{filteredCars.length} {dictionary.catalog.results}</p>
               <div className='flex items-center gap-4'>
                 <div className='lg:hidden'>
                   <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm">
                         <SlidersHorizontal className='mr-2 h-4 w-4' />
-                        Filtrar y Ordenar
+                        {dictionary.catalog.filter_and_sort}
                       </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="flex flex-col w-full">
                       <SheetHeader>
-                        <SheetTitle>Filtrar y Ordenar</SheetTitle>
+                        <SheetTitle>{dictionary.catalog.filter_and_sort}</SheetTitle>
                       </SheetHeader>
                       <ScrollArea className="flex-1">
                         <div className='pr-6'>
@@ -264,7 +266,7 @@ export default function CarCatalogPage() {
                         </div>
                       </ScrollArea>
                       <SheetFooter className="pt-4 border-t">
-                        <Button onClick={handleApplyMobileFilters} className='w-full'>Aplicar</Button>
+                        <Button onClick={handleApplyMobileFilters} className='w-full'>{dictionary.catalog.apply_button}</Button>
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>
@@ -272,7 +274,7 @@ export default function CarCatalogPage() {
                 <div className='hidden lg:flex items-center gap-4'>
                     <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                       <SlidersHorizontal className='mr-2 h-4 w-4' />
-                      {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
+                      {showFilters ? dictionary.catalog.hide_filters : dictionary.catalog.show_filters}
                     </Button>
                     {sortOptions}
                 </div>
@@ -290,6 +292,7 @@ export default function CarCatalogPage() {
                       car={car}
                       isSelected={comparisonIds.includes(car.id)}
                       onToggleCompare={handleToggleCompare}
+                      dictionary={dictionary}
                     />
                   ))}
                 </div>
@@ -303,6 +306,7 @@ export default function CarCatalogPage() {
                           car={car}
                           isSelected={comparisonIds.includes(car.id)}
                           onToggleCompare={handleToggleCompare}
+                          dictionary={dictionary}
                         />
                     ))}
                 </div>
@@ -310,8 +314,8 @@ export default function CarCatalogPage() {
                 {filteredCars.length === 0 && !isAiLoading && (
                     <div className="text-center py-16">
                         <X className="mx-auto h-12 w-12 text-muted-foreground" />
-                        <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>
-                        <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
+                        <h2 className="mt-4 text-xl font-semibold">{dictionary.catalog.no_results_title}</h2>
+                        <p className="mt-2 text-muted-foreground">{dictionary.catalog.no_results_description}</p>
                     </div>
                 )}
             </div>
@@ -356,6 +360,7 @@ export default function CarCatalogPage() {
         onRemove={handleToggleCompare}
         onClear={() => setComparisonIds([])}
         onCompare={handleCompare}
+        dictionary={dictionary.catalog.comparison_bar}
       />
     </div>
   );

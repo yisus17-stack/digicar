@@ -10,14 +10,16 @@ import { translations } from '@/lib/translations';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { GitCompareArrows, CheckCircle } from 'lucide-react';
+import { Dictionary } from '@/lib/get-dictionary';
 
 interface CarCardProps {
   car: Car;
   isSelected: boolean;
   onToggleCompare: (carId: string) => void;
+  dictionary: Dictionary;
 }
 
-export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
+export default function CarCard({ car, isSelected, onToggleCompare, dictionary }: CarCardProps) {
   const placeholder = findPlaceholderImage(car.id);
 
   return (
@@ -46,7 +48,7 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
             <Button asChild>
                 <Link href={`/car/${car.id}`}>
-                    Ver Detalles
+                    {dictionary.car_card.view_details}
                 </Link>
             </Button>
             <Button variant={isSelected ? 'secondary' : 'outline'} onClick={() => onToggleCompare(car.id)}>
@@ -55,7 +57,7 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
                 ) : (
                     <GitCompareArrows className="mr-2 h-4 w-4" />
                 )}
-                {isSelected ? 'Seleccionado' : 'Comparar'}
+                {isSelected ? dictionary.car_card.selected : dictionary.car_card.compare}
             </Button>
         </div>
       </CardContent>

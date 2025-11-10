@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useState, useTransition, useMemo } from 'react';
+import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Sparkles, PlusCircle, X } from 'lucide-react';
+import { Loader, Sparkles, PlusCircle } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
 import LeadCaptureForm from '../shared/LeadCaptureForm';
 import { Separator } from '../ui/separator';
@@ -15,10 +15,12 @@ import { translations } from '@/lib/translations';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useRouter } from 'next/navigation';
+import { Dictionary } from '@/lib/get-dictionary';
 
 interface ComparisonPageProps {
   cars: [Car] | [Car, Car];
   allCars: Car[];
+  dictionary: Dictionary['compare'];
 }
 
 type Summary = {
@@ -26,7 +28,7 @@ type Summary = {
     recommendation: string;
 }
 
-export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
+export default function ComparisonPage({ cars, allCars, dictionary }: ComparisonPageProps) {
   const router = useRouter();
   const [car1, car2] = cars;
   
@@ -63,17 +65,17 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
   };
 
   const features = [
-    { label: 'Precio', key: 'price' },
-    { label: 'Año', key: 'year' },
-    { label: 'Tipo', key: 'type' },
-    { label: 'Kilometraje/Autonomía', key: 'mileage' },
-    { label: 'Combustible', key: 'fuelType' },
-    { label: 'Transmisión', key: 'transmission' },
-    { label: 'Motor', key: 'engine' },
-    { label: 'Caballos de Fuerza', key: 'horsepower' },
-    { label: 'Cilindros', key: 'engineCylinders' },
-    { label: 'Pasajeros', key: 'passengers' },
-    { label: 'Color', key: 'color' },
+    { label: dictionary.features.price, key: 'price' },
+    { label: dictionary.features.year, key: 'year' },
+    { label: dictionary.features.type, key: 'type' },
+    { label: dictionary.features.mileage, key: 'mileage' },
+    { label: dictionary.features.fuel, key: 'fuelType' },
+    { label: dictionary.features.transmission, key: 'transmission' },
+    { label: dictionary.features.engine, key: 'engine' },
+    { label: dictionary.features.horsepower, key: 'horsepower' },
+    { label: dictionary.features.cylinders, key: 'engineCylinders' },
+    { label: dictionary.features.passengers, key: 'passengers' },
+    { label: dictionary.features.color, key: 'color' },
   ];
 
   const formatValue = (key: string, car?: Car) => {
@@ -115,10 +117,10 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
     return (
         <Card className="w-full h-full min-h-[200px] flex flex-col items-center justify-center border-dashed p-4">
             <PlusCircle className="h-10 w-10 text-muted-foreground mb-4"/>
-            <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
+            <p className="text-muted-foreground mb-4 text-center">{dictionary.add_car_to_compare}</p>
             <Select onValueChange={(carId) => onSelect(position, carId)}>
                 <SelectTrigger className="w-full max-w-xs">
-                    <SelectValue placeholder="Seleccionar un auto" />
+                    <SelectValue placeholder={dictionary.select_car_placeholder} />
                 </SelectTrigger>
                 <SelectContent>
                     {availableCars.map(car => (
@@ -129,7 +131,7 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
                 </SelectContent>
             </Select>
             <Button variant="link" asChild className="mt-2">
-                <Link href="/catalog">O buscar en catálogo</Link>
+                <Link href="/catalog">{dictionary.search_in_catalog}</Link>
             </Button>
         </Card>
     );
@@ -145,7 +147,7 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Especificaciones</CardTitle>
+          <CardTitle>{dictionary.specifications_title}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {features.map(feature => (
@@ -160,7 +162,7 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
           ))}
           <div>
             <div className="grid grid-cols-3 items-start gap-4">
-                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
+                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">{dictionary.features.title}</div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
                         {car1?.features.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
@@ -180,22 +182,22 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
       <div className="text-center">
           <Button size="lg" onClick={handleAiSummary} disabled={isPending || !car1 || !car2}>
             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-            Obtener Resumen y Recomendación de IA
+            {dictionary.get_ai_summary_button}
           </Button>
       </div>
 
       {summary && (
         <Card className="shadow-lg animate-in fade-in duration-500">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> Análisis de IA</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> {dictionary.ai_analysis_title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h3 className="font-bold mb-2">Diferencias Clave</h3>
+                    <h3 className="font-bold mb-2">{dictionary.key_differences_title}</h3>
                     <p className="text-muted-foreground">{summary.summary}</p>
                 </div>
                 <div>
-                    <h3 className="font-bold mb-2">Recomendación</h3>
+                    <h3 className="font-bold mb-2">{dictionary.recommendation_title}</h3>
                     <p className="text-muted-foreground">{summary.recommendation}</p>
                 </div>
             </CardContent>
@@ -205,10 +207,10 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
       {(car1 || car2) && (
         <Card>
           <CardHeader>
-              <CardTitle>¿Interesado?</CardTitle>
+              <CardTitle>{dictionary.interested_title}</CardTitle>
           </CardHeader>
           <CardContent>
-              <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
+              <p className="text-muted-foreground mb-4">{dictionary.interested_subtitle}</p>
               <LeadCaptureForm interestedCars={[car1, car2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
           </CardContent>
         </Card>

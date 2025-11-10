@@ -1,10 +1,11 @@
-
 import CarCatalog from '@/components/catalog/CarCatalog';
 import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
+import { Locale } from '@/i18n-config';
+import { getDictionary } from '@/lib/get-dictionary';
 
 const BrandLogos = () => (
     <div className="bg-muted">
@@ -20,8 +21,9 @@ const BrandLogos = () => (
 );
 
 
-export default function Home() {
+export default async function Home({ params: { locale } }: { params: { locale: Locale }}) {
     const popularCars = cars.slice(0, 3);
+    const dictionary = await getDictionary(locale);
 
     return (
         <>
@@ -29,17 +31,17 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
-                            <span className="whitespace-nowrap">Conduce tu historia</span> con <span className="text-primary">DigiCar</span>
+                            <span className="whitespace-nowrap">{dictionary.home.headline_1}</span> <span className="text-primary">DigiCar</span>
                         </h1>
                         <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
-                            Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
+                            {dictionary.home.subheadline}
                         </p>
                         <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
                             <Button size="lg">
-                                Explorar
+                                {dictionary.home.explore_button}
                             </Button>
                             <Button asChild size="lg" variant="outline">
-                                <Link href="/catalog">Ver catálogo</Link>
+                                <Link href="/catalog">{dictionary.home.view_catalog_button}</Link>
                             </Button>
                         </div>
                     </div>
@@ -61,16 +63,16 @@ export default function Home() {
             <div id="popular" className="container mx-auto px-4 py-16">
                 <div className="text-center md:text-left mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                        Los autos más populares
+                        {dictionary.home.popular_cars_title}
                     </h2>
                 </div>
-                <CarCatalog cars={popularCars} />
+                <CarCatalog cars={popularCars} dictionary={dictionary} />
             </div>
             
             <div className="text-center mb-16 px-4">
               <Button asChild variant="outline">
                 <Link href="/catalog">
-                  Ver todos los vehículos <ChevronRight className="ml-2 h-4 w-4" />
+                  {dictionary.home.view_all_vehicles_button} <ChevronRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>

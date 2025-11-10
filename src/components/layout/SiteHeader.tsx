@@ -42,6 +42,8 @@ import {
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
+import { Locale } from '@/i18n-config';
+import { getDictionary } from '@/lib/get-dictionary';
 
 
 const popularSearches = [
@@ -54,7 +56,8 @@ const popularSearches = [
   'Familiar',
 ];
 
-const SiteHeader = () => {
+const SiteHeader = ({ locale }: { locale: Locale }) => {
+  const [dictionary, setDictionary] = useState<any>(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -63,6 +66,11 @@ const SiteHeader = () => {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+
+  useEffect(() => {
+    getDictionary(locale).then(setDictionary);
+  }, [locale]);
+
 
   // Simulación temporal: cualquier usuario logueado es admin
   const isAdmin = !!user;
@@ -84,12 +92,12 @@ const SiteHeader = () => {
     }
   };
 
-  const navLinks = [
-    { href: '/', label: 'Inicio', icon: Home },
-    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
-    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
-    { href: '/simulator', label: 'Simulador', icon: Wand2 },
-    { href: '/financing', label: 'Financiamiento', icon: Landmark },
+  const navLinks = !dictionary ? [] : [
+    { href: '/', label: dictionary.nav.home, icon: Home },
+    { href: '/catalog', label: dictionary.nav.catalog, icon: LayoutGrid },
+    { href: '/compare', label: dictionary.nav.compare, icon: GitCompareArrows },
+    { href: '/simulator', label: dictionary.nav.simulator, icon: Wand2 },
+    { href: '/financing', label: dictionary.nav.financing, icon: Landmark },
   ];
 
   const openSearch = () => {
@@ -124,6 +132,10 @@ const SiteHeader = () => {
     setSearchValue('');
   };
 
+  if (!dictionary) {
+    return null; // Or a loading skeleton
+  }
+
   return (
     <>
       <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
@@ -142,10 +154,10 @@ const SiteHeader = () => {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={`/${locale}${link.href}`}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname === link.href ? 'text-primary font-semibold' : ''
+                  pathname === `/${locale}${link.href}` ? 'text-primary font-semibold' : ''
                 )}
               >
                 {link.label}
@@ -252,10 +264,10 @@ const SiteHeader = () => {
                         return (
                           <Link
                             key={link.href}
-                            href={link.href}
+                            href={`/${locale}${link.href}`}
                             className={cn(
                               'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:text-primary',
-                              pathname === link.href
+                              pathname === `/${locale}${link.href}`
                                 ? 'font-bold text-primary'
                                 : 'text-foreground'
                             )}
@@ -285,6 +297,7 @@ const SiteHeader = () => {
             className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           >
+            <div className='hidden md:block pt-4'>
             <motion.div
               key="panel"
               initial={{ y: -40, opacity: 0 }}
@@ -296,7 +309,7 @@ const SiteHeader = () => {
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-20 gap-4">
-                  <div className="hidden sm:flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
                       <Link href="/">
                         <Image
                             src="/logo.png"
@@ -358,6 +371,72 @@ const SiteHeader = () => {
                 </div>
               </div>
             </motion.div>
+            </div>
+            <div className='md:hidden'>
+            <motion.div
+              key="panel-mobile"
+              initial={{ y: -40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -40, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className="bg-background border-b w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center h-20 gap-4">
+                  
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="search"
+                      placeholder="Buscar"
+                      className="w-full h-12 pl-12 pr-12 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      autoFocus
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    {searchValue && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                        onClick={handleClearSearch}
+                      >
+                        <X className="h-5 w-5 text-muted-foreground" />
+                      </Button>
+                    )}
+                  </div>
+                  <Button
+                    variant="link"
+                    onClick={closeSearch}
+                    className="text-muted-foreground hover:no-underline pr-0"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+                <div className="mt-4 pb-12">
+                  <p className="font-semibold mb-4 text-muted-foreground text-sm">
+                    Búsquedas Populares
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {popularSearches.map((term) => (
+                      <Button
+                        key={term}
+                        variant="secondary"
+                        size="sm"
+                        className="rounded-full font-normal"
+                        onClick={() => {
+                          setSearchValue(term);
+                        }}
+                      >
+                        {term}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

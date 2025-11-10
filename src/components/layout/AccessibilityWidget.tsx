@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Popover,
   PopoverContent,
@@ -17,12 +18,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Accessibility, Text, Contrast, Languages } from 'lucide-react';
+import { i18n, type Locale } from '@/i18n-config';
 
 type FontSize = 'small' | 'normal' | 'large';
 
 export default function AccessibilityWidget() {
   const [highContrast, setHighContrast] = useState(false);
   const [fontSize, setFontSize] = useState<FontSize>('normal');
+  const pathName = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const root = document.documentElement;
@@ -37,6 +41,16 @@ export default function AccessibilityWidget() {
     const root = document.documentElement;
     root.setAttribute('data-font-size', fontSize);
   }, [fontSize]);
+
+  const handleLanguageChange = (newLocale: Locale) => {
+    const segments = pathName.split('/');
+    segments[1] = newLocale;
+    const newPath = segments.join('/');
+    router.push(newPath);
+  };
+  
+  const currentLocale = pathName.split('/')[1] as Locale;
+
 
   return (
     <Popover>
@@ -86,13 +100,16 @@ export default function AccessibilityWidget() {
                     <Languages className="h-4 w-4" />
                     <Label htmlFor="language">Idioma</Label>
                 </div>
-              <Select defaultValue="es">
+              <Select value={currentLocale} onValueChange={(value) => handleLanguageChange(value as Locale)}>
                 <SelectTrigger id="language" className="w-[120px]">
                   <SelectValue placeholder="Idioma" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="es">Español</SelectItem>
-                  <SelectItem value="en">English</SelectItem>
+                  {i18n.locales.map((locale) => (
+                     <SelectItem key={locale} value={locale}>
+                        {locale === 'es' ? 'Español' : 'English'}
+                     </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

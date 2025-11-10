@@ -68,13 +68,13 @@
     --ring: 60 100% 50%;
   }
 
-  [data-font-size="small"] {
+  html[data-font-size="small"] {
     font-size: 14px;
   }
-  [data-font-size="normal"] {
+  html[data-font-size="normal"] {
     font-size: 16px;
   }
-  [data-font-size="large"] {
+  html[data-font-size="large"] {
     font-size: 18px;
   }
 }
