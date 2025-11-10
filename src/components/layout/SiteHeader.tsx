@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -40,6 +39,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@/firebase';
 
 
 const popularSearches = [
@@ -52,20 +52,15 @@ const popularSearches = [
   'Familiar',
 ];
 
-// Placeholder for user data and role checking
-const useUser = () => {
-    // En una aplicación real, esto vendría de Firebase Auth
-    const user = null; // o { displayName: 'Admin', email: 'admin@test.com', isAdmin: true }
-    return { user };
-};
-
-
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const pathname = usePathname();
-  const { user } = useUser(); // Hook simulado para obtener el usuario
+  const { user } = useUser();
+
+  // Simulación temporal: cualquier usuario logueado es admin
+  const isAdmin = !!user;
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home },
@@ -156,7 +151,7 @@ const SiteHeader = () => {
               <DropdownMenuContent align="end" className="w-56">
                 {user ? (
                     <>
-                        <DropdownMenuLabel>Hola, {user.displayName || 'Usuario'}</DropdownMenuLabel>
+                        <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Link href="/profile" className="flex items-center w-full">
@@ -171,8 +166,7 @@ const SiteHeader = () => {
                           </Link>
                         </DropdownMenuItem>
 
-                        {/* @ts-ignore */}
-                        {user.isAdmin && (
+                        {isAdmin && (
                             <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
@@ -357,3 +351,5 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
+
+    
