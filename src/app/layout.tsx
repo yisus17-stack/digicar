@@ -6,6 +6,7 @@ import SiteFooter from '@/components/layout/SiteFooter';
 import { cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
+            <AccessibilityWidget />
           </div>
           <Toaster />
         </FirebaseClientProvider>
