@@ -301,8 +301,8 @@ const SiteHeader = () => {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder="Buscar modelos, características, etc."
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
+                      placeholder="Buscar"
+                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-md sm:rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
                       autoFocus
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -318,6 +318,13 @@ const SiteHeader = () => {
                       </Button>
                     )}
                   </div>
+                  <Button
+                    variant="link"
+                    onClick={closeSearch}
+                    className="text-muted-foreground sm:hidden"
+                  >
+                    Cancelar
+                  </Button>
                   <Button
                     variant="ghost"
                     onClick={closeSearch}
