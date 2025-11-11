@@ -19,7 +19,6 @@ import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 
 const FONT_STEP_LIMIT = 2;
-const PANEL_WIDTH = 300;
 
 export default function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -142,39 +141,22 @@ export default function AccessibilityWidget() {
 
   return (
     <>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/60 z-40"
-          />
-        )}
-      </AnimatePresence>
-      <motion.div
-        className="fixed top-1/4 left-0 z-50"
-        initial="closed"
-        animate={isOpen ? "open" : "closed"}
-        variants={{
-          closed: { x: -PANEL_WIDTH },
-          open: { x: 0 },
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      >
-        <div className="relative flex items-start">
-          {/* Panel de Contenido */}
-          <div
-            className="w-[300px] bg-background shadow-lg rounded-r-lg flex flex-col"
-            style={{ width: PANEL_WIDTH }}
-          >
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <Accessibility /> Herramientas
-              </h2>
-            </div>
-            <div className="flex-1 flex flex-col gap-4 p-4">
+      <div className="fixed bottom-6 left-6 z-50">
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="mb-2 w-72 origin-bottom-left rounded-lg border bg-background shadow-lg"
+            >
+              <div className="p-4 border-b">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Accessibility /> Herramientas
+                </h2>
+              </div>
+              <div className="flex-1 flex flex-col gap-4 p-4">
               {options.map(({ Icon, label, action, isSwitch, checked, disabled }, index) => (
                 <React.Fragment key={label}>
                   <div className="flex items-center justify-between">
@@ -194,26 +176,25 @@ export default function AccessibilityWidget() {
                 </React.Fragment>
               ))}
             </div>
-            <div className="p-4 border-t">
-              <Button onClick={resetAll} variant="outline" className="w-full">
-                <RefreshCcw className="mr-2 h-4 w-4" />
-                Restablecer
-              </Button>
-            </div>
-          </div>
-
-          {/* Botón/Pestaña */}
-          <Button
-            variant="default"
-            size="icon"
-            onClick={() => setIsOpen(!isOpen)}
-            className="absolute top-0 left-full h-14 w-14 rounded-l-none rounded-r-md shadow-lg"
-            aria-label="Opciones de accesibilidad"
-          >
-            <Accessibility className="h-7 w-7" />
-          </Button>
-        </div>
-      </motion.div>
+              <div className="p-4 border-t">
+                <Button onClick={resetAll} variant="outline" className="w-full">
+                  <RefreshCcw className="mr-2 h-4 w-4" />
+                  Restablecer
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          variant="default"
+          size="icon"
+          className="h-14 w-14 rounded-full shadow-lg"
+          aria-label="Opciones de accesibilidad"
+        >
+          <Accessibility className="h-7 w-7" />
+        </Button>
+      </div>
     </>
   );
 }
