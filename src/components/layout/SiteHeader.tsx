@@ -15,10 +15,6 @@ import {
   LogIn,
   LogOut,
   UserPlus,
-  MapPin,
-  ShoppingCart,
-  Wrench,
-  ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -56,6 +52,17 @@ const SiteHeader = () => {
   const { toast } = useToast();
   const isAdmin = !!user;
 
+  const navLinks = [
+    { href: '/', label: 'Inicio', icon: Home },
+    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
+    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
+    { href: '/simulator', label: 'Simulador IA', icon: Wand2 },
+    { href: '/financing', label: 'Financiamiento', icon: Landmark },
+  ];
+
+  const openSearch = () => setIsSearchVisible(true);
+  const closeSearch = () => setIsSearchVisible(false);
+
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -73,25 +80,13 @@ const SiteHeader = () => {
     }
   };
 
-  const mainNavLinks = [
-    { href: '/catalog', label: 'VEHÍCULOS' },
-    { href: '#', label: 'COMPRA' },
-    { href: '#', label: 'MÚSCULO DIGICAR' },
-    { href: '#', label: 'SERVICIOS' },
-  ];
-
-  const secondaryNavLinks = [
-    { href: '#', label: 'CONCESIONARIO', icon: MapPin },
-    { href: '#', label: 'TIENDA', icon: ShoppingCart },
-    { href: '#', label: 'CONFIGURAR', icon: Wrench },
-  ]
-
-  const openSearch = () => setIsSearchVisible(true);
-  const closeSearch = () => setIsSearchVisible(false);
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isSearchVisible) closeSearch();
+      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        openSearch();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -104,80 +99,88 @@ const SiteHeader = () => {
 
   return (
     <>
-      <header className="bg-black text-white sticky top-0 z-40 w-full border-b border-white/10">
-        <div className="container mx-auto flex items-center justify-between py-3 px-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/logo-red.svg"
-              alt="DigiCar Logo"
-              width={100}
-              height={30}
-            />
-          </Link>
+      <header className="sticky top-0 z-40 w-full border-b bg-background">
+        <div className="container mx-auto flex h-20 items-center justify-between px-4">
+          <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/logo.svg"
+                alt="DigiCar Logo"
+                width={40}
+                height={40}
+              />
+              <span className="hidden font-bold sm:inline-block">DigiCar</span>
+            </Link>
+          </div>
 
-          <nav className="hidden lg:flex items-center space-x-6 text-sm font-bold tracking-wider uppercase">
-            {mainNavLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">
+          <nav className="hidden items-center space-x-6 text-sm font-medium lg:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'transition-colors hover:text-primary',
+                  pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+                )}
+              >
                 {link.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center justify-end gap-2 sm:gap-4">
-             <div className="hidden lg:flex items-center gap-4">
-                {secondaryNavLinks.map(link => {
-                    const Icon = link.icon;
-                    return (
-                        <Link href={link.href} key={link.label} className="flex items-center gap-2 text-sm font-bold uppercase hover:text-primary transition-colors">
-                            <Icon className="h-4 w-4" />
-                            <span>{link.label}</span>
-                        </Link>
-                    )
-                })}
-             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={openSearch}
+            >
+              <Search className="h-5 w-5" />
+              <span className="sr-only">Buscar</span>
+            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-white/10">
+                <Button variant="ghost" size="icon" className="h-9 w-9">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-black border-white/20 text-white">
+              <DropdownMenuContent align="end" className="w-56">
                 {user ? (
                     <>
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
-                        <DropdownMenuSeparator className="bg-white/20"/>
-                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
                           <Link href="/profile">
                             <User className="mr-2 h-4 w-4" /> Mi Perfil
                           </Link>
                         </DropdownMenuItem>
                          {isAdmin && (
                             <>
-                                <DropdownMenuSeparator className="bg-white/20"/>
+                                <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
-                                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                                <DropdownMenuItem asChild>
                                   <Link href="/admin/cars">
                                     <ShieldCheck className="mr-2 h-4 w-4" /> Administrar Autos
                                   </Link>
                                 </DropdownMenuItem>
                             </>
                         )}
-                        <DropdownMenuSeparator className="bg-white/20"/>
-                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer focus:bg-white/10 focus:text-white">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                             <LogOut className="mr-2 h-4 w-4" /> Cerrar Sesión
                         </DropdownMenuItem>
                     </>
                 ) : (
                     <>
                         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                        <DropdownMenuSeparator className="bg-white/20"/>
-                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
                           <Link href="/login">
                             <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                        <DropdownMenuItem asChild>
                           <Link href="/register">
                             <UserPlus className="mr-2 h-4 w-4" /> Registrarse
                           </Link>
@@ -190,23 +193,30 @@ const SiteHeader = () => {
             <div className="lg:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hover:bg-white/10">
+                  <Button variant="ghost" size="icon">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full bg-black text-white border-l-0">
-                  <div className="p-4">
-                    <SheetHeader className="pb-4 mb-4 border-b border-white/20">
-                        <Link href="/" className="flex items-center">
-                            <Image src="/logo-red.svg" alt="DigiCar Logo" width={120} height={40}/>
+                <SheetContent side="right" className="w-full">
+                  <SheetHeader>
+                    <SheetTitle>
+                        <Link href="/" className="flex items-center gap-2">
+                            <Image src="/logo.svg" alt="DigiCar Logo" width={30} height={30}/>
+                            <span>DigiCar</span>
                         </Link>
-                    </SheetHeader>
-                    <nav className="flex flex-col space-y-2 text-lg uppercase font-bold tracking-wider">
-                      {[...mainNavLinks, ...secondaryNavLinks].map((link) => (
-                        <Link key={link.href} href={link.href} className="flex items-center justify-between p-3 transition-colors hover:text-primary">
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <nav className="flex flex-col space-y-4">
+                      {navLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted"
+                        >
+                          <link.icon className="h-5 w-5" />
                           <span>{link.label}</span>
-                          <ArrowRight className="h-5 w-5" />
                         </Link>
                       ))}
                     </nav>
@@ -217,6 +227,47 @@ const SiteHeader = () => {
           </div>
         </div>
       </header>
+
+      <AnimatePresence>
+        {isSearchVisible && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/80"
+            onClick={closeSearch}
+          >
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="absolute left-0 right-0 top-0 bg-background"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="container mx-auto flex h-20 items-center px-4">
+                <Search className="mr-3 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Busca en todo el catálogo..."
+                  className="h-12 flex-1 border-0 bg-transparent text-lg shadow-none focus-visible:ring-0"
+                  autoFocus
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={closeSearch}
+                >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Cerrar búsqueda</span>
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
