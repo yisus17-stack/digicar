@@ -23,24 +23,8 @@ const BrandLogos = () => (
 
 
 const HeroSection = () => {
-    const heroCar = findPlaceholderImage('aurora-gt-red');
-
     return (
-        <section className="relative bg-background text-foreground py-20 min-h-[80vh] flex items-center justify-center text-center">
-            <div className="absolute inset-0 overflow-hidden">
-                {heroCar && (
-                    <Image
-                        src={heroCar.imageUrl}
-                        alt="Aurora GT"
-                        fill
-                        className="object-cover opacity-10"
-                        priority
-                        data-ai-hint={heroCar.imageHint}
-                    />
-                )}
-                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-            </div>
-           
+        <section className="relative bg-background text-foreground py-20 min-h-[60vh] flex items-center justify-center text-center">
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-3xl mx-auto">
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
