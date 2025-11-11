@@ -157,7 +157,7 @@ export default function AccessibilityWidget() {
         <Button
           variant="default"
           size="icon"
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-2xl shadow-lg z-50"
+          className="fixed bottom-6 left-6 h-14 w-14 rounded-md shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
           <Accessibility className="h-7 w-7" />
