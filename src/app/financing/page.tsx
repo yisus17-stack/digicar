@@ -1,9 +1,11 @@
 import FinancingSimulatorPage from "@/components/financing/FinancingSimulatorPage";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { cars } from "@/lib/data";
 
 export default function FinancingPage() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
+      <Breadcrumbs items={[{ label: "Financiamiento" }]} />
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
           Simulador de Pagos

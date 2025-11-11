@@ -7,7 +7,7 @@ import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
-import { X, SlidersHorizontal, Loader, ChevronRight, GitCompareArrows } from 'lucide-react';
+import { X, SlidersHorizontal, Loader, GitCompareArrows } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -20,7 +20,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import Image from 'next/image';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import Breadcrumbs from '../layout/Breadcrumbs';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;
@@ -68,8 +69,6 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare }: { selected
 
 export default function CarCatalogPage() {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const [filters, setFilters] = useState({
     brand: 'all',
@@ -82,7 +81,7 @@ export default function CarCatalogPage() {
     color: 'all',
     passengers: 'all',
   });
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
@@ -233,13 +232,7 @@ export default function CarCatalogPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 pb-32">
-      <div className="mb-4">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/" className="text-primary font-medium hover:underline">Inicio</Link>
-          <ChevronRight className="h-4 w-4 mx-1" />
-          <span>Catálogo</span>
-        </div>
-      </div>
+      <Breadcrumbs items={[{ label: 'Catálogo' }]} />
 
       <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
         <aside className={cn('hidden lg:block lg:w-1/4', !showFilters && 'lg:hidden')}>
