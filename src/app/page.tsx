@@ -37,8 +37,8 @@ export default async function Home() {
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
                         <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
-                            <Button size="sm" className="flex-1 sm:flex-initial sm:w-auto">
-                                Explorar
+                            <Button asChild size="sm" className="flex-1 sm:flex-initial sm:w-auto">
+                                <Link href="#popular">Explorar</Link>
                             </Button>
                             <Button asChild size="sm" variant="outline" className="flex-1 sm:flex-initial sm:w-auto">
                                 <Link href="/catalog">Ver catálogo</Link>
