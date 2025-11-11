@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Search,
   Home,
-  User as UserIcon,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -114,10 +113,25 @@ function AdminSidebar() {
         ))}
       </nav>
       <div className="mt-auto p-4">
-        <Avatar className="mx-auto">
-            {user?.photoURL && <AvatarImage src={user.photoURL} />}
-            <AvatarFallback>{user?.displayName?.charAt(0) || 'N'}</AvatarFallback>
-        </Avatar>
+         <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                 <Button variant="ghost" className={cn("w-full justify-start", {"w-auto mx-auto": isClosed})}>
+                    <Avatar className="h-8 w-8">
+                        {user?.photoURL && <AvatarImage src={user.photoURL} />}
+                        <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
+                    </Avatar>
+                    <div className={cn("flex flex-col items-start ml-3", {'hidden': isClosed})}>
+                        <span className="text-sm font-medium">{user?.displayName}</span>
+                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                    </div>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+                <DropdownMenuItem>Mi Perfil</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </aside>
   );
@@ -143,7 +157,13 @@ const AdminLayoutSkeleton = () => (
                 <Skeleton className="h-10 w-full" />
             </nav>
              <div className="mt-auto p-4">
-                <Skeleton className="h-10 w-10 rounded-full mx-auto" />
+                <div className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex flex-col gap-1">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-3 w-20" />
+                    </div>
+                </div>
              </div>
         </aside>
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
@@ -167,7 +187,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const auth = useAuth();
   const { toast } = useToast();
-
+  
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
@@ -183,45 +203,56 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
     }
   };
-
+  
   if (userLoading || !user) {
     return <AdminLayoutSkeleton />;
   }
-  
+
   return (
      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-            <AdminSidebar />
-            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={useContext(SidebarContext)?.isClosed}>
-                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                  {/* We could add a mobile sidebar trigger here */}
-                  <div className="ml-auto flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
-                      <Link href="/">
-                        <Home className="h-5 w-5" />
-                      </Link>
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-9 w-9">
-                           <Avatar className="h-9 w-9">
-                              {user?.photoURL && <AvatarImage src={user.photoURL} />}
-                              <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
-                          </Avatar>
-                          <span className="sr-only">Toggle user menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </header>
-                <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
-            </div>
-        </div>
+      <AdminLayoutWithProvider user={user} handleSignOut={handleSignOut}>
+        {children}
+      </AdminLayoutWithProvider>
     </SidebarProvider>
+  );
+}
+
+function AdminLayoutWithProvider({ children, user, handleSignOut }: { children: React.ReactNode, user: any, handleSignOut: () => void }) {
+  const sidebarContext = useContext(SidebarContext);
+  const isClosed = sidebarContext?.isClosed;
+  
+  return (
+      <div className="flex min-h-screen w-full">
+          <AdminSidebar />
+          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={isClosed}>
+              <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                {/* We could add a mobile sidebar trigger here */}
+                <div className="ml-auto flex items-center gap-4">
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href="/">
+                      <Home className="h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-9 w-9">
+                         <Avatar className="h-9 w-9">
+                            {user?.photoURL && <AvatarImage src={user.photoURL} />}
+                            <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
+                        </Avatar>
+                        <span className="sr-only">Toggle user menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </header>
+              <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
+          </div>
+      </div>
   );
 }
