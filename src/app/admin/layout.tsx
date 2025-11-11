@@ -18,14 +18,19 @@ import { useAuth, useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { User } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Context for Sidebar state
-const SidebarContext = createContext<{
-  isClosed: boolean;
-  toggleSidebar: () => void;
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-} | null>(null);
+const SidebarContext = createContext<{ isClosed: boolean; toggleSidebar: () => void } | null>(null);
 
 const useSidebar = () => {
   const context = useContext(SidebarContext);
@@ -35,9 +40,24 @@ const useSidebar = () => {
   return context;
 };
 
-// Main Sidebar Component
+// Sidebar Provider
+const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isClosed, setIsClosed] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsClosed(!isClosed);
+  };
+
+  return (
+    <SidebarContext.Provider value={{ isClosed, toggleSidebar }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+};
+
+
 function AdminSidebar() {
-  const { isClosed, toggleSidebar, isDarkMode, toggleDarkMode } = useSidebar();
+  const { isClosed, toggleSidebar } = useSidebar();
   const pathname = usePathname();
 
   const navItems = [
@@ -47,113 +67,78 @@ function AdminSidebar() {
   ];
 
   return (
-    <nav className={cn(
-        "fixed top-0 left-0 h-full bg-[--sidebar-color] p-[10px_14px] transition-all duration-500 ease-in-out z-50",
-        isClosed ? "w-[88px]" : "w-[250px]"
-    )}>
-      <header className="relative">
-        <div className="flex items-center">
-          <span className="image flex items-center justify-center min-w-[60px] rounded-md">
-            <Car className="h-8 w-8 text-[--text-color]"/>
-          </span>
-          <div className={cn("flex flex-col text-[--text-color] transition-opacity duration-300", isClosed && "opacity-0")}>
-            <span className="name text-lg font-semibold mt-0.5">DigiCar</span>
-            <span className="profession text-base -mt-0.5 block">Admin Panel</span>
-          </div>
-        </div>
-        <i
-          className={cn(
-            'absolute top-1/2 -right-6 transform -translate-y-1/2 h-6 w-6 bg-[--primary-color] text-[--sidebar-color] rounded-full flex items-center justify-center text-2xl cursor-pointer transition-transform duration-500',
-            !isClosed && 'rotate-180'
-          )}
-          onClick={toggleSidebar}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </i>
-      </header>
-
-      <div className="h-[calc(100%-55px)] flex flex-col justify-between overflow-y-auto no-scrollbar mt-10">
-        <div className="menu">
-          <li className="search-box h-[50px] list-none flex items-center mt-2.5 rounded-md bg-[--primary-color-light] cursor-pointer transition-all duration-500">
-            <Search className="icon min-w-[60px] h-full flex items-center justify-center text-xl text-[--text-color] transition-all duration-300" />
-            <input type="text" placeholder="Buscar..." className={cn("h-full w-full outline-none border-none bg-[--primary-color-light] text-[--text-color] rounded-md text-base font-medium transition-all duration-500", isClosed && "opacity-0 w-0")} />
-          </li>
-
-          <ul className="menu-links mt-2.5 p-0">
-            {navItems.map((item) => (
-              <li key={item.href} className="nav-link h-[50px] list-none flex items-center mt-2.5">
-                <Link href={item.href} className={cn(
-                  "h-full w-full flex items-center rounded-md text-decoration-none transition-all duration-300",
-                  pathname === item.href ? "bg-[--primary-color] text-[--sidebar-color]" : "text-[--text-color] hover:bg-[--primary-color]"
-                )}>
-                  <item.icon className={cn("icon min-w-[60px] h-full flex items-center justify-center text-xl transition-all duration-300", pathname === item.href ? "text-[--sidebar-color]" : "hover:text-[--sidebar-color]")}/>
-                  <span className={cn("text text-base font-medium whitespace-nowrap transition-opacity duration-300", isClosed && "opacity-0", pathname === item.href ? "text-[--sidebar-color]" : "hover:text-[--sidebar-color]")}>{item.label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="bottom-content">
-           <li className="h-[50px] list-none flex items-center mt-2.5">
-                <Link href="/" className="h-full w-full flex items-center rounded-md text-decoration-none transition-all duration-300 text-[--text-color] hover:bg-[--primary-color]">
-                    <Home className="icon min-w-[60px] h-full flex items-center justify-center text-xl transition-all duration-300 hover:text-[--sidebar-color]" />
-                    <span className={cn("text text-base font-medium whitespace-nowrap transition-opacity duration-300", isClosed && "opacity-0", "hover:text-[--sidebar-color]")}>
-                        Ir al Inicio
-                    </span>
-                </Link>
-            </li>
-        </div>
+    <aside
+      className={cn(
+        'fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300',
+        { 'w-20': isClosed }
+      )}
+    >
+      <div className="flex h-16 shrink-0 items-center justify-start gap-2 border-b px-6">
+        <Car className={cn('h-6 w-6', { 'mx-auto': isClosed })} />
+        <span className={cn('font-bold', { 'hidden': isClosed })}>DigiCar Admin</span>
+        <Button variant="ghost" size="icon" className="ml-auto" onClick={toggleSidebar}>
+            <ChevronRight className={cn("h-4 w-4 transition-transform", { 'rotate-180': !isClosed })}/>
+        </Button>
       </div>
-       <style jsx global>{`
-        body.dark {
-          --body-color: #18191a;
-          --sidebar-color: #242526;
-          --primary-color: #3a3b3c;
-          --primary-color-light: #3a3b3c;
-          --toggle-color: #fff;
-          --text-color: #ccc;
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .nav-link a:hover .icon,
-        .nav-link a:hover .text {
-            color: var(--sidebar-color);
-        }
-        body.dark .nav-link a:hover .icon,
-        body.dark .nav-link a:hover .text {
-            color: var(--text-color);
-        }
-       `}</style>
-    </nav>
+      <nav className="flex flex-col gap-2 p-2">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+              { 'bg-muted text-primary': pathname === item.href },
+              { 'justify-center': isClosed }
+            )}
+          >
+            <item.icon className="h-5 w-5" />
+            <span className={cn({ 'hidden': isClosed })}>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
+      <div className="mt-auto flex flex-col gap-2 p-2">
+         <Link href="/"
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+              { 'justify-center': isClosed }
+            )}
+          >
+           <Home className="h-5 w-5" />
+           <span className={cn({ 'hidden': isClosed })}>Ir al Inicio</span>
+        </Link>
+      </div>
+    </aside>
   );
 }
 
-// Sidebar Provider
-const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isClosed, setIsClosed] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const body = document.querySelector('body');
-    if (body) {
-        if (isDarkMode) {
-            body.classList.add('dark');
-        } else {
-            body.classList.remove('dark');
-        }
-    }
-  }, [isDarkMode]);
-
-  const toggleSidebar = () => setIsClosed(!isClosed);
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
-
-  return (
-    <SidebarContext.Provider value={{ isClosed, toggleSidebar, isDarkMode, toggleDarkMode }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
+const AdminLayoutSkeleton = () => (
+    <div className="flex min-h-screen w-full">
+        <aside className="fixed inset-y-0 left-0 z-10 hidden w-20 flex-col border-r bg-card sm:flex">
+            <div className="flex h-16 shrink-0 items-center justify-center border-b px-4">
+                <Skeleton className="h-8 w-8" />
+            </div>
+            <nav className="flex flex-col gap-2 p-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+            </nav>
+             <div className="mt-auto p-2">
+                <Skeleton className="h-10 w-full" />
+             </div>
+        </aside>
+        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-20 w-full">
+            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                 <Skeleton className="h-8 w-8 sm:hidden" />
+                 <div className="ml-auto flex items-center gap-2">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                 </div>
+            </header>
+            <main className="flex-1 p-4 sm:px-6 sm:py-0">
+                <Skeleton className="h-64 w-full" />
+            </main>
+        </div>
+    </div>
+)
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -161,31 +146,52 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const auth = useAuth();
   const { toast } = useToast();
-  
+
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
     }
   }, [user, userLoading, router]);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
+      router.push('/');
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
+    }
+  };
 
   if (userLoading || !user) {
-    return (
-        <div className="flex items-center justify-center h-screen bg-[--body-color]">
-            <p className="text-[--text-color]">Cargando...</p>
-        </div>
-    );
+    return <AdminLayoutSkeleton />;
   }
   
   return (
-    <SidebarProvider>
-        <div className='bg-[--body-color]'>
+     <SidebarProvider>
+        <div className="flex min-h-screen w-full">
             <AdminSidebar />
-            <section className={cn("relative h-screen bg-[--body-color] transition-all duration-500 ease-in-out", "left-[250px] w-[calc(100%-250px)]", {"!left-[88px] !w-[calc(100%-88px)]": useContext(SidebarContext)?.isClosed})}>
-                <div className="p-6 text-[--text-color]">
-                    {children}
-                </div>
-            </section>
+            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={useContext(SidebarContext)?.isClosed}>
+                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                  {/* We could add a mobile sidebar trigger here */}
+                  <div className="ml-auto flex items-center gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon" className="h-8 w-8">
+                          <User className="h-4 w-4" />
+                          <span className="sr-only">Toggle user menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </header>
+                <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
+            </div>
         </div>
     </SidebarProvider>
   );
