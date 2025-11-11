@@ -3,23 +3,31 @@
     {
       "id": "prestige-x10",
       "description": "Un sedán de lujo en una ciudad de noche.",
-      "imageUrl": "/auto-rojo.png",
-      "imageHint": "sedán de lujo rojo",
+      "imageUrl": "https://picsum.photos/seed/prestige-x10/800/600",
+      "imageHint": "sedán de lujo",
       "width": 800,
       "height": 600
     },
     {
+      "id": "aurora-gt-red",
+      "description": "Un auto deportivo rojo en una carretera sinuosa.",
+      "imageUrl": "https://images.unsplash.com/photo-1678079824721-ff86eeac5065?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhdXRvJTIwZGVwb3J0aXZvJTIwcm9qb3xlbnwwfHx8fDE3NjI4OTQ0MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "auto deportivo rojo",
+      "width": 1200,
+      "height": 800
+    },
+    {
       "id": "aurora-gt",
       "description": "Un auto deportivo en una carretera sinuosa.",
-      "imageUrl": "https://images.unsplash.com/photo-1750203926936-3074c2f36566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhdXRvJTIwZGVwb3J0aXZvJTIwYmxhbmNvfGVufDB8fHx8MTc2Mjg5NDE0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "auto deportivo blanco",
+      "imageUrl": "https://images.unsplash.com/photo-1506610654-064fbba4780c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhdXRvJTIwZGVwb3J0aXZvfGVufDB8fHx8MTc2Mjg5NDQyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "auto deportivo",
       "width": 1200,
       "height": 800
     },
     {
       "id": "volta-ev-pro",
       "description": "Un auto eléctrico cargando en un garaje futurista.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://images.unsplash.com/photo-1577861641567-d42d659b95a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhdXRvJTIwZWwlQzMlQTljdHJpY298ZW58MHx8fHwxNzYyODk0NDI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "auto eléctrico",
       "width": 800,
       "height": 600
@@ -27,7 +35,7 @@
     {
       "id": "horizon-suv",
       "description": "Un SUV estacionado con vista a la montaña de fondo.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://images.unsplash.com/photo-1659935405041-1e76d8bd9de6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXYlMjBtb250YSVDMyVCMWFzfGVufDB8fHx8MTc2Mjg5NDQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "suv montañas",
       "width": 800,
       "height": 600
@@ -35,7 +43,7 @@
     {
       "id": "nomad-cruiser",
       "description": "Un sedán cómodo en una calle suburbana.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://picsum.photos/seed/nomad-cruiser/800/600",
       "imageHint": "sedán familiar",
       "width": 800,
       "height": 600
@@ -43,7 +51,7 @@
     {
       "id": "comet-r",
       "description": "Un auto deportivo compacto en una pista de carreras.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://images.unsplash.com/photo-1714622857097-7f0f7f29d305?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYXRjaGJhY2slMjBkZXBvcnRpdm98ZW58MHx8fHwxNzYyODk0NDI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hatchback deportivo",
       "width": 800,
       "height": 600
@@ -51,7 +59,7 @@
     {
       "id": "stratus-sedan",
       "description": "Un sedán híbrido conduciendo por un paisaje verde.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://images.unsplash.com/photo-1750493601689-30a06059092a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhdXRvJTIwaCVDMyVBRGJyaWRvfGVufDB8fHx8MTc2Mjg5NDQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "auto híbrido",
       "width": 800,
       "height": 600
@@ -59,7 +67,7 @@
     {
       "id": "terra-truck",
       "description": "Una camioneta en un camino de tierra en el desierto.",
-      "imageUrl": "/auto-rojo.png",
+      "imageUrl": "https://images.unsplash.com/photo-1629418010472-ffdd0108571b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYW1pb25ldGElMjBwaWNrdXB8ZW58MHx8fHwxNzYyODk0NDI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "camioneta pickup",
       "width": 800,
       "height": 600

@@ -9,13 +9,13 @@ import { ChevronRight } from 'lucide-react';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 
 const BrandLogos = () => (
-    <div className="bg-secondary/50">
+    <div className="bg-secondary/30">
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
-                <Image src="/audi-logo-white.svg" alt="Audi" width={100} height={40} />
-                <Image src="/vw-logo-white.svg" alt="Volkswagen" width={60} height={60} />
-                <Image src="/logo-white.png" alt="DigiCar" width={150} height={50} />
-                <Image src="/kia-logo-white.svg" alt="Kia" width={80} height={40} />
+                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
+                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="opacity-60" />
+                <Image src="/logo.svg" alt="DigiCar" width={150} height={50} className="opacity-80" />
+                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="opacity-60" />
             </div>
         </div>
     </div>
@@ -23,36 +23,39 @@ const BrandLogos = () => (
 
 
 const HeroSection = () => {
-    const heroCar = findPlaceholderImage('aurora-gt');
+    const heroCar = findPlaceholderImage('aurora-gt-red');
 
     return (
-        <section className="relative bg-black text-white py-20 min-h-[75vh] flex items-center">
+        <section className="relative bg-background text-foreground py-20 min-h-[80vh] flex items-center justify-center text-center">
             <div className="absolute inset-0 overflow-hidden">
                 {heroCar && (
                     <Image
                         src={heroCar.imageUrl}
                         alt="Aurora GT"
                         fill
-                        className="object-cover object-right opacity-40 md:opacity-100"
+                        className="object-cover opacity-10"
                         priority
                         data-ai-hint={heroCar.imageHint}
                     />
                 )}
-                 <div className="absolute inset-0 bg-gradient-to-l from-black/0 via-black/80 to-black"></div>
+                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
             </div>
            
             <div className="container mx-auto px-4 relative z-10">
-                <div className="max-w-xl">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tighter leading-tight">
-                        Músculo Digital,
-                        <br />
-                        Hoy y Siempre
+                <div className="max-w-3xl mx-auto">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
+                        Conduce tu historia con <span className="text-primary">DigiCar</span>
                     </h1>
-                    <p className="mt-4 text-lg text-white/80">
-                        La marca DigiCar es un orgulloso patrocinador de la velocidad.
+                    <p className="mt-6 text-lg text-foreground/70 max-w-2xl mx-auto">
+                       Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                     </p>
-                     <div className="mt-8">
-                        <Image src="/america-250.svg" alt="Proud Partner of America 250" width={120} height={60} />
+                    <div className="mt-8 flex justify-center gap-4">
+                        <Button size="lg" asChild>
+                            <Link href="/catalog">Explorar Catálogo</Link>
+                        </Button>
+                        <Button size="lg" variant="outline" asChild>
+                            <Link href="/simulator">Simulador IA</Link>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -70,10 +73,11 @@ export default function Home() {
             <BrandLogos />
 
             <div id="popular" className="container mx-auto px-4 py-16">
-                <div className="text-center md:text-left mb-12">
+                <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
+                    <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
                 <CarCatalog cars={popularCars} />
             </div>

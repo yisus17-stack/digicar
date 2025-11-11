@@ -4,11 +4,11 @@ import { Toaster } from '@/components/ui/toaster';
 import SiteHeader from '@/components/layout/SiteHeader';
 import SiteFooter from '@/components/layout/SiteFooter';
 import { cn } from '@/lib/utils';
-import { Inter } from 'next/font/google';
+import { PT_Sans } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const ptSans = PT_Sans({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'DigiCar - Tu Salón de Exposición de Autos Digital',
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased dark-theme', inter.variable)}>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', ptSans.variable)}>
         <FirebaseClientProvider>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />

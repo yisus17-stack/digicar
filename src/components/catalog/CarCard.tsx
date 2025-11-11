@@ -21,29 +21,31 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
   const carType = car.type as keyof (typeof translations.type);
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
+    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 bg-card">
        {placeholder && (
-          <Image
-            src={placeholder.imageUrl}
-            alt={`${car.brand} ${car.model}`}
-            width={placeholder.width}
-            height={placeholder.height}
-            className="bg-gray-50 object-cover transition-transform duration-300 group-hover:scale-105"
-            data-ai-hint={placeholder.imageHint}
-            priority={true}
-          />
+          <div className="overflow-hidden">
+            <Image
+              src={placeholder.imageUrl}
+              alt={`${car.brand} ${car.model}`}
+              width={placeholder.width}
+              height={placeholder.height}
+              className="bg-gray-50 object-cover transition-transform duration-300 group-hover:scale-105"
+              data-ai-hint={placeholder.imageHint}
+              priority={true}
+            />
+          </div>
         )}
 
       <CardContent className="flex flex-grow flex-col p-6">
-        <h3 className="text-xl font-semibold leading-tight">{car.brand} {car.model}</h3>
+        <h3 className="text-xl font-bold leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
             {car.year} - {translations.type[carType] || car.type}
         </p>
-        <p className="mt-2 text-2xl font-bold text-foreground">
+        <p className="mt-4 text-2xl font-bold text-primary">
           {`$${car.price.toLocaleString('es-MX')}`}
         </p>
         
-        <div className="mt-auto grid grid-cols-2 gap-4 pt-4">
+        <div className="mt-auto grid grid-cols-2 gap-4 pt-6">
             <Button asChild>
                 <Link href={`/car/${car.id}`}>
                     Ver Detalles

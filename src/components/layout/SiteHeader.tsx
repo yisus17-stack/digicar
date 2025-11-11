@@ -99,7 +99,7 @@ const SiteHeader = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b bg-background">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-20 items-center justify-between px-4">
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2">
@@ -109,7 +109,7 @@ const SiteHeader = () => {
                 width={40}
                 height={40}
               />
-              <span className="hidden font-bold sm:inline-block">DigiCar</span>
+              <span className="hidden font-bold sm:inline-block text-lg">DigiCar</span>
             </Link>
           </div>
 
