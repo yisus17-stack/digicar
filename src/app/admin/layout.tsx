@@ -1,137 +1,160 @@
-
 'use client';
-import { LayoutDashboard, Car, Tag, LogOut, PanelLeft, Settings, ShieldCheck, User, Home, Search, ChevronRight, Moon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  useSidebar,
-  SidebarFooter,
-} from "@/components/ui/sidebar";
-import { useAuth, useUser } from "@/firebase";
-import { signOut } from "firebase/auth";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+  LayoutDashboard,
+  Car,
+  Tag,
+  LogOut,
+  ChevronRight,
+  Search,
+  Moon,
+  Sun,
+  Home
+} from 'lucide-react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { useAuth, useUser } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
+// Context for Sidebar state
+const SidebarContext = createContext<{
+  isClosed: boolean;
+  toggleSidebar: () => void;
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+} | null>(null);
 
-const AdminLayoutSkeleton = () => (
-    <div className="flex min-h-screen w-full bg-muted/40">
-        {/* Sidebar Skeleton */}
-        <aside className="hidden w-64 flex-col border-r bg-background sm:flex p-4 space-y-4">
-            <div className="flex items-center gap-2">
-                <Skeleton className="h-10 w-10 rounded-lg" />
-                <Skeleton className="h-6 w-24" />
-            </div>
-             <Skeleton className="h-10 w-full" />
-            <div className="flex-1 space-y-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="mt-auto space-y-2">
-                 {/* Placeholders removed */}
-            </div>
-        </aside>
-        {/* Main Content Skeleton */}
-        <div className="flex flex-1 flex-col">
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 justify-end">
-                <div className="ml-auto flex items-center gap-2">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                </div>
-            </header>
-            <main className="flex-1 p-4 sm:p-6">
-                <Skeleton className="h-64 w-full" />
-            </main>
-        </div>
-    </div>
-);
+const useSidebar = () => {
+  const context = useContext(SidebarContext);
+  if (!context) {
+    throw new Error('useSidebar must be used within a SidebarProvider');
+  }
+  return context;
+};
 
-
+// Main Sidebar Component
 function AdminSidebar() {
+  const { isClosed, toggleSidebar, isDarkMode, toggleDarkMode } = useSidebar();
   const pathname = usePathname();
-  const { open, toggleSidebar } = useSidebar();
-  
+
   const navItems = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/cars", label: "Autos", icon: Car },
-    { href: "/admin/brands", label: "Marcas", icon: Tag },
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/cars', label: 'Autos', icon: Car },
+    { href: '/admin/brands', label: 'Marcas', icon: Tag },
   ];
 
   return (
-    <Sidebar>
-      <SidebarHeader className="flex items-center justify-between p-4">
-        <div className={cn("flex items-center gap-2 transition-opacity", open ? 'opacity-100' : 'opacity-0 delay-0', 'delay-200 flex-grow')}>
-            <Link href="/admin">
-                <Avatar className="bg-primary rounded-lg">
-                    <AvatarFallback className="bg-transparent text-primary-foreground font-bold">DC</AvatarFallback>
-                </Avatar>
-            </Link>
-            <div className="flex flex-col">
-                <span className="font-semibold text-lg">DigiCar</span>
-                <span className="text-xs text-muted-foreground">Admin Panel</span>
-            </div>
+    <nav className={cn(
+        "fixed top-0 left-0 h-full bg-[--sidebar-color] p-[10px_14px] transition-all duration-500 ease-in-out z-50",
+        isClosed ? "w-[88px]" : "w-[250px]"
+    )}>
+      <header className="relative">
+        <div className="flex items-center">
+          <span className="image flex items-center justify-center min-w-[60px] rounded-md">
+            <Car className="h-8 w-8 text-[--text-color]"/>
+          </span>
+          <div className={cn("flex flex-col text-[--text-color] transition-opacity duration-300", isClosed && "opacity-0")}>
+            <span className="name text-lg font-semibold mt-0.5">DigiCar</span>
+            <span className="profession text-base -mt-0.5 block">Admin Panel</span>
+          </div>
         </div>
-         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleSidebar}>
-            <ChevronRight className={cn("h-5 w-5 transition-transform", !open && 'rotate-180')} />
-        </Button>
-      </SidebarHeader>
+        <i
+          className={cn(
+            'absolute top-1/2 -right-6 transform -translate-y-1/2 h-6 w-6 bg-[--primary-color] text-[--sidebar-color] rounded-full flex items-center justify-center text-2xl cursor-pointer transition-transform duration-500',
+            !isClosed && 'rotate-180'
+          )}
+          onClick={toggleSidebar}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </i>
+      </header>
 
-      <SidebarContent>
-        <div className="p-4">
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Buscar..." className={cn('pl-9 transition-opacity', open ? 'opacity-100' : 'opacity-0')} />
-            </div>
-        </div>
-        <SidebarMenu>
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === item.href}
-                tooltip={{
-                  children: item.label,
-                  side: "right",
-                  align: "center",
-                }}
-              >
-                <Link href={item.href}>
-                  <item.icon className="h-5 w-5" />
-                  <span className={cn('transition-opacity', open ? 'opacity-100' : 'opacity-0')}>{item.label}</span>
+      <div className="h-[calc(100%-55px)] flex flex-col justify-between overflow-y-auto no-scrollbar mt-10">
+        <div className="menu">
+          <li className="search-box h-[50px] list-none flex items-center mt-2.5 rounded-md bg-[--primary-color-light] cursor-pointer transition-all duration-500">
+            <Search className="icon min-w-[60px] h-full flex items-center justify-center text-xl text-[--text-color] transition-all duration-300" />
+            <input type="text" placeholder="Buscar..." className={cn("h-full w-full outline-none border-none bg-[--primary-color-light] text-[--text-color] rounded-md text-base font-medium transition-all duration-500", isClosed && "opacity-0 w-0")} />
+          </li>
+
+          <ul className="menu-links mt-2.5 p-0">
+            {navItems.map((item) => (
+              <li key={item.href} className="nav-link h-[50px] list-none flex items-center mt-2.5">
+                <Link href={item.href} className={cn(
+                  "h-full w-full flex items-center rounded-md text-decoration-none transition-all duration-300",
+                  pathname === item.href ? "bg-[--primary-color] text-[--sidebar-color]" : "text-[--text-color] hover:bg-[--primary-color]"
+                )}>
+                  <item.icon className={cn("icon min-w-[60px] h-full flex items-center justify-center text-xl transition-all duration-300", pathname === item.href ? "text-[--sidebar-color]" : "hover:text-[--sidebar-color]")}/>
+                  <span className={cn("text text-base font-medium whitespace-nowrap transition-opacity duration-300", isClosed && "opacity-0", pathname === item.href ? "text-[--sidebar-color]" : "hover:text-[--sidebar-color]")}>{item.label}</span>
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarContent>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      <SidebarFooter className="p-4 space-y-2">
-         {/* Footer content removed for a cleaner look */}
-      </SidebarFooter>
-    </Sidebar>
+        <div className="bottom-content">
+           <li className="h-[50px] list-none flex items-center mt-2.5">
+                <Link href="/" className="h-full w-full flex items-center rounded-md text-decoration-none transition-all duration-300 text-[--text-color] hover:bg-[--primary-color]">
+                    <Home className="icon min-w-[60px] h-full flex items-center justify-center text-xl transition-all duration-300 hover:text-[--sidebar-color]" />
+                    <span className={cn("text text-base font-medium whitespace-nowrap transition-opacity duration-300", isClosed && "opacity-0", "hover:text-[--sidebar-color]")}>
+                        Ir al Inicio
+                    </span>
+                </Link>
+            </li>
+        </div>
+      </div>
+       <style jsx global>{`
+        body.dark {
+          --body-color: #18191a;
+          --sidebar-color: #242526;
+          --primary-color: #3a3b3c;
+          --primary-color-light: #3a3b3c;
+          --toggle-color: #fff;
+          --text-color: #ccc;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-link a:hover .icon,
+        .nav-link a:hover .text {
+            color: var(--sidebar-color);
+        }
+        body.dark .nav-link a:hover .icon,
+        body.dark .nav-link a:hover .text {
+            color: var(--text-color);
+        }
+       `}</style>
+    </nav>
   );
 }
+
+// Sidebar Provider
+const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isClosed, setIsClosed] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+    if (body) {
+        if (isDarkMode) {
+            body.classList.add('dark');
+        } else {
+            body.classList.remove('dark');
+        }
+    }
+  }, [isDarkMode]);
+
+  const toggleSidebar = () => setIsClosed(!isClosed);
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
+  return (
+    <SidebarContext.Provider value={{ isClosed, toggleSidebar, isDarkMode, toggleDarkMode }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+};
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading: userLoading } = useUser();
@@ -145,65 +168,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [user, userLoading, router]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      toast({
-        title: "Sesión cerrada",
-        description: "Has cerrado sesión correctamente.",
-      });
-      router.push("/");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo cerrar la sesión. Inténtalo de nuevo.",
-      });
-    }
-  };
 
   if (userLoading || !user) {
-    return <AdminLayoutSkeleton />;
+    return (
+        <div className="flex items-center justify-center h-screen bg-[--body-color]">
+            <p className="text-[--text-color]">Cargando...</p>
+        </div>
+    );
   }
   
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-muted/40">
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6 justify-end">
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="h-9 w-9" asChild>
-                  <Link href="/">
-                      <Home className="h-4 w-4" />
-                      <span className="sr-only">Ir a la página principal</span>
-                  </Link>
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="overflow-hidden rounded-full h-9 w-9">
-                    <User className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Configuración
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                   <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Cerrar Sesión
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </header>
-          <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <div className='bg-[--body-color]'>
+            <AdminSidebar />
+            <section className={cn("relative h-screen bg-[--body-color] transition-all duration-500 ease-in-out", "left-[250px] w-[calc(100%-250px)]", {"!left-[88px] !w-[calc(100%-88px)]": useContext(SidebarContext)?.isClosed})}>
+                <div className="p-6 text-[--text-color]">
+                    {children}
+                </div>
+            </section>
         </div>
-      </div>
     </SidebarProvider>
   );
 }

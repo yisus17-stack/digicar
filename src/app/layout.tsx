@@ -5,12 +5,12 @@ import { Toaster } from '@/components/ui/toaster';
 import SiteHeader from '@/components/layout/SiteHeader';
 import SiteFooter from '@/components/layout/SiteFooter';
 import { cn } from '@/lib/utils';
-import { PT_Sans } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 
 
-const ptSans = PT_Sans({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-sans' });
+const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'DigiCar - Tu Salón de Exposición de Autos Digital',
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased', ptSans.variable)}>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
         <FirebaseClientProvider>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />

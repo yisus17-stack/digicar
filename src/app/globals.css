@@ -4,86 +4,80 @@
 
 @layer base {
   :root {
-    --background: 220 20% 98%; /* Light Blue-Gray */
-    --foreground: 220 14% 10%;
-    --card: 220 20% 98%;
-    --card-foreground: 220 14% 10%;
-    --popover: 220 20% 98%;
-    --popover-foreground: 220 14% 10%;
-    --primary: 240 50% 65%; /* New Purple/Indigo from image */
+    --body-color: #E4E9F7;
+    --sidebar-color: #FFF;
+    --primary-color: #695CFE;
+    --primary-color-light: #F6F5FF;
+    --toggle-color: #DDD;
+    --text-color: #707070;
+
+    --background: 222 83% 95%; /* --body-color */
+    --foreground: 240 5% 44%; /* --text-color */
+
+    --card: 0 0% 100%; /* --sidebar-color */
+    --card-foreground: 240 5% 44%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 5% 44%;
+
+    --primary: 244 98% 68%; /* --primary-color */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 90%;
-    --secondary-foreground: 220 14% 10%;
-    --muted: 220 10% 90%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 240 50% 60%; /* Deeper Purple/Indigo */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 10% 80%;
-    --input: 220 10% 80%;
-    --ring: 240 50% 65%;
-    --radius: 0.8rem;
+
+    --secondary: 240 100% 99%; /* --primary-color-light */
+    --secondary-foreground: 244 98% 68%;
+
+    --muted: 240 100% 99%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 240 100% 99%;
+    --accent-foreground: 244 98% 68%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 244 98% 68%;
+    
+    --radius: 0.5rem;
   }
  
   .dark {
-    --background: 220 14% 10%;
-    --foreground: 220 20% 98%;
-    --card: 220 14% 10%;
-    --card-foreground: 220 20% 98%;
-    --popover: 220 14% 10%;
-    --popover-foreground: 220 20% 98%;
-    --primary: 240 50% 75%; /* Lighter Purple for dark mode */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 15%;
-    --secondary-foreground: 220 20% 98%;
-    --muted: 220 10% 15%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 240 50% 70%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 10% 20%;
-    --input: 220 10% 20%;
-    --ring: 240 50% 75%;
+    --body-color: #18191a;
+    --sidebar-color: #242526;
+    --primary-color: #3a3b3c;
+    --primary-color-light: #3a3b3c;
+    --toggle-color: #fff;
+    --text-color: #ccc;
+
+    --background: 222 13% 15%;
+    --foreground: 210 40% 98%;
+    
+    --card: 224 12% 16%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 12% 16%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 224 8% 23%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 224 8% 23%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 224 8% 23%;
+    --muted-foreground: 216 12% 84%;
+
+    --accent: 224 8% 23%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 216 12% 24%;
+    --input: 216 12% 24%;
+    --ring: 216 12% 84%;
   }
-
-  [data-contrast="true"] {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 0%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 60 100% 50%; /* Amarillo brillante */
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 80%;
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 100%;
-    --border: 0 0% 50%;
-    --input: 0 0% 50%;
-    --ring: 60 100% 50%;
-  }
-
-  html {
-    font-size: 16px; /* Base font size */
-  }
-
-  html[data-font-size-step="1"] { font-size: 17px; }
-  html[data-font-size-step="2"] { font-size: 18px; }
-  html[data-font-size-step="3"] { font-size: 19px; }
-  html[data-font-size-step="4"] { font-size: 20px; }
-  html[data-font-size-step="-1"] { font-size: 15px; }
-  html[data-font-size-step="-2"] { font-size: 14px; }
-
-  html[data-grayscale="true"] { filter: grayscale(100%); }
-  html[data-invert="true"] { filter: invert(100%); }
-  html[data-underline-links="true"] a { text-decoration: underline; }
-  html[data-readable-font="true"] body { font-family: 'Times New Roman', Times, serif; }
-
 }
 
 @layer base {
