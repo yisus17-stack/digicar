@@ -38,66 +38,71 @@ const HeroSection = () => {
     }
     
     return (
-        <section className="w-full min-h-[80vh] flex bg-background text-foreground">
-            <div className="w-full grid grid-cols-1 lg:grid-cols-[60%_40%]">
-                {/* Left side */}
-                <div className="bg-primary text-primary-foreground p-8 sm:p-12 md:p-16 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 flex items-center justify-center -rotate-90">
-                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-widest opacity-80 whitespace-nowrap">DIGICAR</h2>
-                    </div>
+        <section className="w-full min-h-[80vh] flex bg-background text-foreground relative">
+            {/* Left Color Panel */}
+            <div className="w-[60%] bg-primary absolute inset-y-0 left-0"></div>
 
-                    <div className="relative z-10 w-full h-full flex flex-col justify-between">
-                         <div>
-                            <h3 className="text-4xl md:text-5xl font-bold">{featuredCar.model}</h3>
-                            <p className="text-xl md:text-2xl">{featuredCar.year}</p>
+            {/* Right White Panel */}
+            <div className="w-[40%] bg-background absolute inset-y-0 right-0"></div>
+            
+            <div className="container mx-auto relative z-10 h-full flex items-center">
+                <div className="grid grid-cols-10 w-full h-full">
+
+                    {/* Left Side Content */}
+                    <div className="col-span-6 flex flex-col justify-between text-primary-foreground py-16">
+                        <div className='pl-24'>
+                            <h3 className="text-4xl md:text-5xl font-bold">{featuredCar.model} {featuredCar.year}</h3>
                             <p className="mt-2 text-base md:text-lg opacity-90">{featuredCar.engine}</p>
                         </div>
-                        <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-auto lg:flex-grow flex items-center justify-center">
-                            <Image
-                                src={placeholder.imageUrl}
-                                alt={`${featuredCar.brand} ${featuredCar.model}`}
-                                fill
-                                className="object-contain"
-                                data-ai-hint={placeholder.imageHint}
-                                priority
-                            />
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center -rotate-90 origin-bottom-left">
+                            <h2 className="text-6xl md:text-8xl font-bold tracking-[0.2em] opacity-80 whitespace-nowrap text-primary-foreground/50">DIGICAR</h2>
                         </div>
-                        <div className="h-10"></div>
+                    </div>
+
+                    {/* Right Side Content */}
+                    <div className="col-span-4 flex flex-col justify-between py-16">
+                         <div className="text-left">
+                            <p className="text-4xl md:text-5xl font-bold">${featuredCar.price.toLocaleString('es-MX')}</p>
+                            <p className="text-muted-foreground text-sm mt-1">Aplican restricciones</p>
+                        </div>
+
+                        <div className="my-12">
+                            <ul className="space-y-4 text-left">
+                                {navCars.map((car, index) => (
+                                    <li key={car.id}>
+                                        <Link href={`/car/${car.id}`} className="group flex items-center justify-start gap-4 text-muted-foreground hover:text-foreground transition-colors">
+                                            {car.id === featuredCar.id && (
+                                                <div className="w-8 h-px bg-primary"></div>
+                                            )}
+                                            <span className={`text-xs font-mono ${car.id === featuredCar.id ? 'text-primary font-bold' : ''}`}>
+                                                {`00${index + 1}`}
+                                            </span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        
+                        <div className="flex justify-start items-center gap-4 mt-auto">
+                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Facebook size={20} /></Link>
+                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Twitter size={20} /></Link>
+                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Instagram size={20} /></Link>
+                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Youtube size={20} /></Link>
+                        </div>
                     </div>
                 </div>
 
-                {/* Right side */}
-                <div className="bg-background text-foreground p-8 sm:p-12 md:p-16 flex flex-col justify-between relative">
-                    <div className="text-right">
-                        <p className="text-4xl md:text-5xl font-bold">${featuredCar.price.toLocaleString('es-MX')}</p>
-                        <p className="text-muted-foreground text-sm mt-1">Aplican restricciones</p>
-                    </div>
-
-                    <div className="my-12">
-                        <ul className="space-y-4 text-right">
-                            {navCars.map((car, index) => (
-                                <li key={car.id}>
-                                    <Link href={`/car/${car.id}`} className="group flex items-center justify-end gap-4 text-muted-foreground hover:text-foreground transition-colors">
-                                        <span className={car.id === featuredCar.id ? 'text-primary font-bold' : ''}>
-                                            {car.brand} {car.model}
-                                        </span>
-                                        <span className={`text-xs font-mono ${car.id === featuredCar.id ? 'text-primary font-bold' : ''}`}>
-                                            {`00${index + 1}`}
-                                        </span>
-                                        {car.id === featuredCar.id && (
-                                            <div className="w-8 h-px bg-primary"></div>
-                                        )}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="flex justify-end items-center gap-4 mt-auto">
-                        <Link href="#" className="text-muted-foreground hover:text-foreground"><Facebook size={20} /></Link>
-                        <Link href="#" className="text-muted-foreground hover:text-foreground"><Twitter size={20} /></Link>
-                        <Link href="#" className="text-muted-foreground hover:text-foreground"><Instagram size={20} /></Link>
-                        <Link href="#" className="text-muted-foreground hover:text-foreground"><Youtube size={20} /></Link>
+                {/* Car Image - Overlapping */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={placeholder.imageUrl}
+                            alt={`${featuredCar.brand} ${featuredCar.model}`}
+                            fill
+                            className="object-contain"
+                            data-ai-hint={placeholder.imageHint}
+                            priority
+                        />
                     </div>
                 </div>
             </div>
