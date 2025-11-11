@@ -25,36 +25,27 @@ export default async function Home() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div className="text-center md:text-left">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-md mx-auto md:mx-0">
-                            Conduce tu historia con <span className="text-primary">DigiCar</span>
-                        </h1>
-                        <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
-                            Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
-                        </p>
-                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <Button asChild size="lg" className="w-full sm:w-auto">
-                                <Link href="#popular">Explorar</Link>
-                            </Button>
-                            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                                <Link href="/catalog">Ver catálogo</Link>
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="mt-8 md:mt-0">
-                        <Image
-                            src="/auto-inicio.png"
-                            alt="Coche principal"
-                            width={800}
-                            height={600}
-                            className="w-full h-auto"
-                            priority
-                        />
-                    </div>
+            <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
+                <Image
+                    src="https://picsum.photos/seed/hero-background/1600/900"
+                    alt="Mujer sonriendo en un auto nuevo"
+                    fill
+                    className="object-cover brightness-50"
+                    priority
+                    data-ai-hint="happy woman new car"
+                />
+                <div className="relative z-10 p-4">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tighter drop-shadow-md">
+                        Encuentra Tu Próximo Auto
+                    </h1>
+                    <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-white/90 drop-shadow-sm">
+                        Explora, compara y financia el auto de tus sueños con nuestra plataforma digital.
+                    </p>
+                    <Button asChild size="lg" className="mt-8">
+                        <Link href="/catalog">Explorar Catálogo</Link>
+                    </Button>
                 </div>
-            </div>
+            </section>
             
             <BrandLogos />
 
