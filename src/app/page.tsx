@@ -1,4 +1,5 @@
 
+
 import { Suspense } from 'react';
 import CarCatalog from '@/components/catalog/CarCatalog';
 import { cars } from '@/lib/data';
@@ -24,13 +25,14 @@ const BrandLogos = () => (
 
 const HeroSection = () => {
     return (
-        <section className="relative bg-background text-foreground py-20 min-h-[60vh] flex items-center justify-center text-center">
+        <section className="relative bg-background text-foreground py-20 min-h-[60vh] flex items-center justify-center text-center overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-background z-0"></div>
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight text-foreground">
                         Conduce tu historia con <span className="text-primary">DigiCar</span>
                     </h1>
-                    <p className="mt-6 text-lg text-foreground/70 max-w-2xl mx-auto">
+                    <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
                        Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                     </p>
                     <div className="mt-8 flex justify-center gap-4">
@@ -52,7 +54,9 @@ export default function Home() {
 
     return (
         <>
-            <HeroSection />
+            <Suspense fallback={<div className="min-h-[60vh] bg-background"></div>}>
+              <HeroSection />
+            </Suspense>
             
             <BrandLogos />
 
