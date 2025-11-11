@@ -9,6 +9,7 @@ import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings }
 import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { translations } from '@/lib/translations';
+import SketchfabViewer from '@/components/sketchfab/SketchfabViewer';
 
 export default function CarDetailPage({ params }: { params: { id: string } }) {
   const car = cars.find(c => c.id === params.id);
@@ -36,19 +37,9 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
-            {placeholder && (
-                <Card className="overflow-hidden">
-                <Image
-                    src={placeholder.imageUrl}
-                    alt={`${car.brand} ${car.model}`}
-                    width={1200}
-                    height={800}
-                    className="object-cover w-full"
-                    data-ai-hint={placeholder.imageHint}
-                    priority
-                />
-                </Card>
-            )}
+            <Card className="overflow-hidden">
+                <SketchfabViewer make={car.brand} model={car.model} />
+            </Card>
             <Card>
                 <CardHeader>
                     <CardTitle>Contáctanos</CardTitle>
