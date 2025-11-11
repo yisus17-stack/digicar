@@ -80,9 +80,11 @@ function AdminSidebar() {
             <span className="font-bold text-lg">DigiCar</span>
             <span className="text-xs text-muted-foreground">Admin Panel</span>
         </div>
-        <Button variant="ghost" size="icon" className="ml-auto" onClick={toggleSidebar}>
-            <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !isClosed })}/>
-        </Button>
+        <div className="ml-auto">
+            <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !isClosed })}/>
+            </Button>
+        </div>
       </div>
 
       <div className="p-4">
@@ -136,51 +138,54 @@ function AdminSidebar() {
   );
 }
 
-const AdminLayoutSkeleton = () => (
-    <div className="flex min-h-screen w-full">
-        <aside className="fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex">
-            <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
-                 <Skeleton className="h-10 w-10 rounded-full" />
-                 <div className="flex flex-col gap-1">
-                    <Skeleton className="h-5 w-20" />
-                    <Skeleton className="h-3 w-16" />
-                 </div>
-                 <Button variant="ghost" size="icon" className="ml-auto">
-                    <Skeleton className="h-5 w-5" />
-                 </Button>
-            </div>
-            <div className="p-4">
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <nav className="flex flex-col gap-2 p-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-            </nav>
-             <div className="mt-auto p-4">
-                <div className="flex items-center gap-3">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <div className="flex flex-col gap-1">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-3 w-20" />
-                    </div>
+const AdminLayoutSkeleton = () => {
+    const isClosed = false; // Skeleton is always rendered in open state on server
+    return (
+        <div className="flex min-h-screen w-full">
+            <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': isClosed })}>
+                <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
+                     <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': isClosed})} />
+                     <div className={cn('flex flex-col gap-1', { 'hidden': isClosed })}>
+                        <Skeleton className="h-5 w-20" />
+                        <Skeleton className="h-3 w-16" />
+                     </div>
+                     <div className="ml-auto">
+                        <Skeleton className="h-10 w-10" />
+                     </div>
                 </div>
-             </div>
-        </aside>
-        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                 <Skeleton className="h-8 w-8 sm:hidden" />
-                 <div className="ml-auto flex items-center gap-4">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <Skeleton className="h-8 w-8 rounded-full" />
+                <div className="p-4">
+                    <Skeleton className="h-10 w-full" />
+                </div>
+                <nav className="flex flex-col gap-2 p-2">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                </nav>
+                 <div className="mt-auto p-4">
+                     <div className={cn("flex items-center gap-3", {"w-auto mx-auto": isClosed})}>
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <div className={cn("flex flex-col gap-1", {'hidden': isClosed})}>
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-3 w-20" />
+                        </div>
+                    </div>
                  </div>
-            </header>
-            <main className="flex-1 p-4 sm:px-6 sm:py-0">
-                <Skeleton className="h-64 w-full" />
-            </main>
+            </aside>
+            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
+                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                     <Skeleton className="h-8 w-8 sm:hidden" />
+                     <div className="ml-auto flex items-center gap-4">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                     </div>
+                </header>
+                <main className="flex-1 p-4 sm:px-6 sm:py-0">
+                    <Skeleton className="h-64 w-full" />
+                </main>
+            </div>
         </div>
-    </div>
-)
+    );
+};
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -257,5 +262,3 @@ function AdminLayoutWithProvider({ children, user, handleSignOut }: { children: 
       </div>
   );
 }
-
-    
