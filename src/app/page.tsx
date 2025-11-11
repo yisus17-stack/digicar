@@ -28,7 +28,7 @@ export default async function Home() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <h1 className="text-2xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                        <h1 className="text-[1.7rem] sm:text-5xl md:text-6xl font-bold leading-tight">
                             <span className="sm:inline">Conduce tu historia</span>
                             <br className="block sm:hidden" />
                             <span className="sm:inline-block"> con <span className="text-primary">DigiCar</span></span>
