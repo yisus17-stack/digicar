@@ -1,10 +1,13 @@
 
+import { Suspense } from 'react';
 import CarCatalog from '@/components/catalog/CarCatalog';
 import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Loader } from 'lucide-react';
+import { generateHeroVideo } from '@/ai/flows/generate-hero-video';
+
 
 const BrandLogos = () => (
     <div className="bg-muted">
@@ -19,32 +22,56 @@ const BrandLogos = () => (
     </div>
 );
 
+const HeroContent = ({ videoUrl }: { videoUrl: string | null }) => (
+    <div className="relative z-10 p-4 text-center text-white">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter drop-shadow-lg animate-fade-in-up">
+            Encuentra Tu Próximo Auto
+        </h1>
+        <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-white/90 drop-shadow-md animate-fade-in-up animation-delay-300">
+            Explora, compara y financia el auto de tus sueños con nuestra plataforma digital.
+        </p>
+        <Button asChild size="lg" className="mt-8 animate-fade-in-up animation-delay-600">
+            <Link href="/catalog">Explorar Catálogo</Link>
+        </Button>
+    </div>
+);
+
+const VideoLoadingState = () => (
+     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-800 text-white z-20">
+        <Loader className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-lg text-muted-foreground animate-pulse">Generando experiencia...</p>
+    </div>
+);
 
 export default async function Home() {
     const popularCars = cars.slice(0, 3);
+    const videoUrl = await generateHeroVideo();
 
     return (
         <>
-            <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
-                <Image
-                    src="https://picsum.photos/seed/hero-background/1600/900"
-                    alt="Mujer sonriendo en un auto nuevo"
-                    fill
-                    className="object-cover brightness-50"
-                    priority
-                    data-ai-hint="happy woman new car"
-                />
-                <div className="relative z-10 p-4">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tighter drop-shadow-md">
-                        Encuentra Tu Próximo Auto
-                    </h1>
-                    <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-white/90 drop-shadow-sm">
-                        Explora, compara y financia el auto de tus sueños con nuestra plataforma digital.
-                    </p>
-                    <Button asChild size="lg" className="mt-8">
-                        <Link href="/catalog">Explorar Catálogo</Link>
-                    </Button>
-                </div>
+            <section className="relative h-[75vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+                <Suspense fallback={<VideoLoadingState />}>
+                    {videoUrl ? (
+                        <video
+                            src={videoUrl}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="absolute z-0 min-w-full min-h-full w-auto h-auto object-cover brightness-50"
+                        />
+                    ) : (
+                        <Image
+                            src="https://picsum.photos/seed/hero-fallback/1600/900"
+                            alt="Fondo de auto"
+                            fill
+                            className="object-cover brightness-50"
+                            priority
+                            data-ai-hint="sleek car dark background"
+                        />
+                    )}
+                    <HeroContent videoUrl={videoUrl} />
+                </Suspense>
             </section>
             
             <BrandLogos />
