@@ -1,22 +1,30 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import {
   Accessibility,
   ZoomIn,
   ZoomOut,
   Contrast,
-  Link,
+  Link as LinkIcon,
   Type,
   RefreshCcw,
   Pipette,
   Eye,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+  SheetTrigger,
+} from '../ui/sheet';
+import { ScrollArea } from '../ui/scroll-area';
 
 const FONT_STEP_LIMIT = 2;
 
@@ -124,7 +132,7 @@ export default function AccessibilityWidget() {
       action: () => handleToggle(setInvert, invert, 'data-invert'),
     },
     {
-      Icon: Link,
+      Icon: LinkIcon,
       label: 'Subrayar enlaces',
       isSwitch: true,
       checked: underlineLinks,
@@ -140,61 +148,52 @@ export default function AccessibilityWidget() {
   ];
 
   return (
-    <>
-      <div className="fixed bottom-6 left-6 z-50">
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
-              className="mb-2 w-72 origin-bottom-left rounded-lg border bg-background shadow-lg"
-            >
-              <div className="p-4 border-b">
-                <h2 className="text-lg font-semibold flex items-center gap-2">
-                  <Accessibility /> Herramientas
-                </h2>
-              </div>
-              <div className="flex-1 flex flex-col gap-4 p-4">
-              {options.map(({ Icon, label, action, isSwitch, checked, disabled }, index) => (
-                <React.Fragment key={label}>
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor={label.replace(' ', '-')} className="flex items-center gap-3 cursor-pointer text-base">
-                      <Icon className="h-5 w-5 text-muted-foreground" />
-                      {label}
-                    </Label>
-                    {isSwitch ? (
-                      <Switch id={label.replace(' ', '-')} checked={checked} onCheckedChange={action} />
-                    ) : (
-                      <Button variant="ghost" size="sm" onClick={action} disabled={disabled} className="p-2 h-auto">
-                        <Icon className="h-5 w-5" />
-                      </Button>
-                    )}
-                  </div>
-                  {index < options.length - 1 && <Separator />}
-                </React.Fragment>
-              ))}
-            </div>
-              <div className="p-4 border-t">
-                <Button onClick={resetAll} variant="outline" className="w-full">
-                  <RefreshCcw className="mr-2 h-4 w-4" />
-                  Restablecer
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
         <Button
-          onClick={() => setIsOpen(!isOpen)}
           variant="default"
           size="icon"
-          className="h-14 w-14 rounded-full shadow-lg"
+          className="fixed bottom-6 left-6 h-14 w-14 rounded-full shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
           <Accessibility className="h-7 w-7" />
         </Button>
-      </div>
-    </>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[320px] p-0 flex flex-col">
+        <SheetHeader className='p-4 border-b'>
+          <SheetTitle className="flex items-center gap-2 text-lg">
+            <Accessibility /> Herramientas de Accesibilidad
+          </SheetTitle>
+        </SheetHeader>
+        <ScrollArea className="flex-1">
+          <div className="flex flex-col gap-4 p-4">
+            {options.map(({ Icon, label, action, isSwitch, checked, disabled }, index) => (
+              <React.Fragment key={label}>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor={label.replace(/\s+/g, '-')} className="flex items-center gap-3 cursor-pointer text-base">
+                    <Icon className="h-5 w-5 text-muted-foreground" />
+                    {label}
+                  </Label>
+                  {isSwitch ? (
+                    <Switch id={label.replace(/\s+/g, '-')} checked={checked} onCheckedChange={action} />
+                  ) : (
+                    <Button variant="outline" size="sm" onClick={action} disabled={disabled} className="p-2 h-auto">
+                      <Icon className="h-5 w-5" />
+                    </Button>
+                  )}
+                </div>
+                {index < options.length - 1 && <Separator />}
+              </React.Fragment>
+            ))}
+          </div>
+        </ScrollArea>
+        <SheetFooter className="p-4 border-t">
+          <Button onClick={resetAll} variant="outline" className="w-full">
+            <RefreshCcw className="mr-2 h-4 w-4" />
+            Restablecer
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
