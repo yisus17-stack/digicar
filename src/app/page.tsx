@@ -22,9 +22,9 @@ const BrandLogos = () => (
     </div>
 );
 
-const HeroContent = ({ videoUrl }: { videoUrl: string | null }) => (
+const HeroContent = () => (
     <div className="relative z-10 p-4 text-center text-white">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter drop-shadow-lg animate-fade-in-up">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter drop-shadow-lg animate-fade-in-up">
             Encuentra Tu Próximo Auto
         </h1>
         <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-white/90 drop-shadow-md animate-fade-in-up animation-delay-300">
@@ -43,36 +43,44 @@ const VideoLoadingState = () => (
     </div>
 );
 
-export default async function Home() {
-    const popularCars = cars.slice(0, 3);
+const HeroSection = async () => {
     const videoUrl = await generateHeroVideo();
 
     return (
+        <section className="relative h-[75vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+            {videoUrl ? (
+                <video
+                    src={videoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute z-0 min-w-full min-h-full w-auto h-auto object-cover brightness-50"
+                    key={videoUrl}
+                />
+            ) : (
+                <Image
+                    src="https://picsum.photos/seed/hero-fallback/1600/900"
+                    alt="Fondo de auto"
+                    fill
+                    className="object-cover brightness-50"
+                    priority
+                    data-ai-hint="sleek car dark background"
+                />
+            )}
+            <HeroContent />
+        </section>
+    )
+}
+
+export default function Home() {
+    const popularCars = cars.slice(0, 3);
+
+    return (
         <>
-            <section className="relative h-[75vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-                <Suspense fallback={<VideoLoadingState />}>
-                    {videoUrl ? (
-                        <video
-                            src={videoUrl}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="absolute z-0 min-w-full min-h-full w-auto h-auto object-cover brightness-50"
-                        />
-                    ) : (
-                        <Image
-                            src="https://picsum.photos/seed/hero-fallback/1600/900"
-                            alt="Fondo de auto"
-                            fill
-                            className="object-cover brightness-50"
-                            priority
-                            data-ai-hint="sleek car dark background"
-                        />
-                    )}
-                    <HeroContent videoUrl={videoUrl} />
-                </Suspense>
-            </section>
+            <Suspense fallback={<VideoLoadingState />}>
+                <HeroSection />
+            </Suspense>
             
             <BrandLogos />
 
