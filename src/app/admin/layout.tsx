@@ -81,7 +81,7 @@ function AdminSidebar() {
             <span className="text-xs text-muted-foreground">Admin Panel</span>
         </div>
         <div className="ml-auto">
-            <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+            <Button variant="default" size="icon" onClick={toggleSidebar}>
                 <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !isClosed })}/>
             </Button>
         </div>
@@ -162,7 +162,7 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </nav>
                  <div className="mt-auto p-4">
-                     <div className={cn("flex items-center gap-3", {"w-auto mx-auto": isClosed})}>
+                     <div className={cn("flex items-center gap-3", {"justify-center": isClosed})}>
                         <Skeleton className="h-8 w-8 rounded-full" />
                         <div className={cn("flex flex-col gap-1", {'hidden': isClosed})}>
                             <Skeleton className="h-4 w-24" />
