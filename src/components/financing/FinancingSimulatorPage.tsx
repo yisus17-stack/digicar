@@ -391,7 +391,7 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
               </div>
             )}
             {simulationResult && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="text-sm text-muted-foreground">Mensualidad Estimada</p>

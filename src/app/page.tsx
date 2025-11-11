@@ -8,7 +8,7 @@ import { ChevronRight } from 'lucide-react';
 const BrandLogos = () => (
     <div className="bg-muted">
         <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
                 <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="filter brightness-0" />
                 <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="filter brightness-0"/>
                 <Image src="/logo.png" alt="DigiCar" width={150} height={50} />
@@ -33,7 +33,7 @@ export default async function Home() {
                         <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
+                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                             <Button size="lg">
                                 Explorar
                             </Button>
