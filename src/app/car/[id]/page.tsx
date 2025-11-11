@@ -1,6 +1,6 @@
+'use client';
 
 import Image from 'next/image';
-import { cars } from '@/lib/data';
 import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,9 +10,38 @@ import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { translations } from '@/lib/translations';
 import SketchfabViewer from '@/components/sketchfab/SketchfabViewer';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import type { Car } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function CarDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Skeleton className="h-6 w-1/3 mb-4" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="space-y-6">
+          <Skeleton className="h-[450px] w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+        <div className="space-y-6">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function CarDetailPage({ params }: { params: { id: string } }) {
-  const car = cars.find(c => c.id === params.id);
+  const firestore = useFirestore();
+  const carRef = useMemoFirebase(() => doc(firestore, 'cars', params.id), [firestore, params.id]);
+  const { data: car, isLoading } = useDoc<Car>(carRef);
+
+  if (isLoading) {
+    return <CarDetailSkeleton />;
+  }
 
   if (!car) {
     notFound();

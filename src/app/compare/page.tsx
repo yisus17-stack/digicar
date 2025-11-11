@@ -1,19 +1,45 @@
+'use client';
 
+import { useSearchParams } from 'next/navigation';
 import ComparisonPage from "@/components/comparison/ComparisonPage";
-import { cars } from "@/lib/data";
-import { Car } from "@/lib/types";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { Car } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function Compare({ 
-  searchParams,
-}: { 
-  searchParams: { ids?: string },
-}) {
-  const ids = searchParams.ids?.split(',').filter(Boolean) || [];
-  const carsToCompare = cars.filter(car => ids.includes(car.id)).slice(0, 2);
+const CompareSkeleton = () => (
+    <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
+        <Skeleton className="h-8 w-1/4" />
+        <div className="text-center">
+            <Skeleton className="h-12 w-1/2 mx-auto" />
+            <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+        </div>
+        <Skeleton className="h-96 w-full" />
+    </div>
+);
+
+export default function Compare() {
+  const searchParams = useSearchParams();
+  const firestore = useFirestore();
+
+  const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+  const { data: allCars, isLoading } = useCollection<Car>(carsCollection);
+
+  const ids = searchParams.get('ids')?.split(',').filter(Boolean) || [];
+  
+  if (isLoading || !allCars) {
+      return <CompareSkeleton />;
+  }
+
+  const carsToCompare = allCars.filter(car => ids.includes(car.id)).slice(0, 2);
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -38,7 +64,7 @@ export default async function Compare({
         ) : (
             <ComparisonPage 
               cars={carsToCompare as [Car] | [Car, Car]} 
-              allCars={cars}
+              allCars={allCars}
             />
         )}
     </div>

@@ -1,28 +1,31 @@
+'use client';
 
 import { Suspense } from 'react';
 import CarCatalog from '@/components/catalog/CarCatalog';
-import { cars } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, TrendingUp, Award } from 'lucide-react';
+import { ChevronRight, Search, TrendingUp, Award, GitCompareArrows } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-
-const BrandLogos = () => (
-    <div className="bg-secondary/30">
-        <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
-                <Image src="/audi-logo.svg" alt="Audi" width={100} height={40} className="opacity-60" />
-                <Image src="/vw-logo.svg" alt="Volkswagen" width={60} height={60} className="opacity-60" />
-                <Image src="/logo.svg" alt="DigiCar" width={150} height={50} className="opacity-80" />
-                <Image src="/kia-logo.svg" alt="Kia" width={80} height={40} className="opacity-60" />
-            </div>
-        </div>
-    </div>
-);
+import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import type { Car } from '@/lib/types';
 
 
 const HeroSection = () => {
+    const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            router.push(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
+        }
+    };
+
     return (
         <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
             <div className="absolute top-[-50px] left-[-50px] w-48 h-48 bg-primary/10 rounded-full -z-10"></div>
@@ -37,26 +40,28 @@ const HeroSection = () => {
                 </p>
 
                 <div className="max-w-2xl mx-auto">
-                    <div className="relative">
+                    <form onSubmit={handleSearch} className="relative">
                         <Input
                             type="search"
                             placeholder="Busca marca, modelo, categoría..."
                             className="h-14 text-base pl-6 pr-28 rounded-full"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-10 rounded-full px-6" type="submit">
                             <Search className="h-4 w-4 md:hidden" />
                             <span className='hidden md:block'>Buscar</span>
                         </Button>
-                    </div>
+                    </form>
 
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
                         <Link href="#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
                             <Award className="h-4 w-4" />
                             <span>Los más populares</span>
                         </Link>
-                        <Link href="/catalog" className="flex items-center gap-2 hover:text-primary transition-colors">
-                            <TrendingUp className="h-4 w-4" />
-                            <span>Últimos Modelos</span>
+                         <Link href="/compare" className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <GitCompareArrows className="h-4 w-4" />
+                            <span>Comparar</span>
                         </Link>
                     </div>
                 </div>
@@ -66,16 +71,46 @@ const HeroSection = () => {
 };
 
 
+const PopularCarsSkeleton = () => (
+    <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+            <Skeleton className="h-10 w-2/3 mx-auto" />
+            <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Skeleton className="h-96 w-full" />
+            <Skeleton className="h-96 w-full" />
+            <Skeleton className="h-96 w-full" />
+        </div>
+    </div>
+);
+
 export default function Home() {
-    const popularCars = cars.slice(0, 3);
+    const firestore = useFirestore();
+    // Create a query to get the first 3 cars, you can later order them by popularity
+    const popularCarsQuery = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
+    const { data: popularCars, isLoading } = useCollection<Car>(popularCarsQuery);
+    const [comparisonIds, setComparisonIds] = useState<string[]>([]);
+    const router = useRouter();
+
+    const handleToggleCompare = (carId: string) => {
+        setComparisonIds(prevIds => {
+          if (prevIds.includes(carId)) {
+            return prevIds.filter(id => id !== carId);
+          }
+          if (prevIds.length < 2) {
+            return [...prevIds, carId];
+          }
+          // If 2 are already selected, replace the last one
+          return [...prevIds.slice(0, 1), carId];
+        });
+    };
 
     return (
         <>
             <Suspense fallback={<div className="min-h-[60vh] bg-background"></div>}>
               <HeroSection />
             </Suspense>
-            
-            <BrandLogos />
 
             <div id="popular" className="container mx-auto px-4 py-16">
                 <div className="text-center mb-12">
@@ -84,7 +119,19 @@ export default function Home() {
                     </h2>
                     <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
-                <CarCatalog cars={popularCars} />
+                {isLoading ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <Skeleton className="h-96 w-full" />
+                        <Skeleton className="h-96 w-full" />
+                        <Skeleton className="h-96 w-full" />
+                    </div>
+                ) : (
+                    <CarCatalog
+                        cars={popularCars ?? []}
+                        comparisonIds={comparisonIds}
+                        onToggleCompare={handleToggleCompare}
+                    />
+                )}
             </div>
             
             <div className="text-center mb-16 px-4">
