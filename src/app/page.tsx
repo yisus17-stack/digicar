@@ -37,34 +37,43 @@ const HeroSection = () => {
     }
     
     return (
-        <section className="w-full min-h-[80vh] flex bg-background text-foreground relative">
+        <section className="w-full min-h-[80vh] flex bg-background text-foreground relative overflow-hidden">
             {/* Left Color Panel */}
             <div className="w-[60%] bg-primary absolute inset-y-0 left-0"></div>
 
             {/* Right White Panel */}
             <div className="w-[40%] bg-background absolute inset-y-0 right-0"></div>
             
-            <div className="container mx-auto relative z-10 h-full flex items-center">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full flex items-center">
+                {/* Content Container */}
                 <div className="grid grid-cols-10 w-full h-full">
 
-                    {/* Left Side Content */}
-                    <div className="col-span-6 flex flex-col justify-between text-primary-foreground py-16">
-                        <div className='pl-24'>
+                    {/* === LEFT SIDE CONTENT === */}
+                    <div className="col-span-6 flex flex-col justify-between text-primary-foreground py-16 h-full">
+                        {/* Top Text */}
+                        <div className='pl-8 md:pl-24'>
                             <h3 className="text-4xl md:text-5xl font-bold">{featuredCar.model} {featuredCar.year}</h3>
                             <p className="mt-2 text-base md:text-lg opacity-90">{featuredCar.engine}</p>
                         </div>
+
+                        {/* Vertical Text */}
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center -rotate-90 origin-bottom-left">
                             <h2 className="text-6xl md:text-8xl font-bold tracking-[0.2em] opacity-80 whitespace-nowrap text-primary-foreground/50">DIGICAR</h2>
                         </div>
+
+                        {/* This is a spacer div, content is in the right side */}
+                        <div></div> 
                     </div>
 
-                    {/* Right Side Content */}
-                    <div className="col-span-4 flex flex-col justify-between py-16">
+                    {/* === RIGHT SIDE CONTENT === */}
+                    <div className="col-span-4 flex flex-col justify-between py-16 h-full">
+                         {/* Price */}
                          <div className="text-left">
                             <p className="text-4xl md:text-5xl font-bold">${featuredCar.price.toLocaleString('es-MX')}</p>
                             <p className="text-muted-foreground text-sm mt-1">Aplican restricciones</p>
                         </div>
 
+                        {/* Vertical Nav */}
                         <div className="my-12">
                             <ul className="space-y-4 text-left">
                                 {navCars.map((car, index) => (
@@ -82,6 +91,7 @@ const HeroSection = () => {
                             </ul>
                         </div>
                         
+                        {/* Social Icons */}
                         <div className="flex justify-start items-center gap-4 mt-auto">
                             <Link href="#" className="text-muted-foreground hover:text-foreground"><Facebook size={20} /></Link>
                             <Link href="#" className="text-muted-foreground hover:text-foreground"><Twitter size={20} /></Link>
@@ -91,8 +101,8 @@ const HeroSection = () => {
                     </div>
                 </div>
 
-                {/* Car Image - Overlapping */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {/* === CAR IMAGE (Overlapping) === */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                     <div className="relative w-full h-full">
                         <Image
                             src="/auto-inicio.png"
