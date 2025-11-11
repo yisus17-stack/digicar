@@ -31,14 +31,14 @@ export default async function Home() {
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
                             Conduce tu historia<br className="hidden sm:block" /> con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
+                        <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <Button asChild size="lg" className="w-full sm:w-auto">
+                        <div className="mt-8 flex flex-row sm:flex-row gap-4 justify-center md:justify-start">
+                            <Button asChild size="lg">
                                 <Link href="#popular">Explorar</Link>
                             </Button>
-                            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                            <Button asChild size="lg" variant="outline">
                                 <Link href="/catalog">Ver catálogo</Link>
                             </Button>
                         </div>
