@@ -32,8 +32,6 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 
 const AdminLayoutSkeleton = () => (
@@ -51,8 +49,7 @@ const AdminLayoutSkeleton = () => (
                 <Skeleton className="h-10 w-full" />
             </div>
             <div className="mt-auto space-y-2">
-                 <Skeleton className="h-10 w-full" />
-                 <Skeleton className="h-10 w-full" />
+                 {/* Placeholders removed */}
             </div>
         </aside>
         {/* Main Content Skeleton */}
