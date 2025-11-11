@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Search,
   Home,
+  MoreVertical,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -58,6 +59,19 @@ function AdminSidebar() {
   const { isClosed, toggleSidebar } = useSidebar();
   const pathname = usePathname();
   const { user } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
+      router.push('/');
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
+    }
+  };
 
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -113,24 +127,23 @@ function AdminSidebar() {
           </Link>
         ))}
       </nav>
-      <div className="mt-auto p-4">
-         <DropdownMenu>
+      <div className="mt-auto border-t p-2">
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" className={cn("w-full justify-start", {"w-auto mx-auto": isClosed})}>
-                    <Avatar className="h-8 w-8">
-                        {user?.photoURL && <AvatarImage src={user.photoURL} />}
-                        <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
-                    </Avatar>
-                    <div className={cn("flex flex-col items-start ml-3", {'hidden': isClosed})}>
-                        <span className="text-sm font-medium">{user?.displayName}</span>
-                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
+                    <div className={cn("flex flex-col items-start truncate", {'items-center': isClosed})}>
+                        <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
+                        <span className={cn("text-xs text-muted-foreground truncate", {'hidden': isClosed})}>{user?.email}</span>
                     </div>
-                </Button>
+                     <MoreVertical className="h-4 w-4 ml-auto shrink-0" />
+                </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent align="end" side="top" className="w-56 mb-2">
+                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem>Mi Perfil</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -162,8 +175,8 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                 </nav>
-                 <div className="mt-auto p-4">
-                     <Skeleton className="h-10 w-full" />
+                 <div className="mt-auto border-t p-2">
+                     <Skeleton className="h-12 w-full" />
                  </div>
             </aside>
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
@@ -198,15 +211,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
      <SidebarProvider>
-      <AdminLayoutWithProvider user={user}>
+      <AdminLayoutWithProvider>
         {children}
       </AdminLayoutWithProvider>
     </SidebarProvider>
   );
 }
 
-function AdminLayoutWithProvider({ children, user }: { children: React.ReactNode, user: any }) {
-  const { isClosed } = useSidebar();
+function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
+  const sidebarContext = useContext(SidebarContext);
+  const isClosed = sidebarContext?.isClosed ?? false;
+  const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
