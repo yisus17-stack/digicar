@@ -20,7 +20,6 @@ import {
   RefreshCcw,
   Pipette,
   Eye,
-  Lightbulb,
 } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';
@@ -158,7 +157,7 @@ export default function AccessibilityWidget() {
         <Button
           variant="default"
           size="icon"
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-2xl shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
           <Accessibility className="h-7 w-7" />
