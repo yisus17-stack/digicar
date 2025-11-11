@@ -73,27 +73,7 @@ const AdminLayoutSkeleton = () => (
 function AdminSidebar() {
   const pathname = usePathname();
   const { open, toggleSidebar } = useSidebar();
-  const router = useRouter();
-  const auth = useAuth();
-  const { toast } = useToast();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      toast({
-        title: "Sesión cerrada",
-        description: "Has cerrado sesión correctamente.",
-      });
-      router.push("/");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo cerrar la sesión. Inténtalo de nuevo.",
-      });
-    }
-  };
-
+  
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/cars", label: "Autos", icon: Car },
@@ -147,21 +127,7 @@ function AdminSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 space-y-2">
-         <SidebarMenu>
-            <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleSignOut} tooltip={{children: 'Cerrar Sesión', side: "right", align: "center"}}>
-                    <LogOut className="h-5 w-5" />
-                    <span className={cn('transition-opacity', open ? 'opacity-100' : 'opacity-0')}>Cerrar Sesión</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-             <div className={cn("p-2 rounded-lg bg-muted flex items-center justify-between", !open && 'bg-transparent')}>
-                 <div className={cn("flex items-center gap-2", !open && 'hidden')}>
-                    <Moon className="h-5 w-5 text-muted-foreground" />
-                    <Label htmlFor="dark-mode" className="text-sm">Dark Mode</Label>
-                 </div>
-                <Switch id="dark-mode" />
-            </div>
-         </SidebarMenu>
+         {/* Footer content removed for a cleaner look */}
       </SidebarFooter>
     </Sidebar>
   );
@@ -170,12 +136,31 @@ function AdminSidebar() {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
+  const auth = useAuth();
+  const { toast } = useToast();
   
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
     }
   }, [user, userLoading, router]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Sesión cerrada",
+        description: "Has cerrado sesión correctamente.",
+      });
+      router.push("/");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+      });
+    }
+  };
 
   if (userLoading || !user) {
     return <AdminLayoutSkeleton />;
@@ -208,7 +193,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     Configuración
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                   <DropdownMenuItem onClick={() => { /* Implementar cierre de sesión */ }}>
+                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Cerrar Sesión
                   </DropdownMenuItem>
