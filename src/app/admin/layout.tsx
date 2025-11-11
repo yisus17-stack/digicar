@@ -1,3 +1,4 @@
+
 'use client';
 import { LayoutDashboard, Car, Tag, LogOut, PanelLeft, Settings, ShieldCheck, User, Home, Search, ChevronRight, Moon } from "lucide-react";
 import Image from "next/image";
@@ -79,17 +80,19 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex items-center justify-start p-4">
-        <Link href="/admin" className={cn("flex items-center gap-2 transition-opacity", open ? 'opacity-100' : 'opacity-0 delay-0', 'delay-200 flex-grow')}>
-            <Avatar className="bg-primary rounded-lg">
-                <AvatarFallback className="bg-transparent text-primary-foreground font-bold">DC</AvatarFallback>
-            </Avatar>
+      <SidebarHeader className="flex items-center justify-between p-4">
+        <div className={cn("flex items-center gap-2 transition-opacity", open ? 'opacity-100' : 'opacity-0 delay-0', 'delay-200 flex-grow')}>
+            <Link href="/admin">
+                <Avatar className="bg-primary rounded-lg">
+                    <AvatarFallback className="bg-transparent text-primary-foreground font-bold">DC</AvatarFallback>
+                </Avatar>
+            </Link>
             <div className="flex flex-col">
                 <span className="font-semibold text-lg">DigiCar</span>
                 <span className="text-xs text-muted-foreground">Admin Panel</span>
             </div>
-        </Link>
-         <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto" onClick={toggleSidebar}>
+        </div>
+         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleSidebar}>
             <ChevronRight className={cn("h-5 w-5 transition-transform", !open && 'rotate-180')} />
         </Button>
       </SidebarHeader>
