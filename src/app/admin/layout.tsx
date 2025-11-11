@@ -79,8 +79,8 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex items-center justify-between p-4">
-        <Link href="/admin" className={cn("flex items-center gap-2 transition-opacity", open ? 'opacity-100' : 'opacity-0 delay-0', 'delay-200')}>
+      <SidebarHeader className="flex items-center justify-start p-4">
+        <Link href="/admin" className={cn("flex items-center gap-2 transition-opacity", open ? 'opacity-100' : 'opacity-0 delay-0', 'delay-200 flex-grow')}>
             <Avatar className="bg-primary rounded-lg">
                 <AvatarFallback className="bg-transparent text-primary-foreground font-bold">DC</AvatarFallback>
             </Avatar>
@@ -89,7 +89,7 @@ function AdminSidebar() {
                 <span className="text-xs text-muted-foreground">Admin Panel</span>
             </div>
         </Link>
-         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleSidebar}>
+         <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto" onClick={toggleSidebar}>
             <ChevronRight className={cn("h-5 w-5 transition-transform", !open && 'rotate-180')} />
         </Button>
       </SidebarHeader>
