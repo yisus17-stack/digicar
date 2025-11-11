@@ -25,6 +25,7 @@ import {
   SheetTrigger,
 } from '../ui/sheet';
 import { ScrollArea } from '../ui/scroll-area';
+import { usePathname } from 'next/navigation';
 
 const FONT_STEP_LIMIT = 2;
 
@@ -36,6 +37,7 @@ export default function AccessibilityWidget() {
   const [invert, setInvert] = useState(false);
   const [underlineLinks, setUnderlineLinks] = useState(false);
   const [readableFont, setReadableFont] = useState(false);
+  const pathname = usePathname();
 
   const applySetting = (key: string, value: string) => {
     document.documentElement.setAttribute(key, value);
@@ -96,6 +98,10 @@ export default function AccessibilityWidget() {
     setReadableFont(false);
     removeSetting('data-readable-font');
   };
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   const options = [
     {
