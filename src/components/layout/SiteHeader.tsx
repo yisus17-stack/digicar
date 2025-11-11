@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -52,6 +53,25 @@ const SiteHeader = () => {
   const { toast } = useToast();
   const isAdmin = !!user;
 
+  const openSearch = () => setIsSearchVisible(true);
+  const closeSearch = () => setIsSearchVisible(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isSearchVisible) closeSearch();
+      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        openSearch();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSearchVisible]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   // Do not show header on admin routes
   if (pathname.startsWith('/admin')) {
     return null;
@@ -64,9 +84,6 @@ const SiteHeader = () => {
     { href: '/simulator', label: 'Simulador IA', icon: Wand2 },
     { href: '/financing', label: 'Financiamiento', icon: Landmark },
   ];
-
-  const openSearch = () => setIsSearchVisible(true);
-  const closeSearch = () => setIsSearchVisible(false);
 
   const handleSignOut = async () => {
     try {
@@ -84,22 +101,6 @@ const SiteHeader = () => {
       });
     }
   };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isSearchVisible) closeSearch();
-      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        openSearch();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchVisible]);
-
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
 
 
   return (
