@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
+      <body className={cn('min-h-screen bg-background font-sans antialiased dark-theme', inter.variable)}>
         <FirebaseClientProvider>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />

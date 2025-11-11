@@ -14,7 +14,11 @@ import {
   ShieldCheck,
   LogIn,
   LogOut,
-  UserPlus
+  UserPlus,
+  MapPin,
+  ShoppingCart,
+  Wrench,
+  ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -42,28 +46,14 @@ import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
-
-const popularSearches = [
-  'Prestige X10',
-  'Aurora GT',
-  'Volta EV',
-  'SUV',
-  'Deportivo',
-  'Híbrido',
-  'Familiar',
-];
-
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const pathname = usePathname();
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-
-  // Simulación temporal: cualquier usuario logueado es admin
   const isAdmin = !!user;
 
   const handleSignOut = async () => {
@@ -83,147 +73,113 @@ const SiteHeader = () => {
     }
   };
 
-  const navLinks = [
-    { href: '/', label: 'Inicio', icon: Home },
-    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
-    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
-    { href: '/simulator', label: 'Simulador', icon: Wand2 },
-    { href: '/financing', label: 'Financiamiento', icon: Landmark },
+  const mainNavLinks = [
+    { href: '/catalog', label: 'VEHÍCULOS' },
+    { href: '#', label: 'COMPRA' },
+    { href: '#', label: 'MÚSCULO DIGICAR' },
+    { href: '#', label: 'SERVICIOS' },
   ];
 
-  const openSearch = () => {
-    setIsSearchVisible(true);
-    document.body.style.overflow = 'hidden';
-  };
+  const secondaryNavLinks = [
+    { href: '#', label: 'CONCESIONARIO', icon: MapPin },
+    { href: '#', label: 'TIENDA', icon: ShoppingCart },
+    { href: '#', label: 'CONFIGURAR', icon: Wrench },
+  ]
 
-  const closeSearch = () => {
-    setIsSearchVisible(false);
-    document.body.style.overflow = '';
-    setSearchValue('');
-  };
+  const openSearch = () => setIsSearchVisible(true);
+  const closeSearch = () => setIsSearchVisible(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isSearchVisible) {
-        closeSearch();
-      }
+      if (event.key === 'Escape' && isSearchVisible) closeSearch();
     };
-
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchVisible]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const handleClearSearch = () => {
-    setSearchValue('');
-  };
-  
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if(searchValue.trim()){
-      router.push(`/catalog?search=${encodeURIComponent(searchValue.trim())}`);
-      closeSearch();
-    }
-  }
 
   return (
     <>
-      <header className="bg-background/95 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
-        <div className="container mx-auto flex items-center justify-between py-4 px-4 sm:px-6 lg:px-8">
+      <header className="bg-black text-white sticky top-0 z-40 w-full border-b border-white/10">
+        <div className="container mx-auto flex items-center justify-between py-3 px-4">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.png"
+              src="/logo-red.svg"
               alt="DigiCar Logo"
-              width={150}
-              height={50}
-              className="w-24 md:w-36"
+              width={100}
+              height={30}
             />
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6 text-lg font-medium">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  'transition-colors hover:text-primary',
-                  pathname === link.href
-                    ? 'text-primary font-semibold'
-                    : ''
-                )}
-              >
+          <nav className="hidden lg:flex items-center space-x-6 text-sm font-bold tracking-wider uppercase">
+            {mainNavLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">
                 {link.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center justify-end gap-2 sm:gap-4">
-            <Button variant="ghost" size="icon" onClick={openSearch} className="h-9 w-9">
-              <Search className="h-5 w-5" />
-            </Button>
+             <div className="hidden lg:flex items-center gap-4">
+                {secondaryNavLinks.map(link => {
+                    const Icon = link.icon;
+                    return (
+                        <Link href={link.href} key={link.label} className="flex items-center gap-2 text-sm font-bold uppercase hover:text-primary transition-colors">
+                            <Icon className="h-4 w-4" />
+                            <span>{link.label}</span>
+                        </Link>
+                    )
+                })}
+             </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-white/10">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56 bg-black border-white/20 text-white">
                 {user ? (
                     <>
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/profile" className="flex items-center w-full cursor-pointer">
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Mi Perfil</span>
+                        <DropdownMenuSeparator className="bg-white/20"/>
+                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                          <Link href="/profile">
+                            <User className="mr-2 h-4 w-4" /> Mi Perfil
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href="/profile/simulations" className="flex items-center w-full cursor-pointer">
-                            <Wand2 className="mr-2 h-4 w-4" />
-                            <span>Mis Simulaciones</span>
-                          </Link>
-                        </DropdownMenuItem>
-
-                        {isAdmin && (
+                         {isAdmin && (
                             <>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator className="bg-white/20"/>
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
-                                <DropdownMenuItem asChild>
-                                <Link href="/admin/cars" className="flex items-center w-full cursor-pointer">
-                                    <ShieldCheck className="mr-2 h-4 w-4" />
-                                    <span>Administrar Autos</span>
-                                </Link>
+                                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                                  <Link href="/admin/cars">
+                                    <ShieldCheck className="mr-2 h-4 w-4" /> Administrar Autos
+                                  </Link>
                                 </DropdownMenuItem>
                             </>
                         )}
-                        
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Cerrar Sesión</span>
+                        <DropdownMenuSeparator className="bg-white/20"/>
+                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer focus:bg-white/10 focus:text-white">
+                            <LogOut className="mr-2 h-4 w-4" /> Cerrar Sesión
                         </DropdownMenuItem>
                     </>
                 ) : (
                     <>
                         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/login" className="flex items-center w-full cursor-pointer">
-                            <LogIn className="mr-2 h-4 w-4" />
-                            <span>Iniciar Sesión</span>
+                        <DropdownMenuSeparator className="bg-white/20"/>
+                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                          <Link href="/login">
+                            <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href="/register" className="flex items-center w-full cursor-pointer">
-                            <UserPlus className="mr-2 h-4 w-4" />
-                            <span>Registrarse</span>
+                        <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                          <Link href="/register">
+                            <UserPlus className="mr-2 h-4 w-4" /> Registrarse
                           </Link>
                         </DropdownMenuItem>
                     </>
@@ -231,49 +187,28 @@ const SiteHeader = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="hover:bg-white/10">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-3/4">
+                <SheetContent side="right" className="w-full bg-black text-white border-l-0">
                   <div className="p-4">
-                    <SheetHeader className="pb-4">
-                      <SheetTitle>
-                        <div className='p-3'>
-                          <Link href="/" className="flex items-center">
-                            <Image
-                              src="/logo.png"
-                              alt="DigiCar Logo"
-                              width={120}
-                              height={40}
-                            />
-                          </Link>
-                        </div>
-                      </SheetTitle>
+                    <SheetHeader className="pb-4 mb-4 border-b border-white/20">
+                        <Link href="/" className="flex items-center">
+                            <Image src="/logo-red.svg" alt="DigiCar Logo" width={120} height={40}/>
+                        </Link>
                     </SheetHeader>
-                    <nav className="flex flex-col space-y-2">
-                      {navLinks.map((link) => {
-                        const Icon = link.icon;
-                        return (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            className={cn(
-                              'flex items-center gap-3 rounded-md p-3 text-lg transition-colors hover:text-primary',
-                              pathname === link.href
-                                ? 'font-bold text-primary'
-                                : 'text-foreground'
-                            )}
-                          >
-                            <Icon className="h-5 w-5" />
-                            <span>{link.label}</span>
-                          </Link>
-                        );
-                      })}
+                    <nav className="flex flex-col space-y-2 text-lg uppercase font-bold tracking-wider">
+                      {[...mainNavLinks, ...secondaryNavLinks].map((link) => (
+                        <Link key={link.href} href={link.href} className="flex items-center justify-between p-3 transition-colors hover:text-primary">
+                          <span>{link.label}</span>
+                          <ArrowRight className="h-5 w-5" />
+                        </Link>
+                      ))}
                     </nav>
                   </div>
                 </SheetContent>
@@ -282,170 +217,6 @@ const SiteHeader = () => {
           </div>
         </div>
       </header>
-
-      <AnimatePresence>
-        {isSearchVisible && (
-          <motion.div
-            key="overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
-          >
-            <form onSubmit={handleSearchSubmit}>
-            <div className='hidden md:block pt-4'>
-            <motion.div
-              key="panel"
-              initial={{ y: -40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="bg-background border-b w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center py-4 gap-4">
-                  <div className="flex items-center space-x-2">
-                      <Link href="/" onClick={closeSearch}>
-                        <Image
-                            src="/logo.png"
-                            alt="DigiCar Logo"
-                            width={150}
-                            height={50}
-                            className="w-24 md:w-36"
-                        />
-                      </Link>
-                  </div>
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-4 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
-                      autoFocus
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    {searchValue && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full sm:hidden"
-                        onClick={handleClearSearch}
-                      >
-                        <X className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="link"
-                    onClick={closeSearch}
-                    className="text-muted-foreground hover:no-underline"
-                  >
-                    Cancelar
-                  </Button>
-                </div>
-                <div className="mt-4 pb-12" onClick={closeSearch}>
-                  <p className="font-semibold mb-4 text-muted-foreground text-sm">
-                    Búsquedas Populares
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {popularSearches.map((term) => (
-                      <Button
-                        key={term}
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="rounded-full font-normal"
-                        onClick={() => {
-                          router.push(`/catalog?search=${encodeURIComponent(term)}`);
-                          closeSearch();
-                        }}
-                      >
-                        {term}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            </div>
-            <div className='md:hidden'>
-            <motion.div
-              key="panel-mobile"
-              initial={{ y: -40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="bg-background border-b w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center h-20 gap-4">
-                  
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Buscar"
-                      className="w-full h-12 pl-12 pr-12 text-base bg-muted rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 appearance-none"
-                      autoFocus
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    {searchValue && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
-                        onClick={handleClearSearch}
-                      >
-                        <X className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="link"
-                    onClick={closeSearch}
-                    className="text-muted-foreground hover:no-underline pr-0"
-                  >
-                    Cancelar
-                  </Button>
-                </div>
-                <div className="mt-4 pb-12" onClick={closeSearch}>
-                  <p className="font-semibold mb-4 text-muted-foreground text-sm">
-                    Búsquedas Populares
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {popularSearches.map((term) => (
-                      <Button
-                        key={term}
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="rounded-full font-normal"
-                        onClick={() => {
-                          router.push(`/catalog?search=${encodeURIComponent(term)}`);
-                          closeSearch();
-                        }}
-                      >
-                        {term}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            </div>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
