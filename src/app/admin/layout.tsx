@@ -81,7 +81,7 @@ function AdminSidebar() {
             <span className="text-xs text-muted-foreground">Admin Panel</span>
         </div>
         <div className="ml-auto">
-            <Button variant="default" size="icon" onClick={toggleSidebar}>
+            <Button variant="default" size="icon" onClick={toggleSidebar} className="h-8 w-8">
                 <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !isClosed })}/>
             </Button>
         </div>
@@ -139,7 +139,8 @@ function AdminSidebar() {
 }
 
 const AdminLayoutSkeleton = () => {
-    const isClosed = false; // Skeleton is always rendered in open state on server
+    // This now matches the structure and classes of the actual component to prevent hydration errors.
+    const isClosed = false;
     return (
         <div className="flex min-h-screen w-full">
             <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': isClosed })}>
@@ -150,7 +151,7 @@ const AdminLayoutSkeleton = () => {
                         <Skeleton className="h-3 w-16" />
                      </div>
                      <div className="ml-auto">
-                        <Skeleton className="h-10 w-10" />
+                        <Skeleton className="h-8 w-8" />
                      </div>
                 </div>
                 <div className="p-4">
@@ -162,20 +163,13 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </nav>
                  <div className="mt-auto p-4">
-                     <div className={cn("flex items-center gap-3", {"justify-center": isClosed})}>
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                        <div className={cn("flex flex-col gap-1", {'hidden': isClosed})}>
-                            <Skeleton className="h-4 w-24" />
-                            <Skeleton className="h-3 w-20" />
-                        </div>
-                    </div>
+                     <Skeleton className="h-10 w-full" />
                  </div>
             </aside>
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                      <Skeleton className="h-8 w-8 sm:hidden" />
                      <div className="ml-auto flex items-center gap-4">
-                        <Skeleton className="h-8 w-8 rounded-full" />
                         <Skeleton className="h-8 w-8 rounded-full" />
                      </div>
                 </header>
@@ -191,8 +185,6 @@ const AdminLayoutSkeleton = () => {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
-  const auth = useAuth();
-  const { toast } = useToast();
   
   useEffect(() => {
     if (!userLoading && !user) {
@@ -200,6 +192,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [user, userLoading, router]);
 
+  if (userLoading || !user) {
+    return <AdminLayoutSkeleton />;
+  }
+
+  return (
+     <SidebarProvider>
+      <AdminLayoutWithProvider user={user}>
+        {children}
+      </AdminLayoutWithProvider>
+    </SidebarProvider>
+  );
+}
+
+function AdminLayoutWithProvider({ children, user }: { children: React.ReactNode, user: any }) {
+  const { isClosed } = useSidebar();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+  
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -209,23 +220,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
     }
   };
-  
-  if (userLoading || !user) {
-    return <AdminLayoutSkeleton />;
-  }
-
-  return (
-     <SidebarProvider>
-      <AdminLayoutWithProvider user={user} handleSignOut={handleSignOut}>
-        {children}
-      </AdminLayoutWithProvider>
-    </SidebarProvider>
-  );
-}
-
-function AdminLayoutWithProvider({ children, user, handleSignOut }: { children: React.ReactNode, user: any, handleSignOut: () => void }) {
-  const sidebarContext = useContext(SidebarContext);
-  const isClosed = sidebarContext?.isClosed;
   
   return (
       <div className="flex min-h-screen w-full">
