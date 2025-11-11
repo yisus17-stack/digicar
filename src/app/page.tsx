@@ -5,9 +5,8 @@ import { cars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight } from 'lucide-react';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
-import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { ChevronRight, Search, TrendingUp, Award } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 const BrandLogos = () => (
     <div className="bg-secondary/30">
@@ -24,92 +23,41 @@ const BrandLogos = () => (
 
 
 const HeroSection = () => {
-    const featuredCar = cars.find(c => c.id === 'horizon-suv');
-    const navCars = cars.slice(0, 4);
-    
-    if (!featuredCar) {
-        return (
-            <section className="relative bg-background text-foreground py-20 min-h-[60vh] flex items-center justify-center text-center overflow-hidden">
-                <p>Auto no encontrado</p>
-            </section>
-        );
-    }
-    
     return (
-        <section className="w-full min-h-[80vh] flex bg-background text-foreground relative overflow-hidden">
-            {/* Left Color Panel */}
-            <div className="w-[60%] bg-primary absolute inset-y-0 left-0"></div>
+        <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
+            <div className="absolute top-[-50px] left-[-50px] w-48 h-48 bg-primary/10 rounded-full -z-10"></div>
+            <div className="absolute bottom-[-80px] right-[-80px] w-72 h-72 bg-accent/10 rounded-full -z-10"></div>
 
-            {/* Right White Panel */}
-            <div className="w-[40%] bg-background absolute inset-y-0 right-0"></div>
-            
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full flex items-center">
-                {/* Content Container */}
-                <div className="grid grid-cols-10 w-full h-full">
+            <div className="container mx-auto px-4 text-center relative z-10">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+                    Donde vas a comprar tu próximo auto.
+                </h1>
+                <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
+                    Puedes elegir el auto y los servicios adecuados para ti basándote en las opiniones auténticas y oportunas de usuarios reales.
+                </p>
 
-                    {/* === LEFT SIDE CONTENT === */}
-                    <div className="col-span-6 flex flex-col justify-between text-primary-foreground py-16 h-full">
-                        {/* Top Text */}
-                        <div className='pl-8 md:pl-24'>
-                            <h3 className="text-4xl md:text-5xl font-bold">{featuredCar.model} {featuredCar.year}</h3>
-                            <p className="mt-2 text-base md:text-lg opacity-90">{featuredCar.engine}</p>
-                        </div>
-
-                        {/* Vertical Text */}
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center -rotate-90 origin-bottom-left">
-                            <h2 className="text-6xl md:text-8xl font-bold tracking-[0.2em] opacity-80 whitespace-nowrap text-primary-foreground/50">DIGICAR</h2>
-                        </div>
-
-                        {/* This is a spacer div, content is in the right side */}
-                        <div></div> 
-                    </div>
-
-                    {/* === RIGHT SIDE CONTENT === */}
-                    <div className="col-span-4 flex flex-col justify-between py-16 h-full">
-                         {/* Price */}
-                         <div className="text-left">
-                            <p className="text-4xl md:text-5xl font-bold">${featuredCar.price.toLocaleString('es-MX')}</p>
-                            <p className="text-muted-foreground text-sm mt-1">Aplican restricciones</p>
-                        </div>
-
-                        {/* Vertical Nav */}
-                        <div className="my-12">
-                            <ul className="space-y-4 text-left">
-                                {navCars.map((car, index) => (
-                                    <li key={car.id}>
-                                        <Link href={`/car/${car.id}`} className="group flex items-center justify-start gap-4 text-muted-foreground hover:text-foreground transition-colors">
-                                            {car.id === featuredCar.id && (
-                                                <div className="w-8 h-px bg-primary"></div>
-                                            )}
-                                            <span className={`text-xs font-mono ${car.id === featuredCar.id ? 'text-primary font-bold' : ''}`}>
-                                                {`00${index + 1}`}
-                                            </span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        
-                        {/* Social Icons */}
-                        <div className="flex justify-start items-center gap-4 mt-auto">
-                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Facebook size={20} /></Link>
-                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Twitter size={20} /></Link>
-                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Instagram size={20} /></Link>
-                            <Link href="#" className="text-muted-foreground hover:text-foreground"><Youtube size={20} /></Link>
-                        </div>
-                    </div>
-                </div>
-
-                {/* === CAR IMAGE (Overlapping) === */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                    <div className="relative w-full h-full">
-                        <Image
-                            src="/auto-inicio.png"
-                            alt={`${featuredCar.brand} ${featuredCar.model}`}
-                            fill
-                            className="object-contain"
-                            priority
+                <div className="max-w-2xl mx-auto">
+                    <div className="relative">
+                        <Input
+                            type="search"
+                            placeholder="Busca marca, modelo, categoría..."
+                            className="h-14 text-base pl-6 pr-28 rounded-full"
                         />
+                        <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-10 rounded-full px-6" type="submit">
+                            <Search className="h-4 w-4 md:hidden" />
+                            <span className='hidden md:block'>Buscar</span>
+                        </Button>
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                        <Link href="#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <Award className="h-4 w-4" />
+                            <span>Los más populares</span>
+                        </Link>
+                        <Link href="/catalog" className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <TrendingUp className="h-4 w-4" />
+                            <span>Últimos Modelos</span>
+                        </Link>
                     </div>
                 </div>
             </div>
