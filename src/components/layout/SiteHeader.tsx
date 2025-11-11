@@ -106,8 +106,8 @@ const SiteHeader = () => {
               <Image
                 src="/logo.png"
                 alt="DigiCar Logo"
-                width={40}
-                height={40}
+                width={50}
+                height={50}
               />
             </Link>
           </div>
@@ -201,7 +201,7 @@ const SiteHeader = () => {
                   <SheetHeader>
                     <SheetTitle>
                         <Link href="/" className="flex items-center gap-2">
-                            <Image src="/logo.png" alt="DigiCar Logo" width={30} height={30}/>
+                            <Image src="/logo.png" alt="DigiCar Logo" width={40} height={40}/>
                         </Link>
                     </SheetTitle>
                   </SheetHeader>
