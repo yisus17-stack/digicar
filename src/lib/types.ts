@@ -16,3 +16,9 @@ export type Car = {
   color: string;
   passengers: number;
 };
+
+export type Brand = {
+    id: string;
+    name: string;
+    logoUrl?: string;
+}

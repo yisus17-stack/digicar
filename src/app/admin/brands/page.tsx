@@ -2,16 +2,15 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import CarTable from '@/components/admin/CarTable';
+import BrandTable from '@/components/admin/BrandTable';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function CarTableSkeleton() {
+function BrandTableSkeleton() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-1/3" />
       <div className="border rounded-lg">
-        <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
@@ -20,19 +19,23 @@ function CarTableSkeleton() {
   );
 }
 
-export default function AdminCarsPage() {
+export default function AdminBrandsPage() {
   const firestore = useFirestore();
 
-  const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: cars, isLoading: carsLoading } = useCollection(carsCollection);
+  const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+  const { data: brands, isLoading: brandsLoading } = useCollection(brandsCollection);
 
-  if (carsLoading) {
-    return <CarTableSkeleton />;
+  if (brandsLoading) {
+    return (
+        <div className="p-4 sm:p-6 lg:p-8">
+            <BrandTableSkeleton />
+        </div>
+    );
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <CarTable cars={cars ?? []} />
+      <BrandTable brands={brands ?? []} />
     </div>
   );
 }

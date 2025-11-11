@@ -52,6 +52,11 @@ const SiteHeader = () => {
   const { toast } = useToast();
   const isAdmin = !!user;
 
+  // Do not show header on admin routes
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home },
     { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
@@ -159,8 +164,8 @@ const SiteHeader = () => {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Administración</DropdownMenuLabel>
                                 <DropdownMenuItem asChild>
-                                  <Link href="/admin/cars">
-                                    <ShieldCheck className="mr-2 h-4 w-4" /> Administrar Autos
+                                  <Link href="/admin">
+                                    <ShieldCheck className="mr-2 h-4 w-4" /> Panel de Admin
                                   </Link>
                                 </DropdownMenuItem>
                             </>

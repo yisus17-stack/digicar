@@ -1,7 +1,16 @@
+
+'use client';
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const SiteFooter = () => {
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="bg-accent text-accent-foreground">
       <div className="container mx-auto px-4 py-12">

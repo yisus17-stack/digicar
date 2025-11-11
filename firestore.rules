@@ -6,13 +6,15 @@
  * prototyping. Schema validation is minimized to allow for quick iteration.
  *
  * Data Structure:
- * - /cars/{carId}: Publicly accessible car catalog.
+ * - /cars/{carId}: Publicly accessible car catalog. Admin-only write access.
+ * - /brands/{brandId}: Publicly accessible brand information. Admin-only write access.
  * - /scenarios/{scenarioId}: Publicly accessible driving scenarios.
  * - /recommendations/{recommendationId}: Publicly accessible car recommendations.
  * - /leads/{leadId}: Customer leads, accessible only to authenticated users.
  *
  * Key Security Decisions:
- * - Public read access to car, scenario, and recommendation data.
+ * - Public read access to car, brand, scenario, and recommendation data.
+ * - Writes to cars and brands are restricted to signed-in users (assumed to be admins).
  * - Leads are only accessible to authenticated users. No public listing is allowed.
  * - No schema validation is performed beyond essential checks for authorization.
  *
@@ -27,15 +29,27 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to car data.
+     * @description Public read, admin write access to car data.
      * @path /cars/{carId}
      * @allow (get, list) Any user can read car data.
-     * @deny (create, update, delete) No user can create, update, or delete car data through the rules. These operations should be handled by backend logic.
-     * @principle Allows public read access while restricting write access.
+     * @allow (create, update, delete) Only authenticated users (admins) can manage car data.
+     * @principle Allows public read access while restricting write access to admins.
      */
     match /cars/{carId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create, update, delete: if isSignedIn();
+    }
+    
+    /**
+     * @description Public read, admin write access to brand data.
+     * @path /brands/{brandId}
+     * @allow (get, list) Any user can read brand data.
+     * @allow (create, update, delete) Only authenticated users (admins) can manage brand data.
+     * @principle Allows public read access while restricting write access to admins.
+     */
+    match /brands/{brandId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
     }
 
     /**

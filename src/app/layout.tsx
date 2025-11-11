@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -7,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { PT_Sans } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
+
 
 const ptSans = PT_Sans({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-sans' });
 
@@ -26,7 +28,7 @@ export default function RootLayout({
         <FirebaseClientProvider>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <div className="flex-1">{children}</div>
             <SiteFooter />
             <AccessibilityWidget />
           </div>
