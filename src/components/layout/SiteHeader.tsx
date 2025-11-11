@@ -292,7 +292,6 @@ const SiteHeader = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
-            onClick={closeSearch}
           >
             <form onSubmit={handleSearchSubmit}>
             <div className='hidden md:block pt-4'>
@@ -308,7 +307,7 @@ const SiteHeader = () => {
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center py-4 gap-4">
                   <div className="flex items-center space-x-2">
-                      <Link href="/">
+                      <Link href="/" onClick={closeSearch}>
                         <Image
                             src="/logo.png"
                             alt="DigiCar Logo"
@@ -330,6 +329,7 @@ const SiteHeader = () => {
                     />
                     {searchValue && (
                       <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full sm:hidden"
@@ -340,6 +340,7 @@ const SiteHeader = () => {
                     )}
                   </div>
                   <Button
+                    type="button"
                     variant="link"
                     onClick={closeSearch}
                     className="text-muted-foreground hover:no-underline"
@@ -347,7 +348,7 @@ const SiteHeader = () => {
                     Cancelar
                   </Button>
                 </div>
-                <div className="mt-4 pb-12">
+                <div className="mt-4 pb-12" onClick={closeSearch}>
                   <p className="font-semibold mb-4 text-muted-foreground text-sm">
                     Búsquedas Populares
                   </p>
@@ -355,6 +356,7 @@ const SiteHeader = () => {
                     {popularSearches.map((term) => (
                       <Button
                         key={term}
+                        type="button"
                         variant="secondary"
                         size="sm"
                         className="rounded-full font-normal"
@@ -396,6 +398,7 @@ const SiteHeader = () => {
                     />
                     {searchValue && (
                       <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
@@ -406,6 +409,7 @@ const SiteHeader = () => {
                     )}
                   </div>
                   <Button
+                    type="button"
                     variant="link"
                     onClick={closeSearch}
                     className="text-muted-foreground hover:no-underline pr-0"
@@ -413,7 +417,7 @@ const SiteHeader = () => {
                     Cancelar
                   </Button>
                 </div>
-                <div className="mt-4 pb-12">
+                <div className="mt-4 pb-12" onClick={closeSearch}>
                   <p className="font-semibold mb-4 text-muted-foreground text-sm">
                     Búsquedas Populares
                   </p>
@@ -421,6 +425,7 @@ const SiteHeader = () => {
                     {popularSearches.map((term) => (
                       <Button
                         key={term}
+                        type="button"
                         variant="secondary"
                         size="sm"
                         className="rounded-full font-normal"
