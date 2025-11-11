@@ -48,7 +48,7 @@
     --ring: 212.7 26.8% 83.9%;
   }
 
-  [data-contrast="high"] {
+  [data-contrast="true"] {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --card: 0 0% 0%;
@@ -68,15 +68,22 @@
     --ring: 60 100% 50%;
   }
 
-  html[data-font-size="small"] {
-    font-size: 14px;
+  html {
+    font-size: 16px; /* Base font size */
   }
-  html[data-font-size="normal"] {
-    font-size: 16px;
-  }
-  html[data-font-size="large"] {
-    font-size: 18px;
-  }
+
+  html[data-font-size-step="1"] { font-size: 17px; }
+  html[data-font-size-step="2"] { font-size: 18px; }
+  html[data-font-size-step="3"] { font-size: 19px; }
+  html[data-font-size-step="4"] { font-size: 20px; }
+  html[data-font-size-step="-1"] { font-size: 15px; }
+  html[data-font-size-step="-2"] { font-size: 14px; }
+
+  html[data-grayscale="true"] { filter: grayscale(100%); }
+  html[data-invert="true"] { filter: invert(100%); }
+  html[data-underline-links="true"] a { text-decoration: underline; }
+  html[data-readable-font="true"] body { font-family: 'Times New Roman', Times, serif; }
+
 }
 
 @layer base {
