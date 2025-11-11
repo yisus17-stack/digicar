@@ -1,5 +1,5 @@
 'use client';
-import { LayoutDashboard, Car, Tag, LogOut, PanelLeft, Settings, ShieldCheck, User } from "lucide-react";
+import { LayoutDashboard, Car, Tag, LogOut, PanelLeft, Settings, ShieldCheck, User, Home } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,6 +21,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarProvider,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth, useUser } from "@/firebase";
