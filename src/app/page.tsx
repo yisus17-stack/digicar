@@ -28,9 +28,9 @@ export default async function Home() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                            <span className="block">Conduce tu historia</span>
-                            <span className="block">con <span className="text-primary">DigiCar</span></span>
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                            Conduce tu historia <br />
+                            con <span className="text-primary">DigiCar</span>
                         </h1>
                         <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
