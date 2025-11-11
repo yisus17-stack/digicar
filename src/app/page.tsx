@@ -28,19 +28,17 @@ export default async function Home() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <h1 className="text-[1.7rem] sm:text-4xl md:text-6xl font-bold leading-tight">
-                            <span className="sm:inline">Conduce tu historia</span>
-                            <br className="block sm:hidden" />
-                            <span className="sm:inline-block"> con <span className="text-primary">DigiCar</span></span>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                            Conduce tu historia con <span className="text-primary">DigiCar</span>
                         </h1>
-                        <p className="mt-6 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
+                        <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
                             Explora una nueva aventura detrás del volante. En DigiCar, cada auto es una extensión de tu historia. Descubre el modelo que acelera tu corazón y comienza el viaje que mereces.
                         </p>
-                        <div className="mt-8 flex flex-row gap-4 justify-center md:justify-start">
-                            <Button asChild size="sm" className="flex-1 sm:w-auto md:h-11 md:px-8">
+                        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                            <Button asChild size="lg" className="w-full sm:w-auto">
                                 <Link href="#popular">Explorar</Link>
                             </Button>
-                            <Button asChild size="sm" variant="outline" className="flex-1 sm:w-auto md:h-11 md:px-8">
+                            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                                 <Link href="/catalog">Ver catálogo</Link>
                             </Button>
                         </div>
@@ -51,7 +49,7 @@ export default async function Home() {
                             alt="Coche principal"
                             width={800}
                             height={600}
-                            className="w-3/4 mx-auto h-auto md:w-full"
+                            className="w-full h-auto"
                             priority
                         />
                     </div>
