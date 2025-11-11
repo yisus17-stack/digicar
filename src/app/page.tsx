@@ -1,5 +1,4 @@
 
-
 import { Suspense } from 'react';
 import CarCatalog from '@/components/catalog/CarCatalog';
 import { cars } from '@/lib/data';
