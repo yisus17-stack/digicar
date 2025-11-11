@@ -1,15 +1,8 @@
 'use client';
 
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import {
   Accessibility,
   ZoomIn,
@@ -26,8 +19,10 @@ import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 
 const FONT_STEP_LIMIT = 2;
+const PANEL_WIDTH = 300;
 
 export default function AccessibilityWidget() {
+  const [isOpen, setIsOpen] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState(0);
   const [highContrast, setHighContrast] = useState(false);
   const [grayscale, setGrayscale] = useState(false);
@@ -47,24 +42,18 @@ export default function AccessibilityWidget() {
 
   useEffect(() => {
     const settings = {
-      'data-font-size-step': setFontSizeStep,
-      'data-contrast': setHighContrast,
-      'data-grayscale': setGrayscale,
-      'data-invert': setInvert,
-      'data-underline-links': setUnderlineLinks,
-      'data-readable-font': setReadableFont,
+      'data-font-size-step': (val: string) => setFontSizeStep(parseInt(val, 10)),
+      'data-contrast': (val: string) => setHighContrast(val === 'true'),
+      'data-grayscale': (val: string) => setGrayscale(val === 'true'),
+      'data-invert': (val: string) => setInvert(val === 'true'),
+      'data-underline-links': (val: string) => setUnderlineLinks(val === 'true'),
+      'data-readable-font': (val: string) => setReadableFont(val === 'true'),
     };
 
     Object.entries(settings).forEach(([key, setter]) => {
       const storedValue = localStorage.getItem(key);
       if (storedValue) {
-        if (typeof setter === 'function') {
-          if (key === 'data-font-size-step') {
-            setter(parseInt(storedValue, 10));
-          } else {
-            setter(storedValue === 'true');
-          }
-        }
+        setter(storedValue);
         document.documentElement.setAttribute(key, storedValue);
       }
     });
@@ -152,52 +141,79 @@ export default function AccessibilityWidget() {
   ];
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant="default"
-          size="icon"
-          className="fixed bottom-6 left-6 h-14 w-14 rounded-md shadow-lg z-50"
-          aria-label="Opciones de accesibilidad"
-        >
-          <Accessibility className="h-7 w-7" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent className="w-[300px] sm:w-[340px] flex flex-col" side="left">
-        <SheetHeader>
-          <SheetTitle className="text-xl flex items-center gap-2">
-            <Accessibility /> Herramientas de Accesibilidad
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex-1 flex flex-col gap-4 py-4">
-          {options.map(({ Icon, label, action, isSwitch, checked, disabled }, index) => (
-            <React.Fragment key={label}>
-              <div className="flex items-center justify-between">
-                <Label htmlFor={label.replace(' ', '-')} className="flex items-center gap-3 cursor-pointer text-base">
-                  <Icon className="h-5 w-5 text-muted-foreground" />
-                  {label}
-                </Label>
-                {isSwitch ? (
-                  <Switch
-                    id={label.replace(' ', '-')}
-                    checked={checked}
-                    onCheckedChange={action}
-                  />
-                ) : (
-                  <Button variant="ghost" size="sm" onClick={action} disabled={disabled} className="p-2 h-auto">
-                    <Icon className="h-5 w-5" />
-                  </Button>
-                )}
-              </div>
-              <Separator />
-            </React.Fragment>
-          ))}
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/60 z-40"
+          />
+        )}
+      </AnimatePresence>
+      <motion.div
+        className="fixed top-1/4 left-0 z-50"
+        initial="closed"
+        animate={isOpen ? "open" : "closed"}
+        variants={{
+          closed: { x: -PANEL_WIDTH },
+          open: { x: 0 },
+        }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      >
+        <div className="relative flex items-start">
+          {/* Panel de Contenido */}
+          <div
+            className="w-[300px] bg-background shadow-lg rounded-r-lg flex flex-col"
+            style={{ width: PANEL_WIDTH }}
+          >
+            <div className="p-4 border-b">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <Accessibility /> Herramientas
+              </h2>
+            </div>
+            <div className="flex-1 flex flex-col gap-4 p-4">
+              {options.map(({ Icon, label, action, isSwitch, checked, disabled }, index) => (
+                <React.Fragment key={label}>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor={label.replace(' ', '-')} className="flex items-center gap-3 cursor-pointer text-base">
+                      <Icon className="h-5 w-5 text-muted-foreground" />
+                      {label}
+                    </Label>
+                    {isSwitch ? (
+                      <Switch id={label.replace(' ', '-')} checked={checked} onCheckedChange={action} />
+                    ) : (
+                      <Button variant="ghost" size="sm" onClick={action} disabled={disabled} className="p-2 h-auto">
+                        <Icon className="h-5 w-5" />
+                      </Button>
+                    )}
+                  </div>
+                  {index < options.length - 1 && <Separator />}
+                </React.Fragment>
+              ))}
+            </div>
+            <div className="p-4 border-t">
+              <Button onClick={resetAll} variant="outline" className="w-full">
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                Restablecer
+              </Button>
+            </div>
+          </div>
+
+          {/* Botón/Pestaña */}
+          <Button
+            variant="default"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+            className="absolute top-0 left-full h-14 w-14 rounded-l-none rounded-r-md shadow-lg"
+            aria-label="Opciones de accesibilidad"
+          >
+            <Accessibility className="h-7 w-7" />
+          </Button>
         </div>
-        <Button onClick={resetAll} variant="outline" className="w-full">
-          <RefreshCcw className="mr-2 h-4 w-4" />
-          Restablecer
-        </Button>
-      </SheetContent>
-    </Sheet>
+      </motion.div>
+    </>
   );
 }
