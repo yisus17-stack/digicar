@@ -27,9 +27,8 @@ const BrandLogos = () => (
 const HeroSection = () => {
     const featuredCar = cars.find(c => c.id === 'horizon-suv');
     const navCars = cars.slice(0, 4);
-    const placeholder = featuredCar ? findPlaceholderImage(featuredCar.id) : undefined;
-
-    if (!featuredCar || !placeholder) {
+    
+    if (!featuredCar) {
         return (
             <section className="relative bg-background text-foreground py-20 min-h-[60vh] flex items-center justify-center text-center overflow-hidden">
                 <p>Auto no encontrado</p>
@@ -96,11 +95,10 @@ const HeroSection = () => {
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="relative w-full h-full">
                         <Image
-                            src={placeholder.imageUrl}
+                            src="/auto-inicio.png"
                             alt={`${featuredCar.brand} ${featuredCar.model}`}
                             fill
                             className="object-contain"
-                            data-ai-hint={placeholder.imageHint}
                             priority
                         />
                     </div>
