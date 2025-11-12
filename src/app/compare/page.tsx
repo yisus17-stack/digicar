@@ -10,6 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Car } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Suspense } from 'react';
 
 const CompareSkeleton = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -26,7 +27,7 @@ const CompareSkeleton = () => (
     </div>
 );
 
-export default function Compare() {
+function CompareContent() {
   const searchParams = useSearchParams();
   const firestore = useFirestore();
 
@@ -68,5 +69,13 @@ export default function Compare() {
             />
         )}
     </div>
+  );
+}
+
+export default function Compare() {
+  return (
+    <Suspense fallback={<CompareSkeleton />}>
+      <CompareContent />
+    </Suspense>
   );
 }
