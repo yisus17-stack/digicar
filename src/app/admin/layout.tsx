@@ -7,6 +7,7 @@ import {
   Search,
   Home,
   MoreVertical,
+  Droplets,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -77,6 +78,7 @@ function AdminSidebar() {
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/cars', label: 'Autos', icon: Car },
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
+    { href: '/admin/fuels', label: 'Combustibles', icon: Droplets },
   ];
 
   return (
@@ -130,7 +132,7 @@ function AdminSidebar() {
       <div className="mt-auto border-t p-2">
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
+                 <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
                     <div className={cn("flex flex-col items-start truncate", {'items-center': isClosed})}>
                         <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
                         <span className={cn("text-xs text-muted-foreground truncate", {'hidden': isClosed})}>{user?.email}</span>
@@ -152,7 +154,6 @@ function AdminSidebar() {
 }
 
 const AdminLayoutSkeleton = () => {
-    // This now matches the structure and classes of the actual component to prevent hydration errors.
     const isClosed = false;
     return (
         <div className="flex min-h-screen w-full">
@@ -171,6 +172,7 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </div>
                 <nav className="flex flex-col gap-2 p-2">
+                    <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
@@ -241,7 +243,6 @@ function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
           <AdminSidebar />
           <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={isClosed}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                {/* We could add a mobile sidebar trigger here */}
                 <div className="ml-auto flex items-center gap-4">
                   <Button variant="ghost" size="icon" asChild>
                     <Link href="/">

@@ -22,3 +22,8 @@ export type Brand = {
     name: string;
     logoUrl?: string;
 }
+
+export type FuelType = {
+    id: string;
+    name: string;
+}
