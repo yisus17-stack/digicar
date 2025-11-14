@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useFirestore } from '@/firebase';
-import { collection, writeBatch, getDocs } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc } from 'firebase/firestore';
 import { cars as seedCars } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -23,10 +23,7 @@ export default function DatabaseSeeder() {
 
     try {
       const carsCollection = collection(firestore, 'cars');
-      const brandsCollection = collection(firestore, 'brands');
-      const colorsCollection = collection(firestore, 'colors');
-      const transmissionsCollection = collection(firestore, 'transmissions');
-
+      
       // Check if collections are already seeded to prevent duplicates
       const carsSnapshot = await getDocs(carsCollection);
       if (!carsSnapshot.empty) {
@@ -46,22 +43,22 @@ export default function DatabaseSeeder() {
       const uniqueTransmissions = [...new Set(seedCars.map(car => car.transmission))];
 
       uniqueBrands.forEach(name => {
-        const brandRef = collection(firestore, 'brands').doc();
+        const brandRef = doc(collection(firestore, 'brands'));
         batch.set(brandRef, { name });
       });
 
       uniqueColors.forEach(name => {
-        const colorRef = collection(firestore, 'colors').doc();
+        const colorRef = doc(collection(firestore, 'colors'));
         batch.set(colorRef, { name });
       });
       
       uniqueTransmissions.forEach(name => {
-        const transmissionRef = collection(firestore, 'transmissions').doc();
+        const transmissionRef = doc(collection(firestore, 'transmissions'));
         batch.set(transmissionRef, { name });
       });
 
       seedCars.forEach(car => {
-        const carRef = collection(firestore, 'cars').doc(car.id);
+        const carRef = doc(firestore, 'cars', car.id);
         batch.set(carRef, car);
       });
 
