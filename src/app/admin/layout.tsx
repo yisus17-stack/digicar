@@ -7,7 +7,6 @@ import {
   Search,
   Home,
   MoreVertical,
-  Droplets,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -78,7 +77,6 @@ function AdminSidebar() {
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/cars', label: 'Autos', icon: Car },
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
-    { href: '/admin/fuels', label: 'Combustibles', icon: Droplets },
   ];
 
   return (
@@ -172,7 +170,6 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </div>
                 <nav className="flex flex-col gap-2 p-2">
-                    <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
