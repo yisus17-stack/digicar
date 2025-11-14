@@ -8,6 +8,7 @@ import {
   Home,
   MoreVertical,
   Palette,
+  GitMerge,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -79,6 +80,7 @@ function AdminSidebar() {
     { href: '/admin/cars', label: 'Autos', icon: Car },
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
     { href: '/admin/colors', label: 'Colores', icon: Palette },
+    { href: '/admin/transmissions', label: 'Transmisiones', icon: GitMerge },
   ];
 
   return (
@@ -136,7 +138,7 @@ function AdminSidebar() {
                  <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
                     <div className={cn("flex flex-col items-start truncate", {'items-center': isClosed})}>
                         <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
-                        <span className={cn("text-xs text-muted-foreground truncate", {'hidden': isClosed})}>{user?.email}</span>
+                        <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
                     </div>
                      <MoreVertical className="h-4 w-4 ml-auto shrink-0" />
                 </div>

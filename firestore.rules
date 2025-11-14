@@ -9,6 +9,7 @@
  * - /cars/{carId}: Publicly accessible car catalog. Admin-only write access.
  * - /brands/{brandId}: Publicly accessible brand information. Admin-only write access.
  * - /colors/{colorId}: Publicly accessible color information. Admin-only write access.
+ * - /transmissions/{transmissionId}: Publicly accessible transmission information. Admin-only write access.
  * - /scenarios/{scenarioId}: Publicly accessible driving scenarios.
  * - /recommendations/{recommendationId}: Publicly accessible car recommendations.
  * - /leads/{leadId}: Customer leads, accessible only to authenticated users.
@@ -61,6 +62,18 @@ service cloud.firestore {
      * @principle Allows public read access while restricting write access to admins.
      */
     match /colors/{colorId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    /**
+     * @description Public read, admin write access to transmission data.
+     * @path /transmissions/{transmissionId}
+     * @allow (get, list) Any user can read transmission data.
+     * @allow (create, update, delete) Only authenticated users (admins) can manage transmission data.
+     * @principle Allows public read access while restricting write access to admins.
+     */
+    match /transmissions/{transmissionId} {
       allow get, list: if true;
       allow create, update, delete: if isSignedIn();
     }

@@ -29,23 +29,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car, Brand, Color } from '@/lib/types';
+import type { Car, Brand, Color, Transmission } from '@/lib/types';
 import { useEffect } from 'react';
 
 const formSchema = z.object({
-  brand: z.string().min(2, 'La marca es requerida.'),
+  brand: z.string().min(1, 'La marca es requerida.'),
   model: z.string().min(2, 'El modelo es requerido.'),
   year: z.coerce.number().min(1900, 'Año inválido.').max(new Date().getFullYear() + 1, 'Año inválido.'),
   price: z.coerce.number().min(0, 'El precio debe ser positivo.'),
   mileage: z.coerce.number().min(0, 'El kilometraje debe ser positivo.'),
   fuelType: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid']),
-  transmission: z.enum(['Automatic', 'Manual']),
+  transmission: z.string().min(1, 'La transmisión es requerida.'),
   engine: z.string().optional(),
   horsepower: z.coerce.number().min(0, 'Los caballos de fuerza deben ser positivos.'),
   features: z.string().optional(),
   type: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
   engineCylinders: z.coerce.number().min(0),
-  color: z.string().min(2, 'El color es requerido.'),
+  color: z.string().min(1, 'El color es requerido.'),
   passengers: z.coerce.number().min(1),
 });
 
@@ -58,9 +58,10 @@ interface CarFormProps {
   onSave: (car: Omit<Car, 'id' | 'image'>) => void;
   brands: Brand[];
   colors: Color[];
+  transmissions: Transmission[];
 }
 
-export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, colors }: CarFormProps) {
+export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, colors, transmissions }: CarFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,7 +71,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
       price: 0,
       mileage: 0,
       fuelType: 'Gasoline',
-      transmission: 'Automatic',
+      transmission: '',
       engine: '',
       horsepower: 0,
       features: '',
@@ -95,7 +96,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
         price: 0,
         mileage: 0,
         fuelType: 'Gasoline',
-        transmission: 'Automatic',
+        transmission: '',
         engine: '',
         horsepower: 0,
         features: '',
@@ -211,12 +212,30 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
                         <SelectContent><SelectItem value="Gasoline">Gasolina</SelectItem><SelectItem value="Diesel">Diésel</SelectItem><SelectItem value="Electric">Eléctrico</SelectItem><SelectItem value="Hybrid">Híbrido</SelectItem></SelectContent>
                     </Select><FormMessage /></FormItem>
                 )}/>
-                <FormField control={form.control} name="transmission" render={({ field }) => (
-                    <FormItem><FormLabel>Transmisión</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                        <SelectContent><SelectItem value="Automatic">Automática</SelectItem><SelectItem value="Manual">Manual</SelectItem></SelectContent>
-                    </Select><FormMessage /></FormItem>
-                )}/>
+                <FormField
+                    control={form.control}
+                    name="transmission"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Transmisión</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona una transmisión" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {transmissions.map((transmission) => (
+                                        <SelectItem key={transmission.id} value={transmission.name}>
+                                            {transmission.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
             </div>
             <FormField control={form.control} name="features" render={({ field }) => (
                 <FormItem><FormLabel>Características (separadas por coma)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>

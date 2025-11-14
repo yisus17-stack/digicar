@@ -6,7 +6,7 @@ export type Car = {
   price: number;
   mileage: number;
   fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
-  transmission: 'Automatic' | 'Manual';
+  transmission: string;
   engine: string;
   horsepower: number;
   features: string[];
@@ -29,6 +29,11 @@ export type Color = {
 }
 
 export type FuelType = {
+  id: string;
+  name: string;
+}
+
+export type Transmission = {
   id: string;
   name: string;
 }
