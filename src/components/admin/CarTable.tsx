@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
-import type { Car } from '@/lib/types';
+import type { Car, Brand } from '@/lib/types';
 import CarForm from './CarForm';
 import {
     AlertDialog,
@@ -37,9 +37,10 @@ import { FirestorePermissionError } from '@/firebase/errors';
 
 interface CarTableProps {
   cars: Car[];
+  brands: Brand[];
 }
 
-export default function CarTable({ cars: initialCars }: CarTableProps) {
+export default function CarTable({ cars: initialCars, brands }: CarTableProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -167,6 +168,7 @@ export default function CarTable({ cars: initialCars }: CarTableProps) {
             onOpenChange={setIsFormOpen}
             car={selectedCar}
             onSave={handleSave}
+            brands={brands}
         />
         <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
             <AlertDialogContent>

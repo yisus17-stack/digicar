@@ -5,6 +5,7 @@ import { useFirestore } from '@/firebase';
 import CarTable from '@/components/admin/CarTable';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Car, Brand } from '@/lib/types';
 
 function CarTableSkeleton() {
   return (
@@ -24,15 +25,18 @@ export default function AdminCarsPage() {
   const firestore = useFirestore();
 
   const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: cars, isLoading: carsLoading } = useCollection(carsCollection);
+  const { data: cars, isLoading: carsLoading } = useCollection<Car>(carsCollection);
 
-  if (carsLoading) {
+  const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+  const { data: brands, isLoading: brandsLoading } = useCollection<Brand>(brandsCollection);
+
+  if (carsLoading || brandsLoading) {
     return <CarTableSkeleton />;
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <CarTable cars={cars ?? []} />
+      <CarTable cars={cars ?? []} brands={brands ?? []} />
     </div>
   );
 }

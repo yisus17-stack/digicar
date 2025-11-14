@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car } from '@/lib/types';
+import type { Car, Brand } from '@/lib/types';
 import { useEffect } from 'react';
 
 const formSchema = z.object({
@@ -56,9 +56,10 @@ interface CarFormProps {
   onOpenChange: (open: boolean) => void;
   car: Car | null;
   onSave: (car: Omit<Car, 'id' | 'image'>) => void;
+  brands: Brand[];
 }
 
-export default function CarForm({ isOpen, onOpenChange, car, onSave }: CarFormProps) {
+export default function CarForm({ isOpen, onOpenChange, car, onSave, brands }: CarFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -125,9 +126,30 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave }: CarFormPr
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="brand" render={({ field }) => (
-                    <FormItem><FormLabel>Marca</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                )}/>
+                <FormField
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Marca</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona una marca" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {brands.map((brand) => (
+                                        <SelectItem key={brand.id} value={brand.name}>
+                                            {brand.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField control={form.control} name="model" render={({ field }) => (
                     <FormItem><FormLabel>Modelo</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
