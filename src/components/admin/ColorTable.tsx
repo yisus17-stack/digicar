@@ -118,7 +118,7 @@ export default function ColorTable({ colors: initialColors }: ColorTableProps) {
             <h1 className="text-3xl font-bold">Administrar Colores</h1>
             <Button onClick={handleAdd}>Añadir Color</Button>
         </div>
-        <div className="border rounded-lg bg-card">
+        <div className="border rounded-lg">
             <Table>
                 <TableHeader>
                 <TableRow>
