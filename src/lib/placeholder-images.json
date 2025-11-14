@@ -1,6 +1,70 @@
 {
   "placeholderImages": [
     {
+      "id": "camry-xse",
+      "description": "Un sedán rojo moderno en una ciudad.",
+      "imageUrl": "https://images.unsplash.com/photo-1729080562616-3b9758cae13e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWRhbiUyMHJvam98ZW58MHx8fHwxNzYzMDgyOTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sedan rojo",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "f150-lariat",
+      "description": "Una camioneta Ford azul en un entorno de trabajo.",
+      "imageUrl": "https://images.unsplash.com/photo-1681351623077-e4cc438f0548?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYW1pb25ldGElMjBhenVsfGVufDB8fHx8MTc2MzA4MjkwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "camioneta azul",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "model-3-lr",
+      "description": "Un Tesla blanco cargándose en una estación de carga.",
+      "imageUrl": "https://images.unsplash.com/photo-1643475246169-dd57253b646a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0ZXNsYSUyMGJsYW5jb3xlbnwwfHx8fDE3NjMwODI5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tesla blanco",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "crv-touring",
+      "description": "Un SUV gris en un camino rural.",
+      "imageUrl": "https://images.unsplash.com/photo-1733759845506-e197dbc047c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdXYlMjBncmlzfGVufDB8fHx8MTc2MzA4MjkwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "suv gris",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "911-gt3",
+      "description": "Un Porsche amarillo en una pista de carreras.",
+      "imageUrl": "https://images.unsplash.com/photo-1711998034162-380d2c7a5875?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3JzY2hlJTIwYW1hcmlsbG98ZW58MHx8fHwxNzYzMDgyOTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "porsche amarillo",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "ioniq5-limited",
+      "description": "Un SUV eléctrico plateado con diseño moderno.",
+      "imageUrl": "https://picsum.photos/seed/ioniq5-limited/800/600",
+      "imageHint": "suv electrico",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "wrangler-rubicon",
+      "description": "Un Jeep verde en un terreno rocoso.",
+      "imageUrl": "https://images.unsplash.com/photo-1556821043-11c39c6e69cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxqZWVwJTIwdmVyZGV8ZW58MHx8fHwxNzYzMDgyOTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jeep verde",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "bmw-330i",
+      "description": "Un sedán BMW negro de lujo en una calle de la ciudad por la noche.",
+      "imageUrl": "https://images.unsplash.com/photo-1563826773-1e2b4b2cde42?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibXclMjBuZWdyb3xlbnwwfHx8fDE3NjMwODI5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bmw negro",
+      "width": 800,
+      "height": 600
+    },
+    {
       "id": "prestige-x10",
       "description": "Un sedán de lujo en una ciudad de noche.",
       "imageUrl": "https://picsum.photos/seed/prestige-x10/800/600",
