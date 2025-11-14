@@ -23,6 +23,11 @@ export type Brand = {
     logoUrl?: string;
 }
 
+export type Color = {
+    id: string;
+    name: string;
+}
+
 export type FuelType = {
   id: string;
   name: string;

@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car, Brand } from '@/lib/types';
+import type { Car, Brand, Color } from '@/lib/types';
 import { useEffect } from 'react';
 
 const formSchema = z.object({
@@ -57,9 +57,10 @@ interface CarFormProps {
   car: Car | null;
   onSave: (car: Omit<Car, 'id' | 'image'>) => void;
   brands: Brand[];
+  colors: Color[];
 }
 
-export default function CarForm({ isOpen, onOpenChange, car, onSave, brands }: CarFormProps) {
+export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, colors }: CarFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -171,9 +172,30 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands }: C
                 <FormField control={form.control} name="passengers" render={({ field }) => (
                     <FormItem><FormLabel>Pasajeros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
-                 <FormField control={form.control} name="color" render={({ field }) => (
-                    <FormItem><FormLabel>Color</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                )}/>
+                <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Color</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona un color" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {colors.map((color) => (
+                                        <SelectItem key={color.id} value={color.name}>
+                                            {color.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField control={form.control} name="engine" render={({ field }) => (
                     <FormItem><FormLabel>Motor</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>

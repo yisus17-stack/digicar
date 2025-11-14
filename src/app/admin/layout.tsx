@@ -7,6 +7,7 @@ import {
   Search,
   Home,
   MoreVertical,
+  Palette,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -77,6 +78,7 @@ function AdminSidebar() {
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/cars', label: 'Autos', icon: Car },
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
+    { href: '/admin/colors', label: 'Colores', icon: Palette },
   ];
 
   return (
@@ -118,7 +120,8 @@ function AdminSidebar() {
             href={item.href}
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-              { 'bg-primary text-primary-foreground': pathname === item.href },
+              pathname.startsWith(item.href) && item.href !== '/admin' ? 'bg-primary text-primary-foreground' : '',
+              pathname === '/admin' && item.href === '/admin' ? 'bg-primary text-primary-foreground' : '',
               { 'justify-center': isClosed }
             )}
           >
@@ -170,6 +173,7 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </div>
                 <nav className="flex flex-col gap-2 p-2">
+                    <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />

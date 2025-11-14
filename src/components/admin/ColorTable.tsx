@@ -17,8 +17,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
-import type { Car, Brand, Color } from '@/lib/types';
-import CarForm from './CarForm';
+import type { Color } from '@/lib/types';
+import ColorForm from './ColorForm';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,72 +35,69 @@ import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
-interface CarTableProps {
-  cars: Car[];
-  brands: Brand[];
+interface ColorTableProps {
   colors: Color[];
 }
 
-export default function CarTable({ cars: initialCars, brands, colors }: CarTableProps) {
+export default function ColorTable({ colors: initialColors }: ColorTableProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [carToDelete, setCarToDelete] = useState<string | null>(null);
+  const [colorToDelete, setColorToDelete] = useState<string | null>(null);
   const firestore = useFirestore();
   const { toast } = useToast();
 
   const handleAdd = () => {
-    setSelectedCar(null);
+    setSelectedColor(null);
     setIsFormOpen(true);
   };
 
-  const handleEdit = (car: Car) => {
-    setSelectedCar(car);
+  const handleEdit = (color: Color) => {
+    setSelectedColor(color);
     setIsFormOpen(true);
   };
   
-  const confirmDelete = (carId: string) => {
-    setCarToDelete(carId);
+  const confirmDelete = (colorId: string) => {
+    setColorToDelete(colorId);
     setIsAlertOpen(true);
   };
 
   const handleDelete = async () => {
-    if (!carToDelete) return;
-    const carRef = doc(firestore, 'cars', carToDelete);
-    deleteDoc(carRef)
+    if (!colorToDelete) return;
+    const colorRef = doc(firestore, 'colors', colorToDelete);
+    deleteDoc(colorRef)
       .then(() => {
-        toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
+        toast({ title: "Color eliminado", description: "El color se ha eliminado correctamente." });
       })
       .catch((error) => {
         const contextualError = new FirestorePermissionError({
           operation: 'delete',
-          path: carRef.path,
+          path: colorRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
       })
       .finally(() => {
-        setCarToDelete(null);
+        setColorToDelete(null);
         setIsAlertOpen(false);
       });
   };
 
-  const handleSave = async (data: Omit<Car, 'id' | 'image'>) => {
+  const handleSave = async (data: Omit<Color, 'id'>) => {
     try {
-        if (selectedCar) {
-            const carRef = doc(firestore, 'cars', selectedCar.id);
-            updateDoc(carRef, data).catch((error) => {
+        if (selectedColor) {
+            const colorRef = doc(firestore, 'colors', selectedColor.id);
+            updateDoc(colorRef, data).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
-                path: carRef.path,
+                path: colorRef.path,
                 requestResourceData: data,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
-            toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
+            toast({ title: "Color actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
-            const collectionRef = collection(firestore, 'cars');
-            // Firestore genera el ID automáticamente, la propiedad 'image' debe gestionarse por separado
-            addDoc(collectionRef, { ...data, image: `image-${Date.now()}` }).catch(error => {
+            const collectionRef = collection(firestore, 'colors');
+            addDoc(collectionRef, data).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',
                 path: collectionRef.path,
@@ -108,7 +105,7 @@ export default function CarTable({ cars: initialCars, brands, colors }: CarTable
               });
               errorEmitter.emit('permission-error', contextualError);
             });
-            toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
+            toast({ title: "Color añadido", description: "El nuevo color se ha añadido a la base de datos." });
         }
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
@@ -118,27 +115,21 @@ export default function CarTable({ cars: initialCars, brands, colors }: CarTable
   return (
     <>
         <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Administrar Autos</h1>
-            <Button onClick={handleAdd}>Añadir Auto</Button>
+            <h1 className="text-3xl font-bold">Administrar Colores</h1>
+            <Button onClick={handleAdd}>Añadir Color</Button>
         </div>
-        <div className="border rounded-lg">
+        <div className="border rounded-lg bg-card">
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Marca</TableHead>
-                    <TableHead>Modelo</TableHead>
-                    <TableHead className="hidden md:table-cell">Año</TableHead>
-                    <TableHead className="text-right">Precio</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {initialCars.map(car => (
-                    <TableRow key={car.id}>
-                    <TableCell className="font-medium">{car.brand}</TableCell>
-                    <TableCell>{car.model}</TableCell>
-                    <TableCell className="hidden md:table-cell">{car.year}</TableCell>
-                    <TableCell className="text-right">${car.price.toLocaleString('es-MX')}</TableCell>
+                {initialColors.map(color => (
+                    <TableRow key={color.id}>
+                    <TableCell className="font-medium">{color.name}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -148,11 +139,11 @@ export default function CarTable({ cars: initialCars, brands, colors }: CarTable
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEdit(car)}>
+                            <DropdownMenuItem onClick={() => handleEdit(color)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => car.id && confirmDelete(car.id)} className="text-destructive">
+                            <DropdownMenuItem onClick={() => color.id && confirmDelete(color.id)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar
                             </DropdownMenuItem>
@@ -164,24 +155,22 @@ export default function CarTable({ cars: initialCars, brands, colors }: CarTable
                 </TableBody>
             </Table>
         </div>
-        <CarForm 
+        <ColorForm 
             isOpen={isFormOpen}
             onOpenChange={setIsFormOpen}
-            car={selectedCar}
+            color={selectedColor}
             onSave={handleSave}
-            brands={brands}
-            colors={colors}
         />
         <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.
+                        Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setCarToDelete(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => setColorToDelete(null)}>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
