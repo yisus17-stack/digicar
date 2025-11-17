@@ -54,10 +54,10 @@ const HeroSection = () => {
 
             <div className="container mx-auto px-4 text-center relative z-10">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
-                    Donde vas a comprar tu próximo auto.
+                    Encuentra el auto de tus sueños, sin complicaciones.
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
-                    Puedes elegir el auto y los servicios adecuados para ti basándote en las opiniones auténticas y oportunas de usuarios reales.
+                    Explora, compara y financia tu próximo vehículo con herramientas inteligentes y recomendaciones de IA. Tu viaje empieza aquí.
                 </p>
 
                 <div className="max-w-2xl mx-auto">
