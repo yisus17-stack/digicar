@@ -93,7 +93,7 @@ const HeroSection = () => {
 };
 
 const PopularCarsSkeleton = () => (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
             <Skeleton className="h-10 w-2/3 mx-auto" />
             <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
@@ -133,7 +133,7 @@ export default function Home() {
               <HeroSection />
             </Suspense>
 
-            <div id="popular" className="container mx-auto px-4 py-16">
+            <div id="popular" className="container mx-auto px-4 py-8">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
