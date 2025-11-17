@@ -159,7 +159,7 @@ function AdminSidebar() {
 const AdminLayoutSkeleton = () => {
     const isClosed = false;
     return (
-        <div className="flex min-h-screen w-full">
+        <div className="flex min-h-screen w-full bg-background">
             <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': isClosed })}>
                 <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
                      <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': isClosed})} />
@@ -175,24 +175,28 @@ const AdminLayoutSkeleton = () => {
                     <Skeleton className="h-10 w-full" />
                 </div>
                 <nav className="flex flex-col gap-2 p-2">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
                 </nav>
                  <div className="mt-auto border-t p-2">
-                     <Skeleton className="h-12 w-full" />
+                     <Skeleton className="h-12 w-full rounded-lg" />
                  </div>
             </aside>
-            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
+            <div className={cn("flex flex-col sm:gap-4 sm:py-4 w-full transition-all duration-300", isClosed ? 'sm:pl-20' : 'sm:pl-64')}>
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                     <Skeleton className="h-8 w-8 sm:hidden" />
                      <div className="ml-auto flex items-center gap-4">
                         <Skeleton className="h-8 w-8 rounded-full" />
+                        <Skeleton className="h-9 w-9 rounded-full" />
                      </div>
                 </header>
                 <main className="flex-1 p-4 sm:px-6 sm:py-0">
-                    <Skeleton className="h-64 w-full" />
+                    <div className="space-y-4">
+                        <Skeleton className="h-9 w-48" />
+                        <Skeleton className="h-64 w-full" />
+                    </div>
                 </main>
             </div>
         </div>

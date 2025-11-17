@@ -9,7 +9,6 @@ import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings }
 import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { translations } from '@/lib/translations';
-import SketchfabViewer from '@/components/sketchfab/SketchfabViewer';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car } from '@/lib/types';
@@ -21,13 +20,63 @@ function CarDetailSkeleton() {
       <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
-          <Skeleton className="h-[450px] w-full" />
-          <Skeleton className="h-64 w-full" />
+          <Card>
+            <CardHeader>
+              <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-5 w-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+              <Skeleton className="h-10 w-32" />
+            </CardContent>
+          </Card>
         </div>
         <div className="space-y-6">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-64 w-full" />
+          <Card>
+            <CardHeader>
+                <Skeleton className="h-4 w-1/2 mb-2" />
+                <Skeleton className="h-8 w-3/4 mb-2" />
+                <Skeleton className="h-8 w-1/3" />
+            </CardHeader>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-x-4 gap-y-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-5 w-24" />
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle><Skeleton className="h-6 w-56" /></CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <Skeleton className="h-5 w-5 rounded-full" />
+                    <Skeleton className="h-5 w-full" />
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
