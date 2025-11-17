@@ -62,7 +62,6 @@ export default function LoginForm() {
       }
 
     } catch (error: any) {
-      console.error(error);
       toast({
         variant: 'destructive',
         title: 'Error al iniciar sesión',
