@@ -205,12 +205,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   
   useEffect(() => {
-    if (!userLoading && !user) {
-      router.push('/login');
+    if (!userLoading) {
+      if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        router.push('/');
+      }
     }
   }, [user, userLoading, router]);
 
-  if (userLoading || !user) {
+  if (userLoading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return <AdminLayoutSkeleton />;
   }
 
