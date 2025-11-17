@@ -49,12 +49,18 @@ export default function LoginForm() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       toast({
         title: '¡Bienvenido de vuelta!',
         description: 'Has iniciado sesión correctamente.',
       });
-      router.push('/');
+
+      if (userCredential.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
+
     } catch (error: any) {
       console.error(error);
       toast({
