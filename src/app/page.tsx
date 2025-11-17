@@ -8,7 +8,7 @@ import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, Award, GitCompareArrows } from 'lucide-react';
+import { ChevronRight, Search, Award, GitCompareArrows, Wand2, Landmark } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -92,6 +92,52 @@ const HeroSection = () => {
     );
 };
 
+const FeaturesSection = () => {
+    const features = [
+        {
+            icon: Wand2,
+            title: "Asesoría Inteligente",
+            description: "Dinos qué necesitas y nuestra IA encontrará el auto perfecto para ti entre miles de opciones.",
+            href: "/simulator"
+        },
+        {
+            icon: GitCompareArrows,
+            title: "Comparación Detallada",
+            description: "Analiza hasta el último detalle. Compara modelos lado a lado y deja que la IA te ayude a decidir.",
+            href: "/compare"
+        },
+        {
+            icon: Landmark,
+            title: "Financiamiento a tu Medida",
+            description: "Calcula tus pagos mensuales y explora opciones de crédito de forma clara y transparente.",
+            href: "/financing"
+        }
+    ];
+
+    return (
+        <section className="py-20 bg-muted/50">
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    {features.map((feature) => (
+                        <div key={feature.title} className="flex flex-col items-center">
+                            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground mb-4">
+                                <feature.icon className="h-8 w-8" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                            <p className="text-muted-foreground mb-4 max-w-xs">{feature.description}</p>
+                            <Button variant="link" asChild>
+                                <Link href={feature.href}>
+                                    Saber más <ChevronRight className="ml-1 h-4 w-4" />
+                                </Link>
+                            </Button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
 const PopularCarsSkeleton = () => (
     <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-6">
@@ -133,8 +179,10 @@ export default function Home() {
               <HeroSection />
             </Suspense>
 
-            <div id="popular" className="container mx-auto px-4 py-8">
-                <div className="text-center mb-6">
+            <FeaturesSection />
+
+            <div id="popular" className="container mx-auto px-4 py-20">
+                <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
