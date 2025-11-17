@@ -2,7 +2,54 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
-import { Car, Tag, Palette } from "lucide-react";
+import { Car, Tag, Palette, GitMerge } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function DashboardSkeleton() {
+    return (
+        <div className="p-4 sm:p-6 lg:p-8">
+            <Skeleton className="h-8 w-48 mb-6" />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total de Autos</CardTitle>
+                        <Car className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total de Marcas</CardTitle>
+                        <Tag className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total de Colores</CardTitle>
+                        <Palette className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total de Transmisiones</CardTitle>
+                        <GitMerge className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+}
 
 export default function AdminDashboardPage() {
     const firestore = useFirestore();
@@ -15,6 +62,13 @@ export default function AdminDashboardPage() {
 
     const colorsCollection = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
     const { data: colors, isLoading: colorsLoading } = useCollection(colorsCollection);
+    
+    const transmissionsCollection = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+    const { data: transmissions, isLoading: transmissionsLoading } = useCollection(transmissionsCollection);
+
+    if (carsLoading || brandsLoading || colorsLoading || transmissionsLoading) {
+        return <DashboardSkeleton />;
+    }
 
     return (
         <div className="p-4 sm:p-6 lg:p-8">
@@ -29,7 +83,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {carsLoading ? '...' : cars?.length ?? 0}
+                            {cars?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
@@ -42,7 +96,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                           {brandsLoading ? '...' : brands?.length ?? 0}
+                           {brands?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
@@ -55,7 +109,20 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                           {colorsLoading ? '...' : colors?.length ?? 0}
+                           {colors?.length ?? 0}
+                        </div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Total de Transmisiones
+                        </CardTitle>
+                        <GitMerge className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">
+                           {transmissions?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
