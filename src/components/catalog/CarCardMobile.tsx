@@ -23,22 +23,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
         <Link href={`/car/${car.id}`} className="block">
-          <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
-            <div className="relative">
-              {placeholder && (
-                <Image
-                  src={placeholder.imageUrl}
-                  alt={`${car.brand} ${car.model}`}
-                  width={placeholder.width}
-                  height={placeholder.height}
-                  className={cn(
-                    'object-cover',
-                  )}
-                  sizes="120px"
-                  data-ai-hint={placeholder.imageHint}
-                />
-              )}
-            </div>
+          <div className="grid grid-cols-[1fr] gap-4 items-center">
             <div className="flex flex-col justify-center">
               <h3 className="text-base font-semibold leading-tight line-clamp-2">
                 {car.brand} {car.model}

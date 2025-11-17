@@ -66,9 +66,6 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
-            <Card className="overflow-hidden">
-                <SketchfabViewer make={car.brand} model={car.model} />
-            </Card>
             <Card>
                 <CardHeader>
                     <CardTitle>Contáctanos</CardTitle>

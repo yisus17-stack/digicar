@@ -22,20 +22,6 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 bg-card">
-       {placeholder && (
-          <div className="overflow-hidden">
-            <Image
-              src={placeholder.imageUrl}
-              alt={`${car.brand} ${car.model}`}
-              width={placeholder.width}
-              height={placeholder.height}
-              className="bg-gray-50 object-cover transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={placeholder.imageHint}
-              priority={true}
-            />
-          </div>
-        )}
-
       <CardContent className="flex flex-grow flex-col p-6">
         <h3 className="text-xl font-bold leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">

@@ -106,9 +106,6 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
       const image = findPlaceholderImage(selectedCar.id);
       return (
         <Card className="overflow-hidden md:col-span-1 w-full">
-          <div className="relative h-48 w-full">
-            {image && <Image src={image.imageUrl} alt={selectedCar.model} fill className="object-cover" data-ai-hint={image.imageHint}/>}
-          </div>
           <CardHeader>
             <CardTitle>{selectedCar.brand} {selectedCar.model}</CardTitle>
           </CardHeader>
