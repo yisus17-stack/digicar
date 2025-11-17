@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense } from 'react';
@@ -7,12 +8,13 @@ import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, TrendingUp, Award, GitCompareArrows } from 'lucide-react';
+import { ChevronRight, Search, TrendingUp, Award, GitCompareArrows, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Car } from '@/lib/types';
+import type { Car, Brand } from '@/lib/types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 
 const HeroSectionSkeleton = () => {
@@ -91,6 +93,20 @@ const HeroSection = () => {
     );
 };
 
+const BrandsSectionSkeleton = () => (
+    <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+            <Skeleton className="h-10 w-2/3 mx-auto" />
+            <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
+            {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+            ))}
+        </div>
+    </div>
+);
+
 
 const PopularCarsSkeleton = () => (
     <div className="container mx-auto px-4 py-16">
@@ -108,9 +124,11 @@ const PopularCarsSkeleton = () => (
 
 export default function Home() {
     const firestore = useFirestore();
-    // Create a query to get the first 3 cars, you can later order them by popularity
     const popularCarsQuery = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
-    const { data: popularCars, isLoading } = useCollection<Car>(popularCarsQuery);
+    const { data: popularCars, isLoading: popularCarsLoading } = useCollection<Car>(popularCarsQuery);
+    const brandsQuery = useMemoFirebase(() => query(collection(firestore, 'brands'), limit(6)), [firestore]);
+    const { data: brands, isLoading: brandsLoading } = useCollection<Brand>(brandsQuery);
+
     const [comparisonIds, setComparisonIds] = useState<string[]>([]);
     const router = useRouter();
 
@@ -133,6 +151,40 @@ export default function Home() {
               <HeroSection />
             </Suspense>
 
+            <div className="bg-muted">
+                <div className="container mx-auto px-4 py-16">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                            Explora por Marca
+                        </h2>
+                        <p className="mt-2 text-muted-foreground">Encuentra tu auto ideal seleccionando tu marca preferida.</p>
+                    </div>
+                     {brandsLoading ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
+                            {[...Array(6)].map((_, i) => (
+                                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
+                            {brands?.map(brand => (
+                                <Link key={brand.id} href={`/catalog?brand=${encodeURIComponent(brand.name)}`}>
+                                    <div className="group flex flex-col items-center justify-center gap-4 p-4 border bg-card rounded-lg transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
+                                        <Avatar className="h-16 w-16">
+                                            {brand.logoUrl && <AvatarImage src={brand.logoUrl} alt={brand.name} className="object-contain" />}
+                                            <AvatarFallback>
+                                                <Tag className="h-8 w-8" />
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <p className="font-semibold text-center text-sm">{brand.name}</p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <div id="popular" className="container mx-auto px-4 py-16">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
@@ -140,7 +192,7 @@ export default function Home() {
                     </h2>
                     <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
-                {isLoading ? (
+                {popularCarsLoading ? (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <Skeleton className="h-64 w-full rounded-lg" />
                         <Skeleton className="h-64 w-full rounded-lg" />
