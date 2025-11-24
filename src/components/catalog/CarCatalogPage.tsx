@@ -68,7 +68,7 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCars }: {
 };
 
 
-export default function CarCatalogPage({ allCarsData }: { allCarsData: Car[] }) {
+export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodosLosAutos: Car[] }) {
   const router = useRouter();
 
   const [filters, setFilters] = useState({
@@ -113,7 +113,7 @@ export default function CarCatalogPage({ allCarsData }: { allCarsData: Car[] }) 
   };
 
   const filteredCars = useMemo(() => {
-    let filtered = allCarsData.filter(car => {
+    let filtered = datosTodosLosAutos.filter(car => {
       const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
       if (brand !== 'all' && car.brand !== brand) return false;
       if (fuelType !== 'all' && car.fuelType !== fuelType) return false;
@@ -145,7 +145,7 @@ export default function CarCatalogPage({ allCarsData }: { allCarsData: Car[] }) 
     }
     
     return filtered;
-  }, [filters, debouncedSearchTerm, sortOrder, allCarsData]);
+  }, [filters, debouncedSearchTerm, sortOrder, datosTodosLosAutos]);
 
   const totalPages = Math.ceil(filteredCars.length / ITEMS_PER_PAGE);
   const paginatedCars = filteredCars.slice(
@@ -222,7 +222,7 @@ export default function CarCatalogPage({ allCarsData }: { allCarsData: Car[] }) 
       onReset={handleResetFilters}
       onSearchWithAI={handleSearchWithAI}
       isLoading={isAiLoading}
-      cars={allCarsData}
+      cars={datosTodosLosAutos}
       maxPrice={MAX_PRICE}
       sortComponent={isMobile ? sortOptions : undefined}
       searchTerm={searchTerm}
@@ -354,7 +354,7 @@ export default function CarCatalogPage({ allCarsData }: { allCarsData: Car[] }) 
         onRemove={handleToggleCompare}
         onClear={() => setComparisonIds([])}
         onCompare={handleCompare}
-        allCars={allCarsData}
+        allCars={datosTodosLosAutos}
       />
     </div>
   );
