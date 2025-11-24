@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useRef, useEffect, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Send, X, Bot, User, Loader } from 'lucide-react';
+import { Send, X, Bot, User, Loader, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,14 +17,23 @@ export type Mensaje = {
   content: string;
 };
 
-export default function ChatbotWidget() {
-  const [abierto, setAbierto] = useState(false);
-  const [mensajes, setMensajes] = useState<Mensaje[]>([
+const mensajeInicial: Mensaje[] = [
     {
       role: 'model',
       content: '¡Hola! Soy Digi, tu asistente virtual. ¿Cómo puedo ayudarte a encontrar tu próximo auto?',
     },
-  ]);
+];
+
+const sugerencias = [
+    "¿Qué autos familiares tienen?",
+    "Busco un auto deportivo",
+    "Compara el Camry vs el Model 3",
+    "Opciones de financiamiento"
+];
+
+export default function ChatbotWidget() {
+  const [abierto, setAbierto] = useState(false);
+  const [mensajes, setMensajes] = useState<Mensaje[]>(mensajeInicial);
   const [entrada, setEntrada] = useState('');
   const [cargando, iniciarTransicion] = useTransition();
   const finMensajesRef = useRef<HTMLDivElement>(null);
@@ -31,11 +41,16 @@ export default function ChatbotWidget() {
   const alternarChatbot = () => {
     setAbierto(!abierto);
   };
+  
+  const reiniciarChat = () => {
+    setMensajes(mensajeInicial);
+  };
 
-  const enviarMensaje = () => {
-    if (entrada.trim() === '') return;
+  const enviarMensaje = (contenidoMensaje?: string) => {
+    const mensajeAEnviar = contenidoMensaje || entrada;
+    if (mensajeAEnviar.trim() === '') return;
 
-    const nuevoMensajeUsuario: Mensaje = { role: 'user', content: entrada };
+    const nuevoMensajeUsuario: Mensaje = { role: 'user', content: mensajeAEnviar };
     const nuevoHistorial = [...mensajes, nuevoMensajeUsuario];
     setMensajes(nuevoHistorial);
     setEntrada('');
@@ -74,9 +89,16 @@ export default function ChatbotWidget() {
                   <Bot className="h-6 w-6 text-primary" />
                   Asistente DigiCar
                 </CardTitle>
-                <Button variant="ghost" size="icon" onClick={alternarChatbot} className="h-8 w-8">
-                  <X className="h-5 w-5" />
-                </Button>
+                <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" onClick={reiniciarChat} className="h-8 w-8">
+                      <RefreshCcw className="h-4 w-4" />
+                      <span className="sr-only">Reiniciar chat</span>
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={alternarChatbot} className="h-8 w-8">
+                      <X className="h-5 w-5" />
+                      <span className="sr-only">Cerrar chat</span>
+                    </Button>
+                </div>
               </CardHeader>
               <ScrollArea className="flex-1">
                 <CardContent className="space-y-4">
@@ -121,7 +143,19 @@ export default function ChatbotWidget() {
                   <div ref={finMensajesRef} />
                 </CardContent>
               </ScrollArea>
-              <CardFooter className="pt-4">
+                {mensajes.length <= 1 && (
+                    <div className="px-6 py-2 border-t">
+                        <p className="text-xs text-muted-foreground mb-2">O prueba una de estas sugerencias:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {sugerencias.map(sug => (
+                                <Button key={sug} variant="outline" size="sm" onClick={() => enviarMensaje(sug)}>
+                                    {sug}
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+              <CardFooter className="pt-4 border-t">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -157,8 +191,8 @@ export default function ChatbotWidget() {
               <X className="h-8 w-8" />
             </motion.div>
           ) : (
-            <motion.div key="msg" initial={{ rotate: 90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: -90, scale: 0 }}>
-              <MessageCircle className="h-8 w-8" />
+            <motion.div key="bot" initial={{ rotate: 90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: -90, scale: 0 }}>
+              <Bot className="h-8 w-8" />
             </motion.div>
           )}
         </AnimatePresence>
