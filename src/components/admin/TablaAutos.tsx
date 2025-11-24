@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2, Car as IconoAuto } from 'lucide-react';
 import type { Auto, Marca, Color, Transmision } from '@/lib/types';
-import FormularioAuto from './FormularioAuto';
+import FormularioAuto from './CarForm';
 import {
     AlertDialog,
     AlertDialogAction,

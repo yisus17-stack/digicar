@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2, Tag } from 'lucide-react';
 import type { Marca } from '@/lib/types';
-import FormularioMarca from './FormularioMarca';
+import FormularioMarca from './BrandForm';
 import {
     AlertDialog,
     AlertDialogAction,

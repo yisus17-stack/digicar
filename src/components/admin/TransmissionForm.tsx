@@ -21,54 +21,54 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Transmission } from '@/lib/types';
+import { Transmision } from '@/lib/types';
 import { useEffect } from 'react';
 
-const formSchema = z.object({
+const esquemaFormulario = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
-interface TransmissionFormProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  transmission: Transmission | null;
-  onSave: (transmission: Omit<Transmission, 'id'>) => void;
+interface PropsFormularioTransmision {
+  estaAbierto: boolean;
+  alCambiarApertura: (open: boolean) => void;
+  transmision: Transmision | null;
+  alGuardar: (transmission: Omit<Transmision, 'id'>) => void;
 }
 
-export default function TransmissionForm({ isOpen, onOpenChange, transmission, onSave }: TransmissionFormProps) {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+export default function FormularioTransmision({ estaAbierto, alCambiarApertura, transmision, alGuardar }: PropsFormularioTransmision) {
+  const form = useForm<DatosFormulario>({
+    resolver: zodResolver(esquemaFormulario),
     defaultValues: {
       name: '',
     },
   });
   
   useEffect(() => {
-    if (transmission) {
-      form.reset(transmission);
+    if (transmision) {
+      form.reset(transmision);
     } else {
       form.reset({
         name: '',
       });
     }
-  }, [transmission, form]);
+  }, [transmision, form]);
 
 
-  const onSubmit = (data: FormData) => {
-    onSave(data);
-    onOpenChange(false);
+  const alEnviar = (data: DatosFormulario) => {
+    alGuardar(data);
+    alCambiarApertura(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{transmission ? 'Editar Transmisión' : 'Añadir Transmisión'}</DialogTitle>
+          <DialogTitle>{transmision ? 'Editar Transmisión' : 'Añadir Transmisión'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Transmisión</FormLabel>

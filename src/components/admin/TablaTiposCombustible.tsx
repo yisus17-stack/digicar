@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import type { TipoCombustible } from '@/lib/types';
-import FormularioTipoCombustible from './FormularioTipoCombustible';
+import FormularioTipoCombustible from './FuelTypeForm';
 import {
     AlertDialog,
     AlertDialogAction,

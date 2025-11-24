@@ -24,22 +24,22 @@ import { Input } from '@/components/ui/input';
 import { Color } from '@/lib/types';
 import { useEffect } from 'react';
 
-const formSchema = z.object({
+const esquemaFormulario = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
-interface ColorFormProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+interface PropsFormularioColor {
+  estaAbierto: boolean;
+  alCambiarApertura: (open: boolean) => void;
   color: Color | null;
-  onSave: (color: Omit<Color, 'id'>) => void;
+  alGuardar: (color: Omit<Color, 'id'>) => void;
 }
 
-export default function ColorForm({ isOpen, onOpenChange, color, onSave }: ColorFormProps) {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+export default function FormularioColor({ estaAbierto, alCambiarApertura, color, alGuardar }: PropsFormularioColor) {
+  const form = useForm<DatosFormulario>({
+    resolver: zodResolver(esquemaFormulario),
     defaultValues: {
       name: '',
     },
@@ -56,19 +56,19 @@ export default function ColorForm({ isOpen, onOpenChange, color, onSave }: Color
   }, [color, form]);
 
 
-  const onSubmit = (data: FormData) => {
-    onSave(data);
-    onOpenChange(false);
+  const alEnviar = (data: DatosFormulario) => {
+    alGuardar(data);
+    alCambiarApertura(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{color ? 'Editar Color' : 'Añadir Color'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre del Color</FormLabel>

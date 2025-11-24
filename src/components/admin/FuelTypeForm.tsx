@@ -21,54 +21,54 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { FuelType } from '@/lib/types';
+import { TipoCombustible } from '@/lib/types';
 import { useEffect } from 'react';
 
-const formSchema = z.object({
+const esquemaFormulario = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
-interface FuelTypeFormProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  fuel: FuelType | null;
-  onSave: (fuel: Omit<FuelType, 'id'>) => void;
+interface PropsFormularioTipoCombustible {
+  estaAbierto: boolean;
+  alCambiarApertura: (open: boolean) => void;
+  combustible: TipoCombustible | null;
+  alGuardar: (fuel: Omit<TipoCombustible, 'id'>) => void;
 }
 
-export default function FuelTypeForm({ isOpen, onOpenChange, fuel, onSave }: FuelTypeFormProps) {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+export default function FormularioTipoCombustible({ estaAbierto, alCambiarApertura, combustible, alGuardar }: PropsFormularioTipoCombustible) {
+  const form = useForm<DatosFormulario>({
+    resolver: zodResolver(esquemaFormulario),
     defaultValues: {
       name: '',
     },
   });
   
   useEffect(() => {
-    if (fuel) {
-      form.reset(fuel);
+    if (combustible) {
+      form.reset(combustible);
     } else {
       form.reset({
         name: '',
       });
     }
-  }, [fuel, form]);
+  }, [combustible, form]);
 
 
-  const onSubmit = (data: FormData) => {
-    onSave(data);
-    onOpenChange(false);
+  const alEnviar = (data: DatosFormulario) => {
+    alGuardar(data);
+    alCambiarApertura(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{fuel ? 'Editar Combustible' : 'Añadir Combustible'}</DialogTitle>
+          <DialogTitle>{combustible ? 'Editar Combustible' : 'Añadir Combustible'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre del Combustible</FormLabel>

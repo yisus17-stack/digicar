@@ -21,32 +21,32 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Brand } from '@/lib/types';
+import { Marca } from '@/lib/types';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Upload } from 'lucide-react';
 
-const formSchema = z.object({
+const esquemaFormulario = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
   logoUrl: z.string().url('Debe ser una URL válida.').optional().or(z.literal('')),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
-interface BrandFormProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  brand: Brand | null;
-  onSave: (data: Omit<Brand, 'id'>, newLogoFile?: File) => void;
+interface PropsFormularioMarca {
+  estaAbierto: boolean;
+  alCambiarApertura: (open: boolean) => void;
+  marca: Marca | null;
+  alGuardar: (data: Omit<Marca, 'id'>, nuevoArchivoLogo?: File) => void;
 }
 
-export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: BrandFormProps) {
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [newLogoFile, setNewLogoFile] = useState<File | undefined>(undefined);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca, alGuardar }: PropsFormularioMarca) {
+  const [vistaPreviaLogo, setVistaPreviaLogo] = useState<string | null>(null);
+  const [nuevoArchivoLogo, setNuevoArchivoLogo] = useState<File | undefined>(undefined);
+  const refInputArchivo = useRef<HTMLInputElement>(null);
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<DatosFormulario>({
+    resolver: zodResolver(esquemaFormulario),
     defaultValues: {
       name: '',
       logoUrl: '',
@@ -54,47 +54,47 @@ export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: Brand
   });
   
   useEffect(() => {
-    if (isOpen) {
-      if (brand) {
-        form.reset(brand);
-        setLogoPreview(brand.logoUrl || null);
+    if (estaAbierto) {
+      if (marca) {
+        form.reset(marca);
+        setVistaPreviaLogo(marca.logoUrl || null);
       } else {
         form.reset({
           name: '',
           logoUrl: '',
         });
-        setLogoPreview(null);
+        setVistaPreviaLogo(null);
       }
-      setNewLogoFile(undefined);
+      setNuevoArchivoLogo(undefined);
     }
-  }, [brand, form, isOpen]);
+  }, [marca, form, estaAbierto]);
 
 
-  const onSubmit = (data: FormData) => {
-    onSave(data, newLogoFile);
-    onOpenChange(false);
+  const alEnviar = (data: DatosFormulario) => {
+    alGuardar(data, nuevoArchivoLogo);
+    alCambiarApertura(false);
   };
   
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const manejarCambioArchivo = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setNewLogoFile(file);
+      setNuevoArchivoLogo(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
+        setVistaPreviaLogo(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{brand ? 'Editar Marca' : 'Añadir Marca'}</DialogTitle>
+          <DialogTitle>{marca ? 'Editar Marca' : 'Añadir Marca'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Marca</FormLabel>
@@ -106,21 +106,21 @@ export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: Brand
             <FormItem>
                 <FormLabel>Logo</FormLabel>
                 <div className="flex items-center gap-4">
-                    {logoPreview ? (
-                        <Image src={logoPreview} alt="Vista previa del logo" width={64} height={64} className="rounded-md object-contain border p-1" />
+                    {vistaPreviaLogo ? (
+                        <Image src={vistaPreviaLogo} alt="Vista previa del logo" width={64} height={64} className="rounded-md object-contain border p-1" />
                     ) : (
                         <div className="w-16 h-16 flex items-center justify-center bg-muted rounded-md text-muted-foreground">
                             <Upload className="h-8 w-8" />
                         </div>
                     )}
-                    <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                    <Button type="button" variant="outline" onClick={() => refInputArchivo.current?.click()}>
                         Seleccionar Imagen
                     </Button>
                     <Input 
                         type="file" 
-                        ref={fileInputRef} 
+                        ref={refInputArchivo} 
                         className="hidden" 
-                        onChange={handleFileChange}
+                        onChange={manejarCambioArchivo}
                         accept="image/png, image/jpeg, image/webp, image/svg+xml"
                     />
                 </div>

@@ -29,12 +29,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car, Brand, Color, Transmission } from '@/lib/types';
+import type { Auto, Marca, Color, Transmision } from '@/lib/types';
 import { useEffect, useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import Image from 'next/image';
 
-const formSchema = z.object({
+const esquemaFormulario = z.object({
   brand: z.string().min(1, 'La marca es requerida.'),
   model: z.string().min(2, 'El modelo es requerido.'),
   year: z.coerce.number().min(1900, 'Año inválido.').max(new Date().getFullYear() + 1, 'Año inválido.'),
@@ -52,25 +52,25 @@ const formSchema = z.object({
   imageUrl: z.string().optional().or(z.literal('')),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
-interface CarFormProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  car: Car | null;
-  onSave: (car: Omit<Car, 'id'>, newImageFile?: File) => void;
-  brands: Brand[];
-  colors: Color[];
-  transmissions: Transmission[];
+interface PropsFormularioAuto {
+  estaAbierto: boolean;
+  alCambiarApertura: (open: boolean) => void;
+  auto: Auto | null;
+  alGuardar: (auto: Omit<Auto, 'id'>, nuevoArchivoImagen?: File) => void;
+  marcas: Marca[];
+  colores: Color[];
+  transmisiones: Transmision[];
 }
 
-export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, colors, transmissions }: CarFormProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [newImageFile, setNewImageFile] = useState<File | undefined>(undefined);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, alGuardar, marcas, colores, transmisiones }: PropsFormularioAuto) {
+  const [vistaPreviaImagen, setVistaPreviaImagen] = useState<string | null>(null);
+  const [nuevoArchivoImagen, setNuevoArchivoImagen] = useState<File | undefined>(undefined);
+  const refInputArchivo = useRef<HTMLInputElement>(null);
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<DatosFormulario>({
+    resolver: zodResolver(esquemaFormulario),
     defaultValues: {
       brand: '',
       model: '',
@@ -91,13 +91,13 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
   });
   
   useEffect(() => {
-    if (isOpen) {
-        if (car) {
+    if (estaAbierto) {
+        if (auto) {
           form.reset({
-            ...car,
-            features: car.features.join(', '),
+            ...auto,
+            features: auto.features.join(', '),
           });
-          setImagePreview(car.imageUrl || null);
+          setVistaPreviaImagen(auto.imageUrl || null);
         } else {
           form.reset({
             brand: '',
@@ -116,43 +116,43 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
             passengers: 5,
             imageUrl: '',
           });
-          setImagePreview(null);
+          setVistaPreviaImagen(null);
         }
-        setNewImageFile(undefined);
+        setNuevoArchivoImagen(undefined);
     }
-  }, [car, form, isOpen]);
+  }, [auto, form, estaAbierto]);
 
 
-  const onSubmit = (data: FormData) => {
-    const carData = {
+  const alEnviar = (data: DatosFormulario) => {
+    const datosAuto = {
         ...data,
         features: data.features ? data.features.split(',').map(f => f.trim()) : [],
     };
     // @ts-ignore
-    onSave(carData, newImageFile);
-    onOpenChange(false);
+    alGuardar(datosAuto, nuevoArchivoImagen);
+    alCambiarApertura(false);
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const manejarCambioArchivo = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setNewImageFile(file);
+      setNuevoArchivoImagen(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setVistaPreviaImagen(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{car ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
+          <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
@@ -167,7 +167,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {brands.map((brand) => (
+                                    {marcas.map((brand) => (
                                         <SelectItem key={brand.id} value={brand.name}>
                                             {brand.name}
                                         </SelectItem>
@@ -191,7 +191,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
                     <FormItem><FormLabel>Kilometraje/Autonomía</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="horsepower" render={({ field }) => (
-                    <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></Form.Item>
                 )}/>
                  <FormField control={form.control} name="engineCylinders" render={({ field }) => (
                     <FormItem><FormLabel>Cilindros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
@@ -212,7 +212,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {colors.map((color) => (
+                                    {colores.map((color) => (
                                         <SelectItem key={color.id} value={color.name}>
                                             {color.name}
                                         </SelectItem>
@@ -251,7 +251,7 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {transmissions.map((transmission) => (
+                                    {transmisiones.map((transmission) => (
                                         <SelectItem key={transmission.id} value={transmission.name}>
                                             {transmission.name}
                                         </SelectItem>
@@ -269,21 +269,21 @@ export default function CarForm({ isOpen, onOpenChange, car, onSave, brands, col
             <FormItem>
                 <FormLabel>Imagen del Auto</FormLabel>
                 <div className="flex items-center gap-4">
-                    {imagePreview ? (
-                        <Image src={imagePreview} alt="Vista previa del auto" width={128} height={96} className="rounded-md object-cover border p-1" />
+                    {vistaPreviaImagen ? (
+                        <Image src={vistaPreviaImagen} alt="Vista previa del auto" width={128} height={96} className="rounded-md object-cover border p-1" />
                     ) : (
                         <div className="w-32 h-24 flex items-center justify-center bg-muted rounded-md text-muted-foreground">
                             <Upload className="h-8 w-8" />
                         </div>
                     )}
-                    <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                    <Button type="button" variant="outline" onClick={() => refInputArchivo.current?.click()}>
                         Seleccionar Imagen
                     </Button>
                     <Input 
                         type="file" 
-                        ref={fileInputRef} 
+                        ref={refInputArchivo} 
                         className="hidden" 
-                        onChange={handleFileChange}
+                        onChange={manejarCambioArchivo}
                         accept="image/png, image/jpeg, image/webp"
                     />
                 </div>

@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import type { Color } from '@/lib/types';
-import FormularioColor from './FormularioColor';
+import FormularioColor from './ColorForm';
 import {
     AlertDialog,
     AlertDialogAction,
