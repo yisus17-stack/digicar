@@ -3,24 +3,23 @@
  * @fileOverview Un flujo de chatbot conversacional para el asistente de DigiCar.
  *
  * - responderChat - Una función que genera una respuesta basada en el historial de la conversación.
- * - Mensaje - Define la estructura de un solo mensaje en el chat.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 // Define la estructura de un mensaje individual
-export const MensajeSchema = z.object({
+const MensajeSchema = z.object({
   role: z.enum(['user', 'model']),
   content: z.string(),
 });
-export type Mensaje = z.infer<typeof MensajeSchema>;
+type Mensaje = z.infer<typeof MensajeSchema>;
 
 // Define la entrada para el flujo del chatbot
 const ChatbotInputSchema = z.object({
   historial: z.array(MensajeSchema).describe('El historial de la conversación hasta ahora.'),
 });
-export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
+type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
 // Define la salida del flujo del chatbot
 const ChatbotOutputSchema = z.object({

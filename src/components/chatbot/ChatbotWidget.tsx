@@ -8,7 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { responderChat, type Mensaje } from '@/ai/flows/chatbot-flow';
+import { responderChat } from '@/ai/flows/chatbot-flow';
+
+// Se mueve la definición del tipo aquí, ya que no se puede exportar desde un archivo 'use server'
+export type Mensaje = {
+  role: 'user' | 'model';
+  content: string;
+};
 
 export default function ChatbotWidget() {
   const [abierto, setAbierto] = useState(false);
