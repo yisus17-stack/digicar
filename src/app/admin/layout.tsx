@@ -210,14 +210,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
   
-  useEffect(() => {
-    if (!userLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, userLoading, router]);
-
-  if (userLoading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+  if (userLoading) {
     return <AdminLayoutSkeleton />;
+  }
+
+  if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    return (
+        <div className='flex items-center justify-center h-screen bg-background'>
+            <div className='text-center'>
+                <p className='text-lg text-muted-foreground'>Acceso denegado</p>
+                <Button onClick={() => router.push('/login')} className='mt-4'>
+                    Ir a Iniciar Sesión
+                </Button>
+            </div>
+        </div>
+    )
   }
 
   return (
