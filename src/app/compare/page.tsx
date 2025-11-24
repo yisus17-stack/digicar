@@ -1,11 +1,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import PaginaComparacion from "@/components/comparison/PaginaComparacion";
+import PaginaComparacion from "@/components/comparison/ComparisonPage";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import MigasDePan from "@/components/layout/MigasDePan";
+import MigasDePan from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Auto } from '@/lib/types';
