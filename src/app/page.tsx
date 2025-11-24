@@ -8,12 +8,22 @@ import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, Award, GitCompareArrows, Wand2, Landmark } from 'lucide-react';
+import { ChevronRight, Search, Award, GitCompareArrows } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Car } from '@/lib/types';
+import type { Car, Brand } from '@/lib/types';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tag } from 'lucide-react';
 
 
 const HeroSectionSkeleton = () => {
@@ -92,51 +102,80 @@ const HeroSection = () => {
     );
 };
 
-const FeaturesSection = () => {
-    const features = [
-        {
-            icon: Wand2,
-            title: "Asesoría Inteligente",
-            description: "Dinos qué necesitas y nuestra IA encontrará el auto perfecto para ti entre miles de opciones.",
-            href: "/simulator"
-        },
-        {
-            icon: GitCompareArrows,
-            title: "Comparación Detallada",
-            description: "Analiza hasta el último detalle. Compara modelos lado a lado y deja que la IA te ayude a decidir.",
-            href: "/compare"
-        },
-        {
-            icon: Landmark,
-            title: "Financiamiento a tu Medida",
-            description: "Calcula tus pagos mensuales y explora opciones de crédito de forma clara y transparente.",
-            href: "/financing"
-        }
-    ];
+const BrandsSectionSkeleton = () => (
+    <div className="container mx-auto px-4">
+        <div className="flex space-x-4">
+            {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-24 w-48 rounded-lg" />
+            ))}
+        </div>
+    </div>
+);
 
+const BrandsSection = () => {
+    const firestore = useFirestore();
+    const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+    const { data: brands, isLoading } = useCollection<Brand>(brandsCollection);
+
+    if (isLoading) {
+        return <BrandsSectionSkeleton />;
+    }
+
+    if (!brands || brands.length === 0) {
+        return null;
+    }
+    
     return (
-        <section className="py-20 bg-muted/50">
+        <section className="py-12 bg-muted/50">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                    {features.map((feature) => (
-                        <div key={feature.title} className="flex flex-col items-center">
-                            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground mb-4">
-                                <feature.icon className="h-8 w-8" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                            <p className="text-muted-foreground mb-4 max-w-xs">{feature.description}</p>
-                            <Button variant="link" asChild>
-                                <Link href={feature.href}>
-                                    Saber más <ChevronRight className="ml-1 h-4 w-4" />
-                                </Link>
-                            </Button>
-                        </div>
-                    ))}
+                 <div className="text-center mb-10">
+                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                        Explora por Marca
+                    </h2>
+                    <p className="mt-2 text-muted-foreground">Encuentra los modelos de tus marcas favoritas.</p>
                 </div>
+                <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    className="w-full max-w-6xl mx-auto"
+                >
+                    <CarouselContent>
+                        {brands.map((brand) => (
+                            <CarouselItem key={brand.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5">
+                                <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} className="block group">
+                                    <Card className="h-32 flex items-center justify-center p-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:border-primary">
+                                        <div className="relative w-full h-full flex items-center justify-center">
+                                            {brand.logoUrl ? (
+                                                <Image
+                                                    src={brand.logoUrl}
+                                                    alt={`${brand.name} logo`}
+                                                    fill
+                                                    style={{ objectFit: 'contain' }}
+                                                    className="grayscale transition-all duration-300 group-hover:grayscale-0"
+                                                />
+                                            ) : (
+                                                <Avatar className="h-16 w-16">
+                                                    <AvatarFallback>
+                                                        <Tag className="h-8 w-8" />
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                            )}
+                                        </div>
+                                    </Card>
+                                </Link>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden sm:flex" />
+                    <CarouselNext className="hidden sm:flex" />
+                </Carousel>
             </div>
         </section>
     );
-}
+};
+
 
 const PopularCarsSkeleton = () => (
     <div className="container mx-auto px-4 py-8">
@@ -179,10 +218,13 @@ export default function Home() {
               <HeroSection />
             </Suspense>
 
-            <FeaturesSection />
+            <Suspense fallback={<BrandsSectionSkeleton />}>
+                <BrandsSection />
+            </Suspense>
+
 
             <div id="popular" className="container mx-auto px-4 py-20">
-                <div className="text-center mb-12">
+                <div className="text-center mb-6">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
@@ -213,3 +255,5 @@ export default function Home() {
         </>
     );
 }
+
+    
