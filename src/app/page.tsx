@@ -8,7 +8,7 @@ import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, Award, GitCompareArrows } from 'lucide-react';
+import { ChevronRight, Search, Award, GitCompareArrows, Wand2, Landmark } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -204,8 +204,8 @@ export default function Home() {
             </Suspense>
 
 
-            <div id="popular" className="container mx-auto px-4 py-20">
-                <div className="text-center mb-12">
+            <div id="popular" className="container mx-auto px-4 py-8">
+                <div className="text-center mb-6">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
@@ -236,5 +236,7 @@ export default function Home() {
         </>
     );
 }
+
+    
 
     
