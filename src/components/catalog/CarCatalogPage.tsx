@@ -6,7 +6,7 @@ import type { Car } from '@/lib/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
-import { X, SlidersHorizontal, Loader, GitCompareArrows } from 'lucide-react';
+import { X, SlidersHorizontal, Loader, GitCompareArrows, Car as CarIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import AiSummary from './AiSummary';
@@ -17,7 +17,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Breadcrumbs from '../layout/Breadcrumbs';
@@ -38,18 +37,21 @@ const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCars }: {
           <div className="flex-1 flex items-center gap-4 overflow-x-auto">
             <h3 className="text-lg font-semibold whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
             <div className="flex items-center gap-4">
-              {selectedCars.map(car => {
-                const placeholder = findPlaceholderImage(car.id);
-                return (
-                  <div key={car.id} className="relative flex items-center gap-2 bg-muted p-2 rounded-lg">
-                    {placeholder && <Image src={placeholder.imageUrl} alt={car.model} width={40} height={30} className="rounded" />}
-                    <span className="text-sm font-medium hidden md:inline">{car.brand} {car.model}</span>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => onRemove(car.id)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                );
-              })}
+              {selectedCars.map(car => (
+                <div key={car.id} className="relative flex items-center gap-2 bg-muted p-2 rounded-lg">
+                  {car.imageUrl ? (
+                    <Image src={car.imageUrl} alt={car.model} width={40} height={30} className="rounded object-cover" />
+                  ) : (
+                    <div className="w-10 h-8 flex items-center justify-center bg-secondary rounded">
+                      <CarIcon className="w-4 h-4 text-muted-foreground"/>
+                    </div>
+                  )}
+                  <span className="text-sm font-medium hidden md:inline">{car.brand} {car.model}</span>
+                  <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => onRemove(car.id)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex gap-2 w-full sm:w-auto">

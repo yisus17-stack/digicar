@@ -29,11 +29,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useFirestore } from '@/firebase';
+import { useFirestore, useStorage } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { uploadImage } from '@/lib/storage';
+import Image from 'next/image';
+import { Car as CarIcon } from 'lucide-react';
 
 interface CarTableProps {
   cars: Car[];
@@ -48,6 +51,7 @@ export default function CarTable({ cars: initialCars, brands, colors, transmissi
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [carToDelete, setCarToDelete] = useState<string | null>(null);
   const firestore = useFirestore();
+  const storage = useStorage();
   const { toast } = useToast();
 
   const handleAdd = () => {
@@ -85,27 +89,37 @@ export default function CarTable({ cars: initialCars, brands, colors, transmissi
       });
   };
 
-  const handleSave = async (data: Omit<Car, 'id' | 'image'>) => {
+  const handleSave = async (data: Omit<Car, 'id'>, newImageFile?: File) => {
     try {
+        let imageUrl = data.imageUrl || '';
+
+        if (newImageFile) {
+            const toastId = toast({ title: 'Subiendo imagen...', description: 'Por favor, espera.' });
+            const entityId = selectedCar ? selectedCar.id : doc(collection(firestore, 'cars')).id;
+            imageUrl = await uploadImage(storage, newImageFile, `cars/${entityId}`);
+            toastId.dismiss();
+        }
+
+        const carData = { ...data, imageUrl };
+
         if (selectedCar) {
             const carRef = doc(firestore, 'cars', selectedCar.id);
-            updateDoc(carRef, data).catch((error) => {
+            updateDoc(carRef, carData).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
                 path: carRef.path,
-                requestResourceData: data,
+                requestResourceData: carData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
             toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
             const collectionRef = collection(firestore, 'cars');
-            // Firestore genera el ID automáticamente, la propiedad 'image' debe gestionarse por separado
-            addDoc(collectionRef, { ...data, image: `image-${Date.now()}` }).catch(error => {
+            addDoc(collectionRef, carData).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',
                 path: collectionRef.path,
-                requestResourceData: data,
+                requestResourceData: carData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
@@ -126,6 +140,7 @@ export default function CarTable({ cars: initialCars, brands, colors, transmissi
             <Table>
                 <TableHeader>
                 <TableRow>
+                    <TableHead>Imagen</TableHead>
                     <TableHead>Marca</TableHead>
                     <TableHead>Modelo</TableHead>
                     <TableHead className="hidden md:table-cell">Año</TableHead>
@@ -136,6 +151,15 @@ export default function CarTable({ cars: initialCars, brands, colors, transmissi
                 <TableBody>
                 {initialCars.map(car => (
                     <TableRow key={car.id}>
+                    <TableCell>
+                      {car.imageUrl ? (
+                        <Image src={car.imageUrl} alt={`${car.brand} ${car.model}`} width={64} height={48} className="rounded-md object-cover" />
+                      ) : (
+                        <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
+                          <CarIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{car.brand}</TableCell>
                     <TableCell>{car.model}</TableCell>
                     <TableCell className="hidden md:table-cell">{car.year}</TableCell>

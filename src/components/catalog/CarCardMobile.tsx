@@ -2,11 +2,9 @@
 
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
-import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { GitCompareArrows, CheckCircle } from 'lucide-react';
+import { GitCompareArrows, CheckCircle, Car as CarIcon } from 'lucide-react';
 import { translations } from '@/lib/translations';
 
 interface CarCardMobileProps {
@@ -16,14 +14,22 @@ interface CarCardMobileProps {
 }
 
 export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarCardMobileProps) {
-  const placeholder = findPlaceholderImage(car.id);
   const carType = car.type as keyof (typeof translations.type);
 
   return (
     <div className="overflow-hidden bg-card border-b">
       <div className="p-4">
         <Link href={`/car/${car.id}`} className="block">
-          <div className="grid grid-cols-[1fr] gap-4 items-center">
+          <div className="grid grid-cols-[80px_1fr] gap-4 items-start">
+             <div className="aspect-[4/3] relative rounded-md overflow-hidden">
+                {car.imageUrl ? (
+                    <Image src={car.imageUrl} alt={car.model} fill className="object-cover"/>
+                ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <CarIcon className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                )}
+            </div>
             <div className="flex flex-col justify-center">
               <h3 className="text-base font-semibold leading-tight line-clamp-2">
                 {car.brand} {car.model}
@@ -38,7 +44,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
           </div>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-2 p-4 pt-2">
+      <div className="grid grid-cols-2 gap-2 p-4 pt-0">
         <Button asChild size="sm">
           <Link href={`/car/${car.id}`}>Ver Detalles</Link>
         </Button>

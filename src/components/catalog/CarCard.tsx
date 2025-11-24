@@ -2,12 +2,10 @@
 
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
-import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { GitCompareArrows, CheckCircle } from 'lucide-react';
+import { GitCompareArrows, CheckCircle, Car as CarIcon } from 'lucide-react';
 import { translations } from '@/lib/translations';
 
 interface CarCardProps {
@@ -17,11 +15,26 @@ interface CarCardProps {
 }
 
 export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
-  const placeholder = findPlaceholderImage(car.id);
   const carType = car.type as keyof (typeof translations.type);
 
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 bg-card">
+      <Link href={`/car/${car.id}`}>
+        <div className="aspect-video relative overflow-hidden">
+          {car.imageUrl ? (
+            <Image
+              src={car.imageUrl}
+              alt={`${car.brand} ${car.model}`}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+              <CarIcon className="w-12 h-12 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+      </Link>
       <CardContent className="flex flex-grow flex-col p-6">
         <h3 className="text-xl font-bold leading-tight">{car.brand} {car.model}</h3>
         <p className="mt-1 text-sm text-muted-foreground">

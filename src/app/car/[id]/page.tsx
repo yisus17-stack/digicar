@@ -1,11 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings } from 'lucide-react';
+import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as CarIcon } from 'lucide-react';
 import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { translations } from '@/lib/translations';
@@ -13,6 +11,7 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 function CarDetailSkeleton() {
   return (
@@ -96,7 +95,6 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
     notFound();
   }
 
-  const placeholder = findPlaceholderImage(car.id);
   const carType = car.type as keyof (typeof translations.type);
 
   const carDetails = [
@@ -115,15 +113,26 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Contáctanos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
-                    <LeadCaptureForm interestedCars={`${car.brand} ${car.model}`} />
-                </CardContent>
-            </Card>
+          <Card className="overflow-hidden">
+             <AspectRatio ratio={4/3}>
+              {car.imageUrl ? (
+                <Image src={car.imageUrl} alt={`${car.brand} ${car.model}`} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <CarIcon className="w-24 h-24 text-muted-foreground" />
+                </div>
+              )}
+             </AspectRatio>
+          </Card>
+          <Card>
+              <CardHeader>
+                  <CardTitle>Contáctanos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
+                  <LeadCaptureForm interestedCars={`${car.brand} ${car.model}`} />
+              </CardContent>
+          </Card>
         </div>
         <div className="space-y-6">
           <Card>

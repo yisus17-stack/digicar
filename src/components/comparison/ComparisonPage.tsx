@@ -3,10 +3,9 @@
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import type { Car } from '@/lib/types';
-import { findPlaceholderImage } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Sparkles, PlusCircle } from 'lucide-react';
+import { Loader, Sparkles, PlusCircle, Car as CarIcon } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
 import LeadCaptureForm from '../shared/LeadCaptureForm';
 import { Separator } from '../ui/separator';
@@ -103,22 +102,30 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
     const availableCars = allCars.filter(c => c.id !== otherCarId);
     
     if (selectedCar) {
-      const image = findPlaceholderImage(selectedCar.id);
       return (
         <Card className="overflow-hidden md:col-span-1 w-full">
-          <CardHeader>
-            <CardTitle>{selectedCar.brand} {selectedCar.model}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{formatValue('price', selectedCar)}</p>
-            <p className="text-sm text-muted-foreground">{selectedCar.year}</p>
-          </CardContent>
+            <div className="aspect-video relative">
+                {selectedCar.imageUrl ? (
+                    <Image src={selectedCar.imageUrl} alt={`${selectedCar.brand} ${selectedCar.model}`} fill className="object-cover" />
+                ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <CarIcon className="w-12 h-12 text-muted-foreground" />
+                    </div>
+                )}
+            </div>
+            <CardHeader>
+                <CardTitle>{selectedCar.brand} {selectedCar.model}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-2xl font-bold">{formatValue('price', selectedCar)}</p>
+                <p className="text-sm text-muted-foreground">{selectedCar.year}</p>
+            </CardContent>
         </Card>
       )
     }
 
     return (
-        <Card className="w-full h-full min-h-[200px] flex flex-col items-center justify-center border-dashed p-4">
+        <Card className="w-full h-full min-h-[300px] flex flex-col items-center justify-center border-dashed p-4">
             <PlusCircle className="h-10 w-10 text-muted-foreground mb-4"/>
             <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
             <Select onValueChange={(carId) => onSelect(position, carId)}>
