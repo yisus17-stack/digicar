@@ -1,5 +1,5 @@
-import PaginaSimulador from "@/components/simulator/PaginaSimulador";
-import MigasDePan from "@/components/layout/MigasDePan";
+import PaginaSimulador from "@/components/simulator/SimulatorPage";
+import MigasDePan from "@/components/layout/Breadcrumbs";
 
 export default function Simulador() {
     return (

@@ -142,7 +142,7 @@ export default function TablaTiposCombustible({ combustibles: combustiblesInicia
                             <DropdownMenuItem onClick={() => manejarEditar(fuel)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
-                            </DropdownMenuItem>
+                            DropdownMenuItem>
                             <DropdownMenuItem onClick={() => fuel.id && confirmarEliminar(fuel.id)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import PaginaCatalogoAutos from "@/components/catalog/PaginaCatalogoAutos";
+import PaginaCatalogoAutos from "@/components/catalog/CarCatalogPage";
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';

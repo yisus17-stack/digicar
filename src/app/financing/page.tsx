@@ -1,7 +1,7 @@
 'use client';
 
-import PaginaSimuladorFinanciamiento from "@/components/financing/PaginaSimuladorFinanciamiento";
-import MigasDePan from "@/components/layout/MigasDePan";
+import PaginaSimuladorFinanciamiento from "@/components/financing/FinancingSimulatorPage";
+import MigasDePan from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Auto } from '@/lib/types';

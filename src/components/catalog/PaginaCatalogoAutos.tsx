@@ -18,7 +18,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import MigasDePan from '../layout/MigasDePan';
+import MigasDePan from '../layout/Breadcrumbs';
 
 const ITEMS_POR_PAGINA = 6;
 const PRECIO_MAXIMO = 2000000;
