@@ -44,17 +44,17 @@ export default function DatabaseSeeder() {
 
       uniqueBrands.forEach(name => {
         const brandRef = doc(collection(firestore, 'brands'));
-        batch.set(brandRef, { name });
+        batch.set(brandRef, { name, id: brandRef.id });
       });
 
       uniqueColors.forEach(name => {
         const colorRef = doc(collection(firestore, 'colors'));
-        batch.set(colorRef, { name });
+        batch.set(colorRef, { name, id: colorRef.id });
       });
       
       uniqueTransmissions.forEach(name => {
         const transmissionRef = doc(collection(firestore, 'transmissions'));
-        batch.set(transmissionRef, { name });
+        batch.set(transmissionRef, { name, id: transmissionRef.id });
       });
 
       seedCars.forEach(car => {
