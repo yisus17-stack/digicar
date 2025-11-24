@@ -2,12 +2,12 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import TransmissionTable from '@/components/admin/TransmissionTable';
+import TablaTransmisiones from '@/components/admin/TablaTransmisiones';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Transmission } from '@/lib/types';
+import type { Transmision } from '@/lib/types';
 
-function TransmissionTableSkeleton() {
+function EsqueletoTablaTransmisiones() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-1/3" />
@@ -20,23 +20,23 @@ function TransmissionTableSkeleton() {
   );
 }
 
-export default function AdminTransmissionsPage() {
+export default function PaginaAdminTransmisiones() {
   const firestore = useFirestore();
 
-  const transmissionsCollection = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
-  const { data: transmissions, isLoading: transmissionsLoading } = useCollection<Transmission>(transmissionsCollection);
+  const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+  const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection<Transmision>(coleccionTransmisiones);
 
-  if (transmissionsLoading) {
+  if (cargandoTransmisiones) {
     return (
         <div className="p-4 sm:p-6 lg:p-8">
-            <TransmissionTableSkeleton />
+            <EsqueletoTablaTransmisiones />
         </div>
     );
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <TransmissionTable transmissions={transmissions ?? []} />
+      <TablaTransmisiones transmisiones={transmisiones ?? []} />
     </div>
   );
 }

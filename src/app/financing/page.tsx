@@ -1,14 +1,14 @@
 'use client';
 
-import FinancingSimulatorPage from "@/components/financing/FinancingSimulatorPage";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import PaginaSimuladorFinanciamiento from "@/components/financing/PaginaSimuladorFinanciamiento";
+import MigasDePan from "@/components/layout/MigasDePan";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Auto } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
-const FinancingSkeleton = () => (
+const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
         <Skeleton className="h-8 w-1/4 mb-12" />
         <div className="text-center mb-12">
@@ -26,18 +26,18 @@ const FinancingSkeleton = () => (
     </div>
 );
 
-export default function FinancingPage() {
+export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
-    const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-    const { data: cars, isLoading } = useCollection<Car>(carsCollection);
+    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+    const { data: autos, isLoading } = useCollection<Auto>(coleccionAutos);
 
-    if (isLoading || !cars) {
-        return <FinancingSkeleton />;
+    if (isLoading || !autos) {
+        return <EsqueletoFinanciamiento />;
     }
 
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
-        <Breadcrumbs items={[{ label: "Financiamiento" }]} />
+        <MigasDePan items={[{ label: "Financiamiento" }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
             Simulador de Pagos
@@ -46,7 +46,7 @@ export default function FinancingPage() {
             Calcula y visualiza las opciones de financiamiento para el auto de tus sueños.
             </p>
         </div>
-        <FinancingSimulatorPage cars={cars} />
+        <PaginaSimuladorFinanciamiento autos={autos} />
         </div>
     );
 }

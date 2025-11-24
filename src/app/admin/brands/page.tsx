@@ -2,11 +2,11 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import BrandTable from '@/components/admin/BrandTable';
+import TablaMarcas from '@/components/admin/TablaMarcas';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function BrandTableSkeleton() {
+function EsqueletoTablaMarcas() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-1/3" />
@@ -19,23 +19,23 @@ function BrandTableSkeleton() {
   );
 }
 
-export default function AdminBrandsPage() {
+export default function PaginaAdminMarcas() {
   const firestore = useFirestore();
 
-  const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
-  const { data: brands, isLoading: brandsLoading } = useCollection(brandsCollection);
+  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+  const { data: marcas, isLoading: cargandoMarcas } = useCollection(coleccionMarcas);
 
-  if (brandsLoading) {
+  if (cargandoMarcas) {
     return (
         <div className="p-4 sm:p-6 lg:p-8">
-            <BrandTableSkeleton />
+            <EsqueletoTablaMarcas />
         </div>
     );
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <BrandTable brands={brands ?? []} />
+      <TablaMarcas marcas={marcas ?? []} />
     </div>
   );
 }

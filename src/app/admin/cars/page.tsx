@@ -2,13 +2,13 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import CarTable from '@/components/admin/CarTable';
+import TablaAutos from '@/components/admin/TablaAutos';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Car, Brand, Color, Transmission } from '@/lib/types';
-import DatabaseSeeder from '@/components/admin/DatabaseSeeder';
+import type { Auto, Marca, Color, Transmision } from '@/lib/types';
+import SembradorBaseDatos from '@/components/admin/SembradorBaseDatos';
 
-function CarTableSkeleton() {
+function EsqueletoTablaAutos() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-1/3" />
@@ -22,33 +22,33 @@ function CarTableSkeleton() {
   );
 }
 
-export default function AdminCarsPage() {
+export default function PaginaAdminAutos() {
   const firestore = useFirestore();
 
-  const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: cars, isLoading: carsLoading } = useCollection<Car>(carsCollection);
+  const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+  const { data: autos, isLoading: cargandoAutos } = useCollection<Auto>(coleccionAutos);
 
-  const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
-  const { data: brands, isLoading: brandsLoading } = useCollection<Brand>(brandsCollection);
+  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+  const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);
 
-  const colorsCollection = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
-  const { data: colors, isLoading: colorsLoading } = useCollection<Color>(colorsCollection);
+  const coleccionColores = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
+  const { data: colores, isLoading: cargandoColores } = useCollection<Color>(coleccionColores);
   
-  const transmissionsCollection = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
-  const { data: transmissions, isLoading: transmissionsLoading } = useCollection<Transmission>(transmissionsCollection);
+  const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+  const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection<Transmision>(coleccionTransmisiones);
 
-  if (carsLoading || brandsLoading || colorsLoading || transmissionsLoading) {
+  if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
-        <CarTableSkeleton />
+        <EsqueletoTablaAutos />
       </div>
     );
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <CarTable cars={cars ?? []} brands={brands ?? []} colors={colors ?? []} transmissions={transmissions ?? []} />
-      <DatabaseSeeder />
+      <TablaAutos autos={autos ?? []} marcas={marcas ?? []} colores={colores ?? []} transmisiones={transmisiones ?? []} />
+      <SembradorBaseDatos />
     </div>
   );
 }

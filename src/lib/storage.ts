@@ -8,34 +8,34 @@ import {
 } from 'firebase/storage';
 
 /**
- * Uploads an image file to Firebase Storage.
+ * Sube un archivo de imagen a Firebase Storage.
  *
- * @param storage The FirebaseStorage instance.
- * @param file The image file to upload.
- * @param path The path in Firebase Storage where the file will be stored (e.g., 'brands/brand-id').
- * @returns A promise that resolves with the public download URL of the uploaded image.
+ * @param storage La instancia de FirebaseStorage.
+ * @param file El archivo de imagen a subir.
+ * @param path La ruta en Firebase Storage donde se almacenará el archivo (ej: 'marcas/id-marca').
+ * @returns Una promesa que se resuelve con la URL de descarga pública de la imagen subida.
  */
-export async function uploadImage(
+export async function subirImagen(
   storage: FirebaseStorage,
   file: File,
   path: string
 ): Promise<string> {
-  // Create a storage reference with a unique name
+  // Crea una referencia de almacenamiento con un nombre único
   const fileExtension = file.name.split('.').pop();
   const fileName = `${Date.now()}.${fileExtension}`;
   const storageRef = ref(storage, `${path}/${fileName}`);
 
   try {
-    // Upload the file to the specified path
+    // Sube el archivo a la ruta especificada
     const snapshot = await uploadBytes(storageRef, file);
 
-    // Get the public URL of the uploaded file
+    // Obtiene la URL pública del archivo subido
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     return downloadURL;
   } catch (error) {
-    console.error('Error uploading image:', error);
-    // Re-throw the error to be caught by the calling function
-    throw new Error('Failed to upload image.');
+    console.error('Error al subir la imagen:', error);
+    // Vuelve a lanzar el error para ser capturado por la función que llama
+    throw new Error('Falló la subida de la imagen.');
   }
 }

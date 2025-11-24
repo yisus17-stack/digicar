@@ -1,18 +1,18 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import ComparisonPage from "@/components/comparison/ComparisonPage";
+import PaginaComparacion from "@/components/comparison/PaginaComparacion";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import MigasDePan from "@/components/layout/MigasDePan";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Auto } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Suspense } from 'react';
 
-const CompareSkeleton = () => (
+const EsqueletoComparacion = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
         <Skeleton className="h-8 w-1/4" />
         <div className="text-center">
@@ -27,24 +27,24 @@ const CompareSkeleton = () => (
     </div>
 );
 
-function CompareContent() {
+function ContenidoComparacion() {
   const searchParams = useSearchParams();
   const firestore = useFirestore();
 
-  const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: allCars, isLoading } = useCollection<Car>(carsCollection);
+  const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+  const { data: todosLosAutos, isLoading } = useCollection<Auto>(coleccionAutos);
 
   const ids = searchParams.get('ids')?.split(',').filter(Boolean) || [];
   
-  if (isLoading || !allCars) {
-      return <CompareSkeleton />;
+  if (isLoading || !todosLosAutos) {
+      return <EsqueletoComparacion />;
   }
 
-  const carsToCompare = allCars.filter(car => ids.includes(car.id)).slice(0, 2);
+  const autosAComparar = todosLosAutos.filter(auto => ids.includes(auto.id)).slice(0, 2);
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-        <Breadcrumbs items={[{ label: 'Comparar' }]} />
+        <MigasDePan items={[{ label: 'Comparar' }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                 Comparación de Modelos
@@ -53,7 +53,7 @@ function CompareContent() {
                 Así es como se comparan los vehículos que seleccionaste. Deja que nuestra IA te ayude a decidir.
             </p>
         </div>
-         {carsToCompare.length < 1 ? (
+         {autosAComparar.length < 1 ? (
             <div className="text-center">
                 <GitCompareArrows className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h2 className="mt-4 text-2xl font-bold tracking-tight">Selecciona Autos para Comparar</h2>
@@ -63,19 +63,19 @@ function CompareContent() {
                 </Button>
             </div>
         ) : (
-            <ComparisonPage 
-              cars={carsToCompare as [Car] | [Car, Car]} 
-              allCars={allCars}
+            <PaginaComparacion 
+              autos={autosAComparar as [Auto] | [Auto, Auto]} 
+              todosLosAutos={todosLosAutos}
             />
         )}
     </div>
   );
 }
 
-export default function Compare() {
+export default function Comparar() {
   return (
-    <Suspense fallback={<CompareSkeleton />}>
-      <CompareContent />
+    <Suspense fallback={<EsqueletoComparacion />}>
+      <ContenidoComparacion />
     </Suspense>
   );
 }

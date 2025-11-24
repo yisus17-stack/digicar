@@ -1,10 +1,10 @@
-import RegisterForm from '@/components/auth/RegisterForm';
+import FormularioRegistro from '@/components/auth/FormularioRegistro';
 
-export default function RegisterPage() {
+export default function PaginaRegistro() {
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-80px-275px)] items-center justify-center px-4 py-8">
       <div className="w-full max-w-sm">
-        <RegisterForm />
+        <FormularioRegistro />
       </div>
     </div>
   );

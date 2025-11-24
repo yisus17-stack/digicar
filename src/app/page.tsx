@@ -1,8 +1,7 @@
-
 'use client';
 
 import { Suspense } from 'react';
-import CarCatalog from '@/components/catalog/CarCatalog';
+import CatalogoAutos from '@/components/catalog/CatalogoAutos';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -13,13 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Car, Brand } from '@/lib/types';
+import type { Auto, Marca } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tag } from 'lucide-react';
 
 
-const HeroSectionSkeleton = () => {
+const EsqueletoSeccionHero = () => {
     return (
         <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
             <div className="absolute top-[-50px] left-[-50px] w-48 h-48 bg-primary/10 rounded-full -z-10"></div>
@@ -40,14 +39,14 @@ const HeroSectionSkeleton = () => {
 };
 
 
-const HeroSection = () => {
+const SeccionHero = () => {
     const router = useRouter();
-    const [searchTerm, setSearchTerm] = useState('');
+    const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
-    const handleSearch = (e: React.FormEvent) => {
+    const manejarBusqueda = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchTerm.trim()) {
-            router.push(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
+        if (terminoBusqueda.trim()) {
+            router.push(`/catalog?search=${encodeURIComponent(terminoBusqueda.trim())}`);
         }
     };
 
@@ -65,13 +64,13 @@ const HeroSection = () => {
                 </p>
 
                 <div className="max-w-2xl mx-auto">
-                    <form onSubmit={handleSearch} className="relative">
+                    <form onSubmit={manejarBusqueda} className="relative">
                         <Input
                             type="search"
                             placeholder="Busca marca, modelo, categoría..."
                             className="h-14 text-base pl-6 pr-28 rounded-full"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            value={terminoBusqueda}
+                            onChange={(e) => setTerminoBusqueda(e.target.value)}
                         />
                         <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-10 rounded-full px-6" type="submit">
                             <Search className="h-4 w-4 md:hidden" />
@@ -95,7 +94,7 @@ const HeroSection = () => {
     );
 };
 
-const BrandsSectionSkeleton = () => (
+const EsqueletoSeccionMarcas = () => (
     <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
             <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">Nuestras Marcas</h2>
@@ -109,21 +108,21 @@ const BrandsSectionSkeleton = () => (
 );
 
 
-const BrandsSection = () => {
+const SeccionMarcas = () => {
     const firestore = useFirestore();
-    const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
-    const { data: brands, isLoading } = useCollection<Brand>(brandsCollection);
+    const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+    const { data: marcas, isLoading } = useCollection<Marca>(coleccionMarcas);
 
     if (isLoading) {
-        return <BrandsSectionSkeleton />;
+        return <EsqueletoSeccionMarcas />;
     }
 
-    if (!brands || brands.length === 0) {
+    if (!marcas || marcas.length === 0) {
         return null;
     }
     
-    // Duplicate the logos for a seamless marquee effect
-    const duplicatedBrands = [...brands, ...brands];
+    // Duplicar los logos para un efecto de marquesina continuo
+    const marcasDuplicadas = [...marcas, ...marcas];
 
     return (
         <section className="py-12 bg-muted/30">
@@ -133,7 +132,7 @@ const BrandsSection = () => {
                  </h2>
                  <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
                     <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
-                        {duplicatedBrands.map((brand, index) => (
+                        {marcasDuplicadas.map((brand, index) => (
                             <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} key={`${brand.id}-${index}`} className="group mx-8 flex-shrink-0" title={brand.name}>
                                 <div className="relative h-10 w-28">
                                     {brand.logoUrl ? (
@@ -158,7 +157,7 @@ const BrandsSection = () => {
 };
 
 
-const PopularCarsSkeleton = () => (
+const EsqueletoAutosPopulares = () => (
     <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-6">
             <Skeleton className="h-10 w-2/3 mx-auto" />
@@ -174,33 +173,33 @@ const PopularCarsSkeleton = () => (
 
 export default function Home() {
     const firestore = useFirestore();
-    const popularCarsQuery = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
-    const { data: popularCars, isLoading: popularCarsLoading } = useCollection<Car>(popularCarsQuery);
+    const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
+    const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Auto>(consultaAutosPopulares);
 
-    const [comparisonIds, setComparisonIds] = useState<string[]>([]);
+    const [idsComparacion, setIdsComparacion] = useState<string[]>([]);
     const router = useRouter();
 
-    const handleToggleCompare = (carId: string) => {
-        setComparisonIds(prevIds => {
-          if (prevIds.includes(carId)) {
-            return prevIds.filter(id => id !== carId);
+    const alternarComparacion = (autoId: string) => {
+        setIdsComparacion(idsAnteriores => {
+          if (idsAnteriores.includes(autoId)) {
+            return idsAnteriores.filter(id => id !== autoId);
           }
-          if (prevIds.length < 2) {
-            return [...prevIds, carId];
+          if (idsAnteriores.length < 2) {
+            return [...idsAnteriores, autoId];
           }
-          // If 2 are already selected, replace the last one
-          return [...prevIds.slice(0, 1), carId];
+          // Si ya hay 2 seleccionados, reemplaza el último
+          return [...idsAnteriores.slice(0, 1), autoId];
         });
     };
 
     return (
         <>
-            <Suspense fallback={<HeroSectionSkeleton />}>
-              <HeroSection />
+            <Suspense fallback={<EsqueletoSeccionHero />}>
+              <SeccionHero />
             </Suspense>
 
-            <Suspense fallback={<BrandsSectionSkeleton />}>
-                <BrandsSection />
+            <Suspense fallback={<EsqueletoSeccionMarcas />}>
+                <SeccionMarcas />
             </Suspense>
 
 
@@ -211,17 +210,17 @@ export default function Home() {
                     </h2>
                     <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
-                {popularCarsLoading ? (
+                {cargandoAutosPopulares ? (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <Skeleton className="h-64 w-full rounded-lg" />
                         <Skeleton className="h-64 w-full rounded-lg" />
                         <Skeleton className="h-64 w-full rounded-lg" />
                     </div>
                 ) : (
-                    <CarCatalog
-                        cars={popularCars ?? []}
-                        comparisonIds={comparisonIds}
-                        onToggleCompare={handleToggleCompare}
+                    <CatalogoAutos
+                        autos={autosPopulares ?? []}
+                        idsComparacion={idsComparacion}
+                        alAlternarComparacion={alternarComparacion}
                     />
                 )}
             </div>
@@ -236,7 +235,3 @@ export default function Home() {
         </>
     );
 }
-
-    
-
-    

@@ -31,42 +31,42 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 
-// Context for Sidebar state
-const SidebarContext = createContext<{ isClosed: boolean; toggleSidebar: () => void } | null>(null);
+// Contexto para el estado de la barra lateral
+const ContextoBarraLateral = createContext<{ estaCerrada: boolean; alternarBarraLateral: () => void } | null>(null);
 
-const useSidebar = () => {
-  const context = useContext(SidebarContext);
-  if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider');
+const usarBarraLateral = () => {
+  const contexto = useContext(ContextoBarraLateral);
+  if (!contexto) {
+    throw new Error('usarBarraLateral debe ser usado dentro de un ProveedorBarraLateral');
   }
-  return context;
+  return contexto;
 };
 
-// Sidebar Provider
-const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isClosed, setIsClosed] = useState(false);
+// Proveedor de la barra lateral
+const ProveedorBarraLateral: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [estaCerrada, setEstaCerrada] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsClosed(!isClosed);
+  const alternarBarraLateral = () => {
+    setEstaCerrada(!estaCerrada);
   };
 
   return (
-    <SidebarContext.Provider value={{ isClosed, toggleSidebar }}>
+    <ContextoBarraLateral.Provider value={{ estaCerrada, alternarBarraLateral }}>
       {children}
-    </SidebarContext.Provider>
+    </ContextoBarraLateral.Provider>
   );
 };
 
 
-function AdminSidebar() {
-  const { isClosed, toggleSidebar } = useSidebar();
+function BarraLateralAdmin() {
+  const { estaCerrada, alternarBarraLateral } = usarBarraLateral();
   const pathname = usePathname();
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleSignOut = async () => {
+  const manejarCierreSesion = async () => {
     try {
       await signOut(auth);
       toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
@@ -76,7 +76,7 @@ function AdminSidebar() {
     }
   };
 
-  const navItems = [
+  const elementosNav = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/cars', label: 'Autos', icon: Car },
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
@@ -89,36 +89,36 @@ function AdminSidebar() {
     <aside
       className={cn(
         'fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300',
-        { 'w-20': isClosed }
+        { 'w-20': estaCerrada }
       )}
     >
       <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
-         <Avatar className={cn('h-10 w-10 transition-all', {'h-8 w-8': isClosed})}>
+         <Avatar className={cn('h-10 w-10 transition-all', {'h-8 w-8': estaCerrada})}>
             <AvatarFallback>DC</AvatarFallback>
          </Avatar>
-        <div className={cn('flex flex-col', { 'hidden': isClosed })}>
+        <div className={cn('flex flex-col', { 'hidden': estaCerrada })}>
             <span className="font-bold text-lg">DigiCar</span>
-            <span className="text-xs text-muted-foreground">Admin Panel</span>
+            <span className="text-xs text-muted-foreground">Panel de Admin</span>
         </div>
         <div className="ml-auto">
-            <Button variant="default" size="icon" onClick={toggleSidebar} className="h-8 w-8">
-                <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !isClosed })}/>
+            <Button variant="default" size="icon" onClick={alternarBarraLateral} className="h-8 w-8">
+                <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !estaCerrada })}/>
             </Button>
         </div>
       </div>
 
       <div className="p-4">
         <div className="relative">
-            <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground", { 'hidden': isClosed })} />
-             <Button variant="ghost" size="icon" className={cn('mx-auto', { 'hidden': !isClosed })}>
+            <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground", { 'hidden': estaCerrada })} />
+             <Button variant="ghost" size="icon" className={cn('mx-auto', { 'hidden': !estaCerrada })}>
                 <Search className="h-5 w-5" />
              </Button>
-            <Input placeholder="Autos" className={cn("pl-9", { 'hidden': isClosed })} />
+            <Input placeholder="Autos" className={cn("pl-9", { 'hidden': estaCerrada })} />
         </div>
       </div>
       
       <nav className="flex flex-col gap-2 p-2">
-        {navItems.map((item) => (
+        {elementosNav.map((item) => (
           <Link
             key={item.href}
             href={item.href}
@@ -126,11 +126,11 @@ function AdminSidebar() {
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
               pathname.startsWith(item.href) && item.href !== '/admin' && pathname !== '/admin' ? 'bg-primary text-primary-foreground' : '',
               pathname === '/admin' && item.href === '/admin' ? 'bg-primary text-primary-foreground' : '',
-              { 'justify-center': isClosed }
+              { 'justify-center': estaCerrada }
             )}
           >
             <item.icon className="h-5 w-5" />
-            <span className={cn({ 'hidden': isClosed })}>{item.label}</span>
+            <span className={cn({ 'hidden': estaCerrada })}>{item.label}</span>
           </Link>
         ))}
       </nav>
@@ -138,7 +138,7 @@ function AdminSidebar() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                  <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
-                    <div className={cn("flex flex-col items-start truncate", {'items-center': isClosed})}>
+                    <div className={cn("flex flex-col items-start truncate", {'items-center': estaCerrada})}>
                         <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
                         <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
                     </div>
@@ -150,7 +150,7 @@ function AdminSidebar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
+                <DropdownMenuItem onClick={manejarCierreSesion} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -158,14 +158,14 @@ function AdminSidebar() {
   );
 }
 
-const AdminLayoutSkeleton = () => {
-    const isClosed = false;
+const EsqueletoLayoutAdmin = () => {
+    const estaCerrada = false;
     return (
         <div className="flex min-h-screen w-full bg-background">
-            <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': isClosed })}>
+            <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': estaCerrada })}>
                 <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
-                     <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': isClosed})} />
-                     <div className={cn('flex flex-col gap-1', { 'hidden': isClosed })}>
+                     <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': estaCerrada})} />
+                     <div className={cn('flex flex-col gap-1', { 'hidden': estaCerrada })}>
                         <Skeleton className="h-5 w-20" />
                         <Skeleton className="h-3 w-16" />
                      </div>
@@ -187,7 +187,7 @@ const AdminLayoutSkeleton = () => {
                      <Skeleton className="h-12 w-full rounded-lg" />
                  </div>
             </aside>
-            <div className={cn("flex flex-col sm:gap-4 sm:py-4 w-full transition-all duration-300", isClosed ? 'sm:pl-20' : 'sm:pl-64')}>
+            <div className={cn("flex flex-col sm:gap-4 sm:py-4 w-full transition-all duration-300", estaCerrada ? 'sm:pl-20' : 'sm:pl-64')}>
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                      <div className="ml-auto flex items-center gap-4">
                         <Skeleton className="h-8 w-8 rounded-full" />
@@ -206,12 +206,12 @@ const AdminLayoutSkeleton = () => {
 };
 
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading: userLoading } = useUser();
+export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
+  const { user, loading: cargandoUsuario } = useUser();
   const router = useRouter();
   
-  if (userLoading) {
-    return <AdminLayoutSkeleton />;
+  if (cargandoUsuario) {
+    return <EsqueletoLayoutAdmin />;
   }
 
   if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
@@ -228,23 +228,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-     <SidebarProvider>
-      <AdminLayoutWithProvider>
+     <ProveedorBarraLateral>
+      <LayoutAdminConProveedor>
         {children}
-      </AdminLayoutWithProvider>
-    </SidebarProvider>
+      </LayoutAdminConProveedor>
+    </ProveedorBarraLateral>
   );
 }
 
-function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
-  const sidebarContext = useContext(SidebarContext);
-  const isClosed = sidebarContext?.isClosed ?? false;
+function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
+  const contextoBarraLateral = useContext(ContextoBarraLateral);
+  const estaCerrada = contextoBarraLateral?.estaCerrada ?? false;
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   
-  const handleSignOut = async () => {
+  const manejarCierreSesion = async () => {
     try {
       await signOut(auth);
       toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
@@ -256,8 +256,8 @@ function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
   
   return (
       <div className="flex min-h-screen w-full">
-          <AdminSidebar />
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={isClosed}>
+          <BarraLateralAdmin />
+          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={estaCerrada}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                 <div className="ml-auto flex items-center gap-4">
                   <Button variant="ghost" size="icon" asChild>
@@ -272,7 +272,7 @@ function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
                             {user?.photoURL && <AvatarImage src={user.photoURL} />}
                             <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
                         </Avatar>
-                        <span className="sr-only">Toggle user menu</span>
+                        <span className="sr-only">Alternar menú de usuario</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -280,7 +280,7 @@ function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
+                      <DropdownMenuItem onClick={manejarCierreSesion}>Cerrar Sesión</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

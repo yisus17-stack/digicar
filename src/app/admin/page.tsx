@@ -5,7 +5,7 @@ import { collection } from "firebase/firestore";
 import { Car, Tag, Palette, GitMerge } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-function DashboardSkeleton() {
+function EsqueletoDashboard() {
     return (
         <div className="p-4 sm:p-6 lg:p-8">
             <Skeleton className="h-8 w-48 mb-6" />
@@ -51,23 +51,23 @@ function DashboardSkeleton() {
     );
 }
 
-export default function AdminDashboardPage() {
+export default function PaginaDashboardAdmin() {
     const firestore = useFirestore();
 
-    const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-    const { data: cars, isLoading: carsLoading } = useCollection(carsCollection);
+    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+    const { data: autos, isLoading: cargandoAutos } = useCollection(coleccionAutos);
 
-    const brandsCollection = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
-    const { data: brands, isLoading: brandsLoading } = useCollection(brandsCollection);
+    const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+    const { data: marcas, isLoading: cargandoMarcas } = useCollection(coleccionMarcas);
 
-    const colorsCollection = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
-    const { data: colors, isLoading: colorsLoading } = useCollection(colorsCollection);
+    const coleccionColores = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
+    const { data: colores, isLoading: cargandoColores } = useCollection(coleccionColores);
     
-    const transmissionsCollection = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
-    const { data: transmissions, isLoading: transmissionsLoading } = useCollection(transmissionsCollection);
+    const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+    const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
 
-    if (carsLoading || brandsLoading || colorsLoading || transmissionsLoading) {
-        return <DashboardSkeleton />;
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
+        return <EsqueletoDashboard />;
     }
 
     return (
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {cars?.length ?? 0}
+                            {autos?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
@@ -96,7 +96,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                           {brands?.length ?? 0}
+                           {marcas?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                           {colors?.length ?? 0}
+                           {colores?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>
@@ -122,7 +122,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                           {transmissions?.length ?? 0}
+                           {transmisiones?.length ?? 0}
                         </div>
                     </CardContent>
                 </Card>

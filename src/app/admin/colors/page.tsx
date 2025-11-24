@@ -2,12 +2,12 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import ColorTable from '@/components/admin/ColorTable';
+import TablaColores from '@/components/admin/TablaColores';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Color } from '@/lib/types';
 
-function ColorTableSkeleton() {
+function EsqueletoTablaColores() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-1/3" />
@@ -20,23 +20,23 @@ function ColorTableSkeleton() {
   );
 }
 
-export default function AdminColorsPage() {
+export default function PaginaAdminColores() {
   const firestore = useFirestore();
 
-  const colorsCollection = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
-  const { data: colors, isLoading: colorsLoading } = useCollection<Color>(colorsCollection);
+  const coleccionColores = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
+  const { data: colores, isLoading: cargandoColores } = useCollection<Color>(coleccionColores);
 
-  if (colorsLoading) {
+  if (cargandoColores) {
     return (
         <div className="p-4 sm:p-6 lg:p-8">
-            <ColorTableSkeleton />
+            <EsqueletoTablaColores />
         </div>
     );
   }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <ColorTable colors={colors ?? []} />
+      <TablaColores colors={colores ?? []} />
     </div>
   );
 }

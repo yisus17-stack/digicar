@@ -1,10 +1,10 @@
-import SimulatorPage from "@/components/simulator/SimulatorPage";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import PaginaSimulador from "@/components/simulator/PaginaSimulador";
+import MigasDePan from "@/components/layout/MigasDePan";
 
-export default function Simulator() {
+export default function Simulador() {
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
-            <Breadcrumbs items={[{ label: 'Simulador IA' }]} />
+            <MigasDePan items={[{ label: 'Simulador IA' }]} />
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                     Simulador de Recomendación de Autos
@@ -13,7 +13,7 @@ export default function Simulator() {
                     Dinos tus necesidades y nuestra IA encontrará el auto perfecto para ti de nuestra colección exclusiva.
                 </p>
             </div>
-            <SimulatorPage />
+            <PaginaSimulador />
         </div>
     );
 }

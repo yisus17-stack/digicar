@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import CarCatalogPage from "@/components/catalog/CarCatalogPage";
+import PaginaCatalogoAutos from "@/components/catalog/PaginaCatalogoAutos";
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const CatalogSkeleton = () => (
+const EsqueletoCatalogo = () => (
     <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
-            {/* Filtros Skeleton */}
+            {/* Esqueleto de Filtros */}
             <aside className="hidden lg:block lg:w-1/4 space-y-6">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
@@ -19,7 +19,7 @@ const CatalogSkeleton = () => (
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-40 w-full" />
             </aside>
-            {/* Contenido Skeleton */}
+            {/* Esqueleto de Contenido */}
             <main className="flex-1">
                 <div className="flex justify-between items-center mb-6">
                     <Skeleton className="h-6 w-24" />
@@ -39,16 +39,16 @@ const CatalogSkeleton = () => (
 );
 
 
-export default function Catalog() {
+export default function Catalogo() {
     const firestore = useFirestore();
-    const carsCollection = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-    const { data: cars, isLoading } = useCollection(carsCollection);
+    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+    const { data: autos, isLoading } = useCollection(coleccionAutos);
 
     if (isLoading) {
-        return <CatalogSkeleton />;
+        return <EsqueletoCatalogo />;
     }
 
     return (
-        <CarCatalogPage allCarsData={cars ?? []} />
+        <PaginaCatalogoAutos datosTodosLosAutos={autos ?? []} />
     );
 }

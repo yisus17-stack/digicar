@@ -1,8 +1,6 @@
-import type { Car } from './types';
+import type { Auto } from './types';
 
-// This data is now used for seeding purposes or as a fallback.
-// The primary data source is Firestore.
-export const cars: Car[] = [
+export const cars: Auto[] = [
   {
     id: 'camry-xse',
     brand: 'Toyota',

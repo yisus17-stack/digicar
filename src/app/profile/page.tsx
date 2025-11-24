@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import MigasDePan from '@/components/layout/MigasDePan';
 
-function ProfileSkeleton() {
+function EsqueletoPerfil() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-24 w-24 rounded-full" />
@@ -18,7 +18,7 @@ function ProfileSkeleton() {
   );
 }
 
-export default function ProfilePage() {
+export default function PaginaPerfil() {
   const { user, loading } = useUser();
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-2xl">
           <CardHeader className="items-center">
-            <ProfileSkeleton />
+            <EsqueletoPerfil />
           </CardHeader>
         </Card>
       </div>
@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
+      <MigasDePan items={[{ label: 'Mi Perfil' }]} />
       <Card className="mx-auto max-w-2xl">
         <CardHeader className="items-center text-center">
           <Avatar className="h-24 w-24 mb-4">

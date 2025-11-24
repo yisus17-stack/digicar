@@ -3,17 +3,17 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as CarIcon } from 'lucide-react';
-import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { translations } from '@/lib/translations';
+import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
+import FormularioCapturaLeads from '@/components/shared/FormularioCapturaLeads';
+import MigasDePan from '@/components/layout/MigasDePan';
+import { traducciones } from '@/lib/traducciones';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Auto } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
-function CarDetailSkeleton() {
+function EsqueletoDetalleAuto() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Skeleton className="h-6 w-1/3 mb-4" />
@@ -82,44 +82,44 @@ function CarDetailSkeleton() {
   );
 }
 
-export default function CarDetailPage({ params }: { params: { id: string } }) {
+export default function PaginaDetalleAuto({ params }: { params: { id: string } }) {
   const firestore = useFirestore();
-  const carRef = useMemoFirebase(() => doc(firestore, 'cars', params.id), [firestore, params.id]);
-  const { data: car, isLoading } = useDoc<Car>(carRef);
+  const refAuto = useMemoFirebase(() => doc(firestore, 'cars', params.id), [firestore, params.id]);
+  const { data: auto, isLoading } = useDoc<Auto>(refAuto);
 
   if (isLoading) {
-    return <CarDetailSkeleton />;
+    return <EsqueletoDetalleAuto />;
   }
 
-  if (!car) {
+  if (!auto) {
     notFound();
   }
 
-  const carType = car.type as keyof (typeof translations.type);
+  const tipoAuto = auto.type as keyof (typeof traducciones.type);
 
-  const carDetails = [
-      { icon: Zap, label: 'Potencia', value: `${car.horsepower} HP` },
-      { icon: Droplets, label: 'Combustible', value: translations.fuelType[car.fuelType as keyof typeof translations.fuelType] },
-      { icon: Gauge, label: 'Kilometraje', value: `${car.mileage.toLocaleString('es-MX')} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}` },
-      { icon: Users, label: 'Pasajeros', value: car.passengers },
-      { icon: GitMerge, label: 'Transmisión', value: translations.transmission[car.transmission as keyof typeof translations.transmission] },
-      { icon: Settings, label: 'Motor', value: car.engine },
-      { icon: Palette, label: 'Color', value: translations.color[car.color as keyof typeof translations.color] },
+  const detallesAuto = [
+      { icon: Zap, label: 'Potencia', value: `${auto.horsepower} HP` },
+      { icon: Droplets, label: 'Combustible', value: traducciones.fuelType[auto.fuelType as keyof typeof traducciones.fuelType] },
+      { icon: Gauge, label: 'Kilometraje', value: `${auto.mileage.toLocaleString('es-MX')} ${auto.fuelType === 'Electric' ? 'km' : 'KPL'}` },
+      { icon: Users, label: 'Pasajeros', value: auto.passengers },
+      { icon: GitMerge, label: 'Transmisión', value: traducciones.transmission[auto.transmission as keyof typeof traducciones.transmission] },
+      { icon: Settings, label: 'Motor', value: auto.engine },
+      { icon: Palette, label: 'Color', value: traducciones.color[auto.color as keyof typeof traducciones.color] },
   ]
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${car.brand} ${car.model}` }]} />
+       <MigasDePan items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.brand} ${auto.model}` }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
           <Card className="overflow-hidden">
              <AspectRatio ratio={4/3}>
-              {car.imageUrl ? (
-                <Image src={car.imageUrl} alt={`${car.brand} ${car.model}`} fill className="object-cover" />
+              {auto.imageUrl ? (
+                <Image src={auto.imageUrl} alt={`${auto.brand} ${auto.model}`} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
-                  <CarIcon className="w-24 h-24 text-muted-foreground" />
+                  <IconoAuto className="w-24 h-24 text-muted-foreground" />
                 </div>
               )}
              </AspectRatio>
@@ -130,16 +130,16 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
               </CardHeader>
               <CardContent>
                   <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
-                  <LeadCaptureForm interestedCars={`${car.brand} ${car.model}`} />
+                  <FormularioCapturaLeads autosInteres={`${auto.brand} ${auto.model}`} />
               </CardContent>
           </Card>
         </div>
         <div className="space-y-6">
           <Card>
             <CardHeader>
-                <p className="text-sm text-muted-foreground">{translations.type[carType] || car.type} • {car.year}</p>
-                <h1 className="text-3xl lg:text-4xl font-bold">{car.brand} {car.model}</h1>
-                <p className="text-3xl font-bold text-primary">${car.price.toLocaleString('es-MX')}</p>
+                <p className="text-sm text-muted-foreground">{traducciones.type[tipoAuto] || auto.type} • {auto.year}</p>
+                <h1 className="text-3xl lg:text-4xl font-bold">{auto.brand} {auto.model}</h1>
+                <p className="text-3xl font-bold text-primary">${auto.price.toLocaleString('es-MX')}</p>
             </CardHeader>
           </Card>
           
@@ -148,7 +148,7 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
               <CardTitle>Especificaciones</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-x-4 gap-y-6">
-              {carDetails.map(detail => (
+              {detallesAuto.map(detail => (
                 <div key={detail.label} className="flex items-center gap-3">
                   <detail.icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
                   <div>
@@ -166,7 +166,7 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {car.features.map((feature, index) => (
+                {auto.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span>{feature}</span>
