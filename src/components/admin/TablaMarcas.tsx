@@ -87,7 +87,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, nuevoArchivoLogo?: File) => {
     try {
-        if (marcaSeleccionada) { // Lógica para actualizar una marca existente
+        if (marcaSeleccionada) {
             let logoUrl = marcaSeleccionada.logoUrl || '';
             if (nuevoArchivoLogo) {
                 const toastId = toast({ title: 'Actualizando logo...', description: 'Por favor, espera.' });
@@ -99,7 +99,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             await updateDoc(marcaRef, datosMarca);
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
 
-        } else { // Lógica para crear una nueva marca
+        } else {
             const nuevaMarcaRef = doc(collection(firestore, 'brands'));
             const idEntidad = nuevaMarcaRef.id;
             

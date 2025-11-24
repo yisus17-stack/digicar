@@ -11,7 +11,6 @@ import { Button } from '../ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 import ResumenIA from './ResumenIA';
 import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
@@ -19,7 +18,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '../ui/scroll-area';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import MigasDePan from '../layout/Breadcrumbs';
+import MigasDePan from '../layout/MigasDePan';
 
 const ITEMS_POR_PAGINA = 6;
 const PRECIO_MAXIMO = 2000000;
@@ -104,7 +103,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
       if (idsAnteriores.length < 2) {
         return [...idsAnteriores, autoId];
       }
-      return idsAnteriores; // No hay cambios si ya hay 2 autos seleccionados
+      return idsAnteriores;
     });
   };
 
