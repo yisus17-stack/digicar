@@ -9,6 +9,7 @@ import {
   MoreVertical,
   Palette,
   GitMerge,
+  Droplets,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -81,6 +82,7 @@ function AdminSidebar() {
     { href: '/admin/brands', label: 'Marcas', icon: Tag },
     { href: '/admin/colors', label: 'Colores', icon: Palette },
     { href: '/admin/transmissions', label: 'Transmisiones', icon: GitMerge },
+    { href: '/admin/fuels', label: 'Combustibles', icon: Droplets },
   ];
 
   return (
