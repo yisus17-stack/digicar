@@ -5,17 +5,16 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage';
 
-// IMPORTANT: Replace the placeholder values with your actual Firebase project credentials.
-// You can find these in your Firebase project settings.
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "TU_API_KEY_AQUI",
-  authDomain: "TU_AUTH_DOMAIN_AQUI",
-  projectId: "TU_PROJECT_ID_AQUI",
-  storageBucket: "TU_STORAGE_BUCKET_AQUI",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID_AQUI",
-  appId: "TU_APP_ID_AQUI",
-  measurementId: "TU_MEASUREMENT_ID_AQUI"
+  apiKey: "AIzaSyBrbrfB8k4j1G7sHgBCrypsiUotrvrCgkE",
+  authDomain: "fir-authtestapp-e94b0.firebaseapp.com",
+  projectId: "fir-authtestapp-e94b0",
+  storageBucket: "fir-authtestapp-e94b0.appspot.com",
+  messagingSenderId: "232922041998",
+  appId: "1:232922041998:web:e9786408760b8f384643df"
 };
+
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
