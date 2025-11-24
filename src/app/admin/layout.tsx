@@ -124,7 +124,7 @@ function AdminSidebar() {
             href={item.href}
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-              pathname.startsWith(item.href) && item.href !== '/admin' ? 'bg-primary text-primary-foreground' : '',
+              pathname.startsWith(item.href) && item.href !== '/admin' && pathname !== '/admin' ? 'bg-primary text-primary-foreground' : '',
               pathname === '/admin' && item.href === '/admin' ? 'bg-primary text-primary-foreground' : '',
               { 'justify-center': isClosed }
             )}
@@ -148,7 +148,7 @@ function AdminSidebar() {
             <DropdownMenuContent align="end" side="top" className="w-56 mb-2">
                 <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Mi Perfil</DropdownMenuItem>
+                <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
             </DropdownMenuContent>
@@ -211,17 +211,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   
   useEffect(() => {
+    // Wait until user status is resolved
     if (!userLoading) {
+      // If user is not logged in OR is not the admin, redirect to home.
       if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
         router.push('/');
       }
     }
   }, [user, userLoading, router]);
 
+  // While loading or if user is not authorized, show a skeleton or loading screen
   if (userLoading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return <AdminLayoutSkeleton />;
   }
 
+  // If user is authorized, render the admin layout
   return (
      <SidebarProvider>
       <AdminLayoutWithProvider>
@@ -272,6 +276,8 @@ function AdminLayoutWithProvider({ children }: { children: React.ReactNode }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
                     </DropdownMenuContent>
