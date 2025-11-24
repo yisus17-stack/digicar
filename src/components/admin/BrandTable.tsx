@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import {
   Table,
   TableBody,
@@ -30,12 +29,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useFirestore } from '@/firebase';
+import { useFirestore, useStorage } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { uploadImage } from '@/lib/storage';
 
 interface BrandTableProps {
   brands: Brand[];
@@ -47,6 +47,7 @@ export default function BrandTable({ brands: initialBrands }: BrandTableProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [brandToDelete, setBrandToDelete] = useState<string | null>(null);
   const firestore = useFirestore();
+  const storage = useStorage();
   const { toast } = useToast();
 
   const handleAdd = () => {
@@ -84,26 +85,37 @@ export default function BrandTable({ brands: initialBrands }: BrandTableProps) {
       });
   };
 
-  const handleSave = async (data: Omit<Brand, 'id'>) => {
+  const handleSave = async (data: Omit<Brand, 'id'>, newLogoFile?: File) => {
     try {
+        let logoUrl = data.logoUrl || '';
+
+        if (newLogoFile) {
+            const toastId = toast({ title: 'Subiendo logo...', description: 'Por favor, espera.' });
+            const entityId = selectedBrand ? selectedBrand.id : doc(collection(firestore, 'brands')).id;
+            logoUrl = await uploadImage(storage, newLogoFile, `brands/${entityId}`);
+            toastId.dismiss();
+        }
+
+        const brandData = { ...data, logoUrl };
+
         if (selectedBrand) {
             const brandRef = doc(firestore, 'brands', selectedBrand.id);
-            updateDoc(brandRef, data).catch((error) => {
+            updateDoc(brandRef, brandData).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
                 path: brandRef.path,
-                requestResourceData: data,
+                requestResourceData: brandData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
         } else {
             const collectionRef = collection(firestore, 'brands');
-            addDoc(collectionRef, data).catch(error => {
+            addDoc(collectionRef, brandData).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',
                 path: collectionRef.path,
-                requestResourceData: data,
+                requestResourceData: brandData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
@@ -134,7 +146,7 @@ export default function BrandTable({ brands: initialBrands }: BrandTableProps) {
                     <TableRow key={brand.id}>
                     <TableCell>
                         <Avatar>
-                            {brand.logoUrl && <AvatarImage src={brand.logoUrl} alt={brand.name} />}
+                            {brand.logoUrl && <AvatarImage src={brand.logoUrl} alt={brand.name} className="object-contain" />}
                             <AvatarFallback>
                                 <Tag className='h-5 w-5' />
                             </AvatarFallback>

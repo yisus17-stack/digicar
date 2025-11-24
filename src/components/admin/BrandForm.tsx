@@ -22,7 +22,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Brand } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
+import { Upload } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
@@ -35,10 +37,14 @@ interface BrandFormProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   brand: Brand | null;
-  onSave: (brand: Omit<Brand, 'id'>) => void;
+  onSave: (data: Omit<Brand, 'id'>, newLogoFile?: File) => void;
 }
 
 export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: BrandFormProps) {
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [newLogoFile, setNewLogoFile] = useState<File | undefined>(undefined);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,20 +54,37 @@ export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: Brand
   });
   
   useEffect(() => {
-    if (brand) {
-      form.reset(brand);
-    } else {
-      form.reset({
-        name: '',
-        logoUrl: '',
-      });
+    if (isOpen) {
+      if (brand) {
+        form.reset(brand);
+        setLogoPreview(brand.logoUrl || null);
+      } else {
+        form.reset({
+          name: '',
+          logoUrl: '',
+        });
+        setLogoPreview(null);
+      }
+      setNewLogoFile(undefined);
     }
-  }, [brand, form]);
+  }, [brand, form, isOpen]);
 
 
   const onSubmit = (data: FormData) => {
-    onSave(data);
+    onSave(data, newLogoFile);
     onOpenChange(false);
+  };
+  
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setNewLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -79,13 +102,30 @@ export default function BrandForm({ isOpen, onOpenChange, brand, onSave }: Brand
                     <FormMessage />
                 </FormItem>
             )}/>
-             <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>URL del Logo (Opcional)</FormLabel>
-                    <FormControl><Input placeholder="https://ejemplo.com/logo.png" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )}/>
+             
+            <FormItem>
+                <FormLabel>Logo</FormLabel>
+                <div className="flex items-center gap-4">
+                    {logoPreview ? (
+                        <Image src={logoPreview} alt="Vista previa del logo" width={64} height={64} className="rounded-md object-contain border p-1" />
+                    ) : (
+                        <div className="w-16 h-16 flex items-center justify-center bg-muted rounded-md text-muted-foreground">
+                            <Upload className="h-8 w-8" />
+                        </div>
+                    )}
+                    <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                        Seleccionar Imagen
+                    </Button>
+                    <Input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        className="hidden" 
+                        onChange={handleFileChange}
+                        accept="image/png, image/jpeg, image/webp, image/svg+xml"
+                    />
+                </div>
+            </FormItem>
+
             <DialogFooter>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
                 <Button type="submit">Guardar Cambios</Button>
