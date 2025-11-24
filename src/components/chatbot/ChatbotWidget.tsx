@@ -11,7 +11,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { responderChat } from '@/ai/flows/chatbot-flow';
 
-// Se mueve la definición del tipo aquí, ya que no se puede exportar desde un archivo 'use server'
 export type Mensaje = {
   role: 'user' | 'model';
   content: string;
@@ -81,7 +80,7 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed bottom-[100px] right-6 z-50 w-[calc(100vw-3rem)] max-w-sm"
+            className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm"
           >
             <Card className="flex h-[60vh] flex-col shadow-2xl">
               <CardHeader className="flex flex-row items-center justify-between">
