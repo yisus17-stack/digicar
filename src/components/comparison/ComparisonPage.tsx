@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
-import type { Car } from '@/lib/types';
+import type { Auto } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Sparkles, PlusCircle, Car as CarIcon } from 'lucide-react';
@@ -14,25 +14,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
 
-interface ComparisonPageProps {
-  cars: ([Car] | [Car, Car]) & Car[];
-  allCars: Car[];
+interface PaginaComparacionProps {
+  autos: ([Auto] | [Auto, Auto]) & Auto[];
+  todosLosAutos: Auto[];
 }
 
-type Summary = {
+type Resumen = {
     summary: string;
     recommendation: string;
 }
 
-export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
+export default function PaginaComparacion({ autos, todosLosAutos }: PaginaComparacionProps) {
   const router = useRouter();
-  const [car1, car2] = cars;
+  const [auto1, auto2] = autos;
   
-  const [summary, setSummary] = useState<Summary | null>(null);
+  const [resumen, setResumen] = useState<Resumen | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleSelectCar = (position: 'car1' | 'car2', carId: string) => {
-    const currentIds = cars.map(c => c.id);
+    const currentIds = autos.map(c => c.id);
     let newIds: string[];
 
     if (position === 'car1') {
@@ -44,18 +44,18 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
   };
 
   const handleAiSummary = () => {
-    if (!car1 || !car2) return;
-    const car1Features = JSON.stringify(car1);
-    const car2Features = JSON.stringify(car2);
+    if (!auto1 || !auto2) return;
+    const car1Features = JSON.stringify(auto1);
+    const car2Features = JSON.stringify(auto2);
     const userNeeds = "Quiero un auto equilibrado. Considera el precio, el rendimiento y las características.";
 
     startTransition(async () => {
-        setSummary(null);
+        setResumen(null);
         try {
             const result = await summarizeCarComparison({ car1Features, car2Features, userNeeds });
-            setSummary(result);
+            setResumen(result);
         } catch (error) {
-            setSummary({ summary: 'No se pudo generar el resumen.', recommendation: 'Ocurrió un error.' });
+            setResumen({ summary: 'No se pudo generar el resumen.', recommendation: 'Ocurrió un error.' });
         }
     });
   };
@@ -74,9 +74,9 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
     { label: "Color", key: 'color' },
   ];
 
-  const formatValue = (key: string, car?: Car) => {
+  const formatValue = (key: string, car?: Auto) => {
     if (!car) return '-';
-    const value = car[key as keyof Car] as string | number;
+    const value = car[key as keyof Auto] as string | number;
     
     switch (key) {
       case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
@@ -98,8 +98,8 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
     }
   }
   
-  const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Car, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
-    const availableCars = allCars.filter(c => c.id !== otherCarId);
+  const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Auto, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
+    const availableCars = todosLosAutos.filter(c => c.id !== otherCarId);
     
     if (selectedCar) {
       return (
@@ -151,8 +151,8 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        <CarSelector selectedCar={car1} onSelect={handleSelectCar} position="car1" otherCarId={car2?.id} />
-        <CarSelector selectedCar={car2} onSelect={handleSelectCar} position="car2" otherCarId={car1?.id} />
+        <CarSelector selectedCar={auto1} onSelect={handleSelectCar} position="car1" otherCarId={auto2?.id} />
+        <CarSelector selectedCar={auto2} onSelect={handleSelectCar} position="car2" otherCarId={auto1?.id} />
       </div>
 
       <Card>
@@ -164,8 +164,8 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
             <div key={feature.key}>
               <div className="grid grid-cols-3 items-center gap-4">
                 <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
-                <div className="text-center col-span-1">{formatValue(feature.key, car1)}</div>
-                <div className="text-center col-span-1">{formatValue(feature.key, car2)}</div>
+                <div className="text-center col-span-1">{formatValue(feature.key, auto1)}</div>
+                <div className="text-center col-span-1">{formatValue(feature.key, auto2)}</div>
               </div>
               <Separator className="mt-4"/>
             </div>
@@ -175,12 +175,12 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
                 <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {car1?.features.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
+                        {auto1?.features.map(f => <li key={`${auto1.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {car2?.features.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
+                        {auto2?.features.map(f => <li key={`${auto2.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
             </div>
@@ -190,13 +190,13 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
       </Card>
       
       <div className="text-center">
-          <Button size="lg" onClick={handleAiSummary} disabled={isPending || !car1 || !car2}>
+          <Button size="lg" onClick={handleAiSummary} disabled={isPending || !auto1 || !auto2}>
             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
             Obtener Resumen y Recomendación de IA
           </Button>
       </div>
 
-      {summary && (
+      {resumen && (
         <Card className="shadow-lg animate-in fade-in duration-500">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> Análisis de IA</CardTitle>
@@ -204,24 +204,24 @@ export default function ComparisonPage({ cars, allCars }: ComparisonPageProps) {
             <CardContent className="space-y-4">
                 <div>
                     <h3 className="font-bold mb-2">Diferencias Clave</h3>
-                    <p className="text-muted-foreground">{summary.summary}</p>
+                    <p className="text-muted-foreground">{resumen.summary}</p>
                 </div>
                 <div>
                     <h3 className="font-bold mb-2">Recomendación</h3>
-                    <p className="text-muted-foreground">{summary.recommendation}</p>
+                    <p className="text-muted-foreground">{resumen.recommendation}</p>
                 </div>
             </CardContent>
         </Card>
       )}
 
-      {(car1 || car2) && (
+      {(auto1 || auto2) && (
         <Card>
           <CardHeader>
               <CardTitle>¿Interesado?</CardTitle>
           </CardHeader>
           <CardContent>
               <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
-              <LeadCaptureForm interestedCars={[car1, car2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
+              <LeadCaptureForm interestedCars={[auto1, auto2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
           </CardContent>
         </Card>
       )}
