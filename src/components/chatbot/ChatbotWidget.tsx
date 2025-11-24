@@ -82,7 +82,7 @@ export default function ChatbotWidget() {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm"
           >
-            <Card className="flex h-[60vh] flex-col shadow-2xl">
+            <Card className="flex h-[70vh] flex-col shadow-2xl">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Bot className="h-6 w-6 text-primary" />
