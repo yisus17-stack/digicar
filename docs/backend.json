@@ -247,6 +247,52 @@
         "id",
         "name"
       ]
+    },
+    "Message": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Message",
+      "type": "object",
+      "description": "Represents a single message in a chat conversation.",
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["user", "model"],
+          "description": "The role of the entity sending the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the message."
+        }
+      },
+      "required": ["role", "content"]
+    },
+    "ChatHistory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatHistory",
+      "type": "object",
+      "description": "Represents a complete chat conversation history.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat session."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who initiated the chat."
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/backend/entities/Message"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the chat was created."
+        }
+      },
+      "required": ["id", "userId", "messages", "createdAt"]
     }
   },
   "auth": {
