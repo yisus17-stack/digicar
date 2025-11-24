@@ -122,30 +122,35 @@ const BrandsSection = () => {
         return null;
     }
     
+    // Duplicate the logos for a seamless marquee effect
+    const duplicatedBrands = [...brands, ...brands];
+
     return (
-        <section className="py-16 bg-muted/30">
+        <section className="py-12 bg-muted/30">
             <div className="container mx-auto px-4 text-center">
                  <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">
                     Marcas que manejamos
                  </h2>
-                 <div className="flex justify-center items-center flex-wrap gap-x-8 gap-y-6 md:gap-x-12">
-                    {brands.map((brand) => (
-                         <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} key={brand.id} className="group" title={brand.name}>
-                            <div className="relative h-10 w-28">
-                                {brand.logoUrl ? (
-                                    <Image
-                                        src={brand.logoUrl}
-                                        alt={`${brand.name} logo`}
-                                        fill
-                                        style={{ objectFit: 'contain' }}
-                                        className="opacity-60 grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
-                                    />
-                                ) : (
-                                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">{brand.name}</span>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
+                 <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+                    <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+                        {duplicatedBrands.map((brand, index) => (
+                            <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} key={`${brand.id}-${index}`} className="group mx-8 flex-shrink-0" title={brand.name}>
+                                <div className="relative h-10 w-28">
+                                    {brand.logoUrl ? (
+                                        <Image
+                                            src={brand.logoUrl}
+                                            alt={`${brand.name} logo`}
+                                            fill
+                                            style={{ objectFit: 'contain' }}
+                                            className="opacity-60 grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                                        />
+                                    ) : (
+                                        <span className="flex items-center justify-center h-full text-muted-foreground group-hover:text-foreground transition-colors">{brand.name}</span>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                  </div>
             </div>
         </section>
