@@ -116,6 +116,11 @@ service cloud.firestore {
       allow delete: if isSignedIn() && resource != null;
       allow list: if false;
     }
+    
+    match /fuelTypes/{fuelTypeId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
 
     /**
      * @description Checks if the user is signed in.
