@@ -3,18 +3,14 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Permite la lectura pública de todos los archivos
+    // Coincide con cualquier archivo en cualquier ruta
     match /{allPaths=**} {
+      // Permite que cualquiera lea cualquier archivo.
+      // Esto es necesario para que las imágenes de los autos y los logos sean visibles públicamente.
       allow read: if true;
-    }
 
-    // Permite la escritura en la carpeta 'brands' para cualquier usuario (para logos)
-    match /brands/{entityId}/{fileName} {
-      allow write: if true;
-    }
-
-    // Permite la escritura en la carpeta 'cars' solo si el usuario está autenticado
-    match /cars/{entityId}/{fileName} {
+      // Permite escribir (subir, actualizar, eliminar) solo si el usuario ha iniciado sesión.
+      // Esto protege tu almacenamiento de subidas no autorizadas.
       allow write: if request.auth != null;
     }
   }
