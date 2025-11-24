@@ -211,21 +211,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   
   useEffect(() => {
-    // Wait until user status is resolved
-    if (!userLoading) {
-      // If user is not logged in OR is not the admin, redirect to home.
-      if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-        router.push('/');
-      }
+    if (!userLoading && !user) {
+      router.push('/login');
     }
   }, [user, userLoading, router]);
 
-  // While loading or if user is not authorized, show a skeleton or loading screen
   if (userLoading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return <AdminLayoutSkeleton />;
   }
 
-  // If user is authorized, render the admin layout
   return (
      <SidebarProvider>
       <AdminLayoutWithProvider>
