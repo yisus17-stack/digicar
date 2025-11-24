@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-interface BreadcrumbProps {
+interface MigasDePanProps {
   items: { label: string; href?: string }[];
 }
 
-export default function Breadcrumbs({ items }: BreadcrumbProps) {
+export default function MigasDePan({ items }: MigasDePanProps) {
   return (
     <div className="mb-4">
         <div className="flex items-center text-sm text-muted-foreground">
