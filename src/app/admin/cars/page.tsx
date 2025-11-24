@@ -38,7 +38,11 @@ export default function AdminCarsPage() {
   const { data: transmissions, isLoading: transmissionsLoading } = useCollection<Transmission>(transmissionsCollection);
 
   if (carsLoading || brandsLoading || colorsLoading || transmissionsLoading) {
-    return <CarTableSkeleton />;
+    return (
+      <div className="p-4 sm:p-6 lg:p-8">
+        <CarTableSkeleton />
+      </div>
+    );
   }
 
   return (
