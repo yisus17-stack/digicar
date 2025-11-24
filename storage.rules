@@ -1,15 +1,16 @@
-
 rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
     // Coincide con cualquier archivo en cualquier ruta
     match /{allPaths=**} {
-      // Permite que cualquiera lea cualquier archivo.
-      // Esto es necesario para que las imágenes de los autos y los logos sean visibles públicamente.
+      // PERMITE LA LECTURA PÚBLICA:
+      // Cualquiera (incluso visitantes no autenticados) puede leer los archivos.
+      // Esto es necesario para que las imágenes del catálogo se muestren en tu sitio web.
       allow read: if true;
 
-      // Permite escribir (subir, actualizar, eliminar) solo si el usuario ha iniciado sesión.
+      // RESTRINGE LA ESCRITURA:
+      // Solo los usuarios que han iniciado sesión pueden subir, modificar o eliminar archivos.
       // Esto protege tu almacenamiento de subidas no autorizadas.
       allow write: if request.auth != null;
     }
