@@ -122,17 +122,15 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
     }
   }, [auto, form, estaAbierto]);
 
-
   const alEnviar = (data: DatosFormulario) => {
     const datosAuto = {
         ...data,
         features: data.features ? data.features.split(',').map(f => f.trim()) : [],
     };
-    // @ts-ignore
     alGuardar(datosAuto, nuevoArchivoImagen);
     alCambiarApertura(false);
   };
-
+  
   const manejarCambioArchivo = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -191,7 +189,7 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                     <FormItem><FormLabel>Kilometraje/Autonomía</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="horsepower" render={({ field }) => (
-                    <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></Form.Item>
+                    <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
                  <FormField control={form.control} name="engineCylinders" render={({ field }) => (
                     <FormItem><FormLabel>Cilindros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
