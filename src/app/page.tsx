@@ -15,13 +15,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Car, Brand } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tag } from 'lucide-react';
 
@@ -103,14 +96,18 @@ const HeroSection = () => {
 };
 
 const BrandsSectionSkeleton = () => (
-    <div className="container mx-auto px-4">
-        <div className="flex space-x-4">
-            {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-24 w-48 rounded-lg" />
-            ))}
+    <section className="py-12 bg-muted/50">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">Nuestras Marcas</h2>
+            <div className="flex justify-center items-center flex-wrap gap-x-8 gap-y-6 md:gap-x-12">
+                {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-10 w-28" />
+                ))}
+            </div>
         </div>
-    </div>
+    </section>
 );
+
 
 const BrandsSection = () => {
     const firestore = useFirestore();
@@ -126,51 +123,30 @@ const BrandsSection = () => {
     }
     
     return (
-        <section className="py-12 bg-muted/50">
-            <div className="container mx-auto px-4">
-                 <div className="text-center mb-10">
-                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                        Explora por Marca
-                    </h2>
-                    <p className="mt-2 text-muted-foreground">Encuentra los modelos de tus marcas favoritas.</p>
-                </div>
-                <Carousel
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                    className="w-full max-w-6xl mx-auto"
-                >
-                    <CarouselContent>
-                        {brands.map((brand) => (
-                            <CarouselItem key={brand.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5">
-                                <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} className="block group">
-                                    <Card className="h-32 flex items-center justify-center p-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:border-primary">
-                                        <div className="relative w-full h-full flex items-center justify-center">
-                                            {brand.logoUrl ? (
-                                                <Image
-                                                    src={brand.logoUrl}
-                                                    alt={`${brand.name} logo`}
-                                                    fill
-                                                    style={{ objectFit: 'contain' }}
-                                                    className="grayscale transition-all duration-300 group-hover:grayscale-0"
-                                                />
-                                            ) : (
-                                                <Avatar className="h-16 w-16">
-                                                    <AvatarFallback>
-                                                        <Tag className="h-8 w-8" />
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                            )}
-                                        </div>
-                                    </Card>
-                                </Link>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="hidden sm:flex" />
-                    <CarouselNext className="hidden sm:flex" />
-                </Carousel>
+        <section className="py-16 bg-muted/30">
+            <div className="container mx-auto px-4 text-center">
+                 <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">
+                    Marcas que manejamos
+                 </h2>
+                 <div className="flex justify-center items-center flex-wrap gap-x-8 gap-y-6 md:gap-x-12">
+                    {brands.map((brand) => (
+                         <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} key={brand.id} className="group" title={brand.name}>
+                            <div className="relative h-10 w-28">
+                                {brand.logoUrl ? (
+                                    <Image
+                                        src={brand.logoUrl}
+                                        alt={`${brand.name} logo`}
+                                        fill
+                                        style={{ objectFit: 'contain' }}
+                                        className="opacity-60 grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                                    />
+                                ) : (
+                                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">{brand.name}</span>
+                                )}
+                            </div>
+                        </Link>
+                    ))}
+                 </div>
             </div>
         </section>
     );
@@ -224,7 +200,7 @@ export default function Home() {
 
 
             <div id="popular" className="container mx-auto px-4 py-20">
-                <div className="text-center mb-6">
+                <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
                     </h2>
