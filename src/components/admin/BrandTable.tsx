@@ -30,7 +30,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { useFirestore, useStorage } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -87,42 +87,46 @@ export default function BrandTable({ brands: initialBrands }: BrandTableProps) {
 
   const handleSave = async (data: Omit<Brand, 'id'>, newLogoFile?: File) => {
     try {
-        let logoUrl = data.logoUrl || '';
-
-        if (newLogoFile) {
-            const toastId = toast({ title: 'Subiendo logo...', description: 'Por favor, espera.' });
-            const entityId = selectedBrand ? selectedBrand.id : doc(collection(firestore, 'brands')).id;
-            logoUrl = await uploadImage(storage, newLogoFile, `brands/${entityId}`);
-            toastId.dismiss();
-        }
-
-        const brandData = { ...data, logoUrl };
-
-        if (selectedBrand) {
+        if (selectedBrand) { // Logic for updating an existing brand
+            let logoUrl = selectedBrand.logoUrl || '';
+            if (newLogoFile) {
+                const toastId = toast({ title: 'Actualizando logo...', description: 'Por favor, espera.' });
+                logoUrl = await uploadImage(storage, newLogoFile, `brands/${selectedBrand.id}`);
+                toastId.dismiss();
+            }
+            const brandData = { ...data, logoUrl };
             const brandRef = doc(firestore, 'brands', selectedBrand.id);
-            updateDoc(brandRef, brandData).catch((error) => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'update',
-                path: brandRef.path,
-                requestResourceData: brandData,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
+            await updateDoc(brandRef, brandData);
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
-        } else {
-            const collectionRef = collection(firestore, 'brands');
-            addDoc(collectionRef, brandData).catch(error => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'create',
-                path: collectionRef.path,
-                requestResourceData: brandData,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
+
+        } else { // Logic for creating a new brand
+            const newBrandRef = doc(collection(firestore, 'brands'));
+            const entityId = newBrandRef.id;
+            
+            let logoUrl = '';
+            if (newLogoFile) {
+                const toastId = toast({ title: 'Subiendo logo...', description: 'Por favor, espera.' });
+                logoUrl = await uploadImage(storage, newLogoFile, `brands/${entityId}`);
+                toastId.dismiss();
+            }
+
+            const brandData = { ...data, logoUrl, id: entityId };
+            await setDoc(newBrandRef, brandData);
             toast({ title: "Marca añadida", description: "La nueva marca se ha añadido a la base de datos." });
         }
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+        console.error("Error saving brand:", error);
+        
+        // Optionally emit a more specific error for debugging if it's a permission issue
+        if (error.code && error.code.includes('permission-denied')) {
+            const contextualError = new FirestorePermissionError({
+              operation: selectedBrand ? 'update' : 'create',
+              path: selectedBrand ? `brands/${selectedBrand.id}` : 'brands',
+              requestResourceData: data,
+            });
+            errorEmitter.emit('permission-error', contextualError);
+        }
     }
   };
 
