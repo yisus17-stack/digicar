@@ -35,6 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
+import { uploadImage } from '@/core/services/storageService';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -86,26 +87,33 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       });
   };
 
-  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>) => {
+  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
     try {
+        let finalCarData = { ...datosAuto };
+
+        if (file) {
+            const imageUrl = await uploadImage(file);
+            finalCarData.imageUrl = imageUrl;
+        }
+
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'cars', autoSeleccionado.id);
-            updateDoc(autoRef, datosAuto).catch((error) => {
+            updateDoc(autoRef, finalCarData).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
                 path: autoRef.path,
-                requestResourceData: datosAuto,
+                requestResourceData: finalCarData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
             toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
             const coleccionRef = collection(firestore, 'cars');
-            addDoc(coleccionRef, datosAuto).catch(error => {
+            addDoc(coleccionRef, finalCarData).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',
                 path: coleccionRef.path,
-                requestResourceData: datosAuto,
+                requestResourceData: finalCarData,
               });
               errorEmitter.emit('permission-error', contextualError);
             });

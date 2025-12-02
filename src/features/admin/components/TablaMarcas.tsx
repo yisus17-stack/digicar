@@ -35,6 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { uploadImage } from '@/core/services/storageService';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -83,18 +84,25 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       });
   };
 
-  const manejarGuardar = async (data: Omit<Marca, 'id'>) => {
+  const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     try {
+        let finalBrandData: Omit<Marca, 'id'> & { logoUrl?: string } = { ...data };
+
+        if (file) {
+            const logoUrl = await uploadImage(file);
+            finalBrandData.logoUrl = logoUrl;
+        }
+
+
         if (marcaSeleccionada) {
-            const datosMarca = { ...data };
             const marcaRef = doc(firestore, 'brands', marcaSeleccionada.id);
-            await updateDoc(marcaRef, datosMarca);
+            await updateDoc(marcaRef, finalBrandData);
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
 
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'brands'));
             const idEntidad = nuevaMarcaRef.id;
-            const datosMarca = { ...data, id: idEntidad };
+            const datosMarca = { ...finalBrandData, id: idEntidad };
             await setDoc(nuevaMarcaRef, datosMarca);
             toast({ title: "Marca añadida", description: "La nueva marca se ha añadido a la base de datos." });
         }

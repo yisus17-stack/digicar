@@ -22,7 +22,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Marca } from '@/core/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const esquemaFormulario = z.object({
   name: z.string().min(2, 'El nombre es requerido.'),
@@ -35,10 +36,13 @@ interface PropsFormularioMarca {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   marca: Marca | null;
-  alGuardar: (data: Omit<Marca, 'id'>) => void;
+  alGuardar: (data: Omit<Marca, 'id'>, file?: File) => void;
 }
 
 export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca, alGuardar }: PropsFormularioMarca) {
+  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
@@ -51,18 +55,34 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
     if (estaAbierto) {
       if (marca) {
         form.reset(marca);
+        if (marca.logoUrl) {
+            setPreview(marca.logoUrl);
+        }
       } else {
         form.reset({
           name: '',
           logoUrl: '',
         });
+        setPreview(null);
       }
+      setSelectedFile(undefined);
     }
   }, [marca, form, estaAbierto]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const alEnviar = (data: DatosFormulario) => {
-    alGuardar(data);
+    alGuardar(data, selectedFile);
     alCambiarApertura(false);
   };
   
@@ -82,13 +102,19 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
                 </FormItem>
             )}/>
              
-            <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>URL del Logo</FormLabel>
-                    <FormControl><Input placeholder="https://ejemplo.com/logo.png" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )}/>
+            <FormItem>
+              <FormLabel>Logo de la Marca</FormLabel>
+              <FormControl>
+                <Input type="file" accept="image/*" onChange={handleFileChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            
+            {preview && (
+              <div className="mt-4">
+                <Image src={preview} alt="Vista previa del logo" width={100} height={100} className="rounded-md object-contain" />
+              </div>
+            )}
 
             <DialogFooter>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>

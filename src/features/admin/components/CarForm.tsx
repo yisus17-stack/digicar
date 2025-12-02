@@ -30,8 +30,10 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Image from 'next/image';
+
 
 const esquemaFormulario = z.object({
   brand: z.string().min(1, 'La marca es requerida.'),
@@ -57,7 +59,7 @@ interface PropsFormularioAuto {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   auto: Car | null;
-  alGuardar: (auto: Omit<Car, 'id'>) => void;
+  alGuardar: (auto: Omit<Car, 'id'>, file?: File) => void;
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
@@ -72,6 +74,9 @@ export default function FormularioAuto({
   colores,
   transmisiones,
 }: PropsFormularioAuto) {
+    const [preview, setPreview] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | undefined>();
+
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
@@ -100,6 +105,9 @@ export default function FormularioAuto({
           ...auto,
           features: auto.features.join(', '),
         });
+        if (auto.imageUrl) {
+            setPreview(auto.imageUrl);
+        }
       } else {
         form.reset({
           brand: '',
@@ -118,16 +126,30 @@ export default function FormularioAuto({
           passengers: 5,
           imageUrl: '',
         });
+        setPreview(null);
       }
+      setSelectedFile(undefined);
     }
   }, [auto, form, estaAbierto]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const alEnviar = (data: DatosFormulario) => {
     const datosAuto = {
       ...data,
       features: data.features ? data.features.split(',').map((f) => f.trim()) : [],
     };
-    alGuardar(datosAuto);
+    alGuardar(datosAuto, selectedFile);
     alCambiarApertura(false);
   };
 
@@ -380,19 +402,19 @@ export default function FormularioAuto({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="imageUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL de la Imagen</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://ejemplo.com/imagen.jpg" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem>
+                    <FormLabel>Imagen del Auto</FormLabel>
+                    <FormControl>
+                        <Input type="file" accept="image/*" onChange={handleFileChange} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                
+                {preview && (
+                    <div className="mt-4">
+                        <Image src={preview} alt="Vista previa del auto" width={200} height={150} className="rounded-md object-cover" />
+                    </div>
+                )}
               </div>
             </ScrollArea>
             <DialogFooter className="pt-4 mt-4 border-t">
