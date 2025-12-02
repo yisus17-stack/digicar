@@ -292,7 +292,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {marcas.map((m) => (
-                              <SelectItem key={m.id} value={m.nombre}>
+                              <SelectItem key={m.id ?? m.nombre} value={m.nombre}>
                                 {m.nombre}
                               </SelectItem>
                             ))}
@@ -379,7 +379,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {colores.map((c) => (
-                              <SelectItem key={c.id} value={c.nombre}>
+                              <SelectItem key={c.id ?? c.nombre} value={c.nombre}>
                                 {c.nombre}
                               </SelectItem>
                             ))}
@@ -429,7 +429,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {transmisiones.map((t) => (
-                              <SelectItem key={t.id} value={t.nombre}>
+                              <SelectItem key={t.id ?? t.nombre} value={t.nombre}>
                                 {t.nombre}
                               </SelectItem>
                             ))}
