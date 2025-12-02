@@ -136,7 +136,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
                 <TableBody>
                 {transmisionesIniciales.map(transmision => (
                     <TableRow key={transmision.id}>
-                    <TableCell className="font-medium">{transmision.name}</TableCell>
+                    <TableCell className="font-medium">{transmision.nombre}</TableCell>
                     <TableCell>
                         <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(transmision)}>

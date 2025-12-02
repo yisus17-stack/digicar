@@ -25,7 +25,7 @@ import { Color } from '@/core/types';
 import { useEffect } from 'react';
 
 const esquemaFormulario = z.object({
-  name: z.string().min(2, 'El nombre es requerido.'),
+  nombre: z.string().min(2, 'El nombre es requerido.'),
 });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -41,19 +41,21 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
-      name: '',
+      nombre: '',
     },
   });
   
   useEffect(() => {
-    if (color) {
-      form.reset(color);
-    } else {
-      form.reset({
-        name: '',
-      });
+    if (estaAbierto) {
+      if (color) {
+        form.reset(color);
+      } else {
+        form.reset({
+          nombre: '',
+        });
+      }
     }
-  }, [color, estaAbierto]);
+  }, [color, estaAbierto, form]);
 
 
   const alEnviar = (data: DatosFormulario) => {
@@ -69,7 +71,7 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
-            <FormField control={form.control} name="name" render={({ field }) => (
+            <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre del Color</FormLabel>
                     <FormControl><Input placeholder="Ej: Rojo Pasión" {...field} /></FormControl>

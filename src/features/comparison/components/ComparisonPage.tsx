@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
-import { translations } from '@/lib/translations';
+import { traducciones } from '@/lib/traducciones';
 
 interface PaginaComparacionProps {
   autos: ([Car] | [Car, Car]) & Car[];
@@ -35,14 +35,14 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
   };
 
   const features = [
-    { label: "Precio", key: 'price' },
-    { label: "Año", key: 'year' },
-    { label: "Tipo", key: 'type' },
-    { label: "Combustible", key: 'fuelType' },
-    { label: "Transmisión", key: 'transmission' },
-    { label: "Motor", key: 'engine' },
-    { label: "Cilindros", key: 'engineCylinders' },
-    { label: "Pasajeros", key: 'passengers' },
+    { label: "Precio", key: 'precio' },
+    { label: "Año", key: 'anio' },
+    { label: "Tipo", key: 'tipo' },
+    { label: "Combustible", key: 'tipoCombustible' },
+    { label: "Transmisión", key: 'transmision' },
+    { label: "Motor", key: 'motor' },
+    { label: "Cilindros", key: 'cilindrosMotor' },
+    { label: "Pasajeros", key: 'pasajeros' },
     { label: "Color", key: 'color' },
   ];
 
@@ -51,16 +51,16 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     const value = car[key as keyof Car] as string | number;
     
     switch (key) {
-      case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
-      case 'type': 
-      case 'fuelType': 
-      case 'transmission': 
+      case 'precio': return `$${Number(value).toLocaleString('es-MX')}`;
+      case 'tipo': 
+      case 'tipoCombustible': 
+      case 'transmision': 
       case 'color':
-        const translationKey = key as keyof typeof translations;
-        if (translationKey in translations) {
-            const valueKey = value as keyof typeof translations[typeof translationKey];
-            if (valueKey in translations[translationKey]) {
-                return translations[translationKey][valueKey];
+        const translationKey = key as keyof typeof traducciones;
+        if (translationKey in traducciones) {
+            const valueKey = value as keyof typeof traducciones[typeof translationKey];
+            if (valueKey in traducciones[translationKey]) {
+                return traducciones[translationKey][valueKey];
             }
         }
         return value;
@@ -75,8 +75,8 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
       return (
         <Card className="overflow-hidden md:col-span-1 w-full">
             <div className="aspect-video relative">
-                {selectedCar.imageUrl ? (
-                    <Image src={selectedCar.imageUrl} alt={`${selectedCar.brand} ${selectedCar.model}`} fill className="object-cover" />
+                {selectedCar.imagenUrl ? (
+                    <Image src={selectedCar.imagenUrl} alt={`${selectedCar.marca} ${selectedCar.modelo}`} fill className="object-cover" />
                 ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
                         <CarIcon className="w-12 h-12 text-muted-foreground" />
@@ -84,11 +84,11 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
                 )}
             </div>
             <CardHeader>
-                <CardTitle>{selectedCar.brand} {selectedCar.model}</CardTitle>
+                <CardTitle>{selectedCar.marca} {selectedCar.modelo}</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-2xl font-bold">{formatValue('price', selectedCar)}</p>
-                <p className="text-sm text-muted-foreground">{selectedCar.year}</p>
+                <p className="text-2xl font-bold">{formatValue('precio', selectedCar)}</p>
+                <p className="text-sm text-muted-foreground">{selectedCar.anio}</p>
             </CardContent>
         </Card>
       )
@@ -105,7 +105,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
                 <SelectContent>
                     {availableCars.map(car => (
                         <SelectItem key={car.id} value={car.id}>
-                            {car.brand} {car.model}
+                            {car.marca} {car.modelo}
                         </SelectItem>
                     ))}
                 </SelectContent>
@@ -145,12 +145,12 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
                 <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {auto1?.features.map(f => <li key={`${auto1.id}-${f}`}>{f}</li>)}
+                        {auto1?.caracteristicas.map(f => <li key={`${auto1.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
                 <div className="text-center col-span-1">
                     <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                        {auto2?.features.map(f => <li key={`${auto2.id}-${f}`}>{f}</li>)}
+                        {auto2?.caracteristicas.map(f => <li key={`${auto2.id}-${f}`}>{f}</li>)}
                     </ul>
                 </div>
             </div>
@@ -166,7 +166,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
           </CardHeader>
           <CardContent>
               <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
-              <LeadCaptureForm interestedCars={[auto1, auto2].filter(Boolean).map(c => `${c?.brand} ${c?.model}`).join(', ')} />
+              <LeadCaptureForm interestedCars={[auto1, auto2].filter(Boolean).map(c => `${c?.marca} ${c?.modelo}`).join(', ')} />
           </CardContent>
         </Card>
       )}

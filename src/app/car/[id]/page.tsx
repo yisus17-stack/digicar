@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { translations } from '@/lib/translations';
+import { traducciones } from '@/lib/traducciones';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car } from '@/core/types';
@@ -95,26 +95,26 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
     notFound();
   }
 
-  const tipoAuto = auto.type as keyof (typeof translations.type);
+  const tipoAuto = auto.tipo as keyof (typeof traducciones.tipo);
 
   const detallesAuto = [
-      { icon: Droplets, label: 'Combustible', value: translations.fuelType[auto.fuelType as keyof typeof translations.fuelType] },
-      { icon: Users, label: 'Pasajeros', value: auto.passengers },
-      { icon: GitMerge, label: 'Transmisión', value: translations.transmission[auto.transmission as keyof typeof translations.transmission] },
-      { icon: Settings, label: 'Motor', value: auto.engine },
-      { icon: Palette, label: 'Color', value: translations.color[auto.color as keyof typeof translations.color] },
+      { icon: Droplets, label: 'Combustible', value: traducciones.tipoCombustible[auto.tipoCombustible as keyof typeof traducciones.tipoCombustible] },
+      { icon: Users, label: 'Pasajeros', value: auto.pasajeros },
+      { icon: GitMerge, label: 'Transmisión', value: traducciones.transmision[auto.transmision as keyof typeof traducciones.transmision] },
+      { icon: Settings, label: 'Motor', value: auto.motor },
+      { icon: Palette, label: 'Color', value: traducciones.color[auto.color as keyof typeof traducciones.color] },
   ]
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.brand} ${auto.model}` }]} />
+       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
           <Card className="overflow-hidden">
              <AspectRatio ratio={4/3}>
-              {auto.imageUrl ? (
-                <Image src={auto.imageUrl} alt={`${auto.brand} ${auto.model}`} fill className="object-cover" />
+              {auto.imagenUrl ? (
+                <Image src={auto.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
                   <IconoAuto className="w-24 h-24 text-muted-foreground" />
@@ -128,16 +128,16 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
               </CardHeader>
               <CardContent>
                   <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
-                  <LeadCaptureForm interestedCars={`${auto.brand} ${auto.model}`} />
+                  <LeadCaptureForm interestedCars={`${auto.marca} ${auto.modelo}`} />
               </CardContent>
           </Card>
         </div>
         <div className="space-y-6">
           <Card>
             <CardHeader>
-                <p className="text-sm text-muted-foreground">{translations.type[tipoAuto] || auto.type} • {auto.year}</p>
-                <h1 className="text-3xl lg:text-4xl font-bold">{auto.brand} {auto.model}</h1>
-                <p className="text-3xl font-bold text-primary">${auto.price.toLocaleString('es-MX')}</p>
+                <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || auto.tipo} • {auto.anio}</p>
+                <h1 className="text-3xl lg:text-4xl font-bold">{auto.marca} {auto.modelo}</h1>
+                <p className="text-3xl font-bold text-primary">${auto.precio.toLocaleString('es-MX')}</p>
             </CardHeader>
           </Card>
           
@@ -164,7 +164,7 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {auto.features.map((feature, index) => (
+                {auto.caracteristicas.map((feature, index) => (
                   <li key={index} className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span>{feature}</span>

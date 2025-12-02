@@ -152,13 +152,13 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                     <TableRow key={marca.id}>
                     <TableCell>
                         <Avatar>
-                            {marca.logoUrl && <AvatarImage src={marca.logoUrl} alt={marca.name} className="object-contain" />}
+                            {marca.logoUrl && <AvatarImage src={marca.logoUrl} alt={marca.nombre} className="object-contain" />}
                             <AvatarFallback>
                                 <Tag className='h-5 w-5' />
                             </AvatarFallback>
                         </Avatar>
                     </TableCell>
-                    <TableCell className="font-medium">{marca.name}</TableCell>
+                    <TableCell className="font-medium">{marca.nombre}</TableCell>
                     <TableCell>
                         <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>

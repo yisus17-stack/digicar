@@ -1,32 +1,32 @@
 export type Car = {
   id: string;
-  brand: string;
-  model: string;
-  year: number;
-  price: number;
-  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
-  transmission: string;
-  engine?: string;
-  features: string[];
-  imageUrl: string;
-  type: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
-  engineCylinders: number;
+  marca: string;
+  modelo: string;
+  anio: number;
+  precio: number;
+  tipoCombustible: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
+  transmision: string;
+  motor?: string;
+  caracteristicas: string[];
+  imagenUrl: string;
+  tipo: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
+  cilindrosMotor: number;
   color: string;
-  passengers: number;
+  pasajeros: number;
 };
 
 export type Marca = {
     id: string;
-    name:string;
+    nombre:string;
     logoUrl?: string;
 }
 
 export type Color = {
     id: string;
-    name: string;
+    nombre: string;
 }
 
 export type Transmision = {
   id: string;
-  name: string;
+  nombre: string;
 }

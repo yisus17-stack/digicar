@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Car } from '@/core/types';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { translations } from '@/lib/translations';
+import { traducciones } from '@/lib/traducciones';
 
 interface CarCardMobileProps {
   car: Car;
@@ -14,16 +14,16 @@ interface CarCardMobileProps {
 }
 
 export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarCardMobileProps) {
-    const tipoCombustible = car.fuelType as keyof typeof translations.fuelType;
+    const tipoCombustible = car.tipoCombustible as keyof typeof traducciones.tipoCombustible;
 
     return (
         <div className="border-b p-4 flex gap-4 last:border-b-0">
              <div className="w-2/5 flex-shrink-0">
                  <Link href={`/car/${car.id}`} className="block relative aspect-video">
-                    {car.imageUrl ? (
+                    {car.imagenUrl ? (
                         <Image
-                            src={car.imageUrl}
-                            alt={`${car.brand} ${car.model}`}
+                            src={car.imagenUrl}
+                            alt={`${car.marca} ${car.modelo}`}
                             fill
                             className="object-cover rounded-md"
                         />
@@ -36,18 +36,18 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
              </div>
              <div className="w-3/5 flex flex-col justify-between">
                 <div>
-                    <p className="text-xs text-muted-foreground">{car.year}</p>
+                    <p className="text-xs text-muted-foreground">{car.anio}</p>
                     <h3 className="font-bold leading-tight">
                          <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
-                            {car.brand} {car.model}
+                            {car.marca} {car.modelo}
                         </Link>
                     </h3>
-                    <p className="text-lg font-bold text-primary mt-1">${car.price.toLocaleString('es-MX')}</p>
+                    <p className="text-lg font-bold text-primary mt-1">${car.precio.toLocaleString('es-MX')}</p>
                 </div>
                  <div className="flex items-center text-xs text-muted-foreground gap-3 mt-1">
                     <div className="flex items-center gap-1">
                         <Droplets className="h-3 w-3" />
-                        <span>{translations.fuelType[tipoCombustible] || car.fuelType}</span>
+                        <span>{traducciones.tipoCombustible[tipoCombustible] || car.tipoCombustible}</span>
                     </div>
                 </div>
                 <div className='mt-2'>

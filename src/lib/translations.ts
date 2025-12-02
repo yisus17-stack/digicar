@@ -1,15 +1,15 @@
-export const translations = {
-  transmission: {
+export const traducciones = {
+  transmision: {
     'Automatic': 'Automática',
     'Manual': 'Manual'
   },
-  fuelType: {
+  tipoCombustible: {
     'Gasoline': 'Gasolina',
     'Diesel': 'Diésel',
     'Electric': 'Eléctrico',
     'Hybrid': 'Híbrido'
   },
-  type: {
+  tipo: {
     'Sedan': 'Sedán',
     'SUV': 'SUV',
     'Sports': 'Deportivo',

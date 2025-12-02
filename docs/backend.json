@@ -10,50 +10,78 @@
           "type": "string",
           "description": "Unique identifier for the car."
         },
-        "make": {
+        "marca": {
           "type": "string",
           "description": "The manufacturer of the car (e.g., Toyota, Ford)."
         },
-        "model": {
+        "modelo": {
           "type": "string",
           "description": "The model name of the car (e.g., Camry, F-150)."
         },
-        "year": {
+        "anio": {
           "type": "number",
           "description": "The manufacturing year of the car."
         },
-        "trim": {
+        "version": {
           "type": "string",
           "description": "The trim level of the car (e.g., LE, XLE, Limited)."
         },
-        "engine": {
+        "motor": {
           "type": "string",
           "description": "Description of the engine (e.g., 2.5L I4, 3.5L V6)."
         },
-        "price": {
+        "precio": {
           "type": "number",
           "description": "The price of the car."
         },
-        "imageUrl": {
+        "imagenUrl": {
           "type": "string",
           "description": "URL of the car's image.",
           "format": "uri"
         },
-        "description": {
+        "descripcion": {
           "type": "string",
           "description": "Detailed description of the car."
+        },
+        "tipoCombustible": {
+          "type": "string"
+        },
+        "transmision": {
+          "type": "string"
+        },
+        "caracteristicas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tipo": {
+          "type": "string"
+        },
+        "cilindrosMotor": {
+          "type": "number"
+        },
+        "color": {
+          "type": "string"
+        },
+        "pasajeros": {
+          "type": "number"
         }
       },
       "required": [
         "id",
-        "make",
-        "model",
-        "year",
-        "trim",
-        "engine",
-        "price",
-        "imageUrl",
-        "description"
+        "marca",
+        "modelo",
+        "anio",
+        "precio",
+        "imagenUrl",
+        "tipoCombustible",
+        "transmision",
+        "caracteristicas",
+        "tipo",
+        "cilindrosMotor",
+        "color",
+        "pasajeros"
       ]
     },
     "Lead": {
@@ -183,7 +211,7 @@
           "type": "string",
           "description": "Unique identifier for the brand."
         },
-        "name": {
+        "nombre": {
           "type": "string",
           "description": "The name of the brand (e.g., Toyota, Ford)."
         },
@@ -195,7 +223,7 @@
       },
       "required": [
         "id",
-        "name"
+        "nombre"
       ]
     },
     "Color": {
@@ -208,14 +236,14 @@
           "type": "string",
           "description": "Unique identifier for the color."
         },
-        "name": {
+        "nombre": {
           "type": "string",
           "description": "The name of the color (e.g., Rojo, Azul)."
         }
       },
       "required": [
         "id",
-        "name"
+        "nombre"
       ]
     },
     "Transmission": {
@@ -228,14 +256,14 @@
           "type": "string",
           "description": "Unique identifier for the transmission type."
         },
-        "name": {
+        "nombre": {
           "type": "string",
           "description": "The name of the transmission type (e.g., Automática, Manual)."
         }
       },
       "required": [
         "id",
-        "name"
+        "nombre"
       ]
     },
     "Message": {

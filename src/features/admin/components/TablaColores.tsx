@@ -136,7 +136,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
                 <TableBody>
                 {coloresIniciales.map(color => (
                     <TableRow key={color.id}>
-                    <TableCell className="font-medium">{color.name}</TableCell>
+                    <TableCell className="font-medium">{color.nombre}</TableCell>
                     <TableCell>
                         <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(color)}>

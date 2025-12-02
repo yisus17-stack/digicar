@@ -16,12 +16,12 @@ import FormularioAuto from './CarForm';
 import {
     AlertDialog,
     AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogCancel
 } from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -84,7 +84,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
         if (file) {
             const imageUrl = await uploadImage(file);
-            finalCarData.imageUrl = imageUrl;
+            finalCarData.imagenUrl = imageUrl;
         }
 
         if (autoSeleccionado) {
@@ -153,18 +153,18 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 {autosIniciales.map(auto => (
                     <TableRow key={auto.id}>
                     <TableCell>
-                      {auto.imageUrl ? (
-                        <Image src={auto.imageUrl} alt={`${auto.brand} ${auto.model}`} width={64} height={48} className="rounded-md object-cover" />
+                      {auto.imagenUrl ? (
+                        <Image src={auto.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} width={64} height={48} className="rounded-md object-cover" />
                       ) : (
                         <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
                           <IconoAuto className="h-6 w-6 text-muted-foreground" />
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{auto.brand}</TableCell>
-                    <TableCell>{auto.model}</TableCell>
-                    <TableCell className="hidden md:table-cell">{auto.year}</TableCell>
-                    <TableCell>${auto.price.toLocaleString('es-MX')}</TableCell>
+                    <TableCell className="font-medium">{auto.marca}</TableCell>
+                    <TableCell>{auto.modelo}</TableCell>
+                    <TableCell className="hidden md:table-cell">{auto.anio}</TableCell>
+                    <TableCell>${auto.precio.toLocaleString('es-MX')}</TableCell>
                     <TableCell>
                         <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>

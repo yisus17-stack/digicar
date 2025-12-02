@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
-import { translations } from '@/lib/translations';
+import { traducciones } from '@/lib/traducciones';
 
 interface CarCardProps {
   car: Car;
@@ -16,18 +16,18 @@ interface CarCardProps {
 }
 
 export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
-  const tipoAuto = car.type as keyof (typeof translations.type);
-  const tipoCombustible = car.fuelType as keyof typeof translations.fuelType;
+  const tipoAuto = car.tipo as keyof (typeof traducciones.tipo);
+  const tipoCombustible = car.tipoCombustible as keyof typeof traducciones.tipoCombustible;
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl">
       <CardHeader className="p-0">
         <Link href={`/car/${car.id}`}>
           <AspectRatio ratio={16 / 9}>
-            {car.imageUrl ? (
+            {car.imagenUrl ? (
               <Image
-                src={car.imageUrl}
-                alt={`${car.brand} ${car.model}`}
+                src={car.imagenUrl}
+                alt={`${car.marca} ${car.modelo}`}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
@@ -40,21 +40,21 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
-        <p className="text-sm text-muted-foreground">{translations.type[tipoAuto] || car.type} • {car.year}</p>
+        <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}</p>
         <CardTitle className="text-lg font-bold mt-1 mb-2">
             <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
-                {car.brand} {car.model}
+                {car.marca} {car.modelo}
             </Link>
         </CardTitle>
         <div className="flex justify-between items-center text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
                 <Droplets className="h-4 w-4" />
-                <span>{translations.fuelType[tipoCombustible] || car.fuelType}</span>
+                <span>{traducciones.tipoCombustible[tipoCombustible] || car.tipoCombustible}</span>
             </div>
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center border-t">
-        <p className="text-xl font-bold">${car.price.toLocaleString('es-MX')}</p>
+        <p className="text-xl font-bold">${car.precio.toLocaleString('es-MX')}</p>
         <Button variant={isSelected ? 'default' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
           <GitCompareArrows className="mr-2 h-4 w-4" />
           {isSelected ? 'Agregado' : 'Comparar'}

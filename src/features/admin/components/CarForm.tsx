@@ -36,19 +36,19 @@ import { cn } from '@/lib/utils';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 
 const esquemaFormulario = z.object({
-  brand: z.string().min(1, 'La marca es requerida.'),
-  model: z.string().min(2, 'El modelo es requerido.'),
-  year: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
-  price: z.coerce.number().min(0),
-  type: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
+  marca: z.string().min(1, 'La marca es requerida.'),
+  modelo: z.string().min(2, 'El modelo es requerido.'),
+  anio: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
+  precio: z.coerce.number().min(0),
+  tipo: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
   color: z.string().min(1),
-  engine: z.string().optional(),
-  engineCylinders: z.coerce.number().min(0),
-  transmission: z.string().min(1),
-  fuelType: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid']),
-  passengers: z.coerce.number().min(1),
-  features: z.string().optional(),
-  imageUrl: z.string().url('Debe ser una URL válida o una imagen subida.').min(1, 'La imagen es requerida'),
+  motor: z.string().optional(),
+  cilindrosMotor: z.coerce.number().min(0),
+  transmision: z.string().min(1),
+  tipoCombustible: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid']),
+  pasajeros: z.coerce.number().min(1),
+  caracteristicas: z.string().optional(),
+  imagenUrl: z.string().url('Debe ser una URL válida o una imagen subida.').min(1, 'La imagen es requerida'),
 });
 
 
@@ -56,12 +56,12 @@ const formSteps = [
   {
     id: 'general',
     name: 'Datos del Vehículo',
-    fields: ['brand', 'model', 'year', 'price', 'type', 'color', 'engine', 'engineCylinders', 'transmission', 'fuelType', 'passengers'] as const
+    fields: ['marca', 'modelo', 'anio', 'precio', 'tipo', 'color', 'motor', 'cilindrosMotor', 'transmision', 'tipoCombustible', 'pasajeros'] as const
   },
   {
     id: 'media',
     name: 'Multimedia y Extras',
-    fields: ['features', 'imageUrl'] as const
+    fields: ['caracteristicas', 'imagenUrl'] as const
   }
 ] as const;
 
@@ -94,19 +94,19 @@ export default function FormularioAuto({
     resolver: zodResolver(esquemaFormulario),
     mode: 'onTouched',
     defaultValues: {
-      brand: '',
-      model: '',
-      year: new Date().getFullYear(),
-      price: 0,
-      fuelType: 'Gasoline',
-      transmission: '',
-      engine: '',
-      features: '',
-      type: 'Sedan',
-      engineCylinders: 4,
+      marca: '',
+      modelo: '',
+      anio: new Date().getFullYear(),
+      precio: 0,
+      tipoCombustible: 'Gasoline',
+      transmision: '',
+      motor: '',
+      caracteristicas: '',
+      tipo: 'Sedan',
+      cilindrosMotor: 4,
       color: '',
-      passengers: 5,
-      imageUrl: '',
+      pasajeros: 5,
+      imagenUrl: '',
     },
   });
 
@@ -114,43 +114,43 @@ export default function FormularioAuto({
     if (estaAbierto) {
       if (auto) {
         form.reset({
-          brand: auto.brand,
-          model: auto.model,
-          year: auto.year,
-          price: auto.price,
-          type: auto.type,
+          marca: auto.marca,
+          modelo: auto.modelo,
+          anio: auto.anio,
+          precio: auto.precio,
+          tipo: auto.tipo,
           color: auto.color,
-          engine: auto.engine || '',
-          engineCylinders: auto.engineCylinders,
-          transmission: auto.transmission,
-          fuelType: auto.fuelType,
-          passengers: auto.passengers,
-          features: auto.features.join(', '),
-          imageUrl: auto.imageUrl || '',
+          motor: auto.motor || '',
+          cilindrosMotor: auto.cilindrosMotor,
+          transmision: auto.transmision,
+          tipoCombustible: auto.tipoCombustible,
+          pasajeros: auto.pasajeros,
+          caracteristicas: auto.caracteristicas.join(', '),
+          imagenUrl: auto.imagenUrl || '',
         });
-        setPreview(auto.imageUrl || null);
+        setPreview(auto.imagenUrl || null);
       } else {
         form.reset({
-          brand: '',
-          model: '',
-          year: new Date().getFullYear(),
-          price: 0,
-          type: 'Sedan',
+          marca: '',
+          modelo: '',
+          anio: new Date().getFullYear(),
+          precio: 0,
+          tipo: 'Sedan',
           color: '',
-          engine: '',
-          engineCylinders: 4,
-          transmission: '',
-          fuelType: 'Gasoline',
-          passengers: 5,
-          features: '',
-          imageUrl: '',
+          motor: '',
+          cilindrosMotor: 4,
+          transmision: '',
+          tipoCombustible: 'Gasoline',
+          pasajeros: 5,
+          caracteristicas: '',
+          imagenUrl: '',
         });
         setPreview(null);
         setSelectedFile(undefined);
       }
       setCurrentStep(0);
     }
-  }, [auto, estaAbierto]);
+  }, [auto, estaAbierto, form]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -161,8 +161,8 @@ export default function FormularioAuto({
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreview(imageUrl);
-        form.setValue('imageUrl', imageUrl, { shouldValidate: true });
-        form.clearErrors('imageUrl');
+        form.setValue('imagenUrl', imageUrl, { shouldValidate: true });
+        form.clearErrors('imagenUrl');
       };
       reader.readAsDataURL(file);
     }
@@ -184,8 +184,8 @@ export default function FormularioAuto({
   const alEnviar = (data: DatosFormulario) => {
     const datosAuto: Omit<Car, 'id'> = {
       ...data,
-      features: data.features ? data.features.split(',').map(f => f.trim()).filter(f => f !== '') : [],
-      engine: data.engine || '',
+      caracteristicas: data.caracteristicas ? data.caracteristicas.split(',').map(f => f.trim()).filter(f => f !== '') : [],
+      motor: data.motor || '',
     };
     
     alGuardar(datosAuto, selectedFile);
@@ -195,7 +195,7 @@ export default function FormularioAuto({
   const removeImage = () => {
     setPreview(null);
     setSelectedFile(undefined);
-    form.setValue('imageUrl', '', { shouldValidate: true });
+    form.setValue('imagenUrl', '', { shouldValidate: true });
   };
   
   return (
@@ -241,22 +241,22 @@ export default function FormularioAuto({
                 <ScrollArea className="h-[50vh] p-4">
                 {currentStep === 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField control={form.control} name="brand" render={({ field }) => (
+                    <FormField control={form.control} name="marca" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Marca *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl>
                             <SelectTrigger><SelectValue placeholder="Selecciona una marca" /></SelectTrigger>
                             </FormControl>
-                            <SelectContent>{marcas.map(m => <SelectItem key={m.id} value={m.name}>{m.name}</SelectItem>)}</SelectContent>
+                            <SelectContent>{marcas.map(m => <SelectItem key={m.id} value={m.nombre}>{m.nombre}</SelectItem>)}</SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="model" render={({ field }) => (<FormItem><FormLabel>Modelo *</FormLabel><FormControl><Input placeholder="Ej: Civic, Corolla" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="year" render={({ field }) => (<FormItem><FormLabel>Año *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="price" render={({ field }) => (<FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="type" render={({ field }) => (
+                    <FormField control={form.control} name="modelo" render={({ field }) => (<FormItem><FormLabel>Modelo *</FormLabel><FormControl><Input placeholder="Ej: Civic, Corolla" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="anio" render={({ field }) => (<FormItem><FormLabel>Año *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="precio" render={({ field }) => (<FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="tipo" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Tipo de Auto *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
@@ -277,24 +277,24 @@ export default function FormularioAuto({
                         <FormLabel>Color *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
-                            <SelectContent>{colores.map(c => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
+                            <SelectContent>{colores.map(c => <SelectItem key={c.id} value={c.nombre}>{c.nombre}</SelectItem>)}</SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="engine" render={({ field }) => (<FormItem><FormLabel>Motor</FormLabel><FormControl><Input placeholder="Ej: 2.0L Turbo" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="engineCylinders" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="transmission" render={({ field }) => (
+                    <FormField control={form.control} name="motor" render={({ field }) => (<FormItem><FormLabel>Motor</FormLabel><FormControl><Input placeholder="Ej: 2.0L Turbo" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="cilindrosMotor" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="transmision" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Transmisión *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Selecciona transmisión" /></SelectTrigger></FormControl>
-                            <SelectContent>{transmisiones.map(t => <SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>)}</SelectContent>
+                            <SelectContent>{transmisiones.map(t => <SelectItem key={t.id} value={t.nombre}>{t.nombre}</SelectItem>)}</SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="fuelType" render={({ field }) => (
+                    <FormField control={form.control} name="tipoCombustible" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Combustible *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
@@ -309,12 +309,12 @@ export default function FormularioAuto({
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="passengers" render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="pasajeros" render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </div>
                 )}
                 {currentStep === 1 && (
                     <div className="space-y-6">
-                    <FormField control={form.control} name="features" render={({ field }) => (
+                    <FormField control={form.control} name="caracteristicas" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Características</FormLabel>
                         <FormControl><Textarea placeholder="Ej: Aire acondicionado, GPS..." {...field} /></FormControl>
@@ -332,7 +332,7 @@ export default function FormularioAuto({
                         <FormControl><Input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} /></FormControl>
                         <FormMessage />
                         </FormItem>
-                        <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                        <FormField control={form.control} name="imagenUrl" render={({ field }) => (
                         <FormItem>
                             <FormLabel>O pegar URL de la imagen</FormLabel>
                             <FormControl>

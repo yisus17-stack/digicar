@@ -29,7 +29,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 interface FinancingSimulatorPageProps {
-  cars: Car[];
+  autos: Car[];
 }
 
 interface SimulationResult {
@@ -41,7 +41,7 @@ interface SimulationResult {
 
 const INTEREST_RATE = 0.125; // Tasa de interés anual fija del 12.5%
 
-export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulatorPageProps) {
+export default function FinancingSimulatorPage({ autos = [] }: FinancingSimulatorPageProps) {
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const { toast } = useToast();
@@ -62,8 +62,8 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
   const selectedTerm = form.watch('term');
   const financingType = form.watch('financingType');
 
-  const selectedCar = useMemo(() => cars.find(c => c.id === selectedCarId), [selectedCarId, cars]);
-  const maxDownPayment = useMemo(() => selectedCar ? selectedCar.price * 0.9 : 100000, [selectedCar]);
+  const selectedCar = useMemo(() => autos.find(c => c.id === selectedCarId), [selectedCarId, autos]);
+  const maxDownPayment = useMemo(() => selectedCar ? selectedCar.precio * 0.9 : 100000, [selectedCar]);
 
   const generateAndSetPdfUrl = async (currentCar: Car, currentResult: SimulationResult, currentDownPayment: number, currentTerm: number, currentFinancingType: string) => {
     const doc = await generatePdfDoc(currentCar, currentResult, currentDownPayment, currentTerm, currentFinancingType);
@@ -110,10 +110,10 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
         doc.setFont('helvetica', 'bold');
         doc.text("Vehículo Seleccionado:", 10, 52);
         doc.setFont('helvetica', 'normal');
-        doc.text(`${car.brand} ${car.model} ${car.year}`, 10, 57);
+        doc.text(`${car.marca} ${car.modelo} ${car.anio}`, 10, 57);
 
         const tableData = [
-          ["Precio:", `$${car.price.toLocaleString('es-MX')}`],
+          ["Precio:", `$${car.precio.toLocaleString('es-MX')}`],
           ["Enganche:", `$${downPayment.toLocaleString('es-MX')}`],
           ["Monto a Financiar:", `$${result.principal.toLocaleString('es-MX')}`],
           ["Plazo:", `${term} meses`],
@@ -206,13 +206,13 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
 
     setPdfUrl(null); // Reset pdf url on new calculation
 
-    const principal = selectedCar.price - data.downPayment;
+    const principal = selectedCar.precio - data.downPayment;
     let result: SimulationResult;
 
     if (principal <= 0) {
       result = {
         monthlyPayment: 0,
-        totalPayment: selectedCar.price,
+        totalPayment: selectedCar.precio,
         totalInterest: 0,
         principal: 0,
       };
@@ -220,7 +220,7 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
       const monthlyInterestRate = INTEREST_RATE / 12;
       const monthlyPayment = (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, data.term)) / (Math.pow(1 + monthlyInterestRate, data.term) - 1);
       const totalPayment = (monthlyPayment * data.term) + data.downPayment;
-      const totalInterest = totalPayment - selectedCar.price;
+      const totalInterest = totalPayment - selectedCar.precio;
       result = {
         monthlyPayment,
         totalPayment,
@@ -247,7 +247,7 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
     }
     const doc = await generatePdfDoc(selectedCar, simulationResult, downPaymentValue, selectedTerm, financingType);
     if(doc) {
-        doc.save(`simulacion-digicar-${selectedCar.brand}-${selectedCar.model}.pdf`);
+        doc.save(`simulacion-digicar-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     }
   }
 
@@ -284,7 +284,7 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
                       <SelectContent>
                         {cars.map(car => (
                           <SelectItem key={car.id} value={car.id}>
-                            {car.brand} {car.model}
+                            {car.marca} {car.modelo}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -296,7 +296,7 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
 
               {selectedCar && (
                 <div className="text-lg font-medium">
-                  Precio del vehículo: ${selectedCar.price.toLocaleString('es-MX')}
+                  Precio del vehículo: ${selectedCar.precio.toLocaleString('es-MX')}
                 </div>
               )}
 
@@ -433,5 +433,3 @@ export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulator
     </div>
   );
 }
-
-    

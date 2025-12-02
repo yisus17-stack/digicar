@@ -26,7 +26,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const esquemaFormulario = z.object({
-  name: z.string().min(2, 'El nombre es requerido.'),
+  nombre: z.string().min(2, 'El nombre es requerido.'),
   logoUrl: z.string().url('Debe ser una URL válida.').optional().or(z.literal('')),
 });
 
@@ -46,7 +46,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
-      name: '',
+      nombre: '',
       logoUrl: '',
     },
   });
@@ -55,20 +55,20 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
     if (estaAbierto) {
       if (marca) {
         form.reset({
-            name: marca.name || '',
+            nombre: marca.nombre || '',
             logoUrl: marca.logoUrl || '',
         });
         setPreview(marca.logoUrl || null);
       } else {
         form.reset({
-          name: '',
+          nombre: '',
           logoUrl: '',
         });
         setPreview(null);
       }
       setSelectedFile(undefined);
     }
-  }, [marca, estaAbierto]);
+  }, [marca, estaAbierto, form]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -97,7 +97,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
-            <FormField control={form.control} name="name" render={({ field }) => (
+            <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Marca</FormLabel>
                     <FormControl><Input {...field} /></FormControl>

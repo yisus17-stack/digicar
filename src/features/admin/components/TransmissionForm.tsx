@@ -25,7 +25,7 @@ import { Transmision } from '@/core/types';
 import { useEffect } from 'react';
 
 const esquemaFormulario = z.object({
-  name: z.string().min(2, 'El nombre es requerido.'),
+  nombre: z.string().min(2, 'El nombre es requerido.'),
 });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -41,19 +41,21 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
-      name: '',
+      nombre: '',
     },
   });
   
   useEffect(() => {
-    if (transmision) {
-      form.reset(transmision);
-    } else {
-      form.reset({
-        name: '',
-      });
+    if (estaAbierto) {
+      if (transmision) {
+        form.reset(transmision);
+      } else {
+        form.reset({
+          nombre: '',
+        });
+      }
     }
-  }, [transmision, estaAbierto]);
+  }, [transmision, estaAbierto, form]);
 
 
   const alEnviar = (data: DatosFormulario) => {
@@ -69,7 +71,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
-            <FormField control={form.control} name="name" render={({ field }) => (
+            <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Transmisión</FormLabel>
                     <FormControl><Input placeholder="Ej: Automática" {...field} /></FormControl>
