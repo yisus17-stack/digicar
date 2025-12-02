@@ -33,7 +33,7 @@ import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
-import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -177,72 +177,43 @@ export default function FormularioAuto({
     alCambiarApertura(false);
   };
   
-  const isStepValid = (stepIndex: number): boolean => {
-    // A step is considered "valid" if it's not the current step and all its fields are valid.
-    if (stepIndex >= currentStep) return false;
-  
-    const fields = formSteps[stepIndex].fields;
-    const errors = form.formState.errors;
-  
-    // Check if any field in this step has an error.
-    for (const field of fields) {
-      if (errors[field as keyof typeof errors]) {
-        return false; // Found an error, so the step is not valid.
-      }
-    }
-    
-    // For the last step, ensure at least one optional field has been touched if it is being validated.
-    if (stepIndex === formSteps.length - 1) {
-        const { features, imageUrl } = form.getValues();
-        if(!features && !imageUrl && !selectedFile) return false;
-    }
-  
-    return true; // No errors found for this step.
-  };
-
-  const progressPercentage = currentStep === 0 ? '0%' : currentStep === 1 ? '50%' : '100%';
-
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
-          <div className="flex justify-center p-4">
-            <div className="w-full max-w-md relative">
-              {/* Background line */}
-              <div className="absolute top-4 left-0 w-full h-0.5 bg-muted"></div>
-              {/* Progress line */}
-              <div className="absolute top-4 left-0 h-0.5 bg-primary transition-all duration-300" style={{ width: progressPercentage }}></div>
-              <div className="flex justify-between relative">
+          <div className="flex items-center justify-center p-4">
+            <div className="flex items-center justify-between w-full max-w-md">
                 {formSteps.map((step, index) => {
-                  const isCompleted = index < currentStep;
-                  const isActive = currentStep === index;
-                  return (
-                    <div key={step.id} className="flex flex-col items-center z-10">
-                      <div
-                        className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-full border-2 bg-background transition-all duration-300",
-                          isActive ? "border-primary" : "border-muted",
-                          isCompleted && "border-primary"
-                        )}
-                      >
-                         <div className={cn(
-                             "h-6 w-6 rounded-full flex items-center justify-center transition-all duration-300",
-                             (isActive || isCompleted) && "bg-primary text-primary-foreground",
-                             !(isActive || isCompleted) && "bg-muted text-muted-foreground"
-                         )}>
-                            {isCompleted ? <CheckCircle className="h-4 w-4"/> : index + 1}
-                         </div>
-                      </div>
-                      <p className={cn(
-                        "text-xs text-center mt-2",
-                        isActive && "font-bold text-primary",
-                        !isActive && "text-muted-foreground"
-                      )}>{step.name}</p>
-                    </div>
-                  );
+                    const isActive = currentStep === index;
+                    const isCompleted = currentStep > index;
+
+                    return (
+                        <React.Fragment key={step.id}>
+                            <div className="flex flex-col items-center gap-1">
+                                <div
+                                    className={cn(
+                                        "flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300",
+                                        isActive || isCompleted ? "bg-primary text-primary-foreground border-primary" : "border-muted-foreground bg-background text-muted-foreground"
+                                    )}
+                                >
+                                    {index + 1}
+                                </div>
+                                <p className={cn(
+                                    "text-xs text-center mt-1 font-medium",
+                                    isActive || isCompleted ? "text-primary" : "text-muted-foreground"
+                                )}>{step.name}</p>
+                            </div>
+                            
+                            {index < formSteps.length - 1 && (
+                                <div className={cn(
+                                    "flex-1 h-0.5 mx-2",
+                                    isCompleted ? "bg-primary" : "bg-muted"
+                                )}></div>
+                            )}
+                        </React.Fragment>
+                    );
                 })}
-              </div>
             </div>
           </div>
         </DialogHeader>
