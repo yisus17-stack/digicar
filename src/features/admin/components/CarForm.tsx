@@ -171,7 +171,6 @@ export default function FormularioAuto({
 
   const handleNext = async () => {
     const currentFields = formSteps[currentStep].fields;
-    
     if (currentFields.length > 0) {
       const output = await form.trigger(currentFields);
       if (!output) return;
