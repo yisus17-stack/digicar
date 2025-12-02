@@ -154,7 +154,7 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
           <form onSubmit={form.handleSubmit(alEnviar)} className='flex flex-col flex-grow overflow-hidden'>
              <ScrollArea className="flex-grow pr-6 -mr-6">
                 <div className="space-y-4 py-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                       <FormField
                           control={form.control}
                           name="brand"
@@ -291,7 +291,7 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                   </FormItem>
                 </div>
             </ScrollArea>
-            <DialogFooter className='pt-4 border-t'>
+            <DialogFooter className='pt-4 mt-4 border-t'>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
                 <Button type="submit">Guardar Cambios</Button>
             </DialogFooter>
