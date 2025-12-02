@@ -190,7 +190,7 @@ export default function FormularioAuto({
 
                     return (
                         <React.Fragment key={step.id}>
-                            <div className="flex flex-col items-center gap-1">
+                             <div className="flex flex-col items-center gap-1">
                                 <div
                                     className={cn(
                                         "flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300",
@@ -201,7 +201,7 @@ export default function FormularioAuto({
                                 </div>
                                 <p className={cn(
                                     "text-xs text-center mt-1 font-medium",
-                                    isActive || isCompleted ? "text-primary" : "text-muted-foreground"
+                                    isActive ? "text-primary" : "text-muted-foreground"
                                 )}>{step.name}</p>
                             </div>
                             
