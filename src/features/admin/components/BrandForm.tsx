@@ -117,8 +117,8 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
                 <FormItem>
                     <FormLabel>O pegar URL del logo</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="https://example.com/logo.png" onChange={(e) => {
-                          field.onChange(e);
+                      <Input {...field} placeholder="https://example.com/logo.png" onBlur={(e) => {
+                          field.onBlur();
                           setPreview(e.target.value);
                           setSelectedFile(undefined);
                       }}/>
