@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Accessibility,
   ZoomIn,
@@ -11,6 +11,7 @@ import {
   RefreshCcw,
   Pipette,
   Eye,
+  Volume2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '../ui/separator';
@@ -26,6 +27,8 @@ import {
 } from '../ui/sheet';
 import { ScrollArea } from '../ui/scroll-area';
 import { usePathname } from 'next/navigation';
+import { useDebounce } from 'use-debounce';
+
 
 const FONT_STEP_LIMIT = 2;
 
@@ -37,6 +40,7 @@ export default function AccessibilityWidget() {
   const [invert, setInvert] = useState(false);
   const [underlineLinks, setUnderlineLinks] = useState(false);
   const [readableFont, setReadableFont] = useState(false);
+  const [isReadingAloud, setIsReadingAloud] = useState(false);
   const pathname = usePathname();
 
   const applySetting = (key: string, value: string) => {
@@ -57,6 +61,7 @@ export default function AccessibilityWidget() {
       'data-invert': (val: string) => setInvert(val === 'true'),
       'data-underline-links': (val: string) => setUnderlineLinks(val === 'true'),
       'data-readable-font': (val: string) => setReadableFont(val === 'true'),
+      'data-read-aloud': (val: string) => setIsReadingAloud(val === 'true'),
     };
 
     Object.entries(settings).forEach(([key, setter]) => {
@@ -67,6 +72,41 @@ export default function AccessibilityWidget() {
       }
     });
   }, []);
+  
+  const speak = useCallback((text: string) => {
+    if (text.trim().length > 0) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-MX';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+    }
+  }, []);
+
+  const [debouncedSpeak] = useDebounce(speak, 300);
+
+  useEffect(() => {
+    const handleMouseOver = (event: MouseEvent) => {
+        if (event.target instanceof HTMLElement) {
+            const target = event.target;
+            const text = target.innerText;
+            if (text) {
+                debouncedSpeak(text);
+            }
+        }
+    };
+
+    if (isReadingAloud) {
+        document.body.addEventListener('mouseover', handleMouseOver);
+    } else {
+        window.speechSynthesis.cancel();
+        document.body.removeEventListener('mouseover', handleMouseOver);
+    }
+
+    return () => {
+        window.speechSynthesis.cancel();
+        document.body.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [isReadingAloud, debouncedSpeak]);
 
   const handleFontSizeChange = (step: number) => {
     const newStep = Math.max(-FONT_STEP_LIMIT, Math.min(FONT_STEP_LIMIT, fontSizeStep + step));
@@ -97,6 +137,8 @@ export default function AccessibilityWidget() {
     removeSetting('data-underline-links');
     setReadableFont(false);
     removeSetting('data-readable-font');
+    setIsReadingAloud(false);
+    removeSetting('data-read-aloud');
   };
 
   if (pathname.startsWith('/admin')) {
@@ -151,6 +193,13 @@ export default function AccessibilityWidget() {
       checked: readableFont,
       action: () => handleToggle(setReadableFont, readableFont, 'data-readable-font'),
     },
+    {
+        Icon: Volume2,
+        label: 'Leer en voz alta',
+        isSwitch: true,
+        checked: isReadingAloud,
+        action: () => handleToggle(setIsReadingAloud, isReadingAloud, 'data-read-aloud'),
+    }
   ];
 
   return (
