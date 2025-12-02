@@ -292,7 +292,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {marcas.map((m) => (
-                              <SelectItem key={m.id ?? m.nombre} value={m.nombre}>
+                              <SelectItem key={`marca-${m.id ?? m.nombre}`} value={m.nombre}>
                                 {m.nombre}
                               </SelectItem>
                             ))}
@@ -354,11 +354,11 @@ export default function FormularioAuto({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Sedan">Sedán</SelectItem>
-                            <SelectItem value="SUV">SUV</SelectItem>
-                            <SelectItem value="Sports">Deportivo</SelectItem>
-                            <SelectItem value="Truck">Camioneta</SelectItem>
-                            <SelectItem value="Hatchback">Hatchback</SelectItem>
+                            {['Sedan','SUV','Sports','Truck','Hatchback'].map((tipo) => (
+                              <SelectItem key={`tipo-${tipo}`} value={tipo}>
+                                {tipo}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -379,7 +379,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {colores.map((c) => (
-                              <SelectItem key={c.id ?? c.nombre} value={c.nombre}>
+                              <SelectItem key={`color-${c.id ?? c.nombre}`} value={c.nombre}>
                                 {c.nombre}
                               </SelectItem>
                             ))}
@@ -429,7 +429,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {transmisiones.map((t) => (
-                              <SelectItem key={t.id ?? t.nombre} value={t.nombre}>
+                              <SelectItem key={`transmision-${t.id ?? t.nombre}`} value={t.nombre}>
                                 {t.nombre}
                               </SelectItem>
                             ))}
@@ -452,10 +452,11 @@ export default function FormularioAuto({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Gasoline">Gasolina</SelectItem>
-                            <SelectItem value="Diesel">Diésel</SelectItem>
-                            <SelectItem value="Electric">Eléctrico</SelectItem>
-                            <SelectItem value="Hybrid">Híbrido</SelectItem>
+                            {['Gasoline','Diesel','Electric','Hybrid'].map((combustible) => (
+                              <SelectItem key={`combustible-${combustible}`} value={combustible}>
+                                {combustible}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
