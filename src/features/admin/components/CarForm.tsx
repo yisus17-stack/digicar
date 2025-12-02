@@ -249,7 +249,13 @@ export default function FormularioAuto({
                             <FormControl>
                             <SelectTrigger><SelectValue placeholder="Selecciona una marca" /></SelectTrigger>
                             </FormControl>
-                            <SelectContent>{marcas.map(m => <SelectItem key={m.id} value={m.nombre}>{m.nombre}</SelectItem>)}</SelectContent>
+                            <SelectContent>
+                              {marcas.map((m) => (
+                                <SelectItem key={m.id} value={m.nombre}>
+                                  {m.nombre}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
@@ -283,7 +289,7 @@ export default function FormularioAuto({
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="motor" render={({ field }) => (<FormItem><FormLabel>Motor</FormLabel><FormControl><Input placeholder="Ej: 2.0L Turbo" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    <FormField control={form.control} name="motor" render={({ field }) => (<FormItem><FormLabel>Motor</FormLabel><FormControl><Input placeholder="Ej: 2.0L Turbo" {...field} /></FormControl><FormMessage /></FormMessage>)}/>
                     <FormField control={form.control} name="cilindrosMotor" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     <FormField control={form.control} name="transmision" render={({ field }) => (
                         <FormItem>
@@ -298,7 +304,7 @@ export default function FormularioAuto({
                     <FormField control={form.control} name="tipoCombustible" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Combustible *</FormLabel>
-                        <Select onValuechange={field.onChange} value={field.value} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Selecciona combustible" /></SelectTrigger></FormControl>
                             <SelectContent>
                             <SelectItem value="Gasoline">Gasolina</SelectItem>
@@ -381,5 +387,3 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
-
-    
