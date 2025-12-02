@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import type { Car } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Sparkles, PlusCircle, Car as CarIcon } from 'lucide-react';
-import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
+import { PlusCircle, Car as CarIcon } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
@@ -19,17 +18,9 @@ interface PaginaComparacionProps {
   todosLosAutos: Car[];
 }
 
-type Resumen = {
-    summary: string;
-    recommendation: string;
-}
-
 export default function PaginaComparacion({ autos, todosLosAutos }: PaginaComparacionProps) {
   const router = useRouter();
   const [auto1, auto2] = autos;
-  
-  const [resumen, setResumen] = useState<Resumen | null>(null);
-  const [isPending, startTransition] = useTransition();
 
   const handleSelectCar = (position: 'car1' | 'car2', carId: string) => {
     const currentIds = autos.map(c => c.id);
@@ -41,23 +32,6 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
         newIds = [currentIds[0], carId].filter(Boolean);
     }
     router.push(`/comparacion?ids=${newIds.join(',')}`);
-  };
-
-  const handleAiSummary = () => {
-    if (!auto1 || !auto2) return;
-    const car1Features = JSON.stringify(auto1);
-    const car2Features = JSON.stringify(auto2);
-    const userNeeds = "Quiero un auto equilibrado. Considera el precio, el rendimiento y las características.";
-
-    startTransition(async () => {
-        setResumen(null);
-        try {
-            const result = await summarizeCarComparison({ car1Features, car2Features, userNeeds });
-            setResumen(result);
-        } catch (error) {
-            setResumen({ summary: 'No se pudo generar el resumen.', recommendation: 'Ocurrió un error.' });
-        }
-    });
   };
 
   const features = [
@@ -189,31 +163,6 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
         </CardContent>
       </Card>
       
-      <div className="text-center">
-          <Button size="lg" onClick={handleAiSummary} disabled={isPending || !auto1 || !auto2}>
-            {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-            Obtener Resumen y Recomendación de IA
-          </Button>
-      </div>
-
-      {resumen && (
-        <Card className="shadow-lg animate-in fade-in duration-500">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> Análisis de IA</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div>
-                    <h3 className="font-bold mb-2">Diferencias Clave</h3>
-                    <p className="text-muted-foreground">{resumen.summary}</p>
-                </div>
-                <div>
-                    <h3 className="font-bold mb-2">Recomendación</h3>
-                    <p className="text-muted-foreground">{resumen.recommendation}</p>
-                </div>
-            </CardContent>
-        </Card>
-      )}
-
       {(auto1 || auto2) && (
         <Card>
           <CardHeader>

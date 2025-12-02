@@ -10,7 +10,6 @@ import {
   Home,
   LayoutGrid,
   GitCompareArrows,
-  Wand2,
   Landmark,
   ShieldCheck,
   LogIn,
@@ -91,7 +90,6 @@ const SiteHeader = () => {
     { href: '/', label: 'Inicio', icon: Home },
     { href: '/catalogo', label: 'Catálogo', icon: LayoutGrid },
     { href: '/comparacion', label: 'Comparar', icon: GitCompareArrows },
-    { href: '/simulador', label: 'Simulador IA', icon: Wand2 },
     { href: '/financiamiento', label: 'Financiamiento', icon: Landmark },
   ];
 

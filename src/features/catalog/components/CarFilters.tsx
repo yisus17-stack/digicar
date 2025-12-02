@@ -11,8 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Car } from '@/core/types';
-import { Loader, Sparkles } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { translations } from '@/lib/translations';
@@ -21,8 +19,6 @@ interface CarFiltersProps {
   filters: any;
   onFilterChange: (filters: any) => void;
   onReset: () => void;
-  onSearchWithAI: () => void;
-  isLoading: boolean;
   cars: Car[];
   maxPrice: number;
   sortComponent?: React.ReactNode;
@@ -32,7 +28,7 @@ interface CarFiltersProps {
 
 const FilterSkeleton = () => <Skeleton className="h-10 w-full" />;
 
-export default function CarFilters({ filters, onFilterChange, onReset, onSearchWithAI, isLoading, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
+export default function CarFilters({ filters, onFilterChange, onReset, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
   };
@@ -60,17 +56,15 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <Label>Ordenar por</Label>
                   {sortComponent}
               </div>
-              <Separator />
             </>
         )}
-        <h3 className="text-2xl font-bold md:hidden">Filtros</h3>
-        <h3 className="text-2xl font-bold hidden md:block">Filtros</h3>
+        <h3 className="text-2xl font-bold">Filtros</h3>
         
         <div>
-          <Label>Describe tu auto ideal (IA)</Label>
+          <Label>Búsqueda por palabra clave</Label>
           <Input
             type="text"
-            placeholder="Ej: Un SUV familiar para 7 personas..."
+            placeholder="Ej: Camry, SUV, familiar..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="w-full text-base focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -178,10 +172,6 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
         </div>
       </div>
       <div className='space-y-2 mt-auto pt-8'>
-        <Button onClick={onSearchWithAI} className="w-full" disabled={isLoading}>
-          {isLoading ? <Loader className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-          Buscar con IA
-        </Button>
         <Button variant="outline" className="w-full" onClick={onReset}>
             Restablecer Filtros
         </Button>

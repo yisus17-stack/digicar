@@ -1,17 +1,15 @@
 
 'use client';
 
-import { useState, useMemo, useTransition, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 import type { Car } from '@/core/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
-import { X, SlidersHorizontal, Loader, GitCompareArrows, Car as CarIcon } from 'lucide-react';
+import { X, SlidersHorizontal, GitCompareArrows, Car as CarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import AiSummary from './AiSummary';
-import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -95,10 +93,6 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   
 
-
-  const [aiSummary, setAiSummary] = useState('');
-  const [isAiLoading, startAiTransition] = useTransition();
-
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
   }, [initialSearchTerm]);
@@ -116,7 +110,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
   };
 
   const handleCompare = () => {
-    router.push(`/compare?ids=${comparisonIds.join(',')}`);
+    router.push(`/comparacion?ids=${comparisonIds.join(',')}`);
   };
 
   const filteredCars = useMemo(() => {
@@ -184,7 +178,6 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
       passengers: 'all',
     });
     setSearchTerm('');
-    setAiSummary('');
     setCurrentPage(1);
     setSortOrder('relevance');
   };
@@ -193,21 +186,6 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
     setCurrentPage(1);
     setIsSheetOpen(false);
   }
-
-  const handleSearchWithAI = () => {
-    startAiTransition(async () => {
-      setAiSummary('');
-      const result = await summarizeCatalogFilters({
-        filters: JSON.stringify(filters),
-        userDescription: searchTerm,
-        carList: JSON.stringify(filteredCars.map(c => ({id: c.id, brand: c.brand, model: c.model, features: c.features, price: c.price})))
-      });
-      setAiSummary(result.recommendation);
-      if (isMobile) {
-        setIsSheetOpen(false);
-      }
-    });
-  };
 
   const sortOptions = (
     <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
@@ -228,8 +206,6 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
       filters={filters}
       onFilterChange={handleFilterChange}
       onReset={handleResetFilters}
-      onSearchWithAI={handleSearchWithAI}
-      isLoading={isAiLoading}
       cars={datosTodosLosAutos}
       maxPrice={MAX_PRICE}
       sortComponent={isMobile ? sortOptions : undefined}
@@ -285,7 +261,6 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
               </div>
             </div>
 
-            { (isAiLoading || aiSummary) && <AiSummary summary={aiSummary} /> }
             
             <div className="flex-grow">
                 {/* Mobile View */}
@@ -313,7 +288,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
                     ))}
                 </div>
 
-                {filteredCars.length === 0 && !isAiLoading && (
+                {filteredCars.length === 0 && (
                     <div className="text-center py-16">
                         <X className="mx-auto h-12 w-12 text-muted-foreground" />
                         <h2 className="mt-4 text-xl font-semibold">No se encontraron resultados</h2>

@@ -52,7 +52,7 @@ const SeccionHero = () => {
                     Encuentra el auto de tus sueños, sin complicaciones.
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
-                    Explora, compara y financia tu próximo vehículo con herramientas inteligentes y recomendaciones de IA. Tu viaje empieza aquí.
+                    Explora, compara y financia tu próximo vehículo con nuestras herramientas inteligentes. Tu viaje empieza aquí.
                 </p>
 
                 <div className="max-w-2xl mx-auto">

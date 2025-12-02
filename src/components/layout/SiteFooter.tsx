@@ -28,7 +28,6 @@ const SiteFooter = () => {
             <h3 className="font-bold text-lg mb-4">Enlaces</h3>
             <ul className="space-y-2">
               <li><Link href="/catalogo" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Catálogo</Link></li>
-              <li><Link href="/simulador" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Simulador</Link></li>
               <li><Link href="/comparacion" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Comparador</Link></li>
               <li><Link href="/financiamiento" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Financiamiento</Link></li>
             </ul>
