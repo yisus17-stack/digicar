@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -177,6 +178,12 @@ export default function FormularioAuto({
     alCambiarApertura(false);
   };
   
+  const isStepValid = (stepIndex: number) => {
+    const fields = formSteps[stepIndex].fields;
+    const errors = Object.keys(form.formState.errors);
+    return fields.every(field => !errors.includes(field));
+  };
+
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
@@ -186,8 +193,8 @@ export default function FormularioAuto({
           <div className="flex items-center justify-center p-4">
             <div className="flex w-full max-w-sm items-center">
                 {formSteps.map((step, index) => {
+                    const isCompleted = index < currentStep;
                     const isActive = currentStep === index;
-                    const isCompleted = currentStep > index;
 
                     return (
                         <React.Fragment key={step.id}>
