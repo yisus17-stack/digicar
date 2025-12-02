@@ -169,7 +169,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
+                    <AlertDialogAction onClick={async (e) => { e.preventDefault(); await manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
                 </AlertDialogFooter>
