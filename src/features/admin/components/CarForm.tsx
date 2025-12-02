@@ -167,28 +167,38 @@ export default function FormularioAuto({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
-
+  
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreview(imageUrl);
-        form.setValue('imagenUrl', imageUrl, { shouldValidate: true });
-        form.clearErrors('imagenUrl');
+  
+        // Solo actualiza `imagenUrl` cuando el usuario envíe el formulario
+        // form.setValue('imagenUrl', imageUrl); <-- NO lo hacemos aquí
       };
       reader.readAsDataURL(file);
     }
   };
+  
+  
 
   const handleNext = async () => {
-    const fields = formSteps[currentStep].fields;
-    const output = await form.trigger(fields as (keyof DatosFormulario)[], { shouldFocus: true });
-
-    if (!output) return;
-
+    // Solo valida los campos del paso actual
+    const currentFields = formSteps[currentStep].fields;
+    if (currentFields.length > 0) {
+      const isValid = await form.trigger(currentFields as any);
+      if (!isValid) return; // Si no es válido, no avanzamos
+    }
+  
     if (currentStep < formSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
+  
+  const handlePrevious = () => {
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
+  };
+  
 
   const alEnviar = (data: DatosFormulario) => {
     const datosAuto: Omit<Car, 'id'> = {
@@ -200,25 +210,28 @@ export default function FormularioAuto({
             .filter((f) => f !== '')
         : [],
       motor: data.motor || '',
+      // Imagen: si hay archivo seleccionado usamos preview, si no usamos URL existente
+      imagenUrl: selectedFile ? preview || '' : data.imagenUrl,
     };
-
+  
     alGuardar(datosAuto, selectedFile);
     alCambiarApertura(false);
   };
+  
 
   const removeImage = () => {
     setPreview(null);
     setSelectedFile(undefined);
     form.setValue('imagenUrl', '', { shouldValidate: true });
   };
-  
+
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
         <DialogHeader>
-          <DialogTitle className="text-xl">
-            {auto ? 'Editar Auto' : 'Añadir Auto'}
-          </DialogTitle>
+          <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
+
+          {/* Wizard Stepper */}
           <div className="flex w-full items-center justify-center p-4">
             {formSteps.map((step, index) => {
               const isActive = currentStep === index;
@@ -242,21 +255,21 @@ export default function FormularioAuto({
                     <p
                       className={cn(
                         'mt-2 text-xs text-center',
-                        currentStep >= index
-                          ? 'font-semibold text-primary'
-                          : 'text-muted-foreground'
+                        currentStep >= index ? 'font-semibold text-primary' : 'text-muted-foreground'
                       )}
                     >
                       {step.name}
                     </p>
                   </div>
+
+                  {/* Línea de progreso */}
                   {index < formSteps.length - 1 && (
                     <div
                       className={cn(
-                        'flex-1 h-0.5 mx-4',
-                        isCompleted ? 'bg-primary' : 'bg-muted-foreground'
+                        'flex-1 h-0.5 mx-4 transition-colors duration-300',
+                        currentStep > index ? 'bg-primary' : 'bg-muted-foreground'
                       )}
-                    ></div>
+                    />
                   )}
                 </React.Fragment>
               );
@@ -292,7 +305,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {marcas.map((m) => (
-                              <SelectItem key={`marca-${m.id ?? m.nombre}`} value={m.nombre}>
+                              <SelectItem key={`marca-${m.id}`} value={m.nombre}>
                                 {m.nombre}
                               </SelectItem>
                             ))}
@@ -302,6 +315,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Modelo */}
                   <FormField
                     control={form.control}
                     name="modelo"
@@ -315,6 +329,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Año */}
                   <FormField
                     control={form.control}
                     name="anio"
@@ -328,6 +343,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Precio */}
                   <FormField
                     control={form.control}
                     name="precio"
@@ -341,6 +357,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Tipo */}
                   <FormField
                     control={form.control}
                     name="tipo"
@@ -354,17 +371,18 @@ export default function FormularioAuto({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {['Sedan','SUV','Sports','Truck','Hatchback'].map((tipo) => (
-                              <SelectItem key={`tipo-${tipo}`} value={tipo}>
-                                {tipo}
-                              </SelectItem>
-                            ))}
+                            <SelectItem value="Sedan">Sedán</SelectItem>
+                            <SelectItem value="SUV">SUV</SelectItem>
+                            <SelectItem value="Sports">Deportivo</SelectItem>
+                            <SelectItem value="Truck">Camioneta</SelectItem>
+                            <SelectItem value="Hatchback">Hatchback</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  {/* Color */}
                   <FormField
                     control={form.control}
                     name="color"
@@ -379,7 +397,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {colores.map((c) => (
-                              <SelectItem key={`color-${c.id ?? c.nombre}`} value={c.nombre}>
+                              <SelectItem key={`color-${c.id}`} value={c.nombre}>
                                 {c.nombre}
                               </SelectItem>
                             ))}
@@ -389,6 +407,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Motor */}
                   <FormField
                     control={form.control}
                     name="motor"
@@ -402,6 +421,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Cilindros */}
                   <FormField
                     control={form.control}
                     name="cilindrosMotor"
@@ -415,6 +435,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Transmisión */}
                   <FormField
                     control={form.control}
                     name="transmision"
@@ -429,7 +450,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                             {transmisiones.map((t) => (
-                              <SelectItem key={`transmision-${t.id ?? t.nombre}`} value={t.nombre}>
+                              <SelectItem key={`transmision-${t.id}`} value={t.nombre}>
                                 {t.nombre}
                               </SelectItem>
                             ))}
@@ -439,6 +460,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
+                  {/* Combustible */}
                   <FormField
                     control={form.control}
                     name="tipoCombustible"
@@ -452,17 +474,17 @@ export default function FormularioAuto({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {['Gasoline','Diesel','Electric','Hybrid'].map((combustible) => (
-                              <SelectItem key={`combustible-${combustible}`} value={combustible}>
-                                {combustible}
-                              </SelectItem>
-                            ))}
+                            <SelectItem value="Gasoline">Gasolina</SelectItem>
+                            <SelectItem value="Diesel">Diésel</SelectItem>
+                            <SelectItem value="Electric">Eléctrico</SelectItem>
+                            <SelectItem value="Hybrid">Híbrido</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  {/* Pasajeros */}
                   <FormField
                     control={form.control}
                     name="pasajeros"
@@ -499,12 +521,10 @@ export default function FormularioAuto({
                     )}
                   />
                   <div className="space-y-4 pt-4 border-t">
-                    <div>
-                      <FormLabel className="text-base font-semibold">Imagen del Auto *</FormLabel>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Sube una foto o pega la URL de la imagen.
-                      </p>
-                    </div>
+                    <FormLabel className="text-base font-semibold">Imagen del Auto *</FormLabel>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Sube una foto o pega la URL de la imagen.
+                    </p>
                     <FormItem>
                       <FormLabel>Subir imagen</FormLabel>
                       <FormControl>
@@ -561,11 +581,7 @@ export default function FormularioAuto({
               <div className="flex justify-between w-full items-center">
                 <div>
                   {currentStep > 0 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setCurrentStep(currentStep - 1)}
-                    >
+                    <Button type="button" variant="outline" onClick={handlePrevious}>
                       <ArrowLeft className="mr-2 h-4 w-4" />
                       Anterior
                     </Button>
@@ -587,6 +603,7 @@ export default function FormularioAuto({
                 </div>
               </div>
             </DialogFooter>
+
           </form>
         </Form>
       </DialogContent>
