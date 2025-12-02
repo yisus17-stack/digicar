@@ -160,7 +160,7 @@ export default function FormularioAuto({
     if (!output) return;
 
     if (currentStep < formSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
+        setCurrentStep(currentStep + 1);
     }
   };
 
@@ -174,8 +174,6 @@ export default function FormularioAuto({
     alCambiarApertura(false);
   };
   
-  const handleFormSubmit = form.handleSubmit(alEnviar);
-
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl flex flex-col">
@@ -183,38 +181,40 @@ export default function FormularioAuto({
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
 
           <div className="relative w-full px-6 py-6">
-            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-muted z-0 -translate-y-1/2"></div>
-            <div
-              className="absolute top-1/2 left-0 h-0.5 bg-primary z-0 -translate-y-1/2 transition-all duration-300"
-              style={{ width: `${(currentStep / (formSteps.length - 1)) * 100}%` }}
-            ></div>
-            
-            <div className="relative z-10 flex justify-between">
+            <div className="flex justify-between items-center">
               {formSteps.map((step, index) => {
                 const isActive = currentStep === index;
                 const isCompleted = currentStep > index;
 
                 return (
-                  <div key={step.id} className="flex flex-col items-center gap-1">
-                    <div
-                      className={cn(
-                        "flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300 bg-background",
-                        isActive && "border-primary text-primary",
-                        isCompleted && "border-primary bg-primary text-primary-foreground",
-                        !isActive && !isCompleted && "border-muted-foreground text-muted-foreground"
-                      )}
-                    >
-                      {index + 1}
+                  <React.Fragment key={step.id}>
+                    <div className='flex flex-col items-center gap-1'>
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300",
+                          isActive && "border-primary bg-primary text-primary-foreground",
+                          isCompleted && "bg-primary text-primary-foreground border-primary",
+                          !isActive && !isCompleted && "border-muted-foreground/50 text-muted-foreground"
+                        )}
+                      >
+                        {index + 1}
+                      </div>
+                      <p
+                        className={cn(
+                          "text-xs text-center mt-1 font-medium",
+                           (isActive || isCompleted) ? "text-primary font-semibold" : "text-muted-foreground"
+                        )}
+                      >
+                        {step.name}
+                      </p>
                     </div>
-                    <p
-                      className={cn(
-                        "text-xs text-center mt-1 font-medium",
-                         (isActive || isCompleted) ? "text-primary" : "text-muted-foreground"
-                      )}
-                    >
-                      {step.name}
-                    </p>
-                  </div>
+                    {index < formSteps.length - 1 && (
+                      <div className={cn(
+                        "flex-1 h-0.5 mx-2",
+                        isCompleted ? "bg-primary" : "bg-muted-foreground/30"
+                      )}></div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
@@ -222,7 +222,16 @@ export default function FormularioAuto({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={handleFormSubmit} id="car-form" className="flex-grow overflow-hidden">
+          <form
+            id="car-form"
+            onSubmit={form.handleSubmit(alEnviar)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && currentStep < formSteps.length - 1) {
+                e.preventDefault(); 
+                handleNext();
+              }
+            }}
+          >
             <ScrollArea className="h-[50vh] p-4">
               {currentStep === 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in-50 duration-300">
