@@ -91,6 +91,10 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         if (file) {
             const logoUrl = await uploadImage(file);
             finalBrandData.logoUrl = logoUrl;
+        } else if (marcaSeleccionada && data.logoUrl) {
+            finalBrandData.logoUrl = data.logoUrl;
+        } else if (marcaSeleccionada) {
+            finalBrandData.logoUrl = marcaSeleccionada.logoUrl || '';
         }
 
 

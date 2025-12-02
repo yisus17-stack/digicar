@@ -54,10 +54,11 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
   useEffect(() => {
     if (estaAbierto) {
       if (marca) {
-        form.reset(marca);
-        if (marca.logoUrl) {
-            setPreview(marca.logoUrl);
-        }
+        form.reset({
+            name: marca.name || '',
+            logoUrl: marca.logoUrl || '',
+        });
+        setPreview(marca.logoUrl || null);
       } else {
         form.reset({
           name: '',
@@ -67,7 +68,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
       }
       setSelectedFile(undefined);
     }
-  }, [marca, form, estaAbierto]);
+  }, [marca, estaAbierto, form]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -75,7 +76,9 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        const result = reader.result as string;
+        setPreview(result);
+        form.setValue('logoUrl', result, { shouldValidate: true });
       };
       reader.readAsDataURL(file);
     }
@@ -103,16 +106,31 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
             )}/>
              
             <FormItem>
-              <FormLabel>Logo de la Marca</FormLabel>
+              <FormLabel>Subir logo</FormLabel>
               <FormControl>
                 <Input type="file" accept="image/*" onChange={handleFileChange} />
               </FormControl>
               <FormMessage />
             </FormItem>
+
+            <FormField control={form.control} name="logoUrl" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>O pegar URL del logo</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="https://example.com/logo.png" onChange={(e) => {
+                          field.onChange(e);
+                          setPreview(e.target.value);
+                          setSelectedFile(undefined);
+                      }}/>
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}/>
             
             {preview && (
               <div className="mt-4">
-                <Image src={preview} alt="Vista previa del logo" width={100} height={100} className="rounded-md object-contain" />
+                <p className="text-sm font-medium mb-2">Vista previa:</p>
+                <Image src={preview} alt="Vista previa del logo" width={100} height={100} className="rounded-md object-contain border" />
               </div>
             )}
 
