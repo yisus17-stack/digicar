@@ -40,7 +40,6 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     { label: "Tipo", key: 'tipo' },
     { label: "Combustible", key: 'tipoCombustible' },
     { label: "Transmisión", key: 'transmision' },
-    { label: "Motor", key: 'motor' },
     { label: "Cilindros", key: 'cilindrosMotor' },
     { label: "Pasajeros", key: 'pasajeros' },
     { label: "Color", key: 'color' },

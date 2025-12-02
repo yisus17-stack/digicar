@@ -42,7 +42,6 @@ const esquemaFormulario = z.object({
   precio: z.coerce.number().min(0),
   tipo: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
   color: z.string().min(1),
-  motor: z.string().optional(),
   cilindrosMotor: z.coerce.number().min(0),
   transmision: z.string().min(1),
   tipoCombustible: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid']),
@@ -85,7 +84,6 @@ export default function FormularioAuto({
       precio: 0,
       tipoCombustible: 'Gasoline',
       transmision: '',
-      motor: '',
       caracteristicas: '',
       tipo: 'Sedan',
       cilindrosMotor: 4,
@@ -105,7 +103,6 @@ export default function FormularioAuto({
           precio: auto.precio,
           tipo: auto.tipo,
           color: auto.color,
-          motor: auto.motor || '',
           cilindrosMotor: auto.cilindrosMotor,
           transmision: auto.transmision,
           tipoCombustible: auto.tipoCombustible,
@@ -122,7 +119,6 @@ export default function FormularioAuto({
           precio: 0,
           tipo: 'Sedan',
           color: '',
-          motor: '',
           cilindrosMotor: 4,
           transmision: '',
           tipoCombustible: 'Gasoline',
@@ -159,7 +155,6 @@ export default function FormularioAuto({
             .map((f) => f.trim())
             .filter((f) => f !== '')
         : [],
-      motor: data.motor || '',
       imagenUrl: selectedFile ? preview || '' : data.imagenUrl,
     };
     alGuardar(datosAuto, selectedFile);
@@ -297,19 +292,6 @@ export default function FormularioAuto({
                                 ))}
                               </SelectContent>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="motor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Motor</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Ej: 2.0L Turbo" {...field} />
-                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}

@@ -101,7 +101,7 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
       { icon: Droplets, label: 'Combustible', value: traducciones.tipoCombustible[auto.tipoCombustible as keyof typeof traducciones.tipoCombustible] },
       { icon: Users, label: 'Pasajeros', value: auto.pasajeros },
       { icon: GitMerge, label: 'Transmisión', value: traducciones.transmision[auto.transmision as keyof typeof traducciones.transmision] },
-      { icon: Settings, label: 'Motor', value: auto.motor },
+      { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
       { icon: Palette, label: 'Color', value: traducciones.color[auto.color as keyof typeof traducciones.color] },
   ]
 

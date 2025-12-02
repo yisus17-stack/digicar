@@ -26,10 +26,6 @@
           "type": "string",
           "description": "The trim level of the car (e.g., LE, XLE, Limited)."
         },
-        "motor": {
-          "type": "string",
-          "description": "Description of the engine (e.g., 2.5L I4, 3.5L V6)."
-        },
         "precio": {
           "type": "number",
           "description": "The price of the car."

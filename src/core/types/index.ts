@@ -6,7 +6,6 @@ export type Car = {
   precio: number;
   tipoCombustible: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
   transmision: string;
-  motor?: string;
   caracteristicas: string[];
   imagenUrl: string;
   tipo: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
