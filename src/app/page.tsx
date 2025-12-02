@@ -3,16 +3,11 @@
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ChevronRight, Search, Award, GitCompareArrows } from 'lucide-react';
+import { Search, Award, GitCompareArrows } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Marca } from '@/core/types';
-import PopularCarsSection from '@/features/catalog/components/PopularCarsSection';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
 
 
 const EsqueletoSeccionHero = () => {
@@ -76,7 +71,7 @@ const SeccionHero = () => {
                     </form>
 
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                        <Link href="#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
+                        <Link href="/catalog#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
                             <Award className="h-4 w-4" />
                             <span>Los más populares</span>
                         </Link>
@@ -91,68 +86,6 @@ const SeccionHero = () => {
     );
 };
 
-const EsqueletoSeccionMarcas = () => (
-    <section className="py-12 bg-muted/50">
-        <div className="container mx-auto px-4 text-center">
-            <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">Nuestras Marcas</h2>
-            <div className="flex justify-center items-center flex-wrap gap-x-8 gap-y-6 md:gap-x-12">
-                {[...Array(5)].map((_, i) => (
-                    <Skeleton key={i} className="h-10 w-28" />
-                ))}
-            </div>
-        </div>
-    </section>
-);
-
-
-const SeccionMarcas = () => {
-    const firestore = useFirestore();
-    const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
-    const { data: marcas, isLoading } = useCollection<Marca>(coleccionMarcas);
-
-    if (isLoading) {
-        return <EsqueletoSeccionMarcas />;
-    }
-
-    if (!marcas || marcas.length === 0) {
-        return null;
-    }
-    
-    // Duplicar los logos para un efecto de marquesina continuo
-    const marcasDuplicadas = [...marcas, ...marcas];
-
-    return (
-        <section className="py-12 bg-muted/30">
-            <div className="container mx-auto px-4 text-center">
-                 <h2 className="text-sm uppercase tracking-widest text-muted-foreground mb-8">
-                    Marcas que manejamos
-                 </h2>
-                 <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-                    <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
-                        {marcasDuplicadas.map((brand, index) => (
-                            <Link href={`/catalog?brand=${encodeURIComponent(brand.name)}`} key={`${brand.id}-${index}`} className="group mx-8 flex-shrink-0" title={brand.name}>
-                                <div className="relative h-10 w-28">
-                                    {brand.logoUrl ? (
-                                        <Image
-                                            src={brand.logoUrl}
-                                            alt={`${brand.name} logo`}
-                                            fill
-                                            style={{ objectFit: 'contain' }}
-                                            className="opacity-60 grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
-                                        />
-                                    ) : (
-                                        <span className="flex items-center justify-center h-full text-muted-foreground group-hover:text-foreground transition-colors">{brand.name}</span>
-                                    )}
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                 </div>
-            </div>
-        </section>
-    );
-};
-
 
 export default function Home() {
     return (
@@ -160,20 +93,6 @@ export default function Home() {
             <Suspense fallback={<EsqueletoSeccionHero />}>
               <SeccionHero />
             </Suspense>
-
-            <Suspense fallback={<EsqueletoSeccionMarcas />}>
-                <SeccionMarcas />
-            </Suspense>
-            
-            <PopularCarsSection />
-            
-            <div className="text-center mb-16 px-4">
-              <Button asChild variant="outline">
-                <Link href="/catalog">
-                  Ver todos los vehículos <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
         </>
     );
 }
