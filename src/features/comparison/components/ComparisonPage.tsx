@@ -38,11 +38,9 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     { label: "Precio", key: 'price' },
     { label: "Año", key: 'year' },
     { label: "Tipo", key: 'type' },
-    { label: "Kilometraje/Autonomía", key: 'mileage' },
     { label: "Combustible", key: 'fuelType' },
     { label: "Transmisión", key: 'transmission' },
     { label: "Motor", key: 'engine' },
-    { label: "Caballos de Fuerza", key: 'horsepower' },
     { label: "Cilindros", key: 'engineCylinders' },
     { label: "Pasajeros", key: 'passengers' },
     { label: "Color", key: 'color' },
@@ -54,8 +52,6 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     
     switch (key) {
       case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
-      case 'mileage': return `${Number(value).toLocaleString('es-MX')} ${car.fuelType === 'Electric' ? 'km' : 'KPL'}`;
-      case 'horsepower': return `${value} HP`;
       case 'type': 
       case 'fuelType': 
       case 'transmission': 

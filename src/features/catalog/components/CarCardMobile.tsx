@@ -46,10 +46,6 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
                 </div>
                  <div className="flex items-center text-xs text-muted-foreground gap-3 mt-1">
                     <div className="flex items-center gap-1">
-                        <Gauge className="h-3 w-3" />
-                        <span>{car.mileage.toLocaleString('es-MX')} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
                         <Droplets className="h-3 w-3" />
                         <span>{translations.fuelType[tipoCombustible] || car.fuelType}</span>
                     </div>

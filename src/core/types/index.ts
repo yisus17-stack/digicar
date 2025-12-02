@@ -4,11 +4,9 @@ export type Car = {
   model: string;
   year: number;
   price: number;
-  mileage: number;
   fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
   transmission: string;
   engine?: string;
-  horsepower: number;
   features: string[];
   imageUrl: string;
   type: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';

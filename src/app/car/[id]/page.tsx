@@ -98,9 +98,7 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
   const tipoAuto = auto.type as keyof (typeof translations.type);
 
   const detallesAuto = [
-      { icon: Zap, label: 'Potencia', value: `${auto.horsepower} HP` },
       { icon: Droplets, label: 'Combustible', value: translations.fuelType[auto.fuelType as keyof typeof translations.fuelType] },
-      { icon: Gauge, label: 'Kilometraje', value: `${auto.mileage.toLocaleString('es-MX')} ${auto.fuelType === 'Electric' ? 'km' : 'KPL'}` },
       { icon: Users, label: 'Pasajeros', value: auto.passengers },
       { icon: GitMerge, label: 'Transmisión', value: translations.transmission[auto.transmission as keyof typeof translations.transmission] },
       { icon: Settings, label: 'Motor', value: auto.engine },

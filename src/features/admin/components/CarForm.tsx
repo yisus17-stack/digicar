@@ -42,8 +42,6 @@ const esquemaFormulario = z.object({
   price: z.coerce.number().min(0),
   type: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
   color: z.string().min(1),
-  mileage: z.coerce.number().min(0),
-  horsepower: z.coerce.number().min(0),
   engine: z.string().optional(),
   engineCylinders: z.coerce.number().min(0),
   transmission: z.string().min(1),
@@ -58,7 +56,7 @@ const formSteps = [
   {
     id: 'general',
     name: 'Datos del Vehículo',
-    fields: ['brand', 'model', 'year', 'price', 'type', 'color', 'mileage', 'horsepower', 'engine', 'engineCylinders', 'transmission', 'fuelType', 'passengers'] as const
+    fields: ['brand', 'model', 'year', 'price', 'type', 'color', 'engine', 'engineCylinders', 'transmission', 'fuelType', 'passengers'] as const
   },
   {
     id: 'media',
@@ -100,11 +98,9 @@ export default function FormularioAuto({
       model: '',
       year: new Date().getFullYear(),
       price: 0,
-      mileage: 0,
       fuelType: 'Gasoline',
       transmission: '',
       engine: '',
-      horsepower: 0,
       features: '',
       type: 'Sedan',
       engineCylinders: 4,
@@ -124,8 +120,6 @@ export default function FormularioAuto({
           price: auto.price,
           type: auto.type,
           color: auto.color,
-          mileage: auto.mileage,
-          horsepower: auto.horsepower,
           engine: auto.engine || '',
           engineCylinders: auto.engineCylinders,
           transmission: auto.transmission,
@@ -143,8 +137,6 @@ export default function FormularioAuto({
           price: 0,
           type: 'Sedan',
           color: '',
-          mileage: 0,
-          horsepower: 0,
           engine: '',
           engineCylinders: 4,
           transmission: '',
@@ -290,8 +282,6 @@ export default function FormularioAuto({
                         <FormMessage />
                         </FormItem>
                     )}/>
-                    <FormField control={form.control} name="mileage" render={({ field }) => (<FormItem><FormLabel>Kilometraje/Autonomía *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    <FormField control={form.control} name="horsepower" render={({ field }) => (<FormItem><FormLabel>Caballos de Fuerza *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     <FormField control={form.control} name="engine" render={({ field }) => (<FormItem><FormLabel>Motor</FormLabel><FormControl><Input placeholder="Ej: 2.0L Turbo" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     <FormField control={form.control} name="engineCylinders" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     <FormField control={form.control} name="transmission" render={({ field }) => (
