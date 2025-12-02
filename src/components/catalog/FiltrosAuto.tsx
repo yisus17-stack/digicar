@@ -83,7 +83,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todas las marcas"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todas las marcas</SelectItem>
-                      {marcasUnicas.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
+                      {marcasUnicas.map((brand, index) => <SelectItem key={`${brand}-${index}`} value={brand}>{brand}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -106,7 +106,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todos los tipos"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los tipos</SelectItem>
-                      {tiposUnicos.map(type => <SelectItem key={type} value={type}>{traducciones.type[type as keyof typeof traducciones.type] || type}</SelectItem>)}
+                      {tiposUnicos.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{traducciones.type[type as keyof typeof traducciones.type] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -117,7 +117,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todos los años"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los años</SelectItem>
-                      {aniosUnicos.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                      {aniosUnicos.map((year, index) => <SelectItem key={`${year}-${index}`} value={year}>{year}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -128,7 +128,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todos los combustibles"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los combustibles</SelectItem>
-                      {tiposCombustibleUnicos.map(type => <SelectItem key={type} value={type}>{traducciones.fuelType[type as keyof typeof traducciones.fuelType] || type}</SelectItem>)}
+                      {tiposCombustibleUnicos.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{traducciones.fuelType[type as keyof typeof traducciones.fuelType] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -139,7 +139,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todos los cilindros"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los cilindros</SelectItem>
-                      {cilindrosUnicos.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
+                      {cilindrosUnicos.map((cyl, index) => <SelectItem key={`${cyl}-${index}`} value={cyl}>{cyl}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -150,7 +150,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todos los colores"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los colores</SelectItem>
-                      {coloresUnicos.map(color => <SelectItem key={color} value={color}>{traducciones.color[color as keyof typeof traducciones.color] || color}</SelectItem>)}
+                      {coloresUnicos.map((color, index) => <SelectItem key={`${color}-${index}`} value={color}>{traducciones.color[color as keyof typeof traducciones.color] || color}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -161,7 +161,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Cualquier capacidad"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Cualquier capacidad</SelectItem>
-                      {pasajerosUnicos.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
+                      {pasajerosUnicos.map((pax, index) => <SelectItem key={`${pax}-${index}`} value={pax}>{pax} Pasajeros</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -172,7 +172,7 @@ export default function FiltrosAuto({ filters, onFilterChange, onReset, onSearch
                   <SelectTrigger><SelectValue placeholder="Todas las transmisiones"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todas las transmisiones</SelectItem>
-                      {transmisionesUnicas.map(type => <SelectItem key={type} value={type}>{traducciones.transmission[type as keyof typeof traducciones.transmission] || type}</SelectItem>)}
+                      {transmisionesUnicas.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{traducciones.transmission[type as keyof typeof traducciones.transmission] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>

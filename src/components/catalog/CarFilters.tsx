@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -84,7 +83,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todas las marcas"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todas las marcas</SelectItem>
-                      {uniqueBrands.map(brand => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
+                      {uniqueBrands.map((brand, index) => <SelectItem key={`${brand}-${index}`} value={brand}>{brand}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -107,7 +106,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todos los tipos"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los tipos</SelectItem>
-                      {uniqueTypes.map(type => <SelectItem key={type} value={type}>{translations.type[type as keyof typeof translations.type] || type}</SelectItem>)}
+                      {uniqueTypes.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{translations.type[type as keyof typeof translations.type] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -118,7 +117,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todos los años"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los años</SelectItem>
-                      {uniqueYears.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                      {uniqueYears.map((year, index) => <SelectItem key={`${year}-${index}`} value={year}>{year}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -129,7 +128,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todos los combustibles"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los combustibles</SelectItem>
-                      {uniqueFuelTypes.map(type => <SelectItem key={type} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType] || type}</SelectItem>)}
+                      {uniqueFuelTypes.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{translations.fuelType[type as keyof typeof translations.fuelType] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -140,7 +139,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todos los cilindros"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los cilindros</SelectItem>
-                      {uniqueCylinders.map(cyl => <SelectItem key={cyl} value={cyl}>{cyl}</SelectItem>)}
+                      {uniqueCylinders.map((cyl, index) => <SelectItem key={`${cyl}-${index}`} value={cyl}>{cyl}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -151,7 +150,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todos los colores"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todos los colores</SelectItem>
-                      {uniqueColors.map(color => <SelectItem key={color} value={color}>{translations.color[color as keyof typeof translations.color] || color}</SelectItem>)}
+                      {uniqueColors.map((color, index) => <SelectItem key={`${color}-${index}`} value={color}>{translations.color[color as keyof typeof translations.color] || color}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -162,7 +161,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Cualquier capacidad"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Cualquier capacidad</SelectItem>
-                      {uniquePassengers.map(pax => <SelectItem key={pax} value={pax}>{pax} Pasajeros</SelectItem>)}
+                      {uniquePassengers.map((pax, index) => <SelectItem key={`${pax}-${index}`} value={pax}>{pax} Pasajeros</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
@@ -173,7 +172,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, onSearchW
                   <SelectTrigger><SelectValue placeholder="Todas las transmisiones"/></SelectTrigger>
                   <SelectContent>
                       <SelectItem value="all">Todas las transmisiones</SelectItem>
-                      {uniqueTransmissions.map(type => <SelectItem key={type} value={type}>{translations.transmission[type as keyof typeof translations.transmission] || type}</SelectItem>)}
+                      {uniqueTransmissions.map((type, index) => <SelectItem key={`${type}-${index}`} value={type}>{translations.transmission[type as keyof typeof translations.transmission] || type}</SelectItem>)}
                   </SelectContent>
               </Select>
         </div>
