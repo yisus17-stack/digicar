@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo, useTransition, useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 import type { Car } from '@/core/types';
 import CarFilters from './CarFilters';
@@ -18,7 +19,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 const ITEMS_PER_PAGE = 6;
@@ -70,6 +71,8 @@ export const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCa
 
 export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodosLosAutos: Car[] }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialSearchTerm = searchParams.get('search') || '';
 
   const [filters, setFilters] = useState({
     brand: 'all',
@@ -82,7 +85,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
     color: 'all',
     passengers: 'all',
   });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
@@ -95,6 +98,10 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
 
   const [aiSummary, setAiSummary] = useState('');
   const [isAiLoading, startAiTransition] = useTransition();
+
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+  }, [initialSearchTerm]);
 
   const handleToggleCompare = (carId: string) => {
     setComparisonIds(prevIds => {

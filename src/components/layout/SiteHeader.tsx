@@ -46,10 +46,11 @@ import { useToast } from '@/hooks/use-toast';
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useUser();
   const auth = useAuth();
-  const router = useRouter();
   const { toast } = useToast();
   const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
@@ -72,6 +73,15 @@ const SiteHeader = () => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
+      closeSearch();
+      setSearchTerm('');
+    }
+  };
+  
   // Do not show header on admin routes
   if (pathname.startsWith('/admin')) {
     return null;
@@ -250,13 +260,15 @@ const SiteHeader = () => {
               className="absolute left-0 right-0 top-0 bg-background"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="container mx-auto flex h-20 items-center px-4">
+              <form onSubmit={handleSearchSubmit} className="container mx-auto flex h-20 items-center px-4">
                 <Search className="mr-3 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Busca en todo el catálogo..."
                   className="h-12 flex-1 border-0 bg-transparent text-lg shadow-none focus-visible:ring-0"
                   autoFocus
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <Button
                   variant="ghost"
@@ -267,7 +279,7 @@ const SiteHeader = () => {
                   <X className="h-5 w-5" />
                   <span className="sr-only">Cerrar búsqueda</span>
                 </Button>
-              </div>
+              </form>
             </motion.div>
           </motion.div>
         )}
