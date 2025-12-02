@@ -64,7 +64,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
 
   const manejarEliminar = async () => {
     if (!colorAEliminar) return;
-    const colorRef = doc(firestore, 'colors', colorAEliminar);
+    const colorRef = doc(firestore, 'colores', colorAEliminar);
     deleteDoc(colorRef)
       .then(() => {
         toast({ title: "Color eliminado", description: "El color se ha eliminado correctamente." });
@@ -85,7 +85,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
     try {
         if (colorSeleccionado) {
-            const colorRef = doc(firestore, 'colors', colorSeleccionado.id);
+            const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
             updateDoc(colorRef, data).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
@@ -96,7 +96,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             });
             toast({ title: "Color actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
-            const collectionRef = collection(firestore, 'colors');
+            const collectionRef = collection(firestore, 'colores');
             addDoc(collectionRef, data).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',

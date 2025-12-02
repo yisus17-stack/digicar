@@ -22,7 +22,7 @@ function EsqueletoTablaMarcas() {
 export default function PaginaAdminMarcas() {
   const firestore = useFirestore();
 
-  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
   const { data: marcas, isLoading: cargandoMarcas } = useCollection(coleccionMarcas);
 
   if (cargandoMarcas) {

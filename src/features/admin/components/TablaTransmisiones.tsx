@@ -64,7 +64,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   const manejarEliminar = async () => {
     if (!transmisionAEliminar) return;
-    const transmisionRef = doc(firestore, 'transmissions', transmisionAEliminar);
+    const transmisionRef = doc(firestore, 'transmisiones', transmisionAEliminar);
     deleteDoc(transmisionRef)
       .then(() => {
         toast({ title: "Transmisión eliminada", description: "El tipo de transmisión se ha eliminado correctamente." });
@@ -85,7 +85,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
     try {
         if (transmisionSeleccionada) {
-            const transmisionRef = doc(firestore, 'transmissions', transmisionSeleccionada.id);
+            const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
             updateDoc(transmisionRef, data).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
@@ -96,7 +96,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             });
             toast({ title: "Transmisión actualizada", description: "Los cambios se guardaron correctamente." });
         } else {
-            const collectionRef = collection(firestore, 'transmissions');
+            const collectionRef = collection(firestore, 'transmisiones');
             addDoc(collectionRef, data).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',

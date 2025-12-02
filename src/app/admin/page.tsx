@@ -54,16 +54,16 @@ function EsqueletoDashboard() {
 export default function PaginaDashboardAdmin() {
     const firestore = useFirestore();
 
-    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading: cargandoAutos } = useCollection(coleccionAutos);
 
-    const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
+    const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
     const { data: marcas, isLoading: cargandoMarcas } = useCollection(coleccionMarcas);
 
-    const coleccionColores = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
+    const coleccionColores = useMemoFirebase(() => collection(firestore, 'colores'), [firestore]);
     const { data: colores, isLoading: cargandoColores } = useCollection(coleccionColores);
     
-    const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+    const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
 
     if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {

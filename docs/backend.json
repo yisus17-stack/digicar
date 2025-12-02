@@ -304,7 +304,7 @@
   "firestore": {
     "structure": [
       {
-        "path": "/cars/{carId}",
+        "path": "/autos/{autoId}",
         "definition": {
           "entityName": "Car",
           "schema": {
@@ -313,14 +313,14 @@
           "description": "Stores car data. Publicly accessible for reads, admin-only for writes.",
           "params": [
             {
-              "name": "carId",
+              "name": "autoId",
               "description": "Unique identifier for the car."
             }
           ]
         }
       },
       {
-        "path": "/brands/{brandId}",
+        "path": "/marcas/{marcaId}",
         "definition": {
           "entityName": "Brand",
           "schema": {
@@ -329,14 +329,14 @@
           "description": "Stores car brand data. Publicly accessible for reads, admin-only for writes.",
           "params": [
             {
-              "name": "brandId",
+              "name": "marcaId",
               "description": "Unique identifier for the brand."
             }
           ]
         }
       },
       {
-        "path": "/colors/{colorId}",
+        "path": "/colores/{colorId}",
         "definition": {
           "entityName": "Color",
           "schema": {
@@ -352,7 +352,7 @@
         }
       },
       {
-        "path": "/transmissions/{transmissionId}",
+        "path": "/transmisiones/{transmisionId}",
         "definition": {
           "entityName": "Transmission",
           "schema": {
@@ -361,14 +361,14 @@
           "description": "Stores car transmission types. Publicly accessible for reads, admin-only for writes.",
           "params": [
             {
-              "name": "transmissionId",
+              "name": "transmisionId",
               "description": "Unique identifier for the transmission type."
             }
           ]
         }
       },
       {
-        "path": "/scenarios/{scenarioId}",
+        "path": "/escenarios/{escenarioId}",
         "definition": {
           "entityName": "Scenario",
           "schema": {
@@ -377,14 +377,14 @@
           "description": "Stores car simulator scenarios. Publicly accessible.",
           "params": [
             {
-              "name": "scenarioId",
+              "name": "escenarioId",
               "description": "Unique identifier for the car simulator scenario."
             }
           ]
         }
       },
       {
-        "path": "/recommendations/{recommendationId}",
+        "path": "/recomendaciones/{recomendacionId}",
         "definition": {
           "entityName": "Recommendation",
           "schema": {
@@ -393,14 +393,14 @@
           "description": "Stores car recommendations based on scenarios. Publicly accessible.",
           "params": [
             {
-              "name": "recommendationId",
+              "name": "recomendacionId",
               "description": "Unique identifier for the car recommendation."
             }
           ]
         }
       },
       {
-        "path": "/leads/{leadId}",
+        "path": "/clientes_potenciales/{clientePotencialId}",
         "definition": {
           "entityName": "Lead",
           "schema": {
@@ -409,7 +409,7 @@
           "description": "Stores potential customer leads.  Requires authentication to read and write. No public listing allowed.",
           "params": [
             {
-              "name": "leadId",
+              "name": "clientePotencialId",
               "description": "Unique identifier for the customer lead."
             }
           ]

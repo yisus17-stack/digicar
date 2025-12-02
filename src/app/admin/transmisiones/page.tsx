@@ -23,7 +23,7 @@ function EsqueletoTablaTransmisiones() {
 export default function PaginaAdminTransmisiones() {
   const firestore = useFirestore();
 
-  const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmissions'), [firestore]);
+  const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
   const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection<Transmision>(coleccionTransmisiones);
 
   if (cargandoTransmisiones) {

@@ -23,7 +23,7 @@ function EsqueletoTablaColores() {
 export default function PaginaAdminColores() {
   const firestore = useFirestore();
 
-  const coleccionColores = useMemoFirebase(() => collection(firestore, 'colors'), [firestore]);
+  const coleccionColores = useMemoFirebase(() => collection(firestore, 'colores'), [firestore]);
   const { data: colores, isLoading: cargandoColores } = useCollection<Color>(coleccionColores);
 
   if (cargandoColores) {

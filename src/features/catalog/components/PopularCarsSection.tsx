@@ -14,10 +14,10 @@ export default function PopularCarsSection() {
     const router = useRouter();
     const [comparisonIds, setComparisonIds] = useState<string[]>([]);
 
-    const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
+    const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'autos'), limit(3)), [firestore]);
     const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Car>(consultaAutosPopulares);
 
-    const { data: todosLosAutos } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'cars'), [firestore]));
+    const { data: todosLosAutos } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
 
     const handleToggleCompare = (carId: string) => {
         setComparisonIds(prevIds => {

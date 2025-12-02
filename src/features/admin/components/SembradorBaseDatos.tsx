@@ -22,7 +22,7 @@ export default function SembradorBaseDatos() {
     });
 
     try {
-      const coleccionAutos = collection(firestore, 'cars');
+      const coleccionAutos = collection(firestore, 'autos');
       
       const snapshotAutos = await getDocs(coleccionAutos);
       if (!snapshotAutos.empty) {
@@ -42,22 +42,22 @@ export default function SembradorBaseDatos() {
       const transmisionesUnicas = [...new Set(autosDeEjemplo.map(auto => auto.transmission))];
 
       marcasUnicas.forEach(name => {
-        const brandRef = doc(collection(firestore, 'brands'));
+        const brandRef = doc(collection(firestore, 'marcas'));
         batch.set(brandRef, { name, id: brandRef.id });
       });
 
       coloresUnicos.forEach(name => {
-        const colorRef = doc(collection(firestore, 'colors'));
+        const colorRef = doc(collection(firestore, 'colores'));
         batch.set(colorRef, { name, id: colorRef.id });
       });
       
       transmisionesUnicas.forEach(name => {
-        const transmissionRef = doc(collection(firestore, 'transmissions'));
+        const transmissionRef = doc(collection(firestore, 'transmisiones'));
         batch.set(transmissionRef, { name, id: transmissionRef.id });
       });
 
       autosDeEjemplo.forEach(auto => {
-        const carRef = doc(firestore, 'cars', auto.id);
+        const carRef = doc(firestore, 'autos', auto.id);
         batch.set(carRef, auto);
       });
 

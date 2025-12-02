@@ -66,7 +66,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   const manejarEliminar = async () => {
     if (!marcaAEliminar) return;
-    const marcaRef = doc(firestore, 'brands', marcaAEliminar);
+    const marcaRef = doc(firestore, 'marcas', marcaAEliminar);
     deleteDoc(marcaRef)
       .then(() => {
         toast({ title: "Marca eliminada", description: "La marca se ha eliminado correctamente." });
@@ -99,12 +99,12 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
 
         if (marcaSeleccionada) {
-            const marcaRef = doc(firestore, 'brands', marcaSeleccionada.id);
+            const marcaRef = doc(firestore, 'marcas', marcaSeleccionada.id);
             await updateDoc(marcaRef, finalBrandData);
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
 
         } else {
-            const nuevaMarcaRef = doc(collection(firestore, 'brands'));
+            const nuevaMarcaRef = doc(collection(firestore, 'marcas'));
             const idEntidad = nuevaMarcaRef.id;
             const datosMarca = { ...finalBrandData, id: idEntidad };
             await setDoc(nuevaMarcaRef, datosMarca);
@@ -117,7 +117,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
               operation: marcaSeleccionada ? 'update' : 'create',
-              path: marcaSeleccionada ? `brands/${marcaSeleccionada.id}` : 'brands',
+              path: marcaSeleccionada ? `marcas/${marcaSeleccionada.id}` : 'marcas',
               requestResourceData: data,
             });
             errorEmitter.emit('permission-error', contextualError);

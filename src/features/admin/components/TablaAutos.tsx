@@ -69,7 +69,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarEliminar = async () => {
     if (!autoAEliminar) return;
-    const autoRef = doc(firestore, 'cars', autoAEliminar);
+    const autoRef = doc(firestore, 'autos', autoAEliminar);
     deleteDoc(autoRef)
       .then(() => {
         toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
@@ -97,7 +97,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         }
 
         if (autoSeleccionado) {
-            const autoRef = doc(firestore, 'cars', autoSeleccionado.id);
+            const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
             updateDoc(autoRef, finalCarData).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
@@ -108,7 +108,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             });
             toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
-            const coleccionRef = collection(firestore, 'cars');
+            const coleccionRef = collection(firestore, 'autos');
             addDoc(coleccionRef, finalCarData).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',

@@ -84,7 +84,7 @@ function EsqueletoDetalleAuto() {
 
 export default function PaginaDetalleAuto({ params }: { params: { id: string } }) {
   const firestore = useFirestore();
-  const refAuto = useMemoFirebase(() => doc(firestore, 'cars', params.id), [firestore, params.id]);
+  const refAuto = useMemoFirebase(() => doc(firestore, 'autos', params.id), [firestore, params.id]);
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
   if (isLoading) {

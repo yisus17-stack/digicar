@@ -31,7 +31,7 @@ function ContenidoComparacion() {
   const searchParams = useSearchParams();
   const firestore = useFirestore();
 
-  const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+  const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
   const ids = searchParams.get('ids')?.split(',').filter(Boolean) || [];

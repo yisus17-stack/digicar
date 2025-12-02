@@ -28,7 +28,7 @@ const EsqueletoFinanciamiento = () => (
 
 export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
-    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
+    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
     if (isLoading || !autos) {
