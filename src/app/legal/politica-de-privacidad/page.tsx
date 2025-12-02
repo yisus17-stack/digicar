@@ -9,7 +9,7 @@ export default function PoliticaDePrivacidadPage() {
                     Política de Privacidad
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                    Última actualización: 1 de Agosto de 2024
+                    Última actualización: 1 de Diciembre de 2025
                 </p>
             </div>
             <Card className="max-w-4xl mx-auto shadow-lg">
