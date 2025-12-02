@@ -161,7 +161,7 @@ export default function FormularioAuto({
   
   const handleNext = async () => {
     const fields = formSteps[currentStep].fields;
-    const output = await form.trigger(fields as any, { shouldFocus: true });
+    const output = await form.trigger(fields as (keyof DatosFormulario)[], { shouldFocus: true });
 
     if (!output) return;
 
@@ -184,36 +184,43 @@ export default function FormularioAuto({
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
-          <div className="flex justify-between items-center p-4">
-            {formSteps.map((step, index) => {
-                const isCompleted = currentStep > index;
-                const isActive = currentStep === index;
-                return (
-                    <React.Fragment key={step.id}>
-                        <div className='flex flex-col items-center gap-1'>
-                            <div
-                                className={cn(
-                                    'flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300',
-                                    (isActive || isCompleted) ? 'border-primary' : 'border-muted-foreground',
-                                    isActive ? 'bg-primary text-primary-foreground' : 'bg-background',
-                                    isCompleted ? 'bg-primary text-primary-foreground' : ''
-                                )}
-                            >
-                                {index + 1}
+           <div className="flex items-center justify-center p-4">
+            <div className="flex items-center w-full max-w-sm">
+                {formSteps.map((step, index) => {
+                    const isCompleted = currentStep > index;
+                    const isActive = currentStep === index;
+                    
+                    return (
+                        <React.Fragment key={step.id}>
+                            <div className="flex flex-col items-center gap-2 z-10">
+                                <div
+                                    className={cn(
+                                        'flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300',
+                                        (isActive || isCompleted) ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground text-muted-foreground bg-background'
+                                    )}
+                                >
+                                    {index + 1}
+                                </div>
+                                <p
+                                    className={cn(
+                                    'text-xs text-center mt-1 font-medium',
+                                    (isActive || isCompleted) ? 'text-primary' : 'text-muted-foreground',
+                                    isActive && 'font-bold'
+                                    )}
+                                >
+                                    {step.name}
+                                </p>
                             </div>
-                            <p
-                                className={cn(
-                                'text-xs text-center mt-1 font-medium',
-                                (isActive || isCompleted) ? 'text-primary' : 'text-muted-foreground',
-                                isActive ? 'font-bold' : ''
-                                )}
-                            >
-                                {step.name}
-                            </p>
-                        </div>
-                    </React.Fragment>
-                );
-            })}
+                            {index < formSteps.length - 1 && (
+                                <div className={cn(
+                                    'flex-1 h-0.5',
+                                    isCompleted ? 'bg-primary' : 'bg-muted'
+                                )}></div>
+                            )}
+                        </React.Fragment>
+                    );
+                })}
+            </div>
           </div>
         </DialogHeader>
         <Form {...form}>
