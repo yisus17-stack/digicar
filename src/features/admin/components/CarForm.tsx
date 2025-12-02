@@ -151,7 +151,7 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(alEnviar)} className='flex flex-col flex-grow overflow-hidden'>
+          <form onSubmit={form.handleSubmit(alEnviar)} className='flex-grow overflow-hidden flex flex-col'>
              <ScrollArea className="flex-grow pr-6 -mr-6">
                 <div className="space-y-6 py-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -291,7 +291,7 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                   </FormItem>
                 </div>
             </ScrollArea>
-            <DialogFooter className='pt-4 mt-4 border-t'>
+            <DialogFooter className='pt-4 mt-auto border-t'>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
                 <Button type="submit">Guardar Cambios</Button>
             </DialogFooter>
