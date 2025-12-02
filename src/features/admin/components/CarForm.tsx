@@ -30,7 +30,6 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import Image from 'next/image';
 import { X } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -140,8 +139,6 @@ export default function FormularioAuto({
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreview(imageUrl);
-        // We manually set the preview, and use this on submit.
-        // We also need to set the form value to satisfy the schema validation.
         form.setValue('imagenUrl', imageUrl, { shouldValidate: true });
       };
       reader.readAsDataURL(file);
@@ -414,23 +411,24 @@ export default function FormularioAuto({
                               </label>
                             </FormControl>
                             {preview ? (
-                                <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                    <Image src={preview} alt="Vista previa" fill className="object-contain" />
-                                    <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="icon"
-                                    className="absolute top-1 right-1 h-6 w-6"
-                                    onClick={removeImage}
-                                    >
-                                    <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                                ) : (
-                                <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
-                                    Vista previa
-                                </div>
+                              <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                <img src={preview} alt="Vista previa" className="object-contain w-full h-full" />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1 h-6 w-6"
+                                  onClick={removeImage}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
+                                Vista previa
+                              </div>
                             )}
+
                           </div>
                           <FormMessage />
                         </FormItem>
