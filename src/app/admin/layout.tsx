@@ -63,10 +63,10 @@ const ProveedorBarraLateral: React.FC<{ children: React.ReactNode }> = ({ childr
 
 const elementosNav = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/cars', label: 'Autos', icon: Car },
-    { href: '/admin/brands', label: 'Marcas', icon: Tag },
-    { href: '/admin/colors', label: 'Colores', icon: Palette },
-    { href: '/admin/transmissions', label: 'Transmisiones', icon: GitMerge },
+    { href: '/admin/autos', label: 'Autos', icon: Car },
+    { href: '/admin/marcas', label: 'Marcas', icon: Tag },
+    { href: '/admin/colores', label: 'Colores', icon: Palette },
+    { href: '/admin/transmisiones', label: 'Transmisiones', icon: GitMerge },
 ];
 
 

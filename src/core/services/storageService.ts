@@ -2,7 +2,7 @@
 
 import { supabase } from '@/lib/supabase';
 
-const BUCKET_NAME = 'car_images';
+const BUCKET_NAME = 'digicar';
 
 export const uploadImage = async (file: File): Promise<string> => {
   if (!file) {
