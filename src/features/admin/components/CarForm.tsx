@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,7 +33,7 @@ import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -179,9 +178,12 @@ export default function FormularioAuto({
   };
   
   const isStepValid = (stepIndex: number) => {
+    if (stepIndex >= currentStep) return false; // Only completed steps can be valid
+    
+    // Check if any field in the completed step has an error
     const fields = formSteps[stepIndex].fields;
-    const errors = Object.keys(form.formState.errors);
-    return fields.every(field => !errors.includes(field));
+    const formErrors = form.formState.errors;
+    return fields.every(field => !(field in formErrors));
   };
 
 
@@ -203,11 +205,11 @@ export default function FormularioAuto({
                                     className={cn(
                                         "flex h-8 w-8 items-center justify-center rounded-full border-2",
                                         isActive && "bg-primary text-primary-foreground border-primary",
-                                        isCompleted && "border-primary",
-                                        !isActive && !isCompleted && "border-muted text-muted-foreground"
+                                        isCompleted && "bg-primary text-primary-foreground border-primary",
+                                        !isActive && !isCompleted && "border-muted-foreground text-muted-foreground"
                                     )}
                                 >
-                                    <span className={cn(isCompleted && "text-primary")}>{index + 1}</span>
+                                    <span>{index + 1}</span>
                                 </div>
                                 <p className={cn(
                                     "text-xs text-center",
