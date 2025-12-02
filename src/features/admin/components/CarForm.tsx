@@ -181,7 +181,7 @@ export default function FormularioAuto({
 
   const handleNext = async () => {
     const fields = formSteps[currentStep].fields;
-    const output = await form.trigger(fields as FieldPath<DatosFormulario>[], { shouldFocus: true });
+    const output = await form.trigger(fields as (keyof DatosFormulario)[], { shouldFocus: true });
 
     if (!output) return;
 
