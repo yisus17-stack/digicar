@@ -162,7 +162,9 @@ export default function FormularioAuto({
   const handleNext = async () => {
     const fields = formSteps[currentStep].fields;
     const output = await form.trigger(fields as any, { shouldFocus: true });
+
     if (!output) return;
+
     if (currentStep < formSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
@@ -176,48 +178,42 @@ export default function FormularioAuto({
     alGuardar(datosAuto, selectedFile);
     alCambiarApertura(false);
   };
-  
-  const progressPercentage = currentStep === 0 ? '0%' : currentStep === 1 ? '50%' : '100%';
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
-          <div className="relative p-4">
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted -translate-y-4"></div>
-              <div
-                className="absolute top-1/2 left-0 h-0.5 bg-primary -translate-y-4 transition-all duration-300"
-                style={{ width: `calc(${progressPercentage} - 1rem)` }}
-              ></div>
-              <div className="relative flex justify-between">
-                {formSteps.map((step, index) => {
-                  const isActive = currentStep === index;
-                  const isCompleted = currentStep > index;
-
-                  return (
-                    <div key={step.id} className="flex flex-col items-center gap-1 z-10">
-                      <div
-                        className={cn(
-                          'flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300 bg-background',
-                          isActive ? 'bg-primary border-primary text-primary-foreground' : '',
-                          isCompleted ? 'border-primary text-primary' : 'border-muted-foreground text-muted-foreground',
-                        )}
-                      >
-                        {index + 1}
-                      </div>
-                      <p
-                        className={cn(
-                          'text-xs text-center mt-1 font-medium',
-                          isActive ? 'text-primary' : 'text-muted-foreground'
-                        )}
-                      >
-                        {step.name}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
+          <div className="flex justify-between items-center p-4">
+            {formSteps.map((step, index) => {
+                const isCompleted = currentStep > index;
+                const isActive = currentStep === index;
+                return (
+                    <React.Fragment key={step.id}>
+                        <div className='flex flex-col items-center gap-1'>
+                            <div
+                                className={cn(
+                                    'flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300',
+                                    (isActive || isCompleted) ? 'border-primary' : 'border-muted-foreground',
+                                    isActive ? 'bg-primary text-primary-foreground' : 'bg-background',
+                                    isCompleted ? 'bg-primary text-primary-foreground' : ''
+                                )}
+                            >
+                                {index + 1}
+                            </div>
+                            <p
+                                className={cn(
+                                'text-xs text-center mt-1 font-medium',
+                                (isActive || isCompleted) ? 'text-primary' : 'text-muted-foreground',
+                                isActive ? 'font-bold' : ''
+                                )}
+                            >
+                                {step.name}
+                            </p>
+                        </div>
+                    </React.Fragment>
+                );
+            })}
           </div>
         </DialogHeader>
         <Form {...form}>
