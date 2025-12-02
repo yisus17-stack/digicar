@@ -29,12 +29,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useFirestore, useStorage } from '@/firebase';
+import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { subirImagen } from '@/core/services/storageService';
 import Image from 'next/image';
 
 interface TablaAutosProps {
@@ -50,7 +49,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
   const firestore = useFirestore();
-  const storage = useStorage();
   const { toast } = useToast();
 
   const manejarAnadir = () => {
@@ -88,19 +86,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       });
   };
 
-  const manejarGuardar = async (data: Omit<Car, 'id'>, nuevoArchivoImagen?: File) => {
+  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>) => {
     try {
-        let imageUrl = data.imageUrl || '';
-
-        if (nuevoArchivoImagen) {
-            const toastId = toast({ title: 'Subiendo imagen...', description: 'Por favor, espera.' });
-            const idEntidad = autoSeleccionado ? autoSeleccionado.id : doc(collection(firestore, 'cars')).id;
-            imageUrl = await subirImagen(storage, nuevoArchivoImagen, `cars/${idEntidad}`);
-            toastId.dismiss();
-        }
-
-        const datosAuto = { ...data, imageUrl };
-
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'cars', autoSeleccionado.id);
             updateDoc(autoRef, datosAuto).catch((error) => {

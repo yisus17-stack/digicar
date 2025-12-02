@@ -29,13 +29,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useFirestore, useStorage } from '@/firebase';
+import { useFirestore } from '@/firebase';
 import { collection, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { subirImagen } from '@/core/services/storageService';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -47,7 +46,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [marcaAEliminar, setMarcaAEliminar] = useState<string | null>(null);
   const firestore = useFirestore();
-  const storage = useStorage();
   const { toast } = useToast();
 
   const manejarAnadir = () => {
@@ -85,16 +83,10 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       });
   };
 
-  const manejarGuardar = async (data: Omit<Marca, 'id'>, nuevoArchivoLogo?: File) => {
+  const manejarGuardar = async (data: Omit<Marca, 'id'>) => {
     try {
         if (marcaSeleccionada) {
-            let logoUrl = marcaSeleccionada.logoUrl || '';
-            if (nuevoArchivoLogo) {
-                const toastId = toast({ title: 'Actualizando logo...', description: 'Por favor, espera.' });
-                logoUrl = await subirImagen(storage, nuevoArchivoLogo, `brands/${marcaSeleccionada.id}`);
-                toastId.dismiss();
-            }
-            const datosMarca = { ...data, logoUrl };
+            const datosMarca = { ...data };
             const marcaRef = doc(firestore, 'brands', marcaSeleccionada.id);
             await updateDoc(marcaRef, datosMarca);
             toast({ title: "Marca actualizada", description: "Los cambios se guardaron correctamente." });
@@ -102,15 +94,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'brands'));
             const idEntidad = nuevaMarcaRef.id;
-            
-            let logoUrl = '';
-            if (nuevoArchivoLogo) {
-                const toastId = toast({ title: 'Subiendo logo...', description: 'Por favor, espera.' });
-                logoUrl = await subirImagen(storage, nuevoArchivoLogo, `brands/${idEntidad}`);
-                toastId.dismiss();
-            }
-
-            const datosMarca = { ...data, logoUrl, id: idEntidad };
+            const datosMarca = { ...data, id: idEntidad };
             await setDoc(nuevaMarcaRef, datosMarca);
             toast({ title: "Marca añadida", description: "La nueva marca se ha añadido a la base de datos." });
         }

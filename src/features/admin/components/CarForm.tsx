@@ -30,9 +30,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
-import { useEffect, useRef, useState } from 'react';
-import { Upload } from 'lucide-react';
-import Image from 'next/image';
+import { useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const esquemaFormulario = z.object({
@@ -50,7 +48,7 @@ const esquemaFormulario = z.object({
   engineCylinders: z.coerce.number().min(0),
   color: z.string().min(1),
   passengers: z.coerce.number().min(1),
-  imageUrl: z.string().optional().or(z.literal('')),
+  imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -59,7 +57,7 @@ interface PropsFormularioAuto {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   auto: Car | null;
-  alGuardar: (auto: Omit<Car, 'id'>, nuevoArchivoImagen?: File) => void;
+  alGuardar: (auto: Omit<Car, 'id'>) => void;
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
@@ -74,10 +72,6 @@ export default function FormularioAuto({
   colores,
   transmisiones,
 }: PropsFormularioAuto) {
-  const [vistaPreviaImagen, setVistaPreviaImagen] = useState<string | null>(null);
-  const [nuevoArchivoImagen, setNuevoArchivoImagen] = useState<File | undefined>(undefined);
-  const refInputArchivo = useRef<HTMLInputElement>(null);
-
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
@@ -106,7 +100,6 @@ export default function FormularioAuto({
           ...auto,
           features: auto.features.join(', '),
         });
-        setVistaPreviaImagen(auto.imageUrl || null);
       } else {
         form.reset({
           brand: '',
@@ -125,9 +118,7 @@ export default function FormularioAuto({
           passengers: 5,
           imageUrl: '',
         });
-        setVistaPreviaImagen(null);
       }
-      setNuevoArchivoImagen(undefined);
     }
   }, [auto, form, estaAbierto]);
 
@@ -136,20 +127,8 @@ export default function FormularioAuto({
       ...data,
       features: data.features ? data.features.split(',').map((f) => f.trim()) : [],
     };
-    alGuardar(datosAuto, nuevoArchivoImagen);
+    alGuardar(datosAuto);
     alCambiarApertura(false);
-  };
-
-  const manejarCambioArchivo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setNuevoArchivoImagen(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVistaPreviaImagen(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   return (
@@ -161,14 +140,9 @@ export default function FormularioAuto({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col">
-
-            {/* SCROLL REAL */}
             <ScrollArea className="h-[70vh] pr-6 -mr-6">
               <div className="space-y-6 py-4">
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                  {/* Marca */}
                   <FormField
                     control={form.control}
                     name="brand"
@@ -193,8 +167,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Modelo */}
                   <FormField
                     control={form.control}
                     name="model"
@@ -208,8 +180,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Año */}
                   <FormField
                     control={form.control}
                     name="year"
@@ -223,8 +193,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Precio */}
                   <FormField
                     control={form.control}
                     name="price"
@@ -238,8 +206,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Kilometraje */}
                   <FormField
                     control={form.control}
                     name="mileage"
@@ -253,8 +219,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Caballos */}
                   <FormField
                     control={form.control}
                     name="horsepower"
@@ -268,8 +232,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Motor */}
                   <FormField
                     control={form.control}
                     name="engine"
@@ -283,8 +245,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Cilindros */}
                   <FormField
                     control={form.control}
                     name="engineCylinders"
@@ -298,8 +258,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Transmisión */}
                   <FormField
                     control={form.control}
                     name="transmission"
@@ -324,8 +282,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Combustible */}
                   <FormField
                     control={form.control}
                     name="fuelType"
@@ -349,8 +305,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Tipo de auto */}
                   <FormField
                     control={form.control}
                     name="type"
@@ -375,8 +329,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Color */}
                   <FormField
                     control={form.control}
                     name="color"
@@ -401,8 +353,6 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
-                  {/* Pasajeros */}
                   <FormField
                     control={form.control}
                     name="passengers"
@@ -416,10 +366,7 @@ export default function FormularioAuto({
                       </FormItem>
                     )}
                   />
-
                 </div>
-
-                {/* Features */}
                 <FormField
                   control={form.control}
                   name="features"
@@ -433,57 +380,29 @@ export default function FormularioAuto({
                     </FormItem>
                   )}
                 />
-
-                {/* Imagen */}
-                <FormItem>
-                  <FormLabel>Imagen del Auto</FormLabel>
-                  <div className="flex items-center gap-4">
-                    {vistaPreviaImagen ? (
-                      <Image
-                        src={vistaPreviaImagen}
-                        alt="Vista previa"
-                        width={128}
-                        height={96}
-                        className="rounded-md object-cover border p-1"
-                      />
-                    ) : (
-                      <div className="w-32 h-24 flex items-center justify-center bg-muted rounded-md text-muted-foreground">
-                        <Upload className="h-8 w-8" />
-                      </div>
-                    )}
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => refInputArchivo.current?.click()}
-                    >
-                      Seleccionar Imagen
-                    </Button>
-
-                    <Input
-                      type="file"
-                      ref={refInputArchivo}
-                      className="hidden"
-                      onChange={manejarCambioArchivo}
-                      accept="image/png, image/jpeg, image/webp"
-                    />
-                  </div>
-                </FormItem>
-
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL de la Imagen</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://ejemplo.com/imagen.jpg" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </ScrollArea>
-
-            {/* FOOTER */}
             <DialogFooter className="pt-4 mt-4 border-t">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
                   Cancelar
                 </Button>
               </DialogClose>
-
               <Button type="submit">Guardar Cambios</Button>
             </DialogFooter>
-
           </form>
         </Form>
       </DialogContent>
