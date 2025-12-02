@@ -70,21 +70,19 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const manejarEliminar = async () => {
     if (!autoAEliminar) return;
     const autoRef = doc(firestore, 'autos', autoAEliminar);
-    deleteDoc(autoRef)
-      .then(() => {
+    try {
+        await deleteDoc(autoRef);
         toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
-      })
-      .catch((error) => {
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
-          operation: 'delete',
-          path: autoRef.path,
+            operation: 'delete',
+            path: autoRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-      })
-      .finally(() => {
+    } finally {
         setAutoAEliminar(null);
         setEstaAlertaAbierta(false);
-      });
+    }
   };
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
@@ -201,7 +199,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setAutoAEliminar(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>

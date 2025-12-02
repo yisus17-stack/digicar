@@ -67,21 +67,19 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const manejarEliminar = async () => {
     if (!marcaAEliminar) return;
     const marcaRef = doc(firestore, 'marcas', marcaAEliminar);
-    deleteDoc(marcaRef)
-      .then(() => {
+    try {
+        await deleteDoc(marcaRef);
         toast({ title: "Marca eliminada", description: "La marca se ha eliminado correctamente." });
-      })
-      .catch((error) => {
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
-          operation: 'delete',
-          path: marcaRef.path,
+            operation: 'delete',
+            path: marcaRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-      })
-      .finally(() => {
+    } finally {
         setMarcaAEliminar(null);
         setEstaAlertaAbierta(false);
-      });
+    }
   };
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
@@ -192,7 +190,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setMarcaAEliminar(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>

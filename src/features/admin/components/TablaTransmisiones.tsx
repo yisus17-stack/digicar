@@ -65,21 +65,19 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const manejarEliminar = async () => {
     if (!transmisionAEliminar) return;
     const transmisionRef = doc(firestore, 'transmisiones', transmisionAEliminar);
-    deleteDoc(transmisionRef)
-      .then(() => {
+    try {
+        await deleteDoc(transmisionRef);
         toast({ title: "Transmisión eliminada", description: "El tipo de transmisión se ha eliminado correctamente." });
-      })
-      .catch((error) => {
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
-          operation: 'delete',
-          path: transmisionRef.path,
+            operation: 'delete',
+            path: transmisionRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-      })
-      .finally(() => {
+    } finally {
         setTransmisionAEliminar(null);
         setEstaAlertaAbierta(false);
-      });
+    }
   };
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
@@ -170,7 +168,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setTransmisionAEliminar(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>

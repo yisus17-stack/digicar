@@ -65,21 +65,19 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const manejarEliminar = async () => {
     if (!colorAEliminar) return;
     const colorRef = doc(firestore, 'colores', colorAEliminar);
-    deleteDoc(colorRef)
-      .then(() => {
+    try {
+        await deleteDoc(colorRef);
         toast({ title: "Color eliminado", description: "El color se ha eliminado correctamente." });
-      })
-      .catch((error) => {
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
-          operation: 'delete',
-          path: colorRef.path,
+            operation: 'delete',
+            path: colorRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-      })
-      .finally(() => {
+    } finally {
         setColorAEliminar(null);
         setEstaAlertaAbierta(false);
-      });
+    }
   };
 
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
@@ -170,7 +168,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setColorAEliminar(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
