@@ -140,48 +140,59 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         <div className="border rounded-lg">
             <Table>
                 <TableHeader>
-                <TableRow>
-                    <TableHead>Imagen</TableHead>
-                    <TableHead>Marca</TableHead>
-                    <TableHead>Modelo</TableHead>
-                    <TableHead>Año</TableHead>
-                    <TableHead>Precio</TableHead>
-                    <TableHead>Acciones</TableHead>
-                </TableRow>
+                    <TableRow>
+                        <TableHead>Imagen</TableHead>
+                        <TableHead>Marca</TableHead>
+                        <TableHead>Modelo</TableHead>
+                        <TableHead>Año</TableHead>
+                        <TableHead>Precio</TableHead>
+                        <TableHead>Acciones</TableHead>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                {autosIniciales.map(auto => (
-                    <TableRow key={auto.id}>
-                    <TableCell>
-                      {auto.imagenUrl ? (
-                        <Image src={auto.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} width={64} height={48} className="rounded-md object-cover" />
-                      ) : (
-                        <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
-                          <IconoAuto className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium">{auto.marca}</TableCell>
-                    <TableCell>{auto.modelo}</TableCell>
-                    <TableCell>{auto.anio}</TableCell>
-                    <TableCell>${auto.precio.toLocaleString('es-MX')}</TableCell>
-                    <TableCell>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Editar
-                            </Button>
-                            <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Eliminar
-                            </Button>
-                        </div>
-                    </TableCell>
-                    </TableRow>
-                ))}
+                    {autosIniciales
+                        .filter(auto => auto) // evita autos null o undefined
+                        .map(auto => (
+                        <TableRow key={auto.id ?? Math.random()}>
+                            <TableCell>
+                                {auto.imagenUrl ? (
+                                    <Image
+                                        src={auto.imagenUrl}
+                                        alt={`${auto.marca ?? ''} ${auto.modelo ?? ''}`}
+                                        width={64}
+                                        height={48}
+                                        className="rounded-md object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
+                                        <IconoAuto className="h-6 w-6 text-muted-foreground" />
+                                    </div>
+                                )}
+                            </TableCell>
+                            <TableCell className="font-medium">{auto.marca ?? '-'}</TableCell>
+                            <TableCell>{auto.modelo ?? '-'}</TableCell>
+                            <TableCell>{auto.anio ?? '-'}</TableCell>
+                            <TableCell>
+                                {auto.precio != null ? `$${auto.precio.toLocaleString('es-MX')}` : '-'}
+                            </TableCell>
+                            <TableCell>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
+                                        <Edit className="mr-2 h-4 w-4" />
+                                        Editar
+                                    </Button>
+                                    <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Eliminar
+                                    </Button>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </div>
+
         <FormularioAuto 
             estaAbierto={estaFormularioAbierto}
             alCambiarApertura={alCambiarAperturaFormulario}
@@ -191,6 +202,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             colores={colores}
             transmisiones={transmisiones}
         />
+
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -201,7 +213,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
+                    <AlertDialogAction
+                        onClick={(e) => { e.preventDefault(); manejarEliminar(); }}
+                        className="bg-destructive hover:bg-destructive/90"
+                    >
                         Eliminar
                     </AlertDialogAction>
                 </AlertDialogFooter>

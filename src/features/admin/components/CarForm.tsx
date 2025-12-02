@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -297,7 +298,7 @@ export default function FormularioAuto({
                     <FormField control={form.control} name="tipoCombustible" render={({ field }) => (
                         <FormItem>
                         <FormLabel>Combustible *</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                        <Select onValuechange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Selecciona combustible" /></SelectTrigger></FormControl>
                             <SelectContent>
                             <SelectItem value="Gasoline">Gasolina</SelectItem>
@@ -380,3 +381,5 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
+
+    
