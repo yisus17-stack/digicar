@@ -59,7 +59,7 @@ function ContenidoComparacion() {
                 <h2 className="mt-4 text-2xl font-bold tracking-tight">Selecciona Autos para Comparar</h2>
                 <p className="mt-2 text-lg text-muted-foreground">Por favor, selecciona al menos un auto del catálogo para ver la comparación.</p>
                 <Button asChild className="mt-6">
-                <Link href="/catalog">Ir al Catálogo</Link>
+                <Link href="/catalogo">Ir al Catálogo</Link>
                 </Button>
             </div>
         ) : (

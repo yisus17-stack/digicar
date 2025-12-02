@@ -13,7 +13,7 @@ import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'DigiCar - Tu Salón de Exposición de Autos Digital',
+  title: 'DigiCar',
   description: 'Explora, compara y simula tu próximo auto con DigiCar.',
 };
 

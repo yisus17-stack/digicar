@@ -38,7 +38,7 @@ const SeccionHero = () => {
     const manejarBusqueda = (e: React.FormEvent) => {
         e.preventDefault();
         if (terminoBusqueda.trim()) {
-            router.push(`/catalog?search=${encodeURIComponent(terminoBusqueda.trim())}`);
+            router.push(`/catalogo?search=${encodeURIComponent(terminoBusqueda.trim())}`);
         }
     };
 
@@ -71,11 +71,11 @@ const SeccionHero = () => {
                     </form>
 
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                        <Link href="/catalog#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
+                        <Link href="/catalogo#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
                             <Award className="h-4 w-4" />
                             <span>Los más populares</span>
                         </Link>
-                         <Link href="/compare" className="flex items-center gap-2 hover:text-primary transition-colors">
+                         <Link href="/comparacion" className="flex items-center gap-2 hover:text-primary transition-colors">
                             <GitCompareArrows className="h-4 w-4" />
                             <span>Comparar</span>
                         </Link>

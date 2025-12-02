@@ -40,7 +40,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     } else {
         newIds = [currentIds[0], carId].filter(Boolean);
     }
-    router.push(`/compare?ids=${newIds.join(',')}`);
+    router.push(`/comparacion?ids=${newIds.join(',')}`);
   };
 
   const handleAiSummary = () => {
@@ -141,7 +141,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
                 </SelectContent>
             </Select>
             <Button variant="link" asChild className="mt-2">
-                <Link href="/catalog">O buscar en catálogo</Link>
+                <Link href="/catalogo">O buscar en catálogo</Link>
             </Button>
         </Card>
     );

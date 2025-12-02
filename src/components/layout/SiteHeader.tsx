@@ -89,10 +89,10 @@ const SiteHeader = () => {
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home },
-    { href: '/catalog', label: 'Catálogo', icon: LayoutGrid },
-    { href: '/compare', label: 'Comparar', icon: GitCompareArrows },
-    { href: '/simulator', label: 'Simulador IA', icon: Wand2 },
-    { href: '/financing', label: 'Financiamiento', icon: Landmark },
+    { href: '/catalogo', label: 'Catálogo', icon: LayoutGrid },
+    { href: '/comparacion', label: 'Comparar', icon: GitCompareArrows },
+    { href: '/simulador', label: 'Simulador IA', icon: Wand2 },
+    { href: '/financiamiento', label: 'Financiamiento', icon: Landmark },
   ];
 
   const handleSignOut = async () => {
@@ -166,7 +166,7 @@ const SiteHeader = () => {
                         <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href="/profile">
+                          <Link href="/perfil">
                             <User className="mr-2 h-4 w-4" /> Mi Perfil
                           </Link>
                         </DropdownMenuItem>

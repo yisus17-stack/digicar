@@ -27,10 +27,10 @@ const SiteFooter = () => {
           <div className="text-center">
             <h3 className="font-bold text-lg mb-4">Enlaces</h3>
             <ul className="space-y-2">
-              <li><Link href="/catalog" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Catálogo</Link></li>
-              <li><Link href="/simulator" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Simulador</Link></li>
-              <li><Link href="/compare" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Comparador</Link></li>
-              <li><Link href="/financing" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Financiamiento</Link></li>
+              <li><Link href="/catalogo" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Catálogo</Link></li>
+              <li><Link href="/simulador" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Simulador</Link></li>
+              <li><Link href="/comparacion" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Comparador</Link></li>
+              <li><Link href="/financiamiento" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Financiamiento</Link></li>
             </ul>
           </div>
           <div className="flex flex-col items-center md:items-start">
@@ -58,9 +58,9 @@ const SiteFooter = () => {
           <div className="flex flex-col md:flex-row justify-between items-center text-center">
             <p className="mb-4 md:mb-0 text-accent-foreground/80">© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
             <div className="flex justify-center text-xs gap-2 text-accent-foreground/80">
-                <Link href="#" className="hover:text-accent-foreground hover:underline">Términos y Condiciones</Link>
+                <Link href="/legal/terminos-y-condiciones" className="hover:text-accent-foreground hover:underline">Términos y Condiciones</Link>
                 <span>|</span>
-                <Link href="#" className="hover:text-accent-foreground hover:underline">Política de Privacidad</Link>
+                <Link href="/legal/politica-de-privacidad" className="hover:text-accent-foreground hover:underline">Política de Privacidad</Link>
             </div>
           </div>
         </div>
