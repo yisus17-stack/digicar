@@ -22,16 +22,19 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isAuthPage = pathname === '/login' || pathname === '/register';
   const isLegalPage = pathname.startsWith('/legal');
+  const showHeaderAndFooter = !isAuthPage && !isLegalPage;
+
 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
         <FirebaseClientProvider>
           <div className="relative flex min-h-screen flex-col">
-            {!isLegalPage && <SiteHeader />}
+            {showHeaderAndFooter && <SiteHeader />}
             <div className="flex-1">{children}</div>
-            {!isLegalPage && <SiteFooter />}
+            {showHeaderAndFooter && <SiteFooter />}
             <AccessibilityWidget />
           </div>
           <Toaster />
