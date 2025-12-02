@@ -86,7 +86,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     try {
-        let finalBrandData: Omit<Marca, 'id'> & { logoUrl?: string } = { ...data };
+        let finalBrandData: any = { ...data };
 
         if (file) {
             const logoUrl = await uploadImage(file);

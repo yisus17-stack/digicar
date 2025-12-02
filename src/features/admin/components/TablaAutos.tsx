@@ -89,7 +89,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
     try {
-        let finalCarData = { ...datosAuto };
+        let finalCarData: any = { ...datosAuto };
 
         if (file) {
             const imageUrl = await uploadImage(file);
