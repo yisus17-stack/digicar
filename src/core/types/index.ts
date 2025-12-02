@@ -7,7 +7,7 @@ export type Car = {
   mileage: number;
   fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
   transmission: string;
-  engine: string;
+  engine?: string;
   horsepower: number;
   features: string[];
   imageUrl: string;
