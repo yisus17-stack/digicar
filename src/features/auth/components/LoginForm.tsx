@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAuth } from '@/firebase';
 import {
   signInWithEmailAndPassword,
+  FirebaseError,
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -28,7 +29,7 @@ const formSchema = z.object({
   email: z.string().email('Por favor, introduce un correo electrónico válido.'),
   password: z
     .string()
-    .min(6, 'La contraseña debe tener al menos 6 caracteres.'),
+    .min(1, 'La contraseña no puede estar vacía.'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -62,15 +63,28 @@ export default function LoginForm() {
         router.push('/');
       }
 
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al iniciar sesión',
-        description:
-          error.code === 'auth/invalid-credential'
-            ? 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.'
-            : 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
-      });
+    } catch (error) {
+        let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
+                    break;
+                case 'auth/invalid-email':
+                    description = 'El formato del correo electrónico no es válido.';
+                    break;
+                case 'auth/too-many-requests':
+                    description = 'El acceso a esta cuenta ha sido temporalmente deshabilitado debido a muchos intentos fallidos. Inténtalo más tarde.';
+                    break;
+            }
+        }
+        toast({
+            variant: 'destructive',
+            title: 'Error al iniciar sesión',
+            description,
+        });
     } finally {
       setIsLoading(false);
     }

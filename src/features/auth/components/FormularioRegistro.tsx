@@ -19,6 +19,7 @@ import { useAuth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
+  FirebaseError,
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -27,11 +28,17 @@ import Link from 'next/link';
 
 const esquemaFormulario = z
   .object({
-    name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.'),
+    name: z
+      .string()
+      .min(2, 'El nombre debe tener al menos 2 caracteres.')
+      .regex(/^[a-zA-Z\s]+$/, 'El nombre solo puede contener letras y espacios.'),
     email: z.string().email('Por favor, introduce un correo electrónico válido.'),
     password: z
       .string()
-      .min(6, 'La contraseña debe tener al menos 6 caracteres.'),
+      .min(6, 'La contraseña debe tener al menos 6 caracteres.')
+      .regex(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula.')
+      .regex(/[a-z]/, 'La contraseña debe contener al menos una letra minúscula.')
+      .regex(/[0-9]/, 'La contraseña debe contener al menos un número.'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -74,15 +81,26 @@ export default function FormularioRegistro() {
         description: 'Tu cuenta ha sido creada exitosamente.',
       });
       router.push('/');
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
+      let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            description = 'Este correo electrónico ya está registrado.';
+            break;
+          case 'auth/invalid-email':
+            description = 'El formato del correo electrónico no es válido.';
+            break;
+          case 'auth/weak-password':
+            description = 'La contraseña es demasiado débil.';
+            break;
+        }
+      }
       toast({
         variant: 'destructive',
         title: 'Error al crear la cuenta',
-        description:
-          error.code === 'auth/email-already-in-use'
-            ? 'Este correo electrónico ya está en uso.'
-            : 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
+        description,
       });
     } finally {
       setCargando(false);
