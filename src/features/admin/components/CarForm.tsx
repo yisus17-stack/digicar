@@ -155,7 +155,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -163,7 +163,7 @@ export default function FormularioAuto({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col flex-1 overflow-hidden">
             <ScrollArea className="flex-1 pr-6 -mr-6">
-              <div className="space-y-6 py-4">
+              <div className="space-y-4 py-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
