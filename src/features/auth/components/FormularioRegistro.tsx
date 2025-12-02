@@ -31,7 +31,7 @@ const esquemaFormulario = z
     name: z
       .string()
       .min(2, 'El nombre debe tener al menos 2 caracteres.')
-      .regex(/^[a-zA-Z\s]+$/, 'El nombre solo puede contener letras y espacios.'),
+      .regex(/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚüÜ]+$/, 'El nombre solo puede contener letras y espacios.'),
     email: z.string().email('Por favor, introduce un correo electrónico válido.'),
     password: z
       .string()
