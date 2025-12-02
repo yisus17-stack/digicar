@@ -132,19 +132,6 @@ export default function FormularioAuto({
     }
   }, [auto, estaAbierto, form]);
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === 'imagenUrl') {
-        if (value.imagenUrl && value.imagenUrl !== preview) {
-            setPreview(value.imagenUrl);
-            setSelectedFile(undefined);
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form, preview]);
-
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -441,7 +428,7 @@ export default function FormularioAuto({
                                 </div>
                                 ) : (
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
-                                    No se ha seleccionado
+                                    Vista previa
                                 </div>
                             )}
                           </div>
@@ -458,6 +445,11 @@ export default function FormularioAuto({
                                 <Input
                                   {...field}
                                   placeholder="https://example.com/imagen.png"
+                                  onBlur={(e) => {
+                                      field.onBlur();
+                                      setPreview(e.target.value);
+                                      setSelectedFile(undefined);
+                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
