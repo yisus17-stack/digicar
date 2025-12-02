@@ -132,6 +132,19 @@ export default function FormularioAuto({
     }
   }, [auto, estaAbierto, form]);
 
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'imagenUrl') {
+        if (value.imagenUrl && value.imagenUrl !== preview) {
+            setPreview(value.imagenUrl);
+            setSelectedFile(undefined);
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, preview]);
+
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -140,6 +153,8 @@ export default function FormularioAuto({
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreview(imageUrl);
+        // We manually set the preview, and use this on submit.
+        // We also need to set the form value to satisfy the schema validation.
         form.setValue('imagenUrl', imageUrl, { shouldValidate: true });
       };
       reader.readAsDataURL(file);
@@ -155,7 +170,7 @@ export default function FormularioAuto({
             .map((f) => f.trim())
             .filter((f) => f !== '')
         : [],
-      imagenUrl: selectedFile ? preview || '' : data.imagenUrl,
+      imagenUrl: preview || data.imagenUrl,
     };
     alGuardar(datosAuto, selectedFile);
     alCambiarApertura(false);
@@ -443,13 +458,6 @@ export default function FormularioAuto({
                                 <Input
                                   {...field}
                                   placeholder="https://example.com/imagen.png"
-                                  onBlur={(e) => {
-                                    field.onBlur();
-                                    if(e.target.value) {
-                                      setPreview(e.target.value);
-                                      setSelectedFile(undefined);
-                                    }
-                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
