@@ -161,8 +161,8 @@ export default function FormularioAuto({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col">
-            <ScrollArea className="h-[70vh] pr-6 -mr-6">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col flex-1 overflow-hidden">
+            <ScrollArea className="flex-1 pr-6 -mr-6">
               <div className="space-y-6 py-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
@@ -417,7 +417,7 @@ export default function FormularioAuto({
                 )}
               </div>
             </ScrollArea>
-            <DialogFooter className="pt-4 mt-4 border-t">
+            <DialogFooter className="pt-4 mt-auto border-t">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
                   Cancelar
