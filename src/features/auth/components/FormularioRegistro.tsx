@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';
 import Link from 'next/link';
+import PasswordStrength from './PasswordStrength';
 
 const esquemaFormulario = z
   .object({
@@ -35,10 +36,11 @@ const esquemaFormulario = z
     email: z.string().email('Por favor, introduce un correo electrónico válido.'),
     password: z
       .string()
-      .min(6, 'La contraseña debe tener al menos 6 caracteres.')
-      .regex(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula.')
-      .regex(/[a-z]/, 'La contraseña debe contener al menos una letra minúscula.')
-      .regex(/[0-9]/, 'La contraseña debe contener al menos un número.'),
+      .min(8, 'La contraseña debe tener al menos 8 caracteres.')
+      .regex(/[A-Z]/, 'Debe contener al menos una letra mayúscula.')
+      .regex(/[a-z]/, 'Debe contener al menos una letra minúscula.')
+      .regex(/[0-9]/, 'Debe contener al menos un número.')
+      .regex(/[^a-zA-Z0-9]/, 'Debe contener al menos un carácter especial.'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -53,9 +55,12 @@ export default function FormularioRegistro() {
   const auth = useAuth();
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
+  const [passwordValue, setPasswordValue] = useState('');
+
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
+    mode: 'onTouched',
     defaultValues: {
       name: '',
       email: '',
@@ -154,12 +159,22 @@ export default function FormularioRegistro() {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input 
+                      type="password" 
+                      {...field} 
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setPasswordValue(e.target.value);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <PasswordStrength password={passwordValue} />
+
             <FormField
               control={form.control}
               name="confirmPassword"
