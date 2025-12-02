@@ -57,14 +57,14 @@ const formSteps = [
   {
     id: 'general',
     name: 'Datos del Vehículo',
-    fields: ['marca', 'modelo', 'anio', 'precio', 'tipo', 'color', 'motor', 'cilindrosMotor', 'transmision', 'tipoCombustible', 'pasajeros'] as const
+    fields: ['marca', 'modelo', 'anio', 'precio', 'tipo', 'color', 'motor', 'cilindrosMotor', 'transmision', 'tipoCombustible', 'pasajeros']
   },
   {
     id: 'media',
     name: 'Multimedia y Extras',
-    fields: ['caracteristicas', 'imagenUrl'] as const
+    fields: ['caracteristicas', 'imagenUrl']
   }
-] as const;
+];
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
@@ -172,7 +172,7 @@ export default function FormularioAuto({
   const handleNext = async () => {
     const currentFields = formSteps[currentStep].fields;
     if (currentFields.length > 0) {
-      const output = await form.trigger(currentFields);
+      const output = await form.trigger(currentFields as any);
       if (!output) return;
     }
     
@@ -386,5 +386,3 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
-
-    
