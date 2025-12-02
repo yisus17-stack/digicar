@@ -18,8 +18,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAuth } from '@/firebase';
 import {
   signInWithEmailAndPassword,
-  FirebaseError,
 } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';

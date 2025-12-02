@@ -19,8 +19,8 @@ import { useAuth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
-  FirebaseError,
 } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';
