@@ -145,8 +145,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     <TableHead>Marca</TableHead>
                     <TableHead>Modelo</TableHead>
                     <TableHead className="hidden md:table-cell">Año</TableHead>
-                    <TableHead className="text-right">Precio</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead>Precio</TableHead>
+                    <TableHead>Acciones</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -164,9 +164,9 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     <TableCell className="font-medium">{auto.brand}</TableCell>
                     <TableCell>{auto.model}</TableCell>
                     <TableCell className="hidden md:table-cell">{auto.year}</TableCell>
-                    <TableCell className="text-right">${auto.price.toLocaleString('es-MX')}</TableCell>
-                    <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
+                    <TableCell>${auto.price.toLocaleString('es-MX')}</TableCell>
+                    <TableCell>
+                        <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar

@@ -130,15 +130,15 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
                 <TableHeader>
                 <TableRow>
                     <TableHead>Nombre</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead>Acciones</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {coloresIniciales.map(color => (
                     <TableRow key={color.id}>
                     <TableCell className="font-medium">{color.name}</TableCell>
-                    <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
+                    <TableCell>
+                        <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(color)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar

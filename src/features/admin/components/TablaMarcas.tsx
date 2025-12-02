@@ -144,7 +144,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                 <TableRow>
                     <TableHead>Logo</TableHead>
                     <TableHead>Nombre</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead>Acciones</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -159,8 +159,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                         </Avatar>
                     </TableCell>
                     <TableCell className="font-medium">{marca.name}</TableCell>
-                    <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
+                    <TableCell>
+                        <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
