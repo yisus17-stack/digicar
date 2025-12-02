@@ -395,18 +395,43 @@ export default function FormularioAuto({
                         <p className="text-sm text-muted-foreground mt-1">
                           Sube una foto o pega la URL de la imagen.
                         </p>
+                        
                         <FormItem>
                           <FormLabel>Subir imagen</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="file-upload"
-                              type="file"
-                              accept="image/*"
-                              onChange={handleFileChange}
-                            />
-                          </FormControl>
+                           <div className="flex items-center gap-4">
+                            <FormControl>
+                              <label htmlFor="file-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                Elegir archivo
+                                <Input
+                                  id="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                />
+                              </label>
+                            </FormControl>
+
+                            {preview ? (
+                              <div className="relative w-20 h-20 rounded-lg overflow-hidden border">
+                                <Image src={preview} alt="Vista previa" fill className="object-contain" />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-0 right-0 h-5 w-5"
+                                  onClick={removeImage}
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No se ha seleccionado ningún archivo.</p>
+                            )}
+                          </div>
                           <FormMessage />
                         </FormItem>
+
                         <FormField
                           control={form.control}
                           name="imagenUrl"
@@ -430,20 +455,6 @@ export default function FormularioAuto({
                             </FormItem>
                           )}
                         />
-                        {preview && (
-                          <div className="relative w-full h-48 rounded-lg overflow-hidden border">
-                            <Image src={preview} alt="Vista previa" fill className="object-contain" />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              className="absolute top-2 right-2 h-8 w-8"
-                              onClick={removeImage}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </TabsContent>
@@ -467,3 +478,5 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
+
+    
