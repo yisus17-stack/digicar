@@ -131,7 +131,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   return (
     <>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
             <h1 className="text-3xl font-bold">Administrar Marcas</h1>
             <Button onClick={manejarAnadir}>Añadir Marca</Button>
         </div>
