@@ -173,7 +173,7 @@ export default function FormularioRegistro() {
               )}
             />
 
-            <PasswordStrength password={passwordValue} />
+            {passwordValue && <PasswordStrength password={passwordValue} />}
 
             <FormField
               control={form.control}
