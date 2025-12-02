@@ -9,6 +9,7 @@ import {
   MoreVertical,
   Palette,
   GitMerge,
+  PanelLeft,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -29,6 +30,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+
 
 // Contexto para el estado de la barra lateral
 const ContextoBarraLateral = createContext<{ estaCerrada: boolean; alternarBarraLateral: () => void } | null>(null);
@@ -57,6 +60,15 @@ const ProveedorBarraLateral: React.FC<{ children: React.ReactNode }> = ({ childr
 };
 
 
+const elementosNav = [
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/cars', label: 'Autos', icon: Car },
+    { href: '/admin/brands', label: 'Marcas', icon: Tag },
+    { href: '/admin/colors', label: 'Colores', icon: Palette },
+    { href: '/admin/transmissions', label: 'Transmisiones', icon: GitMerge },
+];
+
+
 function BarraLateralAdmin() {
   const { estaCerrada, alternarBarraLateral } = usarBarraLateral();
   const pathname = usePathname();
@@ -75,14 +87,6 @@ function BarraLateralAdmin() {
     }
   };
 
-  const elementosNav = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/cars', label: 'Autos', icon: Car },
-    { href: '/admin/brands', label: 'Marcas', icon: Tag },
-    { href: '/admin/colors', label: 'Colores', icon: Palette },
-    { href: '/admin/transmissions', label: 'Transmisiones', icon: GitMerge },
-  ];
-
   return (
     <aside
       className={cn(
@@ -90,7 +94,7 @@ function BarraLateralAdmin() {
         { 'w-20': estaCerrada }
       )}
     >
-      <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
+      <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20">
          <Avatar className={cn('h-10 w-10 transition-all', {'h-8 w-8': estaCerrada})}>
             <AvatarFallback>DC</AvatarFallback>
          </Avatar>
@@ -122,8 +126,7 @@ function BarraLateralAdmin() {
             href={item.href}
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-              pathname.startsWith(item.href) && item.href !== '/admin' && pathname !== '/admin' ? 'bg-primary text-primary-foreground' : '',
-              pathname === '/admin' && item.href === '/admin' ? 'bg-primary text-primary-foreground' : '',
+              pathname === item.href ? 'bg-primary text-primary-foreground hover:text-primary-foreground' : '',
               { 'justify-center': estaCerrada }
             )}
           >
@@ -240,6 +243,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
   
   const manejarCierreSesion = async () => {
@@ -257,6 +261,39 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
           <BarraLateralAdmin />
           <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={estaCerrada}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button size="icon" variant="outline" className="sm:hidden">
+                            <PanelLeft className="h-5 w-5" />
+                            <span className="sr-only">Toggle Menu</span>
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="sm:max-w-xs">
+                        <nav className="grid gap-6 text-lg font-medium">
+                            <Link
+                                href="#"
+                                className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                            >
+                                <Car className="h-5 w-5 transition-all group-hover:scale-110" />
+                                <span className="sr-only">DigiCar</span>
+                            </Link>
+                            {elementosNav.map((item) => (
+                                <SheetClose key={item.href} asChild>
+                                    <Link
+                                        href={item.href}
+                                        className={cn(
+                                        'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
+                                        pathname === item.href ? 'text-foreground' : ''
+                                        )}
+                                    >
+                                        <item.icon className="h-5 w-5" />
+                                        {item.label}
+                                    </Link>
+                                </SheetClose>
+                            ))}
+                        </nav>
+                    </SheetContent>
+                </Sheet>
                 <div className="ml-auto flex items-center gap-4">
                   <Button variant="ghost" size="icon" asChild>
                     <Link href="/">
@@ -278,7 +315,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={manejarCierreSesion}>Cerrar Sesión</DropdownMenuItem>
+                      <DropdownMenuItem onClick={manejarCierreSesion} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
