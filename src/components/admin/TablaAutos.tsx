@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2, Car as IconoAuto } from 'lucide-react';
-import type { Auto, Marca, Color, Transmision } from '@/lib/types';
+import type { Car, Marca, Color, Transmision } from '@/lib/types';
 import FormularioAuto from './CarForm';
 import {
     AlertDialog,
@@ -38,7 +38,7 @@ import { subirImagen } from '@/lib/storage';
 import Image from 'next/image';
 
 interface TablaAutosProps {
-  autos: Auto[];
+  autos: Car[];
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
@@ -46,7 +46,7 @@ interface TablaAutosProps {
 
 export default function TablaAutos({ autos: autosIniciales, marcas, colores, transmisiones }: TablaAutosProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
-  const [autoSeleccionado, setAutoSeleccionado] = useState<Auto | null>(null);
+  const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
   const firestore = useFirestore();
@@ -58,7 +58,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(true);
   };
 
-  const manejarEditar = (auto: Auto) => {
+  const manejarEditar = (auto: Car) => {
     setAutoSeleccionado(auto);
     setEstaFormularioAbierto(true);
   };
@@ -88,7 +88,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       });
   };
 
-  const manejarGuardar = async (data: Omit<Auto, 'id'>, nuevoArchivoImagen?: File) => {
+  const manejarGuardar = async (data: Omit<Car, 'id'>, nuevoArchivoImagen?: File) => {
     try {
         let imageUrl = data.imageUrl || '';
 

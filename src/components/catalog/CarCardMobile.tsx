@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import type { Car } from '@/lib/types';
-import { Button } from '../ui/button';
 import Link from 'next/link';
-import { GitCompareArrows, CheckCircle, Car as CarIcon } from 'lucide-react';
+import type { Car } from '@/lib/types';
+import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
+import { Button } from '../ui/button';
 import { translations } from '@/lib/translations';
 
 interface CarCardMobileProps {
@@ -14,49 +14,53 @@ interface CarCardMobileProps {
 }
 
 export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarCardMobileProps) {
-  const carType = car.type as keyof (typeof translations.type);
+    const tipoCombustible = car.fuelType as keyof typeof translations.fuelType;
 
-  return (
-    <div className="overflow-hidden bg-card border-b">
-      <div className="p-4">
-        <Link href={`/car/${car.id}`} className="block">
-          <div className="grid grid-cols-[80px_1fr] gap-4 items-start">
-             <div className="aspect-[4/3] relative rounded-md overflow-hidden">
-                {car.imageUrl ? (
-                    <Image src={car.imageUrl} alt={car.model} fill className="object-cover"/>
-                ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                        <CarIcon className="w-8 h-8 text-muted-foreground" />
+    return (
+        <div className="border-b p-4 flex gap-4 last:border-b-0">
+             <div className="w-2/5 flex-shrink-0">
+                 <Link href={`/car/${car.id}`} className="block relative aspect-video">
+                    {car.imageUrl ? (
+                        <Image
+                            src={car.imageUrl}
+                            alt={`${car.brand} ${car.model}`}
+                            fill
+                            className="object-cover rounded-md"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center rounded-md">
+                            <CarIcon className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                    )}
+                </Link>
+             </div>
+             <div className="w-3/5 flex flex-col justify-between">
+                <div>
+                    <p className="text-xs text-muted-foreground">{car.year}</p>
+                    <h3 className="font-bold leading-tight">
+                         <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
+                            {car.brand} {car.model}
+                        </Link>
+                    </h3>
+                    <p className="text-lg font-bold text-primary mt-1">${car.price.toLocaleString('es-MX')}</p>
+                </div>
+                 <div className="flex items-center text-xs text-muted-foreground gap-3 mt-1">
+                    <div className="flex items-center gap-1">
+                        <Gauge className="h-3 w-3" />
+                        <span>{car.mileage.toLocaleString('es-MX')} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
                     </div>
-                )}
-            </div>
-            <div className="flex flex-col justify-center">
-              <h3 className="text-base font-semibold leading-tight line-clamp-2">
-                {car.brand} {car.model}
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {car.year} - {translations.type[carType] || car.type}
-              </p>
-              <p className="mt-2 text-lg font-bold text-foreground">
-                {`$${car.price.toLocaleString('es-MX')}`}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </div>
-      <div className="grid grid-cols-2 gap-2 p-4 pt-0">
-        <Button asChild size="sm">
-          <Link href={`/car/${car.id}`}>Ver Detalles</Link>
-        </Button>
-        <Button variant={isSelected ? 'secondary' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
-          {isSelected ? (
-            <CheckCircle className="mr-2 h-4 w-4 text-primary" />
-          ) : (
-            <GitCompareArrows className="mr-2 h-4 w-4" />
-          )}
-          {isSelected ? 'Seleccionado' : 'Comparar'}
-        </Button>
-      </div>
-    </div>
-  );
+                    <div className="flex items-center gap-1">
+                        <Droplets className="h-3 w-3" />
+                        <span>{translations.fuelType[tipoCombustible] || car.fuelType}</span>
+                    </div>
+                </div>
+                <div className='mt-2'>
+                    <Button variant={isSelected ? 'default' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)} className="w-full">
+                        <GitCompareArrows className="mr-2 h-4 w-4" />
+                        {isSelected ? 'Agregado' : 'Comparar'}
+                    </Button>
+                </div>
+             </div>
+        </div>
+    );
 }

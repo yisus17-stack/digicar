@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
-import type { Auto } from '@/lib/types';
+import type { Car } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Sparkles, PlusCircle, Car as CarIcon } from 'lucide-react';
@@ -15,8 +15,8 @@ import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
 
 interface PaginaComparacionProps {
-  autos: ([Auto] | [Auto, Auto]) & Auto[];
-  todosLosAutos: Auto[];
+  autos: ([Car] | [Car, Car]) & Car[];
+  todosLosAutos: Car[];
 }
 
 type Resumen = {
@@ -74,9 +74,9 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     { label: "Color", key: 'color' },
   ];
 
-  const formatValue = (key: string, car?: Auto) => {
+  const formatValue = (key: string, car?: Car) => {
     if (!car) return '-';
-    const value = car[key as keyof Auto] as string | number;
+    const value = car[key as keyof Car] as string | number;
     
     switch (key) {
       case 'price': return `$${Number(value).toLocaleString('es-MX')}`;
@@ -98,7 +98,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     }
   }
   
-  const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Auto, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
+  const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Car, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
     const availableCars = todosLosAutos.filter(c => c.id !== otherCarId);
     
     if (selectedCar) {

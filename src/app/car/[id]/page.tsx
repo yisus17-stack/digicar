@@ -4,12 +4,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
-import FormularioCapturaLeads from '@/components/shared/FormularioCapturaLeads';
-import MigasDePan from '@/components/layout/MigasDePan';
-import { traducciones } from '@/lib/traducciones';
+import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import { translations } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import type { Auto } from '@/lib/types';
+import type { Car } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
@@ -85,7 +85,7 @@ function EsqueletoDetalleAuto() {
 export default function PaginaDetalleAuto({ params }: { params: { id: string } }) {
   const firestore = useFirestore();
   const refAuto = useMemoFirebase(() => doc(firestore, 'cars', params.id), [firestore, params.id]);
-  const { data: auto, isLoading } = useDoc<Auto>(refAuto);
+  const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
   if (isLoading) {
     return <EsqueletoDetalleAuto />;
@@ -95,21 +95,21 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
     notFound();
   }
 
-  const tipoAuto = auto.type as keyof (typeof traducciones.type);
+  const tipoAuto = auto.type as keyof (typeof translations.type);
 
   const detallesAuto = [
       { icon: Zap, label: 'Potencia', value: `${auto.horsepower} HP` },
-      { icon: Droplets, label: 'Combustible', value: traducciones.fuelType[auto.fuelType as keyof typeof traducciones.fuelType] },
+      { icon: Droplets, label: 'Combustible', value: translations.fuelType[auto.fuelType as keyof typeof translations.fuelType] },
       { icon: Gauge, label: 'Kilometraje', value: `${auto.mileage.toLocaleString('es-MX')} ${auto.fuelType === 'Electric' ? 'km' : 'KPL'}` },
       { icon: Users, label: 'Pasajeros', value: auto.passengers },
-      { icon: GitMerge, label: 'Transmisión', value: traducciones.transmission[auto.transmission as keyof typeof traducciones.transmission] },
+      { icon: GitMerge, label: 'Transmisión', value: translations.transmission[auto.transmission as keyof typeof translations.transmission] },
       { icon: Settings, label: 'Motor', value: auto.engine },
-      { icon: Palette, label: 'Color', value: traducciones.color[auto.color as keyof typeof traducciones.color] },
+      { icon: Palette, label: 'Color', value: translations.color[auto.color as keyof typeof translations.color] },
   ]
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <MigasDePan items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.brand} ${auto.model}` }]} />
+       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.brand} ${auto.model}` }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
@@ -130,14 +130,14 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
               </CardHeader>
               <CardContent>
                   <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
-                  <FormularioCapturaLeads autosInteres={`${auto.brand} ${auto.model}`} />
+                  <LeadCaptureForm interestedCars={`${auto.brand} ${auto.model}`} />
               </CardContent>
           </Card>
         </div>
         <div className="space-y-6">
           <Card>
             <CardHeader>
-                <p className="text-sm text-muted-foreground">{traducciones.type[tipoAuto] || auto.type} • {auto.year}</p>
+                <p className="text-sm text-muted-foreground">{translations.type[tipoAuto] || auto.type} • {auto.year}</p>
                 <h1 className="text-3xl lg:text-4xl font-bold">{auto.brand} {auto.model}</h1>
                 <p className="text-3xl font-bold text-primary">${auto.price.toLocaleString('es-MX')}</p>
             </CardHeader>

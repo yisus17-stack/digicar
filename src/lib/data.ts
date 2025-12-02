@@ -1,6 +1,6 @@
-import type { Auto } from './types';
+import type { Car } from './types';
 
-export const cars: Auto[] = [
+export const cars: Car[] = [
   {
     id: 'camry-xse',
     brand: 'Toyota',

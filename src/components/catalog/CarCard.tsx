@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import type { Car } from '@/lib/types';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '../ui/button';
 import Link from 'next/link';
-import { GitCompareArrows, CheckCircle, Car as CarIcon } from 'lucide-react';
+import type { Car } from '@/lib/types';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
+import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
 import { translations } from '@/lib/translations';
 
 interface CarCardProps {
@@ -15,51 +16,54 @@ interface CarCardProps {
 }
 
 export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
-  const carType = car.type as keyof (typeof translations.type);
+  const tipoAuto = car.type as keyof (typeof translations.type);
+  const tipoCombustible = car.fuelType as keyof typeof translations.fuelType;
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 bg-card">
-      <Link href={`/car/${car.id}`}>
-        <div className="aspect-video relative overflow-hidden">
-          {car.imageUrl ? (
-            <Image
-              src={car.imageUrl}
-              alt={`${car.brand} ${car.model}`}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              <CarIcon className="w-12 h-12 text-muted-foreground" />
+    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl">
+      <CardHeader className="p-0">
+        <Link href={`/car/${car.id}`}>
+          <AspectRatio ratio={16 / 9}>
+            {car.imageUrl ? (
+              <Image
+                src={car.imageUrl}
+                alt={`${car.brand} ${car.model}`}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                    <CarIcon className="w-12 h-12 text-muted-foreground" />
+                </div>
+            )}
+          </AspectRatio>
+        </Link>
+      </CardHeader>
+      <CardContent className="p-4 flex-grow">
+        <p className="text-sm text-muted-foreground">{translations.type[tipoAuto] || car.type} • {car.year}</p>
+        <CardTitle className="text-lg font-bold mt-1 mb-2">
+            <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
+                {car.brand} {car.model}
+            </Link>
+        </CardTitle>
+        <div className="flex justify-between items-center text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+                <Gauge className="h-4 w-4" />
+                <span>{car.mileage.toLocaleString('es-MX')} {car.fuelType === 'Electric' ? 'km' : 'KPL'}</span>
             </div>
-          )}
-        </div>
-      </Link>
-      <CardContent className="flex flex-grow flex-col p-6">
-        <h3 className="text-xl font-bold leading-tight">{car.brand} {car.model}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-            {car.year} - {translations.type[carType] || car.type}
-        </p>
-        <p className="mt-4 text-2xl font-bold text-primary">
-          {`$${car.price.toLocaleString('es-MX')}`}
-        </p>
-        
-        <div className="mt-auto grid grid-cols-2 gap-4 pt-6">
-            <Button asChild>
-                <Link href={`/car/${car.id}`}>
-                    Ver Detalles
-                </Link>
-            </Button>
-            <Button variant={isSelected ? 'secondary' : 'outline'} onClick={() => onToggleCompare(car.id)}>
-                {isSelected ? (
-                    <CheckCircle className="mr-2 h-4 w-4 text-primary" />
-                ) : (
-                    <GitCompareArrows className="mr-2 h-4 w-4" />
-                )}
-                {isSelected ? 'Seleccionado' : 'Comparar'}
-            </Button>
+            <div className="flex items-center gap-2">
+                <Droplets className="h-4 w-4" />
+                <span>{translations.fuelType[tipoCombustible] || car.fuelType}</span>
+            </div>
         </div>
       </CardContent>
+      <CardFooter className="p-4 flex justify-between items-center border-t">
+        <p className="text-xl font-bold">${car.price.toLocaleString('es-MX')}</p>
+        <Button variant={isSelected ? 'default' : 'outline'} size="sm" onClick={() => onToggleCompare(car.id)}>
+          <GitCompareArrows className="mr-2 h-4 w-4" />
+          {isSelected ? 'Agregado' : 'Comparar'}
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

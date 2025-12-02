@@ -113,6 +113,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
   };
 
   const filteredCars = useMemo(() => {
+    if (!datosTodosLosAutos) return [];
     let filtered = datosTodosLosAutos.filter(car => {
       const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
       if (brand !== 'all' && car.brand !== brand) return false;

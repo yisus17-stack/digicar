@@ -1,10 +1,10 @@
 import PaginaSimulador from "@/components/simulator/SimulatorPage";
-import MigasDePan from "@/components/layout/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function Simulador() {
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
-            <MigasDePan items={[{ label: 'Simulador IA' }]} />
+            <Breadcrumbs items={[{ label: 'Simulador IA' }]} />
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                     Simulador de Recomendación de Autos

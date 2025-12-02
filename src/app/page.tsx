@@ -1,21 +1,18 @@
 'use client';
 
 import { Suspense } from 'react';
-import CatalogoAutos from '@/components/catalog/CatalogoAutos';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Search, Award, GitCompareArrows, Wand2, Landmark } from 'lucide-react';
+import { ChevronRight, Search, Award, GitCompareArrows } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Auto, Marca } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tag } from 'lucide-react';
+import type { Car, Marca } from '@/lib/types';
+import PaginaCatalogoAutos from '@/components/catalog/CarCatalogPage';
 
 
 const EsqueletoSeccionHero = () => {
@@ -157,40 +154,34 @@ const SeccionMarcas = () => {
 };
 
 
-const EsqueletoAutosPopulares = () => (
-    <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-6">
-            <Skeleton className="h-10 w-2/3 mx-auto" />
-            <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Skeleton className="h-96 w-full" />
-            <Skeleton className="h-96 w-full" />
-            <Skeleton className="h-96 w-full" />
-        </div>
-    </div>
-);
-
 export default function Home() {
     const firestore = useFirestore();
     const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
-    const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Auto>(consultaAutosPopulares);
+    const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Car>(consultaAutosPopulares);
 
-    const [idsComparacion, setIdsComparacion] = useState<string[]>([]);
-    const router = useRouter();
-
-    const alternarComparacion = (autoId: string) => {
-        setIdsComparacion(idsAnteriores => {
-          if (idsAnteriores.includes(autoId)) {
-            return idsAnteriores.filter(id => id !== autoId);
-          }
-          if (idsAnteriores.length < 2) {
-            return [...idsAnteriores, autoId];
-          }
-          // Si ya hay 2 seleccionados, reemplaza el último
-          return [...idsAnteriores.slice(0, 1), autoId];
-        });
-    };
+    if (cargandoAutosPopulares) {
+      return (
+        <>
+          <Suspense fallback={<EsqueletoSeccionHero />}>
+            <SeccionHero />
+          </Suspense>
+          <Suspense fallback={<EsqueletoSeccionMarcas />}>
+            <SeccionMarcas />
+          </Suspense>
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center mb-6">
+                <Skeleton className="h-10 w-2/3 mx-auto" />
+                <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-96 w-full" />
+            </div>
+          </div>
+        </>
+      )
+    }
 
     return (
         <>
@@ -210,19 +201,7 @@ export default function Home() {
                     </h2>
                     <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
-                {cargandoAutosPopulares ? (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <Skeleton className="h-64 w-full rounded-lg" />
-                        <Skeleton className="h-64 w-full rounded-lg" />
-                        <Skeleton className="h-64 w-full rounded-lg" />
-                    </div>
-                ) : (
-                    <CatalogoAutos
-                        autos={autosPopulares ?? []}
-                        idsComparacion={idsComparacion}
-                        alAlternarComparacion={alternarComparacion}
-                    />
-                )}
+                 {autosPopulares && <PaginaCatalogoAutos datosTodosLosAutos={autosPopulares} /> }
             </div>
             
             <div className="text-center mb-16 px-4">

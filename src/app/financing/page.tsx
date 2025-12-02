@@ -1,10 +1,10 @@
 'use client';
 
 import PaginaSimuladorFinanciamiento from "@/components/financing/FinancingSimulatorPage";
-import MigasDePan from "@/components/layout/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Auto } from '@/lib/types';
+import type { Car } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
@@ -29,7 +29,7 @@ const EsqueletoFinanciamiento = () => (
 export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-    const { data: autos, isLoading } = useCollection<Auto>(coleccionAutos);
+    const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
     if (isLoading || !autos) {
         return <EsqueletoFinanciamiento />;
@@ -37,7 +37,7 @@ export default function PaginaFinanciamiento() {
 
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
-        <MigasDePan items={[{ label: "Financiamiento" }]} />
+        <Breadcrumbs items={[{ label: "Financiamiento" }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
             Simulador de Pagos

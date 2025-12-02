@@ -1,4 +1,4 @@
-export type Auto = {
+export type Car = {
   id: string;
   brand: string;
   model: string;
@@ -26,11 +26,6 @@ export type Marca = {
 export type Color = {
     id: string;
     name: string;
-}
-
-export type TipoCombustible = {
-  id: string;
-  name: string;
 }
 
 export type Transmision = {

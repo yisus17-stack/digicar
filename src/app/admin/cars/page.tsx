@@ -5,7 +5,7 @@ import { useFirestore } from '@/firebase';
 import TablaAutos from '@/components/admin/TablaAutos';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Auto, Marca, Color, Transmision } from '@/lib/types';
+import type { Car, Marca, Color, Transmision } from '@/lib/types';
 import SembradorBaseDatos from '@/components/admin/SembradorBaseDatos';
 
 function EsqueletoTablaAutos() {
@@ -26,7 +26,7 @@ export default function PaginaAdminAutos() {
   const firestore = useFirestore();
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: autos, isLoading: cargandoAutos } = useCollection<Auto>(coleccionAutos);
+  const { data: autos, isLoading: cargandoAutos } = useCollection<Car>(coleccionAutos);
 
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'brands'), [firestore]);
   const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);

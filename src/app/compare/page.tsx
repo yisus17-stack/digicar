@@ -5,10 +5,10 @@ import PaginaComparacion from "@/components/comparison/ComparisonPage";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import MigasDePan from "@/components/layout/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Auto } from '@/lib/types';
+import type { Car } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Suspense } from 'react';
 
@@ -32,7 +32,7 @@ function ContenidoComparacion() {
   const firestore = useFirestore();
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-  const { data: todosLosAutos, isLoading } = useCollection<Auto>(coleccionAutos);
+  const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
   const ids = searchParams.get('ids')?.split(',').filter(Boolean) || [];
   
@@ -44,7 +44,7 @@ function ContenidoComparacion() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-        <MigasDePan items={[{ label: 'Comparar' }]} />
+        <Breadcrumbs items={[{ label: 'Comparar' }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                 Comparación de Modelos
@@ -64,7 +64,7 @@ function ContenidoComparacion() {
             </div>
         ) : (
             <PaginaComparacion 
-              autos={autosAComparar as [Auto] | [Auto, Auto]} 
+              autos={autosAComparar as [Car] | [Car, Car]} 
               todosLosAutos={todosLosAutos}
             />
         )}

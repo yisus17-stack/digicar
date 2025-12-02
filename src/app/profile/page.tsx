@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import MigasDePan from '@/components/layout/MigasDePan';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 function EsqueletoPerfil() {
   return (
@@ -42,7 +42,7 @@ export default function PaginaPerfil() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <MigasDePan items={[{ label: 'Mi Perfil' }]} />
+      <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
       <Card className="mx-auto max-w-2xl">
         <CardHeader className="items-center text-center">
           <Avatar className="h-24 w-24 mb-4">

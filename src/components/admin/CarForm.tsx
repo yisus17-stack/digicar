@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Auto, Marca, Color, Transmision } from '@/lib/types';
+import type { Car, Marca, Color, Transmision } from '@/lib/types';
 import { useEffect, useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import Image from 'next/image';
@@ -57,8 +57,8 @@ type DatosFormulario = z.infer<typeof esquemaFormulario>;
 interface PropsFormularioAuto {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
-  auto: Auto | null;
-  alGuardar: (auto: Omit<Auto, 'id'>, nuevoArchivoImagen?: File) => void;
+  auto: Car | null;
+  alGuardar: (auto: Omit<Car, 'id'>, nuevoArchivoImagen?: File) => void;
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];

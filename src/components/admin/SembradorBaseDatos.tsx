@@ -65,7 +65,7 @@ export default function SembradorBaseDatos() {
 
       toast({
         title: '¡Base de datos sembrada!',
-        description: `Se agregaron ${autosDeEjemplo.length} autos, ${marcasUnicas.length} marcas, ${coloresUnicos.length} colores y ${transmisionesUnicas.length} transmisiones.`,
+        description: `Se agregaron ${autosDeEjemplo.length} autos.`,
       });
     } catch (error) {
       console.error('Error al sembrar la base de datos:', error);
