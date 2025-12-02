@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -29,13 +29,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car, Marca, Color, Transmision } from '@/core/types';
-import { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
+import type { Car, Marca, Color, Transmision } from '@/core/types';
 
 const esquemaFormulario = z.object({
   brand: z.string().min(1, 'La marca es requerida.'),
@@ -56,11 +54,10 @@ const esquemaFormulario = z.object({
 });
 
 const formSteps = [
-    { id: 'general', name: 'General', fields: ['brand', 'model', 'year', 'price', 'type', 'color'] },
-    { id: 'specs', name: 'Especificaciones', fields: ['mileage', 'horsepower', 'engine', 'engineCylinders', 'transmission', 'fuelType', 'passengers'] },
-    { id: 'media', name: 'Multimedia', fields: ['features', 'imageUrl'] }
+  { id: 'general', name: 'General', fields: ['brand', 'model', 'year', 'price', 'type', 'color'] },
+  { id: 'specs', name: 'Especificaciones', fields: ['mileage', 'horsepower', 'engine', 'engineCylinders', 'transmission', 'fuelType', 'passengers'] },
+  { id: 'media', name: 'Multimedia', fields: ['features', 'imageUrl'] }
 ] as const;
-
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
@@ -83,9 +80,9 @@ export default function FormularioAuto({
   colores,
   transmisiones,
 }: PropsFormularioAuto) {
-    const [preview, setPreview] = useState<string | null>(null);
-    const [selectedFile, setSelectedFile] = useState<File | undefined>();
-    const [currentStep, setCurrentStep] = useState(0);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  const [currentStep, setCurrentStep] = useState(0);
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
@@ -114,13 +111,10 @@ export default function FormularioAuto({
       if (auto) {
         form.reset({
           ...auto,
+          engine: auto.engine || '',
           features: auto.features.join(', '),
         });
-        if (auto.imageUrl) {
-            setPreview(auto.imageUrl);
-        } else {
-            setPreview(null);
-        }
+        setPreview(auto.imageUrl || null);
       } else {
         form.reset({
           brand: '',
@@ -158,7 +152,7 @@ export default function FormularioAuto({
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleNext = async () => {
     const fields = formSteps[currentStep].fields;
     const output = await form.trigger(fields as (keyof DatosFormulario)[], { shouldFocus: true });
@@ -171,9 +165,9 @@ export default function FormularioAuto({
   };
 
   const alEnviar = (data: DatosFormulario) => {
-    const datosAuto = {
+    const datosAuto: Omit<Car, 'id'> = {
       ...data,
-      features: data.features ? data.features.split(',').map((f) => f.trim()) : [],
+      features: data.features ? data.features.split(',').map(f => f.trim()) : [],
     };
     alGuardar(datosAuto, selectedFile);
     alCambiarApertura(false);
@@ -184,195 +178,192 @@ export default function FormularioAuto({
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
-           <div className="flex items-center justify-center p-4">
-            <div className="flex items-center w-full max-w-sm">
-                {formSteps.map((step, index) => {
-                    const isCompleted = currentStep > index;
-                    const isActive = currentStep === index;
-                    
-                    return (
-                        <React.Fragment key={step.id}>
-                            <div className="flex flex-col items-center gap-2 z-10">
-                                <div
-                                    className={cn(
-                                        'flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300',
-                                        (isActive || isCompleted) ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground text-muted-foreground bg-background'
-                                    )}
-                                >
-                                    {index + 1}
-                                </div>
-                                <p
-                                    className={cn(
-                                    'text-xs text-center mt-1 font-medium',
-                                    (isActive || isCompleted) ? 'text-primary' : 'text-muted-foreground',
-                                    isActive && 'font-bold'
-                                    )}
-                                >
-                                    {step.name}
-                                </p>
-                            </div>
-                            {index < formSteps.length - 1 && (
-                                <div className={cn(
-                                    'flex-1 h-0.5',
-                                    isCompleted ? 'bg-primary' : 'bg-muted'
-                                )}></div>
-                            )}
-                        </React.Fragment>
-                    );
-                })}
+
+          <div className="relative w-full px-6 py-6">
+            <div className="absolute top-7 left-1/2 -translate-x-1/2 w-[calc(100%-8rem)] h-0.5 bg-muted z-0"></div>
+
+            <div className="relative z-10 flex justify-between">
+              {formSteps.map((step, index) => {
+                const isActive = currentStep === index;
+                const isCompleted = currentStep > index;
+
+                return (
+                  <div key={step.id} className="flex flex-col items-center gap-1">
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300",
+                        isActive && "bg-primary border-primary text-primary-foreground",
+                        isCompleted && "bg-primary border-primary text-primary-foreground",
+                        !isActive && !isCompleted && "bg-background border-muted-foreground text-muted-foreground"
+                      )}
+                    >
+                      {index + 1}
+                    </div>
+                    <p
+                      className={cn(
+                        "text-xs text-center mt-1 font-medium",
+                         (isActive || isCompleted) ? "text-primary font-bold" : "text-muted-foreground"
+                      )}
+                    >
+                      {step.name}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </DialogHeader>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)}>
             <ScrollArea className="h-[50vh] p-4">
-
-            {currentStep === 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in-50 duration-300">
-                <FormField control={form.control} name="brand" render={({ field }) => (
+              {currentStep === 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in-50 duration-300">
+                  <FormField control={form.control} name="brand" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Marca</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                      <FormLabel>Marca</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Selecciona una marca" /></SelectTrigger></FormControl>
                         <SelectContent>{marcas.map((brand) => (<SelectItem key={brand.id} value={brand.name}>{brand.name}</SelectItem>))}</SelectContent>
-                        </Select>
-                        <FormMessage />
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                )}/>
-                <FormField control={form.control} name="model" render={({ field }) => (
-                    <FormItem> <FormLabel>Modelo</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem>
-                )}/>
-                <FormField control={form.control} name="year" render={({ field }) => (
-                    <FormItem> <FormLabel>Año</FormLabel> <FormControl><Input type="number" {...field} /></FormControl> <FormMessage /> </FormItem>
-                )}/>
-                <FormField control={form.control} name="price" render={({ field }) => (
-                    <FormItem> <FormLabel>Precio</FormLabel> <FormControl><Input type="number" {...field} /></FormControl> <FormMessage /> </FormItem>
-                )}/>
-                <FormField control={form.control} name="type" render={({ field }) => (
+                  )}/>
+                  <FormField control={form.control} name="model" render={({ field }) => (
+                    <FormItem><FormLabel>Modelo</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="year" render={({ field }) => (
+                    <FormItem><FormLabel>Año</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="price" render={({ field }) => (
+                    <FormItem><FormLabel>Precio</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="type" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Tipo de Auto</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                      <FormLabel>Tipo de Auto</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                         <SelectContent>
-                            <SelectItem value="Sedan">Sedán</SelectItem>
-                            <SelectItem value="SUV">SUV</SelectItem>
-                            <SelectItem value="Sports">Deportivo</SelectItem>
-                            <SelectItem value="Truck">Camioneta</SelectItem>
-                            <SelectItem value="Hatchback">Hatchback</SelectItem>
+                          <SelectItem value="Sedan">Sedán</SelectItem>
+                          <SelectItem value="SUV">SUV</SelectItem>
+                          <SelectItem value="Sports">Deportivo</SelectItem>
+                          <SelectItem value="Truck">Camioneta</SelectItem>
+                          <SelectItem value="Hatchback">Hatchback</SelectItem>
                         </SelectContent>
-                        </Select>
-                        <FormMessage />
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                )}/>
-                <FormField control={form.control} name="color" render={({ field }) => (
+                  )}/>
+                  <FormField control={form.control} name="color" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Color</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                      <FormLabel>Color</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                         <SelectContent>{colores.map((color) => (<SelectItem key={color.id} value={color.name}>{color.name}</SelectItem>))}</SelectContent>
-                        </Select>
-                        <FormMessage />
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                )}/>
-              </div>
-            )}
-            
-            {currentStep === 1 && (
+                  )}/>
+                </div>
+              )}
+
+              {currentStep === 1 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in-50 duration-300">
-                    <FormField control={form.control} name="mileage" render={({ field }) => (
-                        <FormItem><FormLabel>Kilometraje/Autonomía</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                    )}/>
-                    <FormField control={form.control} name="horsepower" render={({ field }) => (
-                        <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                    )}/>
-                    <FormField control={form.control} name="engine" render={({ field }) => (
-                        <FormItem><FormLabel>Motor</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                    )}/>
-                    <FormField control={form.control} name="engineCylinders" render={({ field }) => (
-                        <FormItem><FormLabel>Cilindros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                    )}/>
-                    <FormField control={form.control} name="transmission" render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Transmisión</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Selecciona transmisión" /></SelectTrigger></FormControl>
-                            <SelectContent>{transmisiones.map((t) => (<SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>))}</SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}/>
-                    <FormField control={form.control} name="fuelType" render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Combustible</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
-                            <SelectContent>
-                            <SelectItem value="Gasoline">Gasolina</SelectItem>
-                            <SelectItem value="Diesel">Diésel</SelectItem>
-                            <SelectItem value="Electric">Eléctrico</SelectItem>
-                            <SelectItem value="Hybrid">Híbrido</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}/>
-                    <FormField control={form.control} name="passengers" render={({ field }) => (
-                        <FormItem><FormLabel>Pasajeros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                    )}/>
-                </div>
-            )}
-
-            {currentStep === 2 && (
-                <div className="space-y-4 animate-in fade-in-50 duration-300">
-                    <FormField control={form.control} name="features" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Características (separadas por coma)</FormLabel>
-                            <FormControl><Textarea {...field} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}/>
+                  <FormField control={form.control} name="mileage" render={({ field }) => (
+                    <FormItem><FormLabel>Kilometraje/Autonomía</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="horsepower" render={({ field }) => (
+                    <FormItem><FormLabel>Caballos de Fuerza</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="engine" render={({ field }) => (
+                    <FormItem><FormLabel>Motor</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="engineCylinders" render={({ field }) => (
+                    <FormItem><FormLabel>Cilindros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
+                  <FormField control={form.control} name="transmission" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Subir Imagen del Auto</FormLabel>
-                        <FormControl><Input type="file" accept="image/*" onChange={handleFileChange} /></FormControl>
-                        <FormMessage />
+                      <FormLabel>Transmisión</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Selecciona transmisión" /></SelectTrigger></FormControl>
+                        <SelectContent>{transmisiones.map((t) => (<SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>))}</SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>O pegar URL de la imagen</FormLabel>
-                            <FormControl><Input {...field} onBlur={(e) => { field.onBlur(); setPreview(e.target.value); setSelectedFile(undefined); }} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}/>
-                    
-                    {preview && (
-                        <div className="mt-4">
-                            <Image src={preview} alt="Vista previa del auto" width={200} height={150} className="rounded-md object-cover" />
-                        </div>
-                    )}
+                  )}/>
+                  <FormField control={form.control} name="fuelType" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Combustible</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="Gasoline">Gasolina</SelectItem>
+                          <SelectItem value="Diesel">Diésel</SelectItem>
+                          <SelectItem value="Electric">Eléctrico</SelectItem>
+                          <SelectItem value="Hybrid">Híbrido</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+                  <FormField control={form.control} name="passengers" render={({ field }) => (
+                    <FormItem><FormLabel>Pasajeros</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  )}/>
                 </div>
-            )}
+              )}
 
-            </ScrollArea>
-            <DialogFooter className="pt-4 mt-auto border-t">
-                <div className='flex justify-between w-full'>
-                    <div>
-                        {currentStep > 0 && (
-                            <Button type="button" variant="outline" onClick={() => setCurrentStep(currentStep - 1)}>
-                                <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
-                            </Button>
-                        )}
+              {currentStep === 2 && (
+                <div className="space-y-4 animate-in fade-in-50 duration-300">
+                  <FormField control={form.control} name="features" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Características (separadas por coma)</FormLabel>
+                      <FormControl><Textarea {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+                  <FormItem>
+                    <FormLabel>Subir Imagen del Auto</FormLabel>
+                    <FormControl><Input type="file" accept="image/*" onChange={handleFileChange} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>O pegar URL de la imagen</FormLabel>
+                      <FormControl>
+                        <Input {...field} onBlur={(e) => { field.onBlur(); setPreview(e.target.value); setSelectedFile(undefined); }} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+                  {preview && (
+                    <div className="mt-4">
+                      <Image src={preview} alt="Vista previa del auto" width={200} height={150} className="rounded-md object-cover" />
                     </div>
-                    <div className="flex gap-2">
-                        <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
-                        {currentStep < formSteps.length - 1 ? (
-                            <Button type="button" onClick={handleNext}>
-                                Siguiente <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        ) : (
-                            <Button type="submit">Guardar Cambios</Button>
-                        )}
-                    </div>
+                  )}
                 </div>
+              )}
+            </ScrollArea>
+
+            <DialogFooter className="pt-4 mt-auto border-t">
+              <div className='flex justify-between w-full'>
+                <div>
+                  {currentStep > 0 && (
+                    <Button type="button" variant="outline" onClick={() => setCurrentStep(currentStep - 1)}>
+                      <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
+                    </Button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
+                  {currentStep < formSteps.length - 1 ? (
+                    <Button type="button" onClick={handleNext}>
+                      Siguiente <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button type="submit">Guardar Cambios</Button>
+                  )}
+                </div>
+              </div>
             </DialogFooter>
           </form>
         </Form>
