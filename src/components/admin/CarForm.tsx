@@ -165,8 +165,8 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {marcas.map((brand) => (
-                                        <SelectItem key={brand.id} value={brand.name}>
+                                    {marcas.map((brand, index) => (
+                                        <SelectItem key={`${brand.id}-${index}`} value={brand.name}>
                                             {brand.name}
                                         </SelectItem>
                                     ))}
@@ -210,8 +210,8 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {colores.map((color) => (
-                                        <SelectItem key={color.id} value={color.name}>
+                                    {colores.map((color, index) => (
+                                        <SelectItem key={`${color.id}-${index}`} value={color.name}>
                                             {color.name}
                                         </SelectItem>
                                     ))}
@@ -249,8 +249,8 @@ export default function FormularioAuto({ estaAbierto, alCambiarApertura, auto, a
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {transmisiones.map((transmission) => (
-                                        <SelectItem key={transmission.id} value={transmission.name}>
+                                    {transmisiones.map((transmission, index) => (
+                                        <SelectItem key={`${transmission.id}-${index}`} value={transmission.name}>
                                             {transmission.name}
                                         </SelectItem>
                                     ))}
