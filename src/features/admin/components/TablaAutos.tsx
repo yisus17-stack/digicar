@@ -80,8 +80,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         });
         errorEmitter.emit('permission-error', contextualError);
     } finally {
-        setAutoAEliminar(null);
         setEstaAlertaAbierta(false);
+        setAutoAEliminar(null);
     }
   };
 
@@ -92,7 +92,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         if (file) {
             const imageUrl = await uploadImage(file);
             finalCarData.imageUrl = imageUrl;
+        } else if (autoSeleccionado?.imageUrl) {
+            finalCarData.imageUrl = autoSeleccionado.imageUrl;
         }
+
 
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
@@ -119,6 +122,22 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         }
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+    } finally {
+        setEstaFormularioAbierto(false);
+    }
+  };
+
+  const alCambiarAperturaFormulario = (open: boolean) => {
+    setEstaFormularioAbierto(open);
+    if (!open) {
+      setAutoSeleccionado(null);
+    }
+  };
+
+  const alCambiarAperturaAlerta = (open: boolean) => {
+    setEstaAlertaAbierta(open);
+    if (!open) {
+      setAutoAEliminar(null);
     }
   };
 
@@ -183,14 +202,14 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         </div>
         <FormularioAuto 
             estaAbierto={estaFormularioAbierto}
-            alCambiarApertura={setEstaFormularioAbierto}
+            alCambiarApertura={alCambiarAperturaFormulario}
             auto={autoSeleccionado}
             alGuardar={manejarGuardar}
             marcas={marcas}
             colores={colores}
             transmisiones={transmisiones}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={setEstaAlertaAbierta}>
+        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -200,7 +219,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={async (e) => { e.preventDefault(); await manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
+                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
                 </AlertDialogFooter>

@@ -75,8 +75,8 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         });
         errorEmitter.emit('permission-error', contextualError);
     } finally {
-        setColorAEliminar(null);
         setEstaAlertaAbierta(false);
+        setColorAEliminar(null);
     }
   };
 
@@ -107,6 +107,22 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         }
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+    } finally {
+        setEstaFormularioAbierto(false);
+    }
+  };
+
+  const alCambiarAperturaFormulario = (open: boolean) => {
+    setEstaFormularioAbierto(open);
+    if (!open) {
+      setColorSeleccionado(null);
+    }
+  };
+
+  const alCambiarAperturaAlerta = (open: boolean) => {
+    setEstaAlertaAbierta(open);
+    if (!open) {
+      setColorAEliminar(null);
     }
   };
 
@@ -155,11 +171,11 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         </div>
         <FormularioColor 
             estaAbierto={estaFormularioAbierto}
-            alCambiarApertura={setEstaFormularioAbierto}
+            alCambiarApertura={alCambiarAperturaFormulario}
             color={colorSeleccionado}
             alGuardar={manejarGuardar}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={setEstaAlertaAbierta}>
+        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -169,7 +185,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={async (e) => { e.preventDefault(); await manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
+                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
                 </AlertDialogFooter>

@@ -77,8 +77,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         });
         errorEmitter.emit('permission-error', contextualError);
     } finally {
-        setMarcaAEliminar(null);
         setEstaAlertaAbierta(false);
+        setMarcaAEliminar(null);
     }
   };
 
@@ -120,6 +120,22 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             });
             errorEmitter.emit('permission-error', contextualError);
         }
+    } finally {
+        setEstaFormularioAbierto(false);
+    }
+  };
+
+  const alCambiarAperturaFormulario = (open: boolean) => {
+    setEstaFormularioAbierto(open);
+    if (!open) {
+      setMarcaSeleccionada(null);
+    }
+  };
+
+  const alCambiarAperturaAlerta = (open: boolean) => {
+    setEstaAlertaAbierta(open);
+    if (!open) {
+      setMarcaAEliminar(null);
     }
   };
 
@@ -177,11 +193,11 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         </div>
         <FormularioMarca 
             estaAbierto={estaFormularioAbierto}
-            alCambiarApertura={setEstaFormularioAbierto}
+            alCambiarApertura={alCambiarAperturaFormulario}
             marca={marcaSeleccionada}
             alGuardar={manejarGuardar}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={setEstaAlertaAbierta}>
+        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -191,7 +207,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={async (e) => { e.preventDefault(); await manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
+                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>
                 </AlertDialogFooter>
