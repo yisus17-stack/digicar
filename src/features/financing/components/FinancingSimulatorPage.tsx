@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -40,7 +41,7 @@ interface SimulationResult {
 
 const INTEREST_RATE = 0.125; // Tasa de interés anual fija del 12.5%
 
-export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageProps) {
+export default function FinancingSimulatorPage({ cars = [] }: FinancingSimulatorPageProps) {
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const { toast } = useToast();
@@ -432,3 +433,5 @@ export default function FinancingSimulatorPage({ cars }: FinancingSimulatorPageP
     </div>
   );
 }
+
+    
