@@ -4,12 +4,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
-import LeadCaptureForm from '@/components/shared/LeadCaptureForm';
+import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { translations } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 

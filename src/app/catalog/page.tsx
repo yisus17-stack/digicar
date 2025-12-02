@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import PaginaCatalogoAutos from "@/components/catalog/CarCatalogPage";
+import PaginaCatalogoAutos from "@/features/catalog/components/CarCatalogPage";
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Car } from '@/core/types';
 
 const EsqueletoCatalogo = () => (
     <div className="container mx-auto px-4 py-8">
@@ -42,7 +43,7 @@ const EsqueletoCatalogo = () => (
 export default function Catalogo() {
     const firestore = useFirestore();
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'cars'), [firestore]);
-    const { data: autos, isLoading } = useCollection(coleccionAutos);
+    const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
     if (isLoading) {
         return <EsqueletoCatalogo />;

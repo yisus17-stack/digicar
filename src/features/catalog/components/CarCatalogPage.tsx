@@ -1,25 +1,25 @@
 'use client';
 
-import { useState, useMemo, useTransition, useEffect } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import { useDebounce } from 'use-debounce';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import CarFilters from './CarFilters';
 import CarCard from './CarCard';
 import CarCardMobile from './CarCardMobile';
 import { X, SlidersHorizontal, Loader, GitCompareArrows, Car as CarIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
+import { Button } from '@/components/ui/button';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import AiSummary from './AiSummary';
 import { summarizeCatalogFilters } from '@/ai/flows/summarize-catalog-filters';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '../ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Breadcrumbs from '../layout/Breadcrumbs';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 const ITEMS_PER_PAGE = 6;
 const MAX_PRICE = 2000000;

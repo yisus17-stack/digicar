@@ -16,9 +16,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Edit, Trash2, Car as IconoAuto } from 'lucide-react';
-import type { Car, Marca, Color, Transmision } from '@/lib/types';
-import FormularioAuto from './CarForm';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import type { Color } from '@/core/types';
+import FormularioColor from './ColorForm';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,100 +29,83 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useFirestore, useStorage } from '@/firebase';
+import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { subirImagen } from '@/lib/storage';
-import Image from 'next/image';
 
-interface TablaAutosProps {
-  autos: Car[];
-  marcas: Marca[];
-  colores: Color[];
-  transmisiones: Transmision[];
+interface TablaColoresProps {
+  colors: Color[];
 }
 
-export default function TablaAutos({ autos: autosIniciales, marcas, colores, transmisiones }: TablaAutosProps) {
+export default function TablaColores({ colors: coloresIniciales }: TablaColoresProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
-  const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
+  const [colorSeleccionado, setColorSeleccionado] = useState<Color | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
-  const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
+  const [colorAEliminar, setColorAEliminar] = useState<string | null>(null);
   const firestore = useFirestore();
-  const storage = useStorage();
   const { toast } = useToast();
 
   const manejarAnadir = () => {
-    setAutoSeleccionado(null);
+    setColorSeleccionado(null);
     setEstaFormularioAbierto(true);
   };
 
-  const manejarEditar = (auto: Car) => {
-    setAutoSeleccionado(auto);
+  const manejarEditar = (color: Color) => {
+    setColorSeleccionado(color);
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = (autoId: string) => {
-    setAutoAEliminar(autoId);
+  const confirmarEliminar = (colorId: string) => {
+    setColorAEliminar(colorId);
     setEstaAlertaAbierta(true);
   };
 
   const manejarEliminar = async () => {
-    if (!autoAEliminar) return;
-    const autoRef = doc(firestore, 'cars', autoAEliminar);
-    deleteDoc(autoRef)
+    if (!colorAEliminar) return;
+    const colorRef = doc(firestore, 'colors', colorAEliminar);
+    deleteDoc(colorRef)
       .then(() => {
-        toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
+        toast({ title: "Color eliminado", description: "El color se ha eliminado correctamente." });
       })
       .catch((error) => {
         const contextualError = new FirestorePermissionError({
           operation: 'delete',
-          path: autoRef.path,
+          path: colorRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
       })
       .finally(() => {
-        setAutoAEliminar(null);
+        setColorAEliminar(null);
         setEstaAlertaAbierta(false);
       });
   };
 
-  const manejarGuardar = async (data: Omit<Car, 'id'>, nuevoArchivoImagen?: File) => {
+  const manejarGuardar = async (data: Omit<Color, 'id'>) => {
     try {
-        let imageUrl = data.imageUrl || '';
-
-        if (nuevoArchivoImagen) {
-            const toastId = toast({ title: 'Subiendo imagen...', description: 'Por favor, espera.' });
-            const idEntidad = autoSeleccionado ? autoSeleccionado.id : doc(collection(firestore, 'cars')).id;
-            imageUrl = await subirImagen(storage, nuevoArchivoImagen, `cars/${idEntidad}`);
-            toastId.dismiss();
-        }
-
-        const datosAuto = { ...data, imageUrl };
-
-        if (autoSeleccionado) {
-            const autoRef = doc(firestore, 'cars', autoSeleccionado.id);
-            updateDoc(autoRef, datosAuto).catch((error) => {
+        if (colorSeleccionado) {
+            const colorRef = doc(firestore, 'colors', colorSeleccionado.id);
+            updateDoc(colorRef, data).catch((error) => {
               const contextualError = new FirestorePermissionError({
                 operation: 'update',
-                path: autoRef.path,
-                requestResourceData: datosAuto,
+                path: colorRef.path,
+                requestResourceData: data,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
-            toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
+            toast({ title: "Color actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
-            const coleccionRef = collection(firestore, 'cars');
-            addDoc(coleccionRef, datosAuto).catch(error => {
+            const collectionRef = collection(firestore, 'colors');
+            addDoc(collectionRef, data).catch(error => {
               const contextualError = new FirestorePermissionError({
                 operation: 'create',
-                path: coleccionRef.path,
-                requestResourceData: datosAuto,
+                path: collectionRef.path,
+                requestResourceData: data,
               });
               errorEmitter.emit('permission-error', contextualError);
             });
-            toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
+            toast({ title: "Color añadido", description: "El nuevo color se ha añadido a la base de datos." });
         }
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
@@ -132,37 +115,21 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   return (
     <>
         <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Administrar Autos</h1>
-            <Button onClick={manejarAnadir}>Añadir Auto</Button>
+            <h1 className="text-3xl font-bold">Administrar Colores</h1>
+            <Button onClick={manejarAnadir}>Añadir Color</Button>
         </div>
         <div className="border rounded-lg">
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Imagen</TableHead>
-                    <TableHead>Marca</TableHead>
-                    <TableHead>Modelo</TableHead>
-                    <TableHead className="hidden md:table-cell">Año</TableHead>
-                    <TableHead className="text-right">Precio</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {autosIniciales.map(auto => (
-                    <TableRow key={auto.id}>
-                    <TableCell>
-                      {auto.imageUrl ? (
-                        <Image src={auto.imageUrl} alt={`${auto.brand} ${auto.model}`} width={64} height={48} className="rounded-md object-cover" />
-                      ) : (
-                        <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
-                          <IconoAuto className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium">{auto.brand}</TableCell>
-                    <TableCell>{auto.model}</TableCell>
-                    <TableCell className="hidden md:table-cell">{auto.year}</TableCell>
-                    <TableCell className="text-right">${auto.price.toLocaleString('es-MX')}</TableCell>
+                {coloresIniciales.map(color => (
+                    <TableRow key={color.id}>
+                    <TableCell className="font-medium">{color.name}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -172,11 +139,11 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => manejarEditar(auto)}>
+                            <DropdownMenuItem onClick={() => manejarEditar(color)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => auto.id && confirmarEliminar(auto.id)} className="text-destructive">
+                            <DropdownMenuItem onClick={() => color.id && confirmarEliminar(color.id)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar
                             </DropdownMenuItem>
@@ -188,25 +155,22 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 </TableBody>
             </Table>
         </div>
-        <FormularioAuto 
+        <FormularioColor 
             estaAbierto={estaFormularioAbierto}
             alCambiarApertura={setEstaFormularioAbierto}
-            auto={autoSeleccionado}
+            color={colorSeleccionado}
             alGuardar={manejarGuardar}
-            marcas={marcas}
-            colores={colores}
-            transmisiones={transmisiones}
         />
         <AlertDialog open={estaAlertaAbierta} onOpenChange={setEstaAlertaAbierta}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.
+                        Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setAutoAEliminar(null)}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => setColorAEliminar(null)}>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={manejarEliminar} className="bg-destructive hover:bg-destructive/90">
                         Eliminar
                     </AlertDialogAction>

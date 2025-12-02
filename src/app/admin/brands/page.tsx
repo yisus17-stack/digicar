@@ -2,7 +2,7 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import TablaMarcas from '@/components/admin/TablaMarcas';
+import TablaMarcas from '@/features/admin/components/TablaMarcas';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 

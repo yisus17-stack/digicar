@@ -19,7 +19,7 @@ export type Car = {
 
 export type Marca = {
     id: string;
-    name: string;
+    name:string;
     logoUrl?: string;
 }
 

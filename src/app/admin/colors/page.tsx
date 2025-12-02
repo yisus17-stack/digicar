@@ -2,10 +2,10 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import TablaColores from '@/components/admin/TablaColores';
+import TablaColores from '@/features/admin/components/TablaColores';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Color } from '@/lib/types';
+import type { Color } from '@/core/types';
 
 function EsqueletoTablaColores() {
   return (

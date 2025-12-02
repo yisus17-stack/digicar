@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 import { Poppins } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
-import ChatbotWidget from '@/components/chatbot/ChatbotWidget';
-import ChatbotWrapper from '@/components/chatbot/ChatbotWrapper';
+import ChatbotWidget from '@/features/chatbot/components/ChatbotWidget';
+import ChatbotWrapper from '@/features/chatbot/components/ChatbotWrapper';
 
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });

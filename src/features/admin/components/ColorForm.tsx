@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Color } from '@/lib/types';
+import { Color } from '@/core/types';
 import { useEffect } from 'react';
 
 const esquemaFormulario = z.object({

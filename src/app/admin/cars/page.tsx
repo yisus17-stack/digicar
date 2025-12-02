@@ -2,11 +2,11 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import TablaAutos from '@/components/admin/TablaAutos';
+import TablaAutos from '@/features/admin/components/TablaAutos';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Car, Marca, Color, Transmision } from '@/lib/types';
-import SembradorBaseDatos from '@/components/admin/SembradorBaseDatos';
+import type { Car, Marca, Color, Transmision } from '@/core/types';
+import SembradorBaseDatos from '@/features/admin/components/SembradorBaseDatos';
 
 function EsqueletoTablaAutos() {
   return (

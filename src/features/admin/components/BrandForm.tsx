@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Marca } from '@/lib/types';
+import { Marca } from '@/core/types';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Upload } from 'lucide-react';

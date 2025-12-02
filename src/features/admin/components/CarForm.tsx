@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import type { Car, Marca, Color, Transmision } from '@/lib/types';
+import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { useEffect, useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import Image from 'next/image';

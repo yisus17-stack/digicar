@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
-import type { Transmision } from '@/lib/types';
+import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import {
     AlertDialog,

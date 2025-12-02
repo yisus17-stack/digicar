@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Car, Marca } from '@/lib/types';
-import PaginaCatalogoAutos from '@/components/catalog/CarCatalogPage';
+import type { Car, Marca } from '@/core/types';
+import PaginaCatalogoAutos from '@/features/catalog/components/CarCatalogPage';
 
 
 const EsqueletoSeccionHero = () => {

@@ -1,4 +1,4 @@
-import FormularioRegistro from '@/components/auth/FormularioRegistro';
+import FormularioRegistro from '@/features/auth/components/FormularioRegistro';
 
 export default function PaginaRegistro() {
   return (

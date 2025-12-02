@@ -2,15 +2,15 @@
 
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Sparkles, PlusCircle, Car as CarIcon } from 'lucide-react';
 import { summarizeCarComparison } from '@/ai/flows/summarize-car-comparison';
-import LeadCaptureForm from '../shared/LeadCaptureForm';
-import { Separator } from '../ui/separator';
+import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
+import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
 

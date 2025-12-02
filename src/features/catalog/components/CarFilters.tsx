@@ -7,14 +7,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-import { Slider } from '../ui/slider';
-import { Car } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Car } from '@/core/types';
 import { Loader, Sparkles } from 'lucide-react';
-import { Separator } from '../ui/separator';
-import { Input } from '../ui/input';
-import { Skeleton } from '../ui/skeleton';
+import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { translations } from '@/lib/translations';
 
 interface CarFiltersProps {

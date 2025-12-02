@@ -1,4 +1,4 @@
-import PaginaSimulador from "@/components/simulator/SimulatorPage";
+import PaginaSimulador from "@/features/simulator/components/SimulatorPage";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function Simulador() {

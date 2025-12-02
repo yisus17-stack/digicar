@@ -1,14 +1,14 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import PaginaComparacion from "@/components/comparison/ComparisonPage";
+import PaginaComparacion from "@/features/comparison/components/ComparisonPage";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Suspense } from 'react';
 

@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Edit, Trash2, Tag } from 'lucide-react';
-import type { Marca } from '@/lib/types';
+import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import {
     AlertDialog,
@@ -34,8 +34,8 @@ import { collection, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestor
 import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { subirImagen } from '@/lib/storage';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { subirImagen } from '@/core/services/storageService';
 
 interface TablaMarcasProps {
   marcas: Marca[];

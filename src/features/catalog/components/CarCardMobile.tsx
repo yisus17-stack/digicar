@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { translations } from '@/lib/translations';
 
 interface CarCardMobileProps {

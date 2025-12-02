@@ -1,10 +1,10 @@
 'use client';
 
-import PaginaSimuladorFinanciamiento from "@/components/financing/FinancingSimulatorPage";
+import PaginaSimuladorFinanciamiento from "@/features/financing/components/FinancingSimulatorPage";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { Car } from '@/lib/types';
+import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 

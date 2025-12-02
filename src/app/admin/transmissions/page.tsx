@@ -2,10 +2,10 @@
 
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import TablaTransmisiones from '@/components/admin/TablaTransmisiones';
+import TablaTransmisiones from '@/features/admin/components/TablaTransmisiones';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Transmision } from '@/lib/types';
+import type { Transmision } from '@/core/types';
 
 function EsqueletoTablaTransmisiones() {
   return (
