@@ -411,22 +411,23 @@ export default function FormularioAuto({
                                 />
                               </label>
                             </FormControl>
-
                             {preview ? (
-                              <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                <Image src={preview} alt="Vista previa" fill className="object-contain" />
-                                <Button
-                                  type="button"
-                                  variant="destructive"
-                                  size="icon"
-                                  className="absolute top-0 right-0 h-5 w-5"
-                                  onClick={removeImage}
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">No se ha seleccionado ningún archivo.</p>
+                                <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                    <Image src={preview} alt="Vista previa" fill className="object-contain" />
+                                    <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-1 right-1 h-6 w-6"
+                                    onClick={removeImage}
+                                    >
+                                    <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                ) : (
+                                <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
+                                    No se ha seleccionado
+                                </div>
                             )}
                           </div>
                           <FormMessage />
