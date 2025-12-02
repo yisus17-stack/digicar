@@ -91,7 +91,7 @@ function BarraLateralAdmin() {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300',
+        'fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300',
         { 'w-20': estaCerrada }
       )}
     >
@@ -164,7 +164,7 @@ const EsqueletoLayoutAdmin = () => {
     const estaCerrada = false;
     return (
         <div className="flex min-h-screen w-full bg-background">
-            <aside className={cn('fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': estaCerrada })}>
+            <aside className={cn('fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': estaCerrada })}>
                 <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
                      <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': estaCerrada})} />
                      <div className={cn('flex flex-col gap-1', { 'hidden': estaCerrada })}>
