@@ -6,7 +6,6 @@ import TablaAutos from '@/features/admin/components/TablaAutos';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
-import SembradorBaseDatos from '@/features/admin/components/SembradorBaseDatos';
 
 function EsqueletoTablaAutos() {
   return (
@@ -48,7 +47,6 @@ export default function PaginaAdminAutos() {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <TablaAutos autos={autos ?? []} marcas={marcas ?? []} colores={colores ?? []} transmisiones={transmisiones ?? []} />
-      <SembradorBaseDatos />
     </div>
   );
 }
