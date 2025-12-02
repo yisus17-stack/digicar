@@ -178,21 +178,21 @@ export default function FormularioAuto({
   };
   
   const isStepValid = (stepIndex: number) => {
-    // For the last step, since all fields are optional, we consider it "valid" for UI purposes if we are on it.
-    if (stepIndex === formSteps.length -1) {
-        const fields = formSteps[stepIndex].fields;
-        const values = form.getValues();
-        // Check if at least one optional field has some value
-        return fields.some(field => {
-            const value = values[field as keyof typeof values];
+    const fields = formSteps[stepIndex].fields;
+    const { formState, getValues } = form;
+
+    if (stepIndex === formSteps.length - 1) {
+        const hasInteractedWithOptional = fields.some(field => 
+            formState.touchedFields[field as keyof typeof formState.touchedFields]
+        );
+        const hasValuesInOptional = fields.some(field => {
+            const value = getValues(field as keyof DatosFormulario);
             return value !== '' && value !== undefined && value !== null;
         });
+
+        return (hasInteractedWithOptional || hasValuesInOptional) && fields.every(field => !formState.errors[field as keyof typeof formState.errors]);
     }
     
-    const fields = formSteps[stepIndex].fields;
-    const { formState } = form;
-    
-    // Check if all fields in the step have been touched and are valid
     return fields.every(field => 
       formState.touchedFields[field as keyof typeof formState.touchedFields] && !formState.errors[field as keyof typeof formState.errors]
     );
