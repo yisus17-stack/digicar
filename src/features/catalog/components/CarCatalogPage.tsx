@@ -26,7 +26,7 @@ const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
-const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCars }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, allCars: Car[] }) => {
+export const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCars }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, allCars: Car[] }) => {
   const selectedCars = allCars.filter(c => selectedIds.includes(c.id));
   if (selectedIds.length === 0) return null;
 

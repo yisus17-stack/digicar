@@ -1,8 +1,6 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, limit, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,8 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Car, Marca } from '@/core/types';
-import PaginaCatalogoAutos from '@/features/catalog/components/CarCatalogPage';
+import type { Marca } from '@/core/types';
+import PopularCarsSection from '@/features/catalog/components/PopularCarsSection';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 
 const EsqueletoSeccionHero = () => {
@@ -155,34 +155,6 @@ const SeccionMarcas = () => {
 
 
 export default function Home() {
-    const firestore = useFirestore();
-    const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'cars'), limit(3)), [firestore]);
-    const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Car>(consultaAutosPopulares);
-
-    if (cargandoAutosPopulares) {
-      return (
-        <>
-          <Suspense fallback={<EsqueletoSeccionHero />}>
-            <SeccionHero />
-          </Suspense>
-          <Suspense fallback={<EsqueletoSeccionMarcas />}>
-            <SeccionMarcas />
-          </Suspense>
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center mb-6">
-                <Skeleton className="h-10 w-2/3 mx-auto" />
-                <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-96 w-full" />
-            </div>
-          </div>
-        </>
-      )
-    }
-
     return (
         <>
             <Suspense fallback={<EsqueletoSeccionHero />}>
@@ -192,17 +164,8 @@ export default function Home() {
             <Suspense fallback={<EsqueletoSeccionMarcas />}>
                 <SeccionMarcas />
             </Suspense>
-
-
-            <div id="popular" className="container mx-auto px-4 py-8">
-                <div className="text-center mb-6">
-                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                        Los autos más populares
-                    </h2>
-                    <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
-                </div>
-                 {autosPopulares && <PaginaCatalogoAutos datosTodosLosAutos={autosPopulares} /> }
-            </div>
+            
+            <PopularCarsSection />
             
             <div className="text-center mb-16 px-4">
               <Button asChild variant="outline">
