@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
@@ -23,6 +23,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';
+import Link from 'next/link';
 
 const esquemaFormulario = z
   .object({
@@ -161,6 +162,12 @@ export default function FormularioRegistro() {
           </form>
         </Form>
       </CardContent>
+       <CardFooter className="flex justify-center text-sm">
+        <span className="text-muted-foreground">¿Ya tienes una cuenta?</span>
+        <Button variant="link" asChild className="p-1">
+          <Link href="/login">Inicia Sesión</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
