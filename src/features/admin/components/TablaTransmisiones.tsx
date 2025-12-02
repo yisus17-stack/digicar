@@ -10,13 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import {
@@ -75,8 +69,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
         });
         errorEmitter.emit('permission-error', contextualError);
     } finally {
-        setEstaAlertaAbierta(false);
-        setTransmisionAEliminar(null);
+        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -108,7 +101,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     } finally {
-        setEstaFormularioAbierto(false);
+        alCambiarAperturaFormulario(false);
     }
   };
 
@@ -137,32 +130,24 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
                 <TableHeader>
                 <TableRow>
                     <TableHead>Nombre</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {transmisionesIniciales.map(transmision => (
                     <TableRow key={transmision.id}>
                     <TableCell className="font-medium">{transmision.name}</TableCell>
-                    <TableCell>
-                        <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Abrir menú</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => manejarEditar(transmision)}>
+                    <TableCell className="text-right">
+                        <div className="flex gap-2 justify-end">
+                            <Button variant="outline" size="sm" onClick={() => manejarEditar(transmision)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => transmision.id && confirmarEliminar(transmision.id)} className="text-destructive">
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => transmision.id && confirmarEliminar(transmision.id)}>
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                        </DropdownMenu>
+                            </Button>
+                        </div>
                     </TableCell>
                     </TableRow>
                 ))}

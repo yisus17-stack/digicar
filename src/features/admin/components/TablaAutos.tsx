@@ -10,13 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Edit, Trash2, Car as IconoAuto } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import {
@@ -80,8 +74,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         });
         errorEmitter.emit('permission-error', contextualError);
     } finally {
-        setEstaAlertaAbierta(false);
-        setAutoAEliminar(null);
+        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -92,10 +85,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         if (file) {
             const imageUrl = await uploadImage(file);
             finalCarData.imageUrl = imageUrl;
-        } else if (autoSeleccionado?.imageUrl) {
-            finalCarData.imageUrl = autoSeleccionado.imageUrl;
         }
-
 
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
@@ -123,7 +113,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     } finally {
-        setEstaFormularioAbierto(false);
+        alCambiarAperturaFormulario(false);
     }
   };
 
@@ -156,7 +146,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     <TableHead>Modelo</TableHead>
                     <TableHead className="hidden md:table-cell">Año</TableHead>
                     <TableHead className="text-right">Precio</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -175,25 +165,17 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     <TableCell>{auto.model}</TableCell>
                     <TableCell className="hidden md:table-cell">{auto.year}</TableCell>
                     <TableCell className="text-right">${auto.price.toLocaleString('es-MX')}</TableCell>
-                    <TableCell>
-                        <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Abrir menú</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => manejarEditar(auto)}>
+                    <TableCell className="text-right">
+                        <div className="flex gap-2 justify-end">
+                            <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => auto.id && confirmarEliminar(auto.id)} className="text-destructive">
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Eliminar
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                        </DropdownMenu>
+                            </Button>
+                        </div>
                     </TableCell>
                     </TableRow>
                 ))}
