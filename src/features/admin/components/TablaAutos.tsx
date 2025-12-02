@@ -144,7 +144,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     <TableHead>Imagen</TableHead>
                     <TableHead>Marca</TableHead>
                     <TableHead>Modelo</TableHead>
-                    <TableHead className="hidden md:table-cell">Año</TableHead>
+                    <TableHead>Año</TableHead>
                     <TableHead>Precio</TableHead>
                     <TableHead>Acciones</TableHead>
                 </TableRow>
@@ -163,7 +163,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                     </TableCell>
                     <TableCell className="font-medium">{auto.marca}</TableCell>
                     <TableCell>{auto.modelo}</TableCell>
-                    <TableCell className="hidden md:table-cell">{auto.anio}</TableCell>
+                    <TableCell>{auto.anio}</TableCell>
                     <TableCell>${auto.precio.toLocaleString('es-MX')}</TableCell>
                     <TableCell>
                         <div className="flex gap-2">
