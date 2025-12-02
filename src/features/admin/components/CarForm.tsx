@@ -181,21 +181,22 @@ export default function FormularioAuto({
     const fields = formSteps[stepIndex].fields;
     const { formState, getValues } = form;
 
-    if (stepIndex === formSteps.length - 1) {
-        const hasInteractedWithOptional = fields.some(field => 
-            formState.touchedFields[field as keyof typeof formState.touchedFields]
-        );
-        const hasValuesInOptional = fields.some(field => {
-            const value = getValues(field as keyof DatosFormulario);
-            return value !== '' && value !== undefined && value !== null;
-        });
-
-        return (hasInteractedWithOptional || hasValuesInOptional) && fields.every(field => !formState.errors[field as keyof typeof formState.errors]);
-    }
+    const hasErrors = fields.some(field => formState.errors[field as keyof typeof formState.errors]);
+    if (hasErrors) return false;
     
-    return fields.every(field => 
-      formState.touchedFields[field as keyof typeof formState.touchedFields] && !formState.errors[field as keyof typeof formState.errors]
-    );
+    const isTouched = fields.every(field => formState.touchedFields[field as keyof typeof formState.touchedFields]);
+    if (isTouched) return true;
+    
+    // For the last step, check if at least one optional field has a value if not touched
+    if (stepIndex === formSteps.length - 1) {
+        const hasValue = fields.some(field => {
+            const value = getValues(field as keyof DatosFormulario);
+            return value !== '' && value !== undefined && value !== null && (!Array.isArray(value) || value.length > 0);
+        });
+        return hasValue;
+    }
+
+    return false;
   }
 
   return (
@@ -203,23 +204,45 @@ export default function FormularioAuto({
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
-           <div className="flex items-center justify-center gap-8 py-4">
+          <div className="flex items-center justify-center p-4">
+            <div className="flex items-center w-full max-w-sm">
                 {formSteps.map((step, index) => {
                     const isActive = currentStep === index;
                     const isCompleted = isStepValid(index);
+                    const isFutureStep = index > currentStep;
+                    
                     return (
-                        <div key={step.id} className="flex flex-col items-center gap-2">
-                           <div className={cn("flex items-center justify-center w-8 h-8 rounded-full border-2", 
-                                isActive ? "border-primary" : "border-muted",
-                                isCompleted && !isActive && "bg-primary text-primary-foreground border-primary"
-                            )}>
-                               <span className={cn(isActive && 'text-primary')}>{index + 1}</span>
-                           </div>
-                           <p className={cn("text-sm", isActive ? 'text-primary' : 'text-muted-foreground')}>{step.name}</p>
+                        <div key={step.id} className={cn("flex items-center", { "flex-1": index < formSteps.length -1 })}>
+                            <div className='flex flex-col items-center gap-1'>
+                                <div
+                                    className={cn(
+                                        "flex h-8 w-8 items-center justify-center rounded-full border-2",
+                                        isActive && "border-primary bg-primary text-primary-foreground",
+                                        !isActive && isCompleted && "border-primary",
+                                        isFutureStep && "border-muted text-muted-foreground"
+                                    )}
+                                >
+                                    <span className={cn(!isActive && isCompleted && "text-primary")}>{index + 1}</span>
+                                </div>
+                                <p className={cn(
+                                    "text-xs",
+                                    isActive && "font-bold text-primary",
+                                    !isActive && isCompleted && "text-primary",
+                                    isFutureStep && "text-muted-foreground"
+                                )}>{step.name}</p>
+                            </div>
+                            
+                            {index < formSteps.length - 1 && (
+                                <div className={cn(
+                                    "flex-1 h-px",
+                                    currentStep > index ? "bg-primary" : "bg-muted"
+                                )}></div>
+                            )}
                         </div>
                     );
                 })}
             </div>
+        </div>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(alEnviar)}>
