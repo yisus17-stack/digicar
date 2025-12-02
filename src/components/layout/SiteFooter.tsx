@@ -31,7 +31,6 @@ const SiteFooter = () => {
               <li><Link href="/simulator" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Simulador</Link></li>
               <li><Link href="/compare" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Comparador</Link></li>
               <li><Link href="/financing" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Financiamiento</Link></li>
-              <li><Link href="#" className="text-accent-foreground/80 hover:text-accent-foreground hover:underline">Chat</Link></li>
             </ul>
           </div>
           <div className="flex flex-col items-center md:items-start">
