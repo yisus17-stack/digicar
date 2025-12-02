@@ -68,7 +68,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
       }
       setSelectedFile(undefined);
     }
-  }, [marca, estaAbierto, form]);
+  }, [marca, estaAbierto]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

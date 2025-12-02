@@ -53,7 +53,7 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
         name: '',
       });
     }
-  }, [color, form]);
+  }, [color, estaAbierto]);
 
 
   const alEnviar = (data: DatosFormulario) => {

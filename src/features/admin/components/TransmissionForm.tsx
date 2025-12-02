@@ -53,7 +53,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
         name: '',
       });
     }
-  }, [transmision, form]);
+  }, [transmision, estaAbierto]);
 
 
   const alEnviar = (data: DatosFormulario) => {
