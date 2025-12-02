@@ -26,6 +26,10 @@ export const uploadImage = async (file: File): Promise<string> => {
   if (!data || !data.publicUrl) {
     throw new Error('Could not get public URL for the uploaded file.');
   }
+  
+  // Construct the permanent public URL
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const permanentUrl = `${supabaseUrl}/storage/v1/object/public/${BUCKET_NAME}/${filePath}`;
 
-  return data.publicUrl;
+  return permanentUrl;
 };
