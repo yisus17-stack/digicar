@@ -413,7 +413,7 @@ export default function FormularioAuto({
                             </FormControl>
 
                             {preview ? (
-                              <div className="relative w-20 h-20 rounded-lg overflow-hidden border">
+                              <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
                                 <Image src={preview} alt="Vista previa" fill className="object-contain" />
                                 <Button
                                   type="button"
@@ -478,5 +478,3 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
-
-    
