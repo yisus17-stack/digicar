@@ -33,7 +33,7 @@ import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
-import { CheckCircle, Circle, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -178,11 +178,24 @@ export default function FormularioAuto({
   };
   
   const isStepValid = (stepIndex: number) => {
+    // For the last step, since all fields are optional, we consider it "valid" for UI purposes if we are on it.
+    if (stepIndex === formSteps.length -1) {
+        const fields = formSteps[stepIndex].fields;
+        const values = form.getValues();
+        // Check if at least one optional field has some value
+        return fields.some(field => {
+            const value = values[field as keyof typeof values];
+            return value !== '' && value !== undefined && value !== null;
+        });
+    }
+    
     const fields = formSteps[stepIndex].fields;
-    const fieldValues = form.getValues();
-    const stepSchema = esquemaFormulario.pick(Object.fromEntries(fields.map(f => [f, true])) as any);
-    const result = stepSchema.safeParse(fieldValues);
-    return result.success;
+    const { formState } = form;
+    
+    // Check if all fields in the step have been touched and are valid
+    return fields.every(field => 
+      formState.touchedFields[field as keyof typeof formState.touchedFields] && !formState.errors[field as keyof typeof formState.errors]
+    );
   }
 
   return (
@@ -198,9 +211,9 @@ export default function FormularioAuto({
                         <div key={step.id} className="flex flex-col items-center gap-2">
                            <div className={cn("flex items-center justify-center w-8 h-8 rounded-full border-2", 
                                 isActive ? "border-primary" : "border-muted",
-                                isCompleted && !isActive && "border-green-500 text-green-500"
+                                isCompleted && !isActive && "bg-primary text-primary-foreground border-primary"
                             )}>
-                               {isCompleted ? <CheckCircle className='w-5 h-5' /> : <span className={cn(isActive && 'text-primary')}>{index + 1}</span> }
+                               <span className={cn(isActive && 'text-primary')}>{index + 1}</span>
                            </div>
                            <p className={cn("text-sm", isActive ? 'text-primary' : 'text-muted-foreground')}>{step.name}</p>
                         </div>
