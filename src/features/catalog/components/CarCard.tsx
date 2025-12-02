@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
-import { traducciones } from '@/lib/traducciones';
+import { traducciones } from '@/lib/translations';
 
 interface CarCardProps {
   car: Car;

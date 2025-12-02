@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { traducciones } from '@/lib/traducciones';
+import { traducciones } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car } from '@/core/types';

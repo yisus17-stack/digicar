@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
-import { traducciones } from '@/lib/traducciones';
+import { traducciones } from '@/lib/translations';
 
 interface PaginaComparacionProps {
   autos: ([Car] | [Car, Car]) & Car[];

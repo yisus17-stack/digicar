@@ -13,7 +13,7 @@ import { Slider } from '@/components/ui/slider';
 import { Car } from '@/core/types';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { traducciones } from '@/lib/traducciones';
+import { traducciones } from '@/lib/translations';
 
 interface CarFiltersProps {
   filters: any;
