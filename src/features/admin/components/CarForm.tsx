@@ -126,8 +126,8 @@ export default function FormularioAuto({
           imagenUrl: '',
         });
         setPreview(null);
-        setSelectedFile(undefined);
       }
+      setSelectedFile(undefined);
     }
   }, [auto, estaAbierto, form]);
 
@@ -391,9 +391,6 @@ export default function FormularioAuto({
                       />
                       <div className="space-y-4 pt-4 border-t">
                         <FormLabel className="text-base font-semibold">Imagen del Auto *</FormLabel>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Sube una foto o pega la URL de la imagen.
-                        </p>
                         
                         <FormItem>
                           <FormLabel>Subir imagen</FormLabel>
@@ -432,27 +429,18 @@ export default function FormularioAuto({
                           </div>
                           <FormMessage />
                         </FormItem>
-
                         <FormField
-                          control={form.control}
-                          name="imagenUrl"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>O pegar URL de la imagen</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="https://example.com/imagen.png"
-                                  onBlur={(e) => {
-                                      field.onBlur();
-                                      setPreview(e.target.value);
-                                      setSelectedFile(undefined);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                            control={form.control}
+                            name="imagenUrl"
+                            render={({ field }) => (
+                                <FormItem className='hidden'>
+                                <FormLabel>URL de la Imagen</FormLabel>
+                                <FormControl>
+                                    <Input {...field} readOnly/>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
                         />
                       </div>
                     </div>
