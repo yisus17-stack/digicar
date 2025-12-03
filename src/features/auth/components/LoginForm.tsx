@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -26,9 +27,37 @@ import { Loader } from 'lucide-react';
 import Link from 'next/link';
 
 const formSchema = z.object({
-  email: z.string().email('Por favor, introduce un correo electrónico válido.'),
+  email: z.string(),
   password: z.string(),
+}).superRefine((data, ctx) => {
+    // Email validation
+    if (data.email.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El correo electrónico es requerido.',
+        path: ['email'],
+      });
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      if (!emailRegex.test(data.email)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Por favor, introduce un correo electrónico válido.',
+          path: ['email'],
+        });
+      }
+    }
+
+    // Password validation
+    if (data.password.length === 0) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'La contraseña es requerida.',
+            path: ['password'],
+        });
+    }
 });
+
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -40,7 +69,7 @@ export default function LoginForm() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
