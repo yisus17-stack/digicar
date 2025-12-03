@@ -48,22 +48,31 @@ const esquemaFormulario = z
         path: ['name'],
       });
     } else {
-      const words = data.name.trim().split(/\s+/);
-      if (words.length < 2) {
+      const nameRegex = /^[a-zA-Z\u00C0-\u017F\s]+$/;
+      if (!nameRegex.test(data.name)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Por favor, introduce tu nombre y al menos un apellido.',
+          message: 'El nombre solo puede contener letras y espacios.',
           path: ['name'],
         });
       } else {
-        for (const word of words) {
-          if (word.length < 3) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
-              path: ['name'],
-            });
-            break; 
+        const words = data.name.trim().split(/\s+/);
+        if (words.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Por favor, introduce tu nombre y al menos un apellido.',
+            path: ['name'],
+          });
+        } else {
+          for (const word of words) {
+            if (word.length < 3) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
+                path: ['name'],
+              });
+              break; 
+            }
           }
         }
       }
@@ -71,19 +80,21 @@ const esquemaFormulario = z
 
 
     // Validación del email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (data.email.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'El correo electrónico es requerido.',
         path: ['email'],
       });
-    } else if (!emailRegex.test(data.email) || !z.string().email().safeParse(data.email).success) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Por favor, introduce un correo electrónico válido.',
-        path: ['email'],
-      });
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      if (!emailRegex.test(data.email) || !z.string().email().safeParse(data.email).success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Por favor, introduce un correo electrónico válido.',
+          path: ['email'],
+        });
+      }
     }
     
     // Validación de la contraseña
