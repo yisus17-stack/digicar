@@ -47,10 +47,10 @@ const esquemaFormulario = z
         message: 'El nombre es requerido.',
         path: ['name'],
       });
-    } else if (data.name.length < 2) {
+    } else if (data.name.trim().split(/\s+/).length < 2) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'El nombre debe tener al menos 2 caracteres.',
+        message: 'Por favor, introduce tu nombre y al menos un apellido.',
         path: ['name'],
       });
     }
