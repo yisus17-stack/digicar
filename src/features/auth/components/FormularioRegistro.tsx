@@ -56,13 +56,14 @@ const esquemaFormulario = z
     }
 
     // Validación del email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (data.email.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'El correo electrónico es requerido.',
         path: ['email'],
       });
-    } else if (!z.string().email().safeParse(data.email).success) {
+    } else if (!emailRegex.test(data.email) || !z.string().email().safeParse(data.email).success) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Por favor, introduce un correo electrónico válido.',
