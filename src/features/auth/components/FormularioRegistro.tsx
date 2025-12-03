@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -30,22 +31,39 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const esquemaFormulario = z
   .object({
-    name: z
-      .string()
-      .min(2, 'El nombre debe tener al menos 2 caracteres.')
-      .regex(/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚüÜ]+$/, 'El nombre solo puede contener letras y espacios.'),
+    name: z.string().refine(name => {
+        if (name === '') return true;
+        return name.length >= 2;
+    }, 'El nombre debe tener al menos 2 caracteres.').refine(name => {
+        if (name === '') return true;
+        return /^[a-zA-Z\sñÑáéíóúÁÉÍÓÚüÜ]+$/.test(name);
+    }, 'El nombre solo puede contener letras y espacios.'),
     email: z.string().refine((email) => {
         if (email === '') return true; // Don't validate empty string
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         return emailRegex.test(email);
     }, 'Por favor, introduce un correo electrónico válido.'),
     password: z
-      .string()
-      .min(8, 'La contraseña debe tener al menos 8 caracteres.')
-      .regex(/[A-Z]/, 'Debe contener al menos una letra mayúscula.')
-      .regex(/[a-z]/, 'Debe contener al menos una letra minúscula.')
-      .regex(/[0-9]/, 'Debe contener al menos un número.')
-      .regex(/[^a-zA-Z0-9]/, 'Debe contener al menos un carácter especial.'),
+      .string().refine(pass => {
+          if (pass === '') return true;
+          return pass.length >= 8;
+      }, 'La contraseña debe tener al menos 8 caracteres.')
+      .refine(pass => {
+          if (pass === '') return true;
+          return /[A-Z]/.test(pass);
+      }, 'Debe contener al menos una letra mayúscula.')
+      .refine(pass => {
+          if (pass === '') return true;
+          return /[a-z]/.test(pass)
+      }, 'Debe contener al menos una letra minúscula.')
+      .refine(pass => {
+          if (pass === '') return true;
+          return /[0-9]/.test(pass)
+      }, 'Debe contener al menos un número.')
+      .refine(pass => {
+          if (pass === '') return true;
+          return /[^a-zA-Z0-9]/.test(pass);
+      }, 'Debe contener al menos un carácter especial.'),
     confirmPassword: z.string(),
     acceptTerms: z.boolean().refine((val) => val === true, {
         message: 'Debes aceptar los términos y condiciones para continuar.',
