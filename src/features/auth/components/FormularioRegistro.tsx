@@ -31,23 +31,68 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const esquemaFormulario = z
   .object({
-    name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.'),
-    email: z.string().email('Por favor, introduce un correo electrónico válido.').min(1, 'El correo es requerido.'),
-    password: z
-      .string().min(1, 'La contraseña es requerida.')
-      .min(8, 'La contraseña debe tener al menos 8 caracteres.')
-      .refine(pass => /[A-Z]/.test(pass), 'Debe contener al menos una letra mayúscula.')
-      .refine(pass => /[a-z]/.test(pass), 'Debe contener al menos una letra minúscula.')
-      .refine(pass => /[0-9]/.test(pass), 'Debe contener al menos un número.')
-      .refine(pass => /[^a-zA-Z0-9]/.test(pass), 'Debe contener al menos un carácter especial.'),
+    name: z.string(),
+    email: z.string(),
+    password: z.string(),
     confirmPassword: z.string(),
     acceptTerms: z.boolean().refine((val) => val === true, {
-        message: 'Debes aceptar los términos y condiciones para continuar.',
+      message: 'Debes aceptar los términos y condiciones para continuar.',
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Las contraseñas no coinciden.',
-    path: ['confirmPassword'],
+  .superRefine((data, ctx) => {
+    // Validación del nombre
+    if (data.name.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El nombre es requerido.',
+        path: ['name'],
+      });
+    } else if (data.name.length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El nombre debe tener al menos 2 caracteres.',
+        path: ['name'],
+      });
+    }
+
+    // Validación del email
+    if (data.email.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El correo electrónico es requerido.',
+        path: ['email'],
+      });
+    } else if (!z.string().email().safeParse(data.email).success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Por favor, introduce un correo electrónico válido.',
+        path: ['email'],
+      });
+    }
+    
+    // Validación de la contraseña
+    if (data.password.length === 0) {
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'La contraseña es requerida.',
+            path: ['password'],
+        });
+    } else {
+        if (data.password.length < 8) ctx.addIssue({ code: 'custom', message: 'La contraseña debe tener al menos 8 caracteres.', path: ['password'] });
+        if (!/[A-Z]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos una letra mayúscula.', path: ['password'] });
+        if (!/[a-z]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos una letra minúscula.', path: ['password'] });
+        if (!/[0-9]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos un número.', path: ['password'] });
+        if (!/[^a-zA-Z0-9]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos un carácter especial.', path: ['password'] });
+    }
+
+    // Validación de confirmación de contraseña
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Las contraseñas no coinciden.',
+        path: ['confirmPassword'],
+      });
+    }
   });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
