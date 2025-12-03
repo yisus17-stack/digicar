@@ -139,11 +139,11 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
     }
 
     if (sortOrder === 'price-asc') {
-      filtered.sort((a, b) => a.precio - b.price);
+      filtered.sort((a, b) => a.precio - b.precio);
     } else if (sortOrder === 'price-desc') {
-      filtered.sort((a, b) => b.precio - a.price);
+      filtered.sort((a, b) => b.precio - a.precio);
     } else if (sortOrder === 'year-desc') {
-      filtered.sort((a, b) => b.year - a.year);
+      filtered.sort((a, b) => b.anio - a.anio);
     }
     
     return filtered;
@@ -277,7 +277,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
 
 
                 {/* Desktop View */}
-                <div className="md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
                         <CarCard 
                           key={`desktop-${car.id}`} 
