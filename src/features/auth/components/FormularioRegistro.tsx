@@ -206,7 +206,7 @@ export default function FormularioRegistro() {
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input {...field} onChange={e => {
-                        const sanitized = e.target.value.replace(/[^a-zA-Z\u00C0-\u017F\s]/g, '');
+                        const sanitized = e.target.value.replace(/[^a-zA-Z\u00C0-\u017F ]/g, '');
                         field.onChange(sanitized);
                     }}/>
                   </FormControl>
