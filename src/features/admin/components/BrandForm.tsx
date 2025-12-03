@@ -27,7 +27,7 @@ import Image from 'next/image';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
-  logoUrl: z.string().url('Debe ser una URL válida.').optional().or(z.literal('')),
+  logoUrl: z.string().optional(),
 });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -85,7 +85,8 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
   };
 
   const alEnviar = (data: DatosFormulario) => {
-    alGuardar(data, selectedFile);
+    const finalData = { ...data, logoUrl: preview || data.logoUrl || '' };
+    alGuardar(finalData, selectedFile);
     alCambiarApertura(false);
   };
   
@@ -113,26 +114,20 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
               <FormMessage />
             </FormItem>
 
-            <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>O pegar URL del logo</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="https://example.com/logo.png" onBlur={(e) => {
-                          field.onBlur();
-                          setPreview(e.target.value);
-                          setSelectedFile(undefined);
-                      }}/>
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-            )}/>
-            
             {preview && (
               <div className="mt-4">
                 <p className="text-sm font-medium mb-2">Vista previa:</p>
                 <Image src={preview} alt="Vista previa del logo" width={100} height={100} className="rounded-md object-contain border" />
               </div>
             )}
+            
+            <FormField control={form.control} name="logoUrl" render={({ field }) => (
+                <FormItem className='hidden'>
+                    <FormLabel>URL del logo</FormLabel>
+                    <FormControl><Input {...field} readOnly/></FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}/>
 
             <DialogFooter>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
