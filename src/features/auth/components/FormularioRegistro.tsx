@@ -47,13 +47,28 @@ const esquemaFormulario = z
         message: 'El nombre es requerido.',
         path: ['name'],
       });
-    } else if (data.name.trim().split(/\s+/).length < 2) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Por favor, introduce tu nombre y al menos un apellido.',
-        path: ['name'],
-      });
+    } else {
+      const words = data.name.trim().split(/\s+/);
+      if (words.length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Por favor, introduce tu nombre y al menos un apellido.',
+          path: ['name'],
+        });
+      } else {
+        for (const word of words) {
+          if (word.length < 2) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Cada nombre y apellido debe tener al menos 2 caracteres.',
+              path: ['name'],
+            });
+            break; 
+          }
+        }
+      }
     }
+
 
     // Validación del email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
