@@ -220,7 +220,7 @@ export default function FormularioRegistro() {
               control={form.control}
               name="acceptTerms"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start">
+                <FormItem className="flex flex-row items-center">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
