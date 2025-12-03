@@ -42,7 +42,7 @@ export default function LoginForm() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       email: '',
       password: '',

@@ -67,7 +67,7 @@ export default function FormularioRegistro() {
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       name: '',
       email: '',
