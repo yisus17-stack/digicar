@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Marca } from '@/core/types';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { X } from 'lucide-react';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -84,6 +84,12 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
     }
   };
 
+  const removeImage = () => {
+    setPreview(null);
+    setSelectedFile(undefined);
+    form.setValue('logoUrl', '', { shouldValidate: true });
+  };
+
   const alEnviar = (data: DatosFormulario) => {
     const finalData = { ...data, logoUrl: preview || data.logoUrl || '' };
     alGuardar(finalData, selectedFile);
@@ -108,18 +114,35 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
              
             <FormItem>
               <FormLabel>Subir logo</FormLabel>
-              <FormControl>
-                <Input type="file" accept="image/*" onChange={handleFileChange} />
-              </FormControl>
+              <div className="flex items-center gap-4">
+                <FormControl>
+                  <label htmlFor="file-upload-brand" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                    Elegir archivo
+                    <Input id="file-upload-brand" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                  </label>
+                </FormControl>
+
+                {preview ? (
+                  <div className="relative w-24 h-16 rounded-lg overflow-hidden border">
+                    <img src={preview} alt="Vista previa" className="object-contain w-full h-full" />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 h-5 w-5"
+                      onClick={removeImage}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="w-24 h-16 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
+                    Sin logo
+                  </div>
+                )}
+              </div>
               <FormMessage />
             </FormItem>
-
-            {preview && (
-              <div className="mt-4">
-                <p className="text-sm font-medium mb-2">Vista previa:</p>
-                <Image src={preview} alt="Vista previa del logo" width={100} height={100} className="rounded-md object-contain border" />
-              </div>
-            )}
             
             <FormField control={form.control} name="logoUrl" render={({ field }) => (
                 <FormItem className='hidden'>
