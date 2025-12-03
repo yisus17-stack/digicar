@@ -38,14 +38,14 @@ export const ComparisonBar = ({ selectedIds, onRemove, onClear, onCompare, allCa
             <div className="flex items-center gap-4">
               {selectedCars.map(car => (
                 <div key={car.id} className="relative flex items-center gap-2 bg-muted p-2 rounded-lg">
-                  {car.imageUrl ? (
-                    <Image src={car.imageUrl} alt={car.model} width={40} height={30} className="rounded object-cover" />
+                  {car.imagenUrl ? (
+                    <Image src={car.imagenUrl} alt={car.modelo} width={40} height={30} className="rounded object-cover" />
                   ) : (
                     <div className="w-10 h-8 flex items-center justify-center bg-secondary rounded">
                       <CarIcon className="w-4 h-4 text-muted-foreground"/>
                     </div>
                   )}
-                  <span className="text-sm font-medium hidden md:inline">{car.brand} {car.model}</span>
+                  <span className="text-sm font-medium hidden md:inline">{car.marca} {car.modelo}</span>
                   <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => onRemove(car.id)}>
                     <X className="h-4 w-4" />
                   </Button>
@@ -117,31 +117,31 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
     if (!datosTodosLosAutos) return [];
     let filtered = datosTodosLosAutos.filter(car => {
       const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
-      if (brand !== 'all' && car.brand !== brand) return false;
-      if (fuelType !== 'all' && car.fuelType !== fuelType) return false;
-      if (transmission !== 'all' && car.transmission !== transmission) return false;
-      if (car.price > price) return false;
-      if (year !== 'all' && car.year !== parseInt(year)) return false;
-      if (type !== 'all' && car.type !== type) return false;
-      if (engineCylinders !== 'all' && car.engineCylinders !== parseInt(engineCylinders)) return false;
+      if (brand !== 'all' && car.marca !== brand) return false;
+      if (fuelType !== 'all' && car.tipoCombustible !== fuelType) return false;
+      if (transmission !== 'all' && car.transmision !== transmission) return false;
+      if (car.precio > price) return false;
+      if (year !== 'all' && car.anio !== parseInt(year)) return false;
+      if (type !== 'all' && car.tipo !== type) return false;
+      if (engineCylinders !== 'all' && car.cilindrosMotor !== parseInt(engineCylinders)) return false;
       if (color !== 'all' && car.color !== color) return false;
-      if (passengers !== 'all' && car.passengers !== parseInt(passengers)) return false;
+      if (passengers !== 'all' && car.pasajeros !== parseInt(passengers)) return false;
       return true;
     });
 
     if (debouncedSearchTerm) {
       const lowercasedTerm = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(car => 
-        car.brand.toLowerCase().includes(lowercasedTerm) ||
-        car.model.toLowerCase().includes(lowercasedTerm) ||
-        car.features.some(f => f.toLowerCase().includes(lowercasedTerm))
+        car.marca.toLowerCase().includes(lowercasedTerm) ||
+        car.modelo.toLowerCase().includes(lowercasedTerm) ||
+        car.caracteristicas.some(f => f.toLowerCase().includes(lowercasedTerm))
       );
     }
 
     if (sortOrder === 'price-asc') {
-      filtered.sort((a, b) => a.price - b.price);
+      filtered.sort((a, b) => a.precio - b.price);
     } else if (sortOrder === 'price-desc') {
-      filtered.sort((a, b) => b.price - a.price);
+      filtered.sort((a, b) => b.precio - a.price);
     } else if (sortOrder === 'year-desc') {
       filtered.sort((a, b) => b.year - a.year);
     }
@@ -277,7 +277,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
 
 
                 {/* Desktop View */}
-                <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
                         <CarCard 
                           key={`desktop-${car.id}`} 
