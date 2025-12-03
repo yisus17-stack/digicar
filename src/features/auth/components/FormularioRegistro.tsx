@@ -201,11 +201,12 @@ export default function FormularioRegistro() {
               control={form.control}
               name="acceptTerms"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-start space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      className="mr-3"
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
