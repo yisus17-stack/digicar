@@ -67,7 +67,7 @@ export default function FormularioRegistro() {
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       name: '',
       email: '',
@@ -201,7 +201,7 @@ export default function FormularioRegistro() {
               control={form.control}
               name="acceptTerms"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-y-0">
+                <FormItem className="flex flex-row items-start">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
