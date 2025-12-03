@@ -26,6 +26,7 @@ import { useState } from 'react';
 import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import PasswordStrength from './PasswordStrength';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const esquemaFormulario = z
   .object({
@@ -45,6 +46,9 @@ const esquemaFormulario = z
       .regex(/[0-9]/, 'Debe contener al menos un número.')
       .regex(/[^a-zA-Z0-9]/, 'Debe contener al menos un carácter especial.'),
     confirmPassword: z.string(),
+    acceptTerms: z.boolean().refine((val) => val === true, {
+        message: 'Debes aceptar los términos y condiciones para continuar.',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas no coinciden.',
@@ -69,6 +73,7 @@ export default function FormularioRegistro() {
       email: '',
       password: '',
       confirmPassword: '',
+      acceptTerms: false,
     },
   });
 
@@ -191,6 +196,28 @@ export default function FormularioRegistro() {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="acceptTerms"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Acepto los <Link href="/legal/terminos-y-condiciones" className="underline hover:text-primary">términos y condiciones</Link> y la <Link href="/legal/politica-de-privacidad" className="underline hover:text-primary">política de privacidad</Link>.
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            
             <Button type="submit" className="w-full" disabled={cargando}>
               {cargando && <Loader className="mr-2 h-4 w-4 animate-spin" />}
               Crear Cuenta
