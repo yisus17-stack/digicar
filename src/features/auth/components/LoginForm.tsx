@@ -27,9 +27,7 @@ import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email('Por favor, introduce un correo electrónico válido.'),
-  password: z
-    .string()
-    .min(1, 'La contraseña no puede estar vacía.'),
+  password: z.string(),
 });
 
 type FormData = z.infer<typeof formSchema>;
