@@ -210,7 +210,7 @@ export default function FormularioRegistro() {
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>
-                      Acepto los <Link href="/legal/terminos-y-condiciones" className="underline hover:text-primary">términos y condiciones</Link> y la <Link href="/legal/politica-de-privacidad" className="underline hover:text-primary">política de privacidad</Link>.
+                      Acepto los <Link href="/legal/terminos-y-condiciones" className="underline text-blue-600 hover:text-blue-800">términos y condiciones</Link> y la <Link href="/legal/politica-de-privacidad" className="underline text-blue-600 hover:text-blue-800">política de privacidad</Link>.
                     </FormLabel>
                     <FormMessage />
                   </div>
