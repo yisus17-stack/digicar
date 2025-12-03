@@ -57,10 +57,10 @@ const esquemaFormulario = z
         });
       } else {
         for (const word of words) {
-          if (word.length < 2) {
+          if (word.length < 3) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: 'Cada nombre y apellido debe tener al menos 2 caracteres.',
+              message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
               path: ['name'],
             });
             break; 
