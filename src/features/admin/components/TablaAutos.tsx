@@ -19,7 +19,6 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
 import { uploadImage } from '@/core/services/storageService';
-import { useNotification } from '@/core/contexts/NotificationContext';
 import Swal from 'sweetalert2';
 
 interface TablaAutosProps {
@@ -34,7 +33,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -89,7 +87,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
     setIsSaving(true);
-    let uploadId: string | null = null;
     
     try {
         let finalCarData: any = { ...datosAuto };
@@ -104,12 +101,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 Swal.showLoading();
               },
             });
-            uploadId = startUpload(file);
-            const imageUrl = await uploadImage(file, (progress) => {
-              if (uploadId) updateUploadProgress(uploadId, progress);
-            });
+            const imageUrl = await uploadImage(file);
             finalCarData.imagenUrl = imageUrl;
-            if (uploadId) completeUpload(uploadId);
         }
 
         if (autoSeleccionado) {
@@ -123,7 +116,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        if (uploadId) errorUpload(uploadId);
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar los cambios.', icon: 'error' });
         
         if (error.code && error.code.includes('permission-denied')) {

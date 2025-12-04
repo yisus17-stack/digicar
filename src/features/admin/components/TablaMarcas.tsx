@@ -19,7 +19,6 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { uploadImage } from '@/core/services/storageService';
-import { useNotification } from '@/core/contexts/NotificationContext';
 import Swal from 'sweetalert2';
 
 interface TablaMarcasProps {
@@ -31,7 +30,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setMarcaSeleccionada(null);
@@ -86,7 +84,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     setIsSaving(true);
-    let uploadId: string | null = null;
     
     try {
         let finalBrandData: any = { ...data };
@@ -101,12 +98,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
                 Swal.showLoading();
               },
             });
-            uploadId = startUpload(file);
-            const logoUrl = await uploadImage(file, (progress) => {
-                if(uploadId) updateUploadProgress(uploadId, progress);
-            });
+            const logoUrl = await uploadImage(file);
             finalBrandData.logoUrl = logoUrl;
-            if (uploadId) completeUpload(uploadId);
         } else if (marcaSeleccionada && data.logoUrl) {
             finalBrandData.logoUrl = data.logoUrl;
         } else if (marcaSeleccionada) {
@@ -126,7 +119,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        if (uploadId) errorUpload(uploadId);
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la marca.', icon: 'error' });
         
         console.error("Error al guardar la marca:", error);
