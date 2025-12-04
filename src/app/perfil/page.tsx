@@ -13,6 +13,8 @@ import { Bell, Car, CreditCard, GitCompareArrows, Heart, LogOut, Shield, User as
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 function EsqueletoPerfil() {
   return (
