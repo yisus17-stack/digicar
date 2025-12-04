@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type Car = {
   id: string;
   marca: string;
@@ -38,5 +40,5 @@ export type UserProfile = {
   uid: string;
   email: string;
   displayName: string;
-  createdAt: string;
+  createdAt: Timestamp;
 }

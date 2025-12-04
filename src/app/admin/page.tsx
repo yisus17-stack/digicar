@@ -5,8 +5,11 @@ import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase
 import { collection, doc, Timestamp } from "firebase/firestore";
 import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon, ArrowUpRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 import type { Car as CarType, Marca, UserProfile, Color, Transmision } from '@/core/types';
+import { useMemo } from 'react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 type ContadorUsuarios = {
     total: number;
@@ -68,10 +71,43 @@ export default function PaginaDashboardAdmin() {
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection<Transmision>(coleccionTransmisiones);
     
+    const coleccionUsuarios = useMemoFirebase(() => collection(firestore, 'usuarios'), [firestore]);
+    const { data: perfilesUsuarios, isLoading: cargandoUsuarios } = useCollection<UserProfile>(coleccionUsuarios);
+    
     const refContadorUsuarios = useMemoFirebase(() => doc(firestore, 'contadores', 'usuarios'), [firestore]);
     const { data: contadorUsuarios, isLoading: cargandoContador } = useDoc<ContadorUsuarios>(refContadorUsuarios);
 
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador) {
+    const datosGraficoUsuarios = useMemo(() => {
+        if (!perfilesUsuarios) return [];
+
+        const userCountsByMonth = perfilesUsuarios.reduce((acc, user) => {
+            if (user.createdAt) {
+                const date = user.createdAt.toDate();
+                const monthKey = format(date, 'MMM yy', { locale: es });
+                acc[monthKey] = (acc[monthKey] || 0) + 1;
+            }
+            return acc;
+        }, {} as Record<string, number>);
+
+        const sortedMonths = Object.keys(userCountsByMonth).sort((a, b) => {
+            const [monthA, yearA] = a.split(' ');
+            const [monthB, yearB] = b.split(' ');
+            const dateA = new Date(`01 ${monthA} ${yearA}`);
+            const dateB = new Date(`01 ${monthB} ${yearB}`);
+            return dateA.getTime() - dateB.getTime();
+        });
+        
+        let cumulativeUsers = 0;
+        return sortedMonths.map(monthKey => {
+            cumulativeUsers += userCountsByMonth[monthKey];
+            return {
+                month: monthKey.charAt(0).toUpperCase() + monthKey.slice(1),
+                users: cumulativeUsers
+            };
+        });
+    }, [perfilesUsuarios]);
+
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador || cargandoUsuarios) {
         return <EsqueletoDashboard />;
     }
 
@@ -79,16 +115,6 @@ export default function PaginaDashboardAdmin() {
         name: marca.nombre,
         total: autos?.filter(auto => auto.marca === marca.nombre).length ?? 0,
     })).filter(item => item.total > 0);
-    
-    // Simulación de datos para la gráfica de usuarios
-    const datosUsuarios = [
-        { month: 'Ene', users: 0 },
-        { month: 'Feb', users: 0 },
-        { month: 'Mar', users: 1 },
-        { month: 'Abr', users: 1 },
-        { month: 'May', users: 2 },
-        { month: 'Jun', users: contadorUsuarios?.total ?? 0 },
-    ];
     
     const statCards = [
         { title: "Total de Autos", value: autos?.length ?? 0, icon: CarIcon },
@@ -131,9 +157,10 @@ export default function PaginaDashboardAdmin() {
                         </div>
                         <div className="h-40 mt-4 -ml-4">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={datosUsuarios} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} domain={[0, 'dataMax + 1']}/>
+                                <LineChart data={datosGraficoUsuarios} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false}/>
+                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={[0, 'dataMax + 1']}/>
                                     <Tooltip
                                         contentStyle={{
                                             background: "hsl(var(--background))",
@@ -142,7 +169,7 @@ export default function PaginaDashboardAdmin() {
                                         }}
                                         labelStyle={{ color: "hsl(var(--foreground))" }}
                                     />
-                                    <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }}/>
+                                    <Line type="monotone" dataKey="users" name="Usuarios" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }}/>
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
