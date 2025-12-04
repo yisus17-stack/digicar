@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -208,12 +209,10 @@ export default function AccessibilityWidget() {
         <Button
           variant="default"
           size="icon"
-          className="fixed bottom-6 left-6 h-14 w-14 rounded-full shadow-lg z-50 flex items-center justify-center p-0"
+          className="fixed bottom-6 left-6 h-14 w-14 rounded-full shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
-          <div className="h-10 w-10 rounded-full bg-background flex items-center justify-center">
-            <PersonStanding className="h-6 w-6 text-primary" />
-          </div>
+          <PersonStanding className="h-6 w-6" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[320px] p-0 flex flex-col">
