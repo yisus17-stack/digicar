@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useUser, useAuth } from '@/firebase';
+import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { Bell, Shield, User as UserIcon } from 'lucide-react';
+import { Bell, LogOut, Shield, User as UserIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -70,7 +70,7 @@ export default function PaginaPerfil() {
       { id: 'overview', label: 'Mi Perfil', icon: UserIcon },
       { id: 'notifications', label: 'Notificaciones', icon: Bell },
       { id: 'security', label: 'Seguridad', icon: Shield },
-  ]
+  ];
 
   const simulacionesGuardadas = [
     { id: 1, car: 'Toyota Camry XSE', monthlyPayment: 8500, term: 48, date: '15 de Julio, 2024' },
