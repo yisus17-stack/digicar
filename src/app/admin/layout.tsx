@@ -34,7 +34,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { NotificationProvider } from '@/core/contexts/NotificationContext';
 
 
 // Contexto para el estado de la barra lateral
@@ -196,13 +195,11 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
   }
 
   return (
-    <NotificationProvider>
-        <ProveedorBarraLateral>
-        <LayoutAdminConProveedor>
-            {children}
-        </LayoutAdminConProveedor>
-        </ProveedorBarraLateral>
-    </NotificationProvider>
+    <ProveedorBarraLateral>
+      <LayoutAdminConProveedor>
+        {children}
+      </LayoutAdminConProveedor>
+    </ProveedorBarraLateral>
   );
 }
 
@@ -289,7 +286,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                   </DropdownMenu>
                 </div>
               </header>
-              <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
+              <main className="flex-1 sm:px-6 sm:py-0">{children}</main>
           </div>
       </div>
   );

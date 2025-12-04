@@ -1,13 +1,11 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
-import { collection, query, orderBy, limit } from "firebase/firestore";
-import { Car, Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon } from "lucide-react";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import Image from "next/image";
 import type { Car as CarType, Marca, UserProfile } from '@/core/types';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function EsqueletoDashboard() {
     return (
@@ -42,9 +40,7 @@ function EsqueletoDashboard() {
 
 export default function PaginaDashboardAdmin() {
     const firestore = useFirestore();
-    const { user } = useUser();
-    const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-
+    
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading: cargandoAutos } = useCollection<CarType>(coleccionAutos);
 
@@ -57,10 +53,10 @@ export default function PaginaDashboardAdmin() {
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
 
-    const coleccionUsuarios = useMemoFirebase(() => isAdmin ? collection(firestore, 'usuarios') : null, [firestore, isAdmin]);
+    const coleccionUsuarios = useMemoFirebase(() => collection(firestore, 'usuarios'), [firestore]);
     const { data: usuarios, isLoading: cargandoUsuarios } = useCollection<UserProfile>(coleccionUsuarios);
 
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || (isAdmin && cargandoUsuarios)) {
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoUsuarios) {
         return <EsqueletoDashboard />;
     }
 
