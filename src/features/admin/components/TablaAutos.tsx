@@ -34,7 +34,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useNotification();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -95,6 +95,15 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         let finalCarData: any = { ...datosAuto };
         
         if (file) {
+            Swal.fire({
+              title: 'Subiendo imagen...',
+              text: 'Por favor, espera.',
+              icon: 'info',
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
             uploadId = startUpload(file);
             const imageUrl = await uploadImage(file, (progress) => {
               if (uploadId) updateUploadProgress(uploadId, progress);

@@ -31,7 +31,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useNotification();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setMarcaSeleccionada(null);
@@ -92,6 +92,15 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         let finalBrandData: any = { ...data };
 
         if (file) {
+            Swal.fire({
+              title: 'Subiendo imagen...',
+              text: 'Por favor, espera.',
+              icon: 'info',
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
             uploadId = startUpload(file);
             const logoUrl = await uploadImage(file, (progress) => {
                 if(uploadId) updateUploadProgress(uploadId, progress);
