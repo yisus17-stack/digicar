@@ -22,7 +22,7 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader, Home } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 
@@ -97,8 +97,6 @@ export default function LoginForm() {
         if (error instanceof FirebaseError) {
             switch (error.code) {
                 case 'auth/invalid-credential':
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
                     description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
                     break;
                 case 'auth/invalid-email':
