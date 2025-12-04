@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useAuth, useUser } from '@/firebase';
+import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,8 +13,6 @@ import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2, Upl
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
-import { cn } from '@/lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
 import { updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
@@ -41,7 +39,6 @@ function EsqueletoPerfil() {
         <div className="md:col-span-3 space-y-6">
           <Skeleton className="h-8 w-48 mb-4" />
           <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-64 w-full" />
         </div>
       </div>
     </div>
@@ -50,7 +47,6 @@ function EsqueletoPerfil() {
 
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
-  const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
@@ -95,7 +91,6 @@ export default function PaginaPerfil() {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
-    // Validate file type and size
     if (!file.type.startsWith('image/')) {
         toast({ title: 'Error', description: 'Por favor, selecciona un archivo de imagen.', variant: 'destructive'});
         return;
@@ -105,20 +100,17 @@ export default function PaginaPerfil() {
         return;
     }
 
-    setUploadProgress(0); // Start progress simulation
+    setUploadProgress(0);
 
     try {
-        // Step 1: Delete the old image if it exists and it's from our storage
         if (user.photoURL && user.photoURL.includes('supabase')) {
             await deleteImage(user.photoURL);
         }
 
-        // Step 2: Upload the new image
         const newPhotoURL = await uploadImage(file, (progress) => {
             setUploadProgress(progress);
         });
 
-        // Step 3: Update the user's profile
         await updateProfile(user, { photoURL: newPhotoURL });
 
         toast({
@@ -133,16 +125,9 @@ export default function PaginaPerfil() {
             variant: 'destructive',
         });
     } finally {
-        setUploadProgress(null); // End progress
+        setUploadProgress(null);
     }
 };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Buenos días';
-    if (hour < 18) return 'Buenas tardes';
-    return 'Buenas noches';
-  };
 
   const menuItems = [
     { id: 'overview', label: 'Resumen', icon: List },
@@ -150,50 +135,36 @@ export default function PaginaPerfil() {
     { id: 'security', label: 'Seguridad', icon: Shield },
   ];
 
-  const summaryCards = [
-    { title: 'Autos Favoritos', value: '5', icon: Heart, href: '#' },
-    { title: 'Comparaciones', value: '3', icon: Repeat, href: '/compare' },
-    { title: 'Simulaciones', value: '2', icon: CreditCard, href: '#' },
+  const actividadReciente = [
+    { icon: Heart, text: 'Agregaste un Toyota Camry a favoritos.', time: 'hace 5 minutos' },
+    { icon: Repeat, text: 'Comparaste un Honda CR-V y un Ford F-150.', time: 'hace 1 hora' },
+    { icon: CreditCard, text: 'Guardaste una simulación de financiamiento.', time: 'hace 3 horas' },
+  ];
+
+  const simulacionesGuardadas = [
+    { name: "Plan Camry XSE", date: "2023-11-15", payment: "$8,500 MXN/mes" },
+    { name: "Plan Model 3 LR", date: "2023-11-10", payment: "$12,300 MXN/mes" },
   ]
-
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -20 },
-  };
-
-  const pageTransition = {
-    type: 'tween',
-    ease: 'anticipate',
-    duration: 0.4,
-  };
 
 
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
       
-      <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">{getGreeting()}, {user.displayName?.split(' ')[0] || 'Usuario'}!</h1>
-          <p className="text-muted-foreground">Bienvenido a tu centro de control personal de DigiCar.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start mt-8">
         {/* Columna Izquierda - Navegación */}
         <aside className="lg:col-span-1 space-y-6 sticky top-24">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
-                  <AvatarFallback className="text-2xl">
-                      {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
-                  <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-                </div>
+            <CardContent className="p-4 flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
+                <AvatarFallback className="text-2xl">
+                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
+                <p className="text-sm text-muted-foreground truncate">{user.email}</p>
               </div>
             </CardContent>
           </Card>
@@ -214,103 +185,111 @@ export default function PaginaPerfil() {
 
         {/* Columna Derecha - Contenido */}
         <main className="lg:col-span-3">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              variants={pageVariants}
-              initial="initial"
-              animate="in"
-              exit="out"
-              transition={pageTransition}
-            >
-              {activeTab === 'overview' && (
-                <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-4">Resumen de Actividad</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {summaryCards.map(item => (
-                            <Card key={item.title} className="hover:border-primary transition-colors">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
-                                    <item.icon className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">{item.value}</div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Actividad Reciente</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="space-y-4">
+                            {actividadReciente.map((item, index) => (
+                                <li key={index} className="flex items-start gap-3">
+                                    <div className="bg-muted p-2 rounded-full">
+                                        <item.icon className="h-5 w-5 text-muted-foreground" />
+                                    </div>
+                                    <div>
+                                        <p>{item.text}</p>
+                                        <p className="text-sm text-muted-foreground">{item.time}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Simulaciones Guardadas</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="space-y-4">
+                            {simulacionesGuardadas.map((item, index) => (
+                                <li key={index} className="flex items-center justify-between">
+                                    <div className='flex items-center gap-3'>
+                                        <CreditCard className="h-5 w-5 text-muted-foreground" />
+                                        <div>
+                                            <p className='font-medium'>{item.name}</p>
+                                            <p className="text-sm text-muted-foreground">Guardado el {item.date}</p>
+                                        </div>
+                                    </div>
+                                    <p className="font-semibold text-primary">{item.payment}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+          )}
+          {activeTab === 'settings' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Configuración de Perfil</CardTitle>
+                <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <Label>Foto de Perfil</Label>
+                  <div className="flex items-center gap-4">
+                      <Avatar className="h-20 w-20">
+                          {user.photoURL && <AvatarImage src={user.photoURL} />}
+                          <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                       <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+                       <Button asChild variant="outline">
+                          <label htmlFor="avatar-upload" className="cursor-pointer">
+                            <UploadCloud className="mr-2 h-4 w-4" />
+                            Cambiar foto
+                          </label>
+                       </Button>
                   </div>
-                </div>
-              )}
-              {activeTab === 'settings' && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Configuración de Perfil</h2>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Tu Información</CardTitle>
-                      <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-3">
-                        <Label>Foto de Perfil</Label>
-                        <div className="flex items-center gap-4">
-                            <Avatar className="h-20 w-20">
-                                {user.photoURL && <AvatarImage src={user.photoURL} />}
-                                <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                             <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
-                             <Button asChild variant="outline">
-                                <label htmlFor="avatar-upload" className="cursor-pointer">
-                                  <UploadCloud className="mr-2 h-4 w-4" />
-                                  Cambiar foto
-                                </label>
-                             </Button>
-                        </div>
-                        {uploadProgress !== null && (
-                            <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Subiendo...</p>
-                                <Progress value={uploadProgress} className="w-full" />
-                            </div>
-                        )}
+                  {uploadProgress !== null && (
+                      <div className="space-y-1">
+                          <p className="text-sm text-muted-foreground">Subiendo...</p>
+                          <Progress value={uploadProgress} className="w-full" />
                       </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="displayName">Nombre de Usuario</Label>
-                        <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Correo Electrónico</Label>
-                        <Input defaultValue={user.email || ''} disabled />
-                      </div>
-                    </CardContent>
-                    <CardContent>
-                      <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Guardar Cambios
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  )}
                 </div>
-              )}
-              {activeTab === 'security' && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Seguridad</h2>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Cambiar Contraseña</CardTitle>
-                      <CardDescription>Para tu seguridad, te recomendamos usar una contraseña única que no uses en otros sitios.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ChangePasswordForm />
-                    </CardContent>
-                  </Card>
+                <div className="space-y-2">
+                  <Label htmlFor="displayName">Nombre de Usuario</Label>
+                  <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
                 </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+                <div className="space-y-2">
+                  <Label>Correo Electrónico</Label>
+                  <Input defaultValue={user.email || ''} disabled />
+                </div>
+              </CardContent>
+              <CardContent>
+                <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Guardar Cambios
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'security' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Seguridad</CardTitle>
+                <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChangePasswordForm />
+              </CardContent>
+            </Card>
+          )}
         </main>
       </div>
     </div>
   );
 }
+
