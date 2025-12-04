@@ -3,60 +3,14 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, doc, Timestamp } from "firebase/firestore";
-import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon, ArrowUpRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import type { Car as CarType, Marca, UserProfile, Color, Transmision } from '@/core/types';
-import { cn } from "@/lib/utils";
 
 type ContadorUsuarios = {
     total: number;
 }
-
-type ItemConFecha = {
-    createdAt?: Date | Timestamp;
-};
-
-function calculateChange(items: ItemConFecha[] | null) {
-    if (!items || items.length === 0) {
-        return { count: 0, percentage: 0, sign: 0 };
-    }
-
-    const now = new Date();
-    const thirtyDaysAgo = new Date(new Date().setDate(now.getDate() - 30));
-
-    let recentCount = 0;
-    let pastCount = 0;
-
-    items.forEach(item => {
-        if (item.createdAt) {
-            const createdAtDate = item.createdAt instanceof Timestamp 
-                ? item.createdAt.toDate() 
-                : new Date(item.createdAt);
-
-            if (createdAtDate >= thirtyDaysAgo) {
-                recentCount++;
-            } else {
-                pastCount++;
-            }
-        } else {
-           pastCount++;
-        }
-    });
-    
-    if (pastCount === 0) {
-        return { count: recentCount, percentage: recentCount > 0 ? 100 : 0, sign: recentCount > 0 ? 1 : 0 };
-    }
-
-    const percentageChange = (recentCount / pastCount) * 100;
-    
-    return {
-        count: recentCount,
-        percentage: parseFloat(percentageChange.toFixed(1)),
-        sign: Math.sign(percentageChange)
-    };
-}
-
 
 function EsqueletoDashboard() {
     return (
@@ -120,11 +74,6 @@ export default function PaginaDashboardAdmin() {
     if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador) {
         return <EsqueletoDashboard />;
     }
-    
-    const cambioAutos = calculateChange(autos);
-    const cambioMarcas = calculateChange(marcas);
-    const cambioColores = calculateChange(colores);
-    const cambioTransmisiones = calculateChange(transmisiones);
 
     const datosGrafico = marcas?.map(marca => ({
         name: marca.nombre,
@@ -142,18 +91,11 @@ export default function PaginaDashboardAdmin() {
     ];
     
     const statCards = [
-        { title: "Total de Autos", value: autos?.length ?? 0, icon: CarIcon, change: cambioAutos },
-        { title: "Total de Marcas", value: marcas?.length ?? 0, icon: Tag, change: cambioMarcas },
-        { title: "Total de Colores", value: colores?.length ?? 0, icon: Palette, change: cambioColores },
-        { title: "Total de Transmisiones", value: transmisiones?.length ?? 0, icon: GitMerge, change: cambioTransmisiones },
+        { title: "Total de Autos", value: autos?.length ?? 0, icon: CarIcon },
+        { title: "Total de Marcas", value: marcas?.length ?? 0, icon: Tag },
+        { title: "Total de Colores", value: colores?.length ?? 0, icon: Palette },
+        { title: "Total de Transmisiones", value: transmisiones?.length ?? 0, icon: GitMerge },
     ];
-    
-    const ChangeArrow = ({ sign }: { sign: number }) => {
-        if (sign > 0) return <ArrowUpRight className="h-4 w-4 text-emerald-500" />;
-        if (sign < 0) return <ArrowDownRight className="h-4 w-4 text-red-500" />;
-        return <Minus className="h-4 w-4 text-muted-foreground" />;
-    };
-
 
     return (
         <div className="space-y-6">
@@ -172,15 +114,6 @@ export default function PaginaDashboardAdmin() {
                             <div className="text-4xl font-bold">
                                 {card.value}
                             </div>
-                             <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                <ChangeArrow sign={card.change.sign} />
-                                <span className={cn(
-                                    "font-semibold ml-1",
-                                    card.change.sign > 0 && "text-emerald-500",
-                                    card.change.sign < 0 && "text-red-500",
-                                )}>{card.change.percentage}%</span>
-                                <span className="ml-1"> | +{card.change.count} en el último mes</span>
-                            </p>
                         </CardContent>
                     </Card>
                 ))}
