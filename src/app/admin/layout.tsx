@@ -11,6 +11,7 @@ import {
   Palette,
   GitMerge,
   PanelLeft,
+  User as UserIcon,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -307,17 +308,14 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-9 w-9">
-                         <Avatar className="h-9 w-9">
-                            {user?.photoURL && <AvatarImage src={user.photoURL} />}
-                            <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
-                        </Avatar>
+                        <UserIcon className="h-5 w-5" />
                         <span className="sr-only">Alternar menú de usuario</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/perfil">Mi Perfil</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={manejarCierreSesion} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
                     </DropdownMenuContent>
