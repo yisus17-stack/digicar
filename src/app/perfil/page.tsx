@@ -103,6 +103,8 @@ export default function PaginaPerfil() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID;
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -118,8 +120,9 @@ export default function PaginaPerfil() {
     }
     if (user) {
       form.setValue('displayName', user.displayName || '');
+      setIsUserAdmin(user.uid === adminUid);
     }
-  }, [user, loading, router, form]);
+  }, [user, loading, router, form, adminUid]);
 
 
   if (loading || !user) {
@@ -162,9 +165,6 @@ export default function PaginaPerfil() {
     { name: "Plan Camry XSE", date: "Guardado el 2023-11-15", payment: "$8,500 MXN/mes" },
     { name: "Plan Model 3 LR", date: "Guardado el 2023-11-10", payment: "$12,300 MXN/mes" },
   ];
-
-  const isUserAdmin = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-
 
   return (
     <div className="container mx-auto px-4 py-8">

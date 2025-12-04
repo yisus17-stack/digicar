@@ -154,18 +154,19 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
   const { user, loading: cargandoUsuario } = useUser();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID;
 
   useEffect(() => {
     if (!cargandoUsuario) {
       if (!user) {
         router.push('/login');
-      } else if (user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      } else if (user.uid === adminUid) {
         setIsAdmin(true);
       } else {
         setIsAdmin(false);
       }
     }
-  }, [user, cargandoUsuario, router]);
+  }, [user, cargandoUsuario, router, adminUid]);
 
   if (cargandoUsuario) {
     return <EsqueletoLayoutAdmin />;

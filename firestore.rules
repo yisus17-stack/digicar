@@ -1,118 +1,38 @@
 
-/**
- * @fileoverview Firestore Security Rules for Prototyaping.
- *
- * Core Philosophy: This ruleset prioritizes security by enforcing authentication
- * and ownership where appropriate while remaining flexible on data shapes for rapid
- * prototyping. Schema validation is minimized to allow for quick iteration.
- *
- * Data Structure:
- * - /autos/{autoId}: Publicly accessible car catalog. Admin-only write access.
- * - /marcas/{marcaId}: Publicly accessible brand information. Admin-only write access.
- * - /colores/{colorId}: Publicly accessible color information. Admin-only write access.
- * - /transmisiones/{transmisionId}: Publicly accessible transmission information. Admin-only write access.
- * - /escenarios/{escenarioId}: Publicly accessible driving scenarios.
- * - /recomendaciones/{recomendacionId}: Publicly accessible car recommendations.
- * - /clientes_potenciales/{clientePotencialId}: Customer leads, accessible only to authenticated users.
- * - /usuarios/{usuarioId}: User profiles. Users can create their own. Admins can list.
- * - /contadores/usuarios: A counter for the total number of users.
- *
- * Key Security Decisions:
- * - Public read access to car, brand, color, scenario, and recommendation data.
- * - Writes to cars are restricted to admins.
- * - Writes to brands, colors, transmissions are restricted to admins.
- * - Leads are only accessible to authenticated users. No public listing is allowed.
- * - No schema validation is performed beyond essential checks for authorization.
- *
- * Authorization Independence: Rules are designed to avoid hierarchical `get()` calls
- * by ensuring all necessary authorization data is self-contained within each document or collection.
- *
- * Rules are not Filters: Publicly accessible data resides in collections without requiring
- * complex filtering in rules.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Public read, admin write access to car data.
-     * @path /autos/{autoId}
-     * @allow (get, list) Any user can read car data.
-     * @allow (create, update, delete) Only authenticated admins can manage car data.
-     * @principle Allows public read access while restricting write access to admins.
-     */
     match /autos/{autoId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
     
-    /**
-     * @description Public read, admin write access to brand data.
-     * @path /marcas/{marcaId}
-     * @allow (get, list) Any user can read brand data.
-     * @allow (create, update, delete) Only authenticated admins can manage brand data.
-     * @principle Allows public read access while restricting write access to admins.
-     */
     match /marcas/{marcaId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    /**
-     * @description Public read, admin write access to color data.
-     * @path /colores/{colorId}
-     * @allow (get, list) Any user can read color data.
-     * @allow (create, update, delete) Only authenticated admins can manage color data.
-     * @principle Allows public read access while restricting write access to admins.
-     */
     match /colores/{colorId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    /**
-     * @description Public read, admin write access to transmission data.
-     * @path /transmisiones/{transmisionId}
-     * @allow (get, list) Any user can read transmission data.
-     * @allow (create, update, delete) Only authenticated admins can manage transmission data.
-     * @principle Allows public read access while restricting write access to admins.
-     */
     match /transmisiones/{transmisionId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    /**
-     * @description Allows public read access to scenario data.
-     * @path /escenarios/{escenarioId}
-     * @allow (get, list) Any user can read scenario data.
-     * @deny (create, update, delete) No user can create, update, or delete scenario data through the rules. These operations should be handled by backend logic.
-     * @principle Allows public read access while restricting write access.
-     */
     match /escenarios/{escenarioId} {
       allow get, list: if true;
       allow create, update, delete: if false;
     }
 
-    /**
-     * @description Allows public read access to recommendation data.
-     * @path /recomendaciones/{recomendacionId}
-     * @allow (get, list) Any user can read recommendation data.
-     * @deny (create, update, delete) No user can create, update, or delete recommendation data through the rules. These operations should be handled by backend logic.
-     * @principle Allows public read access while restricting write access.
-     */
     match /recomendaciones/{recomendacionId} {
       allow get, list: if true;
       allow create, update, delete: if false;
     }
 
-    /**
-     * @description Allows authenticated users to manage leads. No public listing allowed.
-     * @path /clientes_potenciales/{clientePotencialId}
-     * @allow (create, get, update, delete) Authenticated user can manage leads.
-     * @deny (list) No public listing of leads.
-     * @principle Requires authentication for lead data access.
-     */
     match /clientes_potenciales/{clientePotencialId} {
       allow create: if isSignedIn();
       allow get: if isSignedIn();
@@ -121,13 +41,6 @@ service cloud.firestore {
       allow list: if false;
     }
 
-    /**
-     * @description User profiles.
-     * @path /usuarios/{usuarioId}
-     * @allow (create) User can create their own profile upon registration.
-     * @allow (list) No one can list all users from the client.
-     * @principle Secure user data while allowing admins to get counts.
-     */
     match /usuarios/{usuarioId} {
         allow create: if request.auth.uid == usuarioId;
         allow list: if false;
@@ -139,32 +52,18 @@ service cloud.firestore {
       allow create, update, delete: if true;
     }
 
-    /**
-     * @description Rules for the user counter.
-     * @path /contadores/usuarios
-     * @allow (get) Admins can read the total count.
-     * @allow (update) Any authenticated user can increment the counter (during registration).
-     */
     match /contadores/usuarios {
       allow get: if isAdmin();
-      allow create, update: if isSignedIn(); // Allows increment during registration
+      allow create, update: if isSignedIn();
       allow list, delete: if false;
     }
 
-    /**
-     * @description Checks if the user is signed in.
-     * @return {bool} True if the user is signed in, false otherwise.
-     */
     function isSignedIn() {
       return request.auth != null;
     }
     
-    /**
-     * @description Checks if the user is an admin by verifying a custom claim.
-     * @return {bool} True if the user has the 'admin' custom claim, false otherwise.
-     */
     function isAdmin() {
-        return isSignedIn() && request.auth.token.admin == true;
+      return isSignedIn() && request.auth.uid == 'oDqiYNo5iIWWWu8uJWOZMdheB8n2';
     }
   }
 }
