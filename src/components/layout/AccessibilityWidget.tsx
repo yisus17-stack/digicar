@@ -141,10 +141,6 @@ export default function AccessibilityWidget() {
     removeSetting('data-read-aloud');
   };
 
-  if (pathname.startsWith('/admin')) {
-    return null;
-  }
-
   const options = [
     {
       Icon: ZoomIn,
