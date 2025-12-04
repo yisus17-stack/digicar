@@ -26,8 +26,8 @@ import {
   SheetTrigger,
 } from '../ui/sheet';
 import { ScrollArea } from '../ui/scroll-area';
-import { usePathname } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
+import { useMounted } from '@/hooks/use-mounted';
 
 
 const FONT_STEP_LIMIT = 2;
@@ -41,7 +41,7 @@ export default function AccessibilityWidget() {
   const [underlineLinks, setUnderlineLinks] = useState(false);
   const [readableFont, setReadableFont] = useState(false);
   const [isReadingAloud, setIsReadingAloud] = useState(false);
-  const pathname = usePathname();
+  const isMounted = useMounted();
 
   const applySetting = (key: string, value: string) => {
     document.documentElement.setAttribute(key, value);
@@ -140,6 +140,10 @@ export default function AccessibilityWidget() {
     setIsReadingAloud(false);
     removeSetting('data-read-aloud');
   };
+  
+  if (!isMounted) {
+    return null;
+  }
 
   const options = [
     {
