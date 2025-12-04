@@ -1,21 +1,22 @@
 
 import admin from 'firebase-admin';
 
-// Reemplaza esto con el contenido de tu archivo de clave de cuenta de servicio
-// Idealmente, usa variables de entorno para esto.
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-  : null;
+// Check if the service account key is available in the environment variables
+if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+  throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY is not set in the environment variables.');
+}
 
+// Parse the service account key from the environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+
+// Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
-  if (serviceAccount) {
+  try {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
-  } else {
-    // Para entornos locales o donde Application Default Credentials esté configurado
-    console.warn("Inicializando Firebase Admin sin Service Account. Asegúrate de que ADC esté configurado.");
-    admin.initializeApp();
+  } catch (error) {
+    console.error("Firebase admin initialization error:", error);
   }
 }
 
