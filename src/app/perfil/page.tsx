@@ -17,6 +17,7 @@ import { updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { deleteImage, uploadImage } from '@/core/services/storageService';
+import { cn } from '@/lib/utils';
 
 
 function EsqueletoPerfil() {
@@ -103,7 +104,7 @@ export default function PaginaPerfil() {
     setUploadProgress(0);
 
     try {
-        if (user.photoURL && user.photoURL.includes('supabase')) {
+        if (user.photoURL && (user.photoURL.includes('supabase') || user.photoURL.includes('firebasestorage'))) {
             await deleteImage(user.photoURL);
         }
 
@@ -151,7 +152,7 @@ export default function PaginaPerfil() {
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
         {/* Columna Izquierda - Navegación */}
         <aside className="lg:col-span-1 space-y-8 sticky top-24">
           <div className="flex items-center gap-4">
@@ -168,15 +169,19 @@ export default function PaginaPerfil() {
           </div>
           <nav className="space-y-1">
             {menuItems.map((item) => (
-              <Button
+              <button
                 key={item.id}
-                variant={activeTab === item.id ? 'secondary' : 'ghost'}
-                className="w-full justify-start text-base py-6"
                 onClick={() => setActiveTab(item.id)}
+                className={cn(
+                  'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
+                  activeTab === item.id
+                    ? 'bg-muted text-primary font-semibold'
+                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                )}
               >
                 <item.icon className="mr-3 h-5 w-5" />
                 {item.label}
-              </Button>
+              </button>
             ))}
           </nav>
         </aside>
