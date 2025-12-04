@@ -153,21 +153,19 @@ export default function PaginaPerfil() {
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start mt-8">
         {/* Columna Izquierda - Navegación */}
-        <aside className="lg:col-span-1 space-y-6 sticky top-24">
-          <Card>
-            <CardContent className="p-4 flex items-center gap-4">
-              <Avatar className="h-16 w-16">
-                {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
-                <AvatarFallback className="text-2xl">
-                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
-                <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-              </div>
-            </CardContent>
-          </Card>
+        <aside className="lg:col-span-1 space-y-8 sticky top-24">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
+              <AvatarFallback className="text-2xl">
+                  {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
+              <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+            </div>
+          </div>
           <nav className="space-y-1">
             {menuItems.map((item) => (
               <Button
@@ -292,4 +290,3 @@ export default function PaginaPerfil() {
     </div>
   );
 }
-
