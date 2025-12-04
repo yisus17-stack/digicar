@@ -9,14 +9,12 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2, UploadCloud } from 'lucide-react';
+import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
 import { updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { Progress } from '@/components/ui/progress';
-import { deleteImage, uploadImage } from '@/core/services/storageService';
 import { cn } from '@/lib/utils';
 
 
@@ -53,7 +51,6 @@ export default function PaginaPerfil() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
   const [displayName, setDisplayName] = useState('');
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -87,48 +84,6 @@ export default function PaginaPerfil() {
       setIsSaving(false);
     }
   };
-
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !user) return;
-
-    if (!file.type.startsWith('image/')) {
-        toast({ title: 'Error', description: 'Por favor, selecciona un archivo de imagen.', variant: 'destructive'});
-        return;
-    }
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast({ title: 'Error', description: 'El archivo es demasiado grande (máximo 5MB).', variant: 'destructive'});
-        return;
-    }
-
-    setUploadProgress(0);
-
-    try {
-        if (user.photoURL && (user.photoURL.includes('supabase') || user.photoURL.includes('firebasestorage'))) {
-            await deleteImage(user.photoURL);
-        }
-
-        const newPhotoURL = await uploadImage(file, (progress) => {
-            setUploadProgress(progress);
-        });
-
-        await updateProfile(user, { photoURL: newPhotoURL });
-
-        toast({
-            title: '¡Foto de perfil actualizada!',
-            description: 'Tu nueva foto de perfil se ha guardado.',
-        });
-    } catch (error) {
-        console.error("Avatar upload error: ", error);
-        toast({
-            title: 'Error al subir la imagen',
-            description: 'No se pudo actualizar tu foto de perfil. Inténtalo de nuevo.',
-            variant: 'destructive',
-        });
-    } finally {
-        setUploadProgress(null);
-    }
-};
 
   const menuItems = [
     { id: 'overview', label: 'Resumen', icon: List },
@@ -240,27 +195,14 @@ export default function PaginaPerfil() {
                 <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-3">
+                 <div className="space-y-3">
                   <Label>Foto de Perfil</Label>
                   <div className="flex items-center gap-4">
                       <Avatar className="h-20 w-20">
                           {user.photoURL && <AvatarImage src={user.photoURL} />}
                           <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
                       </Avatar>
-                       <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
-                       <Button asChild variant="outline">
-                          <label htmlFor="avatar-upload" className="cursor-pointer">
-                            <UploadCloud className="mr-2 h-4 w-4" />
-                            Cambiar foto
-                          </label>
-                       </Button>
                   </div>
-                  {uploadProgress !== null && (
-                      <div className="space-y-1">
-                          <p className="text-sm text-muted-foreground">Subiendo...</p>
-                          <Progress value={uploadProgress} className="w-full" />
-                      </div>
-                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Nombre de Usuario</Label>

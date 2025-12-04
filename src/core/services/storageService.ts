@@ -47,28 +47,3 @@ export const uploadImage = async (file: File, onProgress?: (progress: number) =>
   
   return data.publicUrl;
 };
-
-export const deleteImage = async (imageUrl: string): Promise<void> => {
-    if (!imageUrl) return;
-
-    try {
-        const url = new URL(imageUrl);
-        const path = url.pathname.split(`/${BUCKET_NAME}/`)[1];
-
-        if(!path) {
-            console.warn("Could not determine file path from URL:", imageUrl);
-            return;
-        }
-        
-        const { error } = await supabase.storage
-            .from(BUCKET_NAME)
-            .remove([path]);
-
-        if (error) {
-            console.error(`Supabase delete error: ${error.message}`);
-            // We don't throw here to not interrupt the user flow if deletion fails (e.g. file not found)
-        }
-    } catch (error) {
-        console.error("Error parsing image URL for deletion:", error);
-    }
-};
