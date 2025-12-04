@@ -38,8 +38,7 @@ const formSchema = z.object({
         path: ['email'],
       });
     } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-      if (!emailRegex.test(data.email)) {
+      if (!z.string().email().safeParse(data.email).success) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Por favor, introduce un correo electrónico válido.',
