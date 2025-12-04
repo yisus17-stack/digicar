@@ -129,13 +129,14 @@ export default function PaginaPerfil() {
                         key={item.id}
                         onClick={() => setActiveTab(item.id)}
                         className={cn(
-                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors relative',
-                        activeTab !== item.id && 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
+                        activeTab === item.id
+                            ? 'bg-muted font-semibold text-foreground'
+                            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                         )}
                     >
-                        {activeTab === item.id && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>}
-                        <item.icon className={cn("mr-3 h-5 w-5", activeTab === item.id ? 'text-primary' : '')} />
-                        <span className={cn(activeTab === item.id ? 'text-primary font-semibold' : '')}>{item.label}</span>
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.label}</span>
                     </button>
                     ))}
                 </nav>
@@ -147,37 +148,32 @@ export default function PaginaPerfil() {
                     <div className="space-y-8">
                         <div>
                             <h2 className="text-2xl font-bold mb-4">Actividad Reciente</h2>
-                            <div className="relative pl-6">
-                                <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-border"></div>
-                                <ul className="space-y-8">
-                                    {actividadReciente.map((item, index) => (
-                                        <li key={index} className="flex items-start gap-4">
-                                            <div className="bg-background border-2 border-border p-2 rounded-full z-10">
-                                                <item.icon className="h-5 w-5 text-muted-foreground" />
-                                            </div>
-                                            <div>
-                                                <p>{item.text}</p>
-                                                <p className="text-sm text-muted-foreground">{item.time}</p>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                            <div className="space-y-6">
+                                {actividadReciente.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-4">
+                                        <item.icon className="h-6 w-6 text-muted-foreground" />
+                                        <div>
+                                            <p>{item.text}</p>
+                                            <p className="text-sm text-muted-foreground">{item.time}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div>
+                        <div className="border-t pt-8">
                             <h2 className="text-2xl font-bold mb-4">Simulaciones Guardadas</h2>
-                            <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="space-y-4">
                                 {simulacionesGuardadas.map((item, index) => (
-                                    <Card key={index} className="hover:shadow-md transition-shadow">
-                                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                            <CardTitle className="text-base font-medium">{item.name}</CardTitle>
-                                            <CreditCard className="h-4 w-4 text-muted-foreground" />
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p className="text-2xl font-bold">{item.payment}</p>
-                                            <p className="text-xs text-muted-foreground">Guardado el {item.date}</p>
-                                        </CardContent>
-                                    </Card>
+                                    <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
+                                        <div className="flex items-center gap-4">
+                                            <CreditCard className="h-6 w-6 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">{item.name}</p>
+                                                <p className="text-sm text-muted-foreground">Guardado el {item.date}</p>
+                                            </div>
+                                        </div>
+                                        <p className="font-semibold text-muted-foreground">{item.payment}</p>
+                                    </div>
                                 ))}
                             </div>
                         </div>
