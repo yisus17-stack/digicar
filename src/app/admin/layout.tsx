@@ -1,3 +1,4 @@
+
 'use client';
 import {
   LayoutDashboard,
@@ -11,6 +12,7 @@ import {
   GitMerge,
   PanelLeft,
   User as UserIcon,
+  LogOut,
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
@@ -33,6 +35,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import Swal from 'sweetalert2';
 
 
 // Contexto para el estado de la barra lateral
@@ -199,15 +202,24 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { toast } = useToast();
   
   const manejarCierreSesion = async () => {
     try {
       await signOut(auth);
-      toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
+      Swal.fire({
+        title: 'Sesión Cerrada',
+        text: 'Has cerrado sesión correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
+      });
       router.push('/');
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo cerrar sesión. Inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#595c97',
+      });
     }
   };
   
@@ -268,9 +280,10 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild><Link href="/perfil">Mi Perfil</Link></DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={manejarCierreSesion} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
+                      <DropdownMenuItem onClick={manejarCierreSesion} className="cursor-pointer">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Cerrar Sesión
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -280,3 +293,5 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
       </div>
   );
 }
+
+    
