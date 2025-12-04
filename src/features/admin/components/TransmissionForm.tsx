@@ -23,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Transmision } from '@/core/types';
 import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -35,9 +36,10 @@ interface PropsFormularioTransmision {
   alCambiarApertura: (open: boolean) => void;
   transmision: Transmision | null;
   alGuardar: (transmission: Omit<Transmision, 'id'>) => void;
+  isSaving: boolean;
 }
 
-export default function FormularioTransmision({ estaAbierto, alCambiarApertura, transmision, alGuardar }: PropsFormularioTransmision) {
+export default function FormularioTransmision({ estaAbierto, alCambiarApertura, transmision, alGuardar, isSaving }: PropsFormularioTransmision) {
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
@@ -60,7 +62,6 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
 
   const alEnviar = (data: DatosFormulario) => {
     alGuardar(data);
-    alCambiarApertura(false);
   };
 
   return (
@@ -79,8 +80,11 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
                 </FormItem>
             )}/>
             <DialogFooter>
-                <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
-                <Button type="submit">Guardar Cambios</Button>
+                <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Guardar Cambios
+                </Button>
             </DialogFooter>
           </form>
         </Form>

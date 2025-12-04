@@ -38,6 +38,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const [transmisionSeleccionada, setTransmisionSeleccionada] = useState<Transmision | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [transmisionAEliminar, setTransmisionAEliminar] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -74,6 +75,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   };
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
+    setIsSaving(true);
     try {
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
@@ -98,10 +100,11 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             });
             toast({ title: "Transmisión añadida", description: "El nuevo tipo de transmisión se ha añadido a la base de datos." });
         }
+        alCambiarAperturaFormulario(false);
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     } finally {
-        alCambiarAperturaFormulario(false);
+        setIsSaving(false);
     }
   };
 
@@ -159,6 +162,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             alCambiarApertura={alCambiarAperturaFormulario}
             transmision={transmisionSeleccionada}
             alGuardar={manejarGuardar}
+            isSaving={isSaving}
         />
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>

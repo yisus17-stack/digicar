@@ -38,6 +38,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const [colorSeleccionado, setColorSeleccionado] = useState<Color | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [colorAEliminar, setColorAEliminar] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -74,6 +75,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   };
 
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
+    setIsSaving(true);
     try {
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
@@ -98,10 +100,11 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             });
             toast({ title: "Color añadido", description: "El nuevo color se ha añadido a la base de datos." });
         }
+        alCambiarAperturaFormulario(false);
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     } finally {
-        alCambiarAperturaFormulario(false);
+        setIsSaving(false);
     }
   };
 
@@ -159,6 +162,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             alCambiarApertura={alCambiarAperturaFormulario}
             color={colorSeleccionado}
             alGuardar={manejarGuardar}
+            isSaving={isSaving}
         />
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>

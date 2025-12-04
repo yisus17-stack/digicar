@@ -23,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Color } from '@/core/types';
 import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -35,9 +36,10 @@ interface PropsFormularioColor {
   alCambiarApertura: (open: boolean) => void;
   color: Color | null;
   alGuardar: (color: Omit<Color, 'id'>) => void;
+  isSaving: boolean;
 }
 
-export default function FormularioColor({ estaAbierto, alCambiarApertura, color, alGuardar }: PropsFormularioColor) {
+export default function FormularioColor({ estaAbierto, alCambiarApertura, color, alGuardar, isSaving }: PropsFormularioColor) {
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     defaultValues: {
@@ -60,7 +62,6 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
 
   const alEnviar = (data: DatosFormulario) => {
     alGuardar(data);
-    alCambiarApertura(false);
   };
 
   return (
@@ -79,8 +80,11 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
                 </FormItem>
             )}/>
             <DialogFooter>
-                <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
-                <Button type="submit">Guardar Cambios</Button>
+                <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Guardar Cambios
+                </Button>
             </DialogFooter>
           </form>
         </Form>
