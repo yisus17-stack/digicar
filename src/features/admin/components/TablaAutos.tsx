@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Car as IconoAuto } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto, PlusCircle } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
@@ -142,7 +142,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     <>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
             <h1 className="text-3xl font-bold">Administrar Autos</h1>
-            <Button onClick={manejarAnadir}>Añadir Auto</Button>
+            <Button onClick={manejarAnadir}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Añadir Auto
+            </Button>
         </div>
         <div className="border rounded-lg">
             <Table>

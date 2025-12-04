@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, PlusCircle } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import { useFirestore } from '@/firebase';
@@ -119,7 +119,10 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     <>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
             <h1 className="text-3xl font-bold">Administrar Transmisiones</h1>
-            <Button onClick={manejarAnadir}>Añadir Transmisión</Button>
+            <Button onClick={manejarAnadir}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Añadir Transmisión
+            </Button>
         </div>
         <div className="border rounded-lg">
             <Table>
