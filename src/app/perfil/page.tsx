@@ -16,6 +16,54 @@ import { updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+const profileSchema = z.object({
+  displayName: z.string(),
+}).superRefine((data, ctx) => {
+    if (data.displayName.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El nombre es requerido.',
+        path: ['displayName'],
+      });
+    } else {
+      const nameRegex = /^[a-zA-Z\u00C0-\u017F\s]+$/;
+      if (!nameRegex.test(data.displayName)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'El nombre solo puede contener letras y espacios.',
+          path: ['displayName'],
+        });
+      } else {
+        const words = data.displayName.trim().split(/\s+/);
+        if (words.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Por favor, introduce tu nombre y al menos un apellido.',
+            path: ['displayName'],
+          });
+        } else {
+          for (const word of words) {
+            if (word.length < 3) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
+                path: ['displayName'],
+              });
+              break; 
+            }
+          }
+        }
+      }
+    }
+});
+
+type ProfileFormData = z.infer<typeof profileSchema>;
+
 
 function EsqueletoPerfil() {
   return (
@@ -55,27 +103,34 @@ export default function PaginaPerfil() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
-  const [displayName, setDisplayName] = useState('');
+
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+    mode: 'onChange',
+    defaultValues: {
+      displayName: '',
+    },
+  });
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
     if (user) {
-      setDisplayName(user.displayName || '');
+      form.setValue('displayName', user.displayName || '');
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, form]);
 
 
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
 
-  const handleProfileUpdate = async () => {
+  const handleProfileUpdate = async (data: ProfileFormData) => {
     if (!user) return;
     setIsSaving(true);
     try {
-      await updateProfile(user, { displayName });
+      await updateProfile(user, { displayName: data.displayName });
       toast({
         title: 'Perfil Actualizado',
         description: 'Tu nombre se ha actualizado correctamente.',
@@ -112,7 +167,6 @@ export default function PaginaPerfil() {
     <div className="container mx-auto px-4 py-8">
         <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
-            {/* Columna Izquierda - Navegación */}
             <aside className="lg:col-span-1 space-y-8 sticky top-24">
               <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
@@ -148,7 +202,6 @@ export default function PaginaPerfil() {
               </nav>
             </aside>
 
-            {/* Columna Derecha - Contenido */}
             <main className="lg:col-span-3">
             {activeTab === 'overview' && (
                 <div className="space-y-8">
@@ -199,25 +252,36 @@ export default function PaginaPerfil() {
                     <CardTitle>Configuración de Perfil</CardTitle>
                     <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between border-b pb-6">
-                        <Label className="font-medium">Nombre de Usuario</Label>
-                        <div className="flex items-center gap-4 w-2/3">
-                            <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between border-b pb-6">
-                        <Label className="font-medium">Correo Electrónico</Label>
-                         <div className="w-2/3">
-                            <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
-                         </div>
-                    </div>
-                     <div className="flex justify-end pt-2">
-                          <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Guardar Cambios
-                          </Button>
-                    </div>
+                <CardContent>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleProfileUpdate)} className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="displayName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nombre de Usuario</FormLabel>
+                            <FormControl>
+                               <Input id="displayName" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div>
+                          <Label>Correo Electrónico</Label>
+                          <Input defaultValue={user.email || ''} disabled className="mt-2" />
+                      </div>
+                      
+                      <div className="flex justify-end pt-2">
+                            <Button type="submit" disabled={isSaving}>
+                              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                              Guardar Cambios
+                            </Button>
+                      </div>
+                    </form>
+                  </Form>
                 </CardContent>
               </Card>
             )}
@@ -237,3 +301,5 @@ export default function PaginaPerfil() {
     </div>
   );
 }
+
+    
