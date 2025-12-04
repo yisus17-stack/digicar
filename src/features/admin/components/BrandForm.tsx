@@ -25,6 +25,7 @@ import { Marca } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),

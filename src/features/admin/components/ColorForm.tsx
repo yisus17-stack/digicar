@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Color } from '@/core/types';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),

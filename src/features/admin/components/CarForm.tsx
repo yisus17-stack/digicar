@@ -33,6 +33,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, Loader2 } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   marca: z.string().min(1, 'La marca es requerida.'),
