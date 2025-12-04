@@ -1,6 +1,5 @@
 "use client"
 
-import { useToast } from "@/hooks/use-toast"
 import {
   Toast,
   ToastClose,
@@ -9,9 +8,16 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast"
+import { useMounted } from "@/hooks/use-mounted"
 
 export function Toaster() {
   const { toasts } = useToast()
+  const isMounted = useMounted();
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <ToastProvider>
