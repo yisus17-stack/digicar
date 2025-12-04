@@ -15,8 +15,8 @@ function EsqueletoDashboard() {
     return (
         <div>
             <Skeleton className="h-8 w-48 mb-6" />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                {[...Array(5)].map((_, i) => (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {[...Array(4)].map((_, i) => (
                     <Card key={i}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <Skeleton className="h-4 w-24" />
@@ -28,15 +28,28 @@ function EsqueletoDashboard() {
                     </Card>
                 ))}
             </div>
-            <div className="grid gap-4 mt-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Skeleton className="h-64 w-full" />
-                    </CardContent>
-                </Card>
+            <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div className="md:col-span-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-64 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div>
+                     <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-6 w-6" />
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-8 w-1/4" />
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
@@ -72,7 +85,7 @@ export default function PaginaDashboardAdmin() {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -125,37 +138,41 @@ export default function PaginaDashboardAdmin() {
                         </div>
                     </CardContent>
                 </Card>
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Total de Usuarios
-                        </CardTitle>
-                        <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                           {contadorUsuarios?.total ?? 0}
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
-            <div className="grid gap-4 mt-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Distribución de Autos por Marca</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        <ResponsiveContainer width="100%" height={350}>
-                            <BarChart data={datosGrafico}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <Tooltip />
-                                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+            <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div className="md:col-span-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Distribución de Autos por Marca</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pl-2">
+                            <ResponsiveContainer width="100%" height={350}>
+                                <BarChart data={datosGrafico}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                    <Tooltip />
+                                    <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </div>
+                 <div>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Total de Usuarios
+                            </CardTitle>
+                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                            {contadorUsuarios?.total ?? 0}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
