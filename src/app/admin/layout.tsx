@@ -153,24 +153,38 @@ const EsqueletoLayoutAdmin = () => {
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const { user, loading: cargandoUsuario } = useUser();
   const router = useRouter();
-  
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!cargandoUsuario) {
+      if (!user) {
+        router.push('/login');
+      } else if (user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    }
+  }, [user, cargandoUsuario, router]);
+
   if (cargandoUsuario) {
     return <EsqueletoLayoutAdmin />;
   }
 
-  if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+  if (!isAdmin) {
     return (
-        <div className='flex items-center justify-center h-screen bg-background'>
-            <div className='text-center'>
-                <h1 className='text-3xl font-bold mb-2'>Acceso Denegado</h1>
-                <p className='text-lg text-muted-foreground'>No tienes permiso para ver esta página.</p>
-                <Button onClick={() => router.push('/login')} className='mt-6'>
-                    Ir a Iniciar Sesión
-                </Button>
-            </div>
+      <div className='flex items-center justify-center h-screen bg-background'>
+        <div className='text-center'>
+          <h1 className='text-3xl font-bold mb-2'>Acceso Denegado</h1>
+          <p className='text-lg text-muted-foreground'>No tienes permiso para ver esta página.</p>
+          <Button onClick={() => router.push('/login')} className='mt-6'>
+            Ir a Iniciar Sesión
+          </Button>
         </div>
-    )
+      </div>
+    );
   }
+
 
   return (
     <ProveedorBarraLateral>

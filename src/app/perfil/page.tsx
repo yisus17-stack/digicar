@@ -103,7 +103,6 @@ export default function PaginaPerfil() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
-  const [isAdminProcessing, setIsAdminProcessing] = useState(false);
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -147,43 +146,6 @@ export default function PaginaPerfil() {
     }
   };
 
-  const makeAdmin = async () => {
-    if (!user) {
-      toast({ title: 'Error', description: 'Debes iniciar sesión primero.', variant: 'destructive' });
-      return;
-    }
-    setIsAdminProcessing(true);
-    try {
-      const res = await fetch("/api/makeAdmin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: user.uid })
-      });
-
-      const data = await res.json();
-      
-      if (res.ok) {
-        toast({
-          title: '¡Rol de Administrador Asignado!',
-          description: data.message,
-          duration: 9000,
-        });
-      } else {
-        throw new Error(data.error || 'Algo salió mal en el servidor.');
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al contactar la API.';
-      toast({
-        title: 'Error al Asignar Rol',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-    } finally {
-      setIsAdminProcessing(false);
-    }
-  };
-
-
   const menuItems = [
     { id: 'overview', label: 'Resumen', icon: List },
     { id: 'settings', label: 'Configuración', icon: UserIcon },
@@ -201,7 +163,8 @@ export default function PaginaPerfil() {
     { name: "Plan Model 3 LR", date: "Guardado el 2023-11-10", payment: "$12,300 MXN/mes" },
   ];
 
-  const canBecomeAdmin = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  const isUserAdmin = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -342,22 +305,17 @@ export default function PaginaPerfil() {
                       <ChangePasswordForm />
                   </CardContent>
                 </Card>
-                {canBecomeAdmin && (
+                 {isUserAdmin && (
                     <Card>
                     <CardHeader>
                         <CardTitle>Zona de Administrador</CardTitle>
-                        <CardDescription>Asigna permisos de administrador a tu cuenta.</CardDescription>
+                        <CardDescription>Ya tienes permisos de administrador.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-muted-foreground mb-4">
-                            Haz clic en el botón de abajo para convertir tu cuenta en administrador. 
-                            Una vez hecho, deberás cerrar sesión y volver a iniciarla para que los cambios surtan efecto.
-                        </p>
-                        <Button onClick={makeAdmin} disabled={isAdminProcessing}>
-                            {isAdminProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            <ShieldCheck className="mr-2 h-4 w-4" />
-                            Convertirme en Administrador
-                        </Button>
+                        <div className="flex items-center gap-2 text-green-600">
+                         <ShieldCheck className="h-5 w-5" />
+                         <p className="font-medium">El acceso al panel de admin está activado para tu cuenta.</p>
+                        </div>
                     </CardContent>
                     </Card>
                 )}
