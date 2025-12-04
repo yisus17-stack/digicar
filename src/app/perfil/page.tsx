@@ -9,44 +9,27 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { Bell, LogOut, Shield, User as UserIcon, Heart, Repeat, CreditCard } from 'lucide-react';
+import { Heart, Repeat, CreditCard } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
 
 function EsqueletoPerfil() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Skeleton className="h-6 w-1/3 mb-8" />
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-1">
-          <Card>
-            <CardHeader className="items-center text-center p-6">
-              <Skeleton className="h-24 w-24 rounded-full mb-4" />
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-5 w-48 mt-1" />
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-2">
-                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-9 w-full" />)}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="lg:col-span-3">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-10 w-full rounded-md" />
-            </CardHeader>
-            <CardContent className="space-y-6 mt-6">
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-48 w-full" />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <Card>
+        <CardHeader className="items-center text-center p-6">
+          <Skeleton className="h-24 w-24 rounded-full mb-4" />
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-5 w-48 mt-1" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-10 w-full rounded-md mb-6" />
+          <Skeleton className="h-64 w-full" />
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -65,12 +48,6 @@ export default function PaginaPerfil() {
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
-  
-  const menuPerfil = [
-      { id: 'overview', label: 'Mi Perfil', icon: UserIcon },
-      { id: 'notifications', label: 'Notificaciones', icon: Bell },
-      { id: 'security', label: 'Seguridad', icon: Shield },
-  ];
 
   const simulacionesGuardadas = [
     { id: 1, car: 'Toyota Camry XSE', monthlyPayment: 8500, term: 48, date: '15 de Julio, 2024' },
@@ -86,50 +63,28 @@ export default function PaginaPerfil() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        
-        {/* Columna Izquierda */}
-        <div className="lg:col-span-1 space-y-6">
-          <Card>
-            <CardHeader className="items-center text-center p-6">
-              <Avatar className="h-24 w-24 mb-4">
-                {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
-                <AvatarFallback className="text-3xl">
-                  {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <CardTitle className="text-xl">{user.displayName || 'Usuario'}</CardTitle>
-              <CardDescription>{user.email}</CardDescription>
-            </CardHeader>
-          </Card>
-           <Card>
-            <CardContent className="p-2">
-                 <nav className="flex flex-col space-y-1">
-                    {menuPerfil.map((item) => (
-                        <Button 
-                            key={item.label} 
-                            variant={activeTab === item.id ? 'default' : 'ghost'} 
-                            className="justify-start gap-3"
-                            onClick={() => setActiveTab(item.id)}
-                        >
-                            <item.icon className="h-5 w-5" />
-                            {item.label}
-                        </Button>
-                    ))}
-                 </nav>
-            </CardContent>
-           </Card>
-        </div>
-
-        {/* Columna Derecha */}
-        <div className="lg:col-span-3">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-                 <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="overview">Resumen</TabsTrigger>
-                    <TabsTrigger value="settings">Configuración</TabsTrigger>
-                    <TabsTrigger value="security">Seguridad</TabsTrigger>
-                </TabsList>
-                <TabsContent value="overview" className="mt-6">
+      
+      <Card className="max-w-4xl mx-auto">
+        <CardHeader className="items-center text-center p-6 border-b">
+            <Avatar className="h-24 w-24 mb-4">
+            {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
+            <AvatarFallback className="text-3xl">
+                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+            </AvatarFallback>
+            </Avatar>
+            <CardTitle className="text-2xl">{user.displayName || 'Usuario'}</CardTitle>
+            <CardDescription>{user.email}</CardDescription>
+        </CardHeader>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="p-2 bg-muted/50">
+              <TabsList className="grid w-full grid-cols-3 mx-auto max-w-md">
+                  <TabsTrigger value="overview">Resumen</TabsTrigger>
+                  <TabsTrigger value="settings">Configuración</TabsTrigger>
+                  <TabsTrigger value="security">Seguridad</TabsTrigger>
+              </TabsList>
+            </div>
+            <div className="p-6">
+                <TabsContent value="overview">
                     <div className="space-y-8">
                         <Card>
                             <CardHeader>
@@ -155,13 +110,13 @@ export default function PaginaPerfil() {
                                 </ul>
                             </CardContent>
                         </Card>
-                         <Card>
+                            <Card>
                             <CardHeader>
                                 <CardTitle>Actividad Reciente</CardTitle>
-                                 <CardDescription>Un vistazo a tus últimas acciones en DigiCar.</CardDescription>
+                                    <CardDescription>Un vistazo a tus últimas acciones en DigiCar.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <ul className="space-y-5">
+                                    <ul className="space-y-5">
                                     {actividadReciente.map(item => (
                                         <li key={item.id} className="flex items-start gap-4">
                                             <div className="p-2 bg-background rounded-full border mt-1">
@@ -173,23 +128,23 @@ export default function PaginaPerfil() {
                                             </div>
                                         </li>
                                     ))}
-                                 </ul>
+                                    </ul>
                             </CardContent>
                         </Card>
                     </div>
                 </TabsContent>
-                <TabsContent value="settings" className="mt-6">
-                     <Card>
+                <TabsContent value="settings">
+                        <Card>
                         <CardHeader>
                             <CardTitle>Configuración del Perfil</CardTitle>
-                             <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+                                <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label>Nombre de Usuario</Label>
                                 <Input defaultValue={user.displayName || ''} />
                             </div>
-                             <div className="space-y-2">
+                                <div className="space-y-2">
                                 <Label>Correo Electrónico</Label>
                                 <Input defaultValue={user.email || ''} disabled />
                             </div>
@@ -197,7 +152,7 @@ export default function PaginaPerfil() {
                         </CardContent>
                     </Card>
                 </TabsContent>
-                <TabsContent value="security" className="mt-6">
+                <TabsContent value="security">
                     <Card>
                         <CardHeader>
                             <CardTitle>Cambiar Contraseña</CardTitle>
@@ -210,9 +165,9 @@ export default function PaginaPerfil() {
                         </CardContent>
                     </Card>
                 </TabsContent>
-            </Tabs>
-        </div>
-      </div>
+            </div>
+        </Tabs>
+      </Card>
     </div>
   );
 }
