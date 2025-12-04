@@ -23,7 +23,7 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader } from 'lucide-react';
+import { Loader, Home } from 'lucide-react';
 import Link from 'next/link';
 import PasswordStrength from './PasswordStrength';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -218,7 +218,15 @@ export default function FormularioRegistro() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
+      <div className="p-4">
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <Home className="mr-2 h-4 w-4" />
+            Ir a Inicio
+          </Link>
+        </Button>
+      </div>
+      <CardHeader className="text-center pt-0">
         <CardTitle>Crear una Cuenta</CardTitle>
         <CardDescription>
           Rellena el formulario para empezar.

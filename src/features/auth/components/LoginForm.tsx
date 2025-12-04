@@ -22,7 +22,7 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader } from 'lucide-react';
+import { Loader, Home } from 'lucide-react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 
@@ -122,7 +122,15 @@ export default function LoginForm() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
+      <div className="p-4">
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <Home className="mr-2 h-4 w-4" />
+            Ir a Inicio
+          </Link>
+        </Button>
+      </div>
+      <CardHeader className="text-center pt-0">
         <CardTitle>Iniciar Sesión</CardTitle>
         <CardDescription>Accede a tu cuenta para continuar.</CardDescription>
       </CardHeader>
