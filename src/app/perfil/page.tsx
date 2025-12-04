@@ -305,20 +305,6 @@ export default function PaginaPerfil() {
                       <ChangePasswordForm />
                   </CardContent>
                 </Card>
-                 {isUserAdmin && (
-                    <Card>
-                    <CardHeader>
-                        <CardTitle>Zona de Administrador</CardTitle>
-                        <CardDescription>Ya tienes permisos de administrador.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-center gap-2 text-green-600">
-                         <ShieldCheck className="h-5 w-5" />
-                         <p className="font-medium">El acceso al panel de admin está activado para tu cuenta.</p>
-                        </div>
-                    </CardContent>
-                    </Card>
-                )}
               </div>
             )}
             </main>
