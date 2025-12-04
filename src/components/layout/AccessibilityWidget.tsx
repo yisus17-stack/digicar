@@ -29,6 +29,7 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { useMounted } from '@/hooks/use-mounted';
 import { usePathname } from 'next/navigation';
+import { useDebounce } from 'use-debounce';
 
 
 const FONT_STEP_LIMIT = 2;
@@ -79,20 +80,22 @@ export default function AccessibilityWidget() {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'es-MX';
-        window.speechSynthesis.cancel(); // Cancel any previous speech
+        window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utterance);
     }
   };
+
+  const [debouncedSpeak] = useDebounce(speak, 150);
 
   const handleMouseOver = useCallback((event: MouseEvent) => {
       if (event.target instanceof HTMLElement) {
           const target = event.target;
           const text = target.innerText;
           if (text && text.trim().length > 0) {
-              speak(text);
+              debouncedSpeak(text);
           }
       }
-  }, []);
+  }, [debouncedSpeak]);
 
   useEffect(() => {
     if (isReadingAloud) {
