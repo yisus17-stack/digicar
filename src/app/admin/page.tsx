@@ -26,29 +26,13 @@ function EsqueletoDashboard() {
                     </Card>
                 ))}
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-6">
-                <Card className="lg:col-span-4">
+            <div className="grid gap-4 mt-6">
+                <Card>
                     <CardHeader>
                         <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Skeleton className="h-64 w-full" />
-                    </CardContent>
-                </Card>
-                <Card className="lg:col-span-3">
-                    <CardHeader>
-                        <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {[...Array(5)].map((_, i) => (
-                            <div key={i} className="flex items-center gap-4">
-                                <Skeleton className="h-12 w-12 rounded-full" />
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-4 w-24" />
-                                </div>
-                            </div>
-                        ))}
                     </CardContent>
                 </Card>
             </div>
@@ -71,13 +55,7 @@ export default function PaginaDashboardAdmin() {
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
 
-    const autosRecientesQuery = useMemoFirebase(() => 
-        query(collection(firestore, 'autos'), limit(5)), 
-        [firestore]
-    );
-    const { data: autosRecientes, isLoading: cargandoRecientes } = useCollection<CarType>(autosRecientesQuery);
-
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoRecientes) {
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
         return <EsqueletoDashboard />;
     }
 
@@ -143,8 +121,8 @@ export default function PaginaDashboardAdmin() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-6">
-                <Card className="lg:col-span-4">
+            <div className="grid gap-4 mt-6">
+                <Card>
                     <CardHeader>
                         <CardTitle>Distribución de Autos por Marca</CardTitle>
                     </CardHeader>
@@ -158,29 +136,6 @@ export default function PaginaDashboardAdmin() {
                                 <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-                 <Card className="lg:col-span-3">
-                    <CardHeader>
-                        <CardTitle>Autos Recientes</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
-                            {autosRecientes?.map(auto => (
-                                <div key={auto.id} className="flex items-center gap-4">
-                                     <Avatar className="h-14 w-14 rounded-md">
-                                        {auto.imagenUrl && <AvatarImage src={auto.imagenUrl} alt={auto.modelo} className="object-cover" />}
-                                        <AvatarFallback className="rounded-md">
-                                            <CarIcon className="h-6 w-6 text-muted-foreground" />
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-semibold">{auto.marca} {auto.modelo}</p>
-                                        <p className="text-sm text-muted-foreground">${auto.precio.toLocaleString('es-MX')}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </CardContent>
                 </Card>
             </div>
