@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -28,6 +28,7 @@ import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import PasswordStrength from './PasswordStrength';
 import { Checkbox } from '@/components/ui/checkbox';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const esquemaFormulario = z
   .object({
@@ -127,6 +128,7 @@ type DatosFormulario = z.infer<typeof esquemaFormulario>;
 export default function FormularioRegistro() {
   const { toast } = useToast();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
   const [passwordValue, setPasswordValue] = useState('');
@@ -152,8 +154,20 @@ export default function FormularioRegistro() {
         data.email,
         data.password
       );
-      await updateProfile(credencialUsuario.user, {
+      
+      const user = credencialUsuario.user;
+
+      await updateProfile(user, {
         displayName: data.name,
+      });
+
+      // Create user profile document in Firestore
+      const userDocRef = doc(firestore, 'usuarios', user.uid);
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: data.name,
+        createdAt: serverTimestamp(),
       });
 
       toast({

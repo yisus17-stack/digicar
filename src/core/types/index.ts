@@ -29,3 +29,10 @@ export type Transmision = {
   id: string;
   nombre: string;
 }
+
+export type UserProfile = {
+  uid: string;
+  email: string;
+  displayName: string;
+  createdAt: string;
+}

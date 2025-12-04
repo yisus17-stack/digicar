@@ -2,19 +2,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
-import { Car, Tag, Palette, GitMerge, Car as CarIcon } from "lucide-react";
+import { Car, Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Image from "next/image";
-import type { Car as CarType, Marca } from '@/core/types';
+import type { Car as CarType, Marca, UserProfile } from '@/core/types';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function EsqueletoDashboard() {
     return (
         <div>
             <Skeleton className="h-8 w-48 mb-6" />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {[...Array(4)].map((_, i) => (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                {[...Array(5)].map((_, i) => (
                     <Card key={i}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <Skeleton className="h-4 w-24" />
@@ -55,7 +55,10 @@ export default function PaginaDashboardAdmin() {
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
 
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
+    const coleccionUsuarios = useMemoFirebase(() => collection(firestore, 'usuarios'), [firestore]);
+    const { data: usuarios, isLoading: cargandoUsuarios } = useCollection<UserProfile>(coleccionUsuarios);
+
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoUsuarios) {
         return <EsqueletoDashboard />;
     }
 
@@ -67,7 +70,20 @@ export default function PaginaDashboardAdmin() {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Total de Usuarios
+                        </CardTitle>
+                        <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">
+                            {usuarios?.length ?? 0}
+                        </div>
+                    </CardContent>
+                </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">

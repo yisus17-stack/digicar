@@ -307,6 +307,33 @@
         }
       },
       "required": ["id", "userId", "messages", "createdAt"]
+    },
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User Profile",
+      "type": "object",
+      "description": "Represents a user's public profile information.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the user account was created."
+        }
+      },
+      "required": [ "uid", "email", "createdAt" ]
     }
   },
   "auth": {
@@ -428,8 +455,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/usuarios/{usuarioId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores public user profile information. Users can create their own profile, and admins can read the list to get user counts.",
+          "params": [
+            {
+              "name": "usuarioId",
+              "description": "The user's unique ID, same as their Auth UID."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to address the 'auth/unauthorized-domain' Firebase error, enable the core features (Car Catalog, Virtual Assistant, Car Comparison, Car Simulator, Lead Capture), and adhere to the core design principles. The error suggests an issue with the authorized domains configured in the Firebase Authentication settings. This is not directly related to the Firestore data structure but rather a configuration issue in the Firebase project. \n\nThe structure prioritizes Authorization Independence, Clarity of Intent, DBAC (Database Based Access Control), QAPs (Rules are not Filters), and Invariants.\n\n*   **Cars:** Stores car data. Publicly accessible for the Car Catalog and Virtual Assistant. Enables simple list operations (QAPs) without filtering in rules.\n*   **Brands:** Stores brand data, managed by admins. Publicly readable.\n*   **Colors:** Stores color data, managed by admins. Publicly readable.\n*   **Transmissions:** Stores transmission type data, managed by admins. Publicly readable.\n*   **Scenarios:** Stores car simulator scenarios. Publicly accessible to any user for the Car Simulator feature. Enables simple list operations (QAPs) without filtering in rules.\n*   **Recommendations:** Stores car recommendations. Publicly accessible to any user using the Car Simulator. Enables simple list operations (QAPs) without filtering in rules.\n*   **Leads:** Stores potential customer leads. Each lead is associated with a specific car. This collection enables lead capture. Access is restricted to authenticated users (e.g., sales team) who can manage the leads. No public listing of leads is allowed. Requires authentication to write or read.\n\nThis structure ensures Authorization Independence by not relying on hierarchical `get()` calls. All authorization-related information is self-contained within each document or collection.\n\nQAPs are supported through structural segregation. Publicly accessible data (Cars, Scenarios, Recommendations) resides in collections without requiring complex filtering in rules. The Leads collection, containing private data, is secured with authentication requirements.\n\nOwnership and other invariants can be enforced through server-side functions or client-side validation before writing to Firestore."
+    "reasoning": "The Firestore data structure is designed to address the 'auth/unauthorized-domain' Firebase error, enable the core features (Car Catalog, Virtual Assistant, Car Comparison, Car Simulator, Lead Capture), and adhere to the core design principles. The error suggests an issue with the authorized domains configured in the Firebase Authentication settings. This is not directly related to the Firestore data structure but rather a configuration issue in the Firebase project. \n\nThe structure prioritizes Authorization Independence, Clarity of Intent, DBAC (Database Based Access Control), QAPs (Rules are not Filters), and Invariants.\n\n*   **Cars:** Stores car data. Publicly accessible for the Car Catalog and Virtual Assistant. Enables simple list operations (QAPs) without filtering in rules.\n*   **Brands:** Stores brand data, managed by admins. Publicly readable.\n*   **Colors:** Stores color data, managed by admins. Publicly readable.\n*   **Transmissions:** Stores transmission type data, managed by admins. Publicly readable.\n*   **Scenarios:** Stores car simulator scenarios. Publicly accessible to any user for the Car Simulator feature. Enables simple list operations (QAPs) without filtering in rules.\n*   **Recommendations:** Stores car recommendations. Publicly accessible to any user using the Car Simulator. Enables simple list operations (QAPs) without filtering in rules.\n*   **Leads:** Stores potential customer leads. Each lead is associated with a specific car. This collection enables lead capture. Access is restricted to authenticated users (e.g., sales team) who can manage the leads. No public listing of leads is allowed. Requires authentication to write or read.\n\nThis structure ensures Authorization Independence by not relying on hierarchical `get()` calls. All authorization-related information is self-contained within each document or collection.\n\nQAPs are supported through structural segregation. Publicly accessible data (Cars, Scenarios, Recommendations) resides in collections without requiring complex filtering in rules. The Leads collection, containing private data, is secured with authentication requirements."
   }
 }

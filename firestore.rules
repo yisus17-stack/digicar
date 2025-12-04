@@ -13,6 +13,7 @@
  * - /escenarios/{escenarioId}: Publicly accessible driving scenarios.
  * - /recomendaciones/{recomendacionId}: Publicly accessible car recommendations.
  * - /clientes_potenciales/{clientePotencialId}: Customer leads, accessible only to authenticated users.
+ * - /usuarios/{usuarioId}: User profiles. Users can create their own. Admins can list.
  *
  * Key Security Decisions:
  * - Public read access to car, brand, color, scenario, and recommendation data.
@@ -117,6 +118,19 @@ service cloud.firestore {
       allow delete: if isSignedIn() && resource != null;
       allow list: if false;
     }
+
+    /**
+     * @description User profiles.
+     * @path /usuarios/{usuarioId}
+     * @allow (create) User can create their own profile upon registration.
+     * @allow (list) Admins can list users to get a count.
+     * @principle Secure user data while allowing admins to get counts.
+     */
+    match /usuarios/{usuarioId} {
+        allow create: if request.auth.uid == usuarioId;
+        allow list: if isAdmin();
+        allow get, update, delete: if false;
+    }
     
     match /fuelTypes/{fuelTypeId} {
       allow get, list: if true;
@@ -129,6 +143,14 @@ service cloud.firestore {
      */
     function isSignedIn() {
       return request.auth != null;
+    }
+    
+    /**
+     * @description Checks if the user is an admin.
+     * @return {bool} True if the user is an admin, false otherwise.
+     */
+    function isAdmin() {
+        return request.auth.token.email == "[[env/NEXT_PUBLIC_ADMIN_EMAIL]]";
     }
   }
 }
