@@ -27,7 +27,6 @@ import {
   SheetTrigger,
 } from '../ui/sheet';
 import { ScrollArea } from '../ui/scroll-area';
-import { useDebounce } from 'use-debounce';
 import { useMounted } from '@/hooks/use-mounted';
 import { usePathname } from 'next/navigation';
 
@@ -76,26 +75,24 @@ export default function AccessibilityWidget() {
     });
   }, []);
   
-  const speak = useCallback((text: string) => {
-    if (text.trim().length > 0) {
+  const speak = (text: string) => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'es-MX';
-        window.speechSynthesis.cancel();
+        window.speechSynthesis.cancel(); // Cancel any previous speech
         window.speechSynthesis.speak(utterance);
     }
-  }, []);
-
-  const [debouncedSpeak] = useDebounce(speak, 300);
+  };
 
   const handleMouseOver = useCallback((event: MouseEvent) => {
       if (event.target instanceof HTMLElement) {
           const target = event.target;
           const text = target.innerText;
-          if (text) {
-              debouncedSpeak(text);
+          if (text && text.trim().length > 0) {
+              speak(text);
           }
       }
-  }, [debouncedSpeak]);
+  }, []);
 
   useEffect(() => {
     if (isReadingAloud) {
