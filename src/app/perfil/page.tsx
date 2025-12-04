@@ -1,9 +1,8 @@
-
 'use client';
 
 import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -61,6 +60,19 @@ export default function PaginaPerfil() {
     }
   }, [user, loading, router]);
   
+  useEffect(() => {
+    if (user && user.photoURL && user.photoURL.includes('supabase')) {
+      updateProfile(user, { photoURL: null })
+        .then(() => {
+          console.log('Profile photo URL cleared successfully.');
+          // You might want to refresh the user state here if your useUser hook doesn't automatically update
+        })
+        .catch((error) => {
+          console.error('Error clearing profile photo URL:', error);
+        });
+    }
+  }, [user]);
+
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
