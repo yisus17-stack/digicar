@@ -3,7 +3,7 @@
 
 import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,7 +20,6 @@ import { cn } from '@/lib/utils';
 function EsqueletoPerfil() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Skeleton className="h-6 w-1/3 mb-8" />
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 space-y-4">
           <div className="flex items-center gap-3">
@@ -104,7 +103,7 @@ export default function PaginaPerfil() {
 
 
   return (
-    <div className="min-h-screen bg-muted/40">
+    <div className="bg-background">
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
                 {/* Columna Izquierda - Navegación */}
@@ -147,27 +146,35 @@ export default function PaginaPerfil() {
                 <main className="lg:col-span-3">
                 {activeTab === 'overview' && (
                     <div className="space-y-8">
-                        <div>
-                            <h2 className="text-2xl font-bold mb-4">Actividad Reciente</h2>
-                            <div className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Actividad Reciente</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
                                 {actividadReciente.map((item, index) => (
                                     <div key={index} className="flex items-center gap-4">
-                                        <item.icon className="h-6 w-6 text-muted-foreground" />
-                                        <div>
-                                            <p>{item.text}</p>
-                                            <p className="text-sm text-muted-foreground">{item.time}</p>
+                                        <div className="bg-muted p-2 rounded-full">
+                                            <item.icon className="h-5 w-5 text-muted-foreground" />
                                         </div>
+                                        <div className="flex-1">
+                                            <p>{item.text}</p>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground">{item.time}</p>
                                     </div>
                                 ))}
-                            </div>
-                        </div>
-                        <div className="border-t pt-8">
-                            <h2 className="text-2xl font-bold mb-4">Simulaciones Guardadas</h2>
-                            <div className="space-y-4">
+                            </CardContent>
+                        </Card>
+                        <Card>
+                             <CardHeader>
+                                <CardTitle>Simulaciones Guardadas</CardTitle>
+                            </CardHeader>
+                             <CardContent className="space-y-4">
                                 {simulacionesGuardadas.map((item, index) => (
                                     <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
                                         <div className="flex items-center gap-4">
-                                            <CreditCard className="h-6 w-6 text-muted-foreground" />
+                                            <div className="bg-muted p-2 rounded-full">
+                                                <CreditCard className="h-5 w-5 text-muted-foreground" />
+                                            </div>
                                             <div>
                                                 <p className="font-medium">{item.name}</p>
                                                 <p className="text-sm text-muted-foreground">Guardado el {item.date}</p>
@@ -176,50 +183,32 @@ export default function PaginaPerfil() {
                                         <p className="font-semibold text-muted-foreground">{item.payment}</p>
                                     </div>
                                 ))}
-                            </div>
-                        </div>
+                            </CardContent>
+                        </Card>
                     </div>
                 )}
                 {activeTab === 'settings' && (
-                  <div className="bg-card rounded-lg border p-6">
+                  <div>
+                      <div className="mb-8">
+                          <h3 className="text-xl font-bold">Configuración de Perfil</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Actualiza la información de tu cuenta.
+                          </p>
+                      </div>
                       <div className="space-y-6">
-                          <div>
-                              <h3 className="text-lg font-medium">Configuración de Perfil</h3>
-                              <p className="text-sm text-muted-foreground">
-                                Actualiza la información de tu cuenta.
-                              </p>
-                          </div>
-                          <div className="border-t border-border"></div>
-                          <div className="grid grid-cols-3 items-center">
-                              <Label className="col-span-1">Foto de Perfil</Label>
-                              <div className="col-span-2">
-                                  <Avatar className="h-20 w-20">
-                                      {user.photoURL && !user.photoURL.includes('supabase') ? (
-                                          <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
-                                      ) : (
-                                          <AvatarFallback className="text-3xl">
-                                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                                          </AvatarFallback>
-                                      )}
-                                  </Avatar>
-                              </div>
-                          </div>
-                          <div className="border-t border-border"></div>
-                          <div className="grid grid-cols-3 items-center">
-                              <Label htmlFor="displayName" className="col-span-1">Nombre de Usuario</Label>
-                              <div className="col-span-2">
+                          <div className="flex items-center justify-between border-b pb-6">
+                              <Label className="font-medium">Nombre de Usuario</Label>
+                              <div className="flex items-center gap-4 w-2/3">
                                   <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
                               </div>
                           </div>
-                           <div className="border-t border-border"></div>
-                          <div className="grid grid-cols-3 items-center">
-                              <Label className="col-span-1">Correo Electrónico</Label>
-                              <div className="col-span-2">
+                          <div className="flex items-center justify-between border-b pb-6">
+                              <Label className="font-medium">Correo Electrónico</Label>
+                               <div className="w-2/3">
                                   <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
-                              </div>
+                               </div>
                           </div>
-                          <div className="border-t border-border"></div>
-                           <div className="flex justify-end">
+                           <div className="flex justify-end pt-2">
                                 <Button onClick={handleProfileUpdate} disabled={isSaving}>
                                   {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                   Guardar Cambios
@@ -245,3 +234,4 @@ export default function PaginaPerfil() {
     </div>
   );
 }
+
