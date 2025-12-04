@@ -14,7 +14,7 @@ import { Edit, Trash2, Car as IconoAuto, PlusCircle, Save } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
@@ -114,6 +114,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const coleccionRef = collection(firestore, 'autos');
+            finalCarData.createdAt = serverTimestamp();
             await addDoc(coleccionRef, finalCarData);
             Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }

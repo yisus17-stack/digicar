@@ -14,7 +14,7 @@ import { Edit, Trash2, PlusCircle, Save } from 'lucide-react';
 import type { Color } from '@/core/types';
 import FormularioColor from './ColorForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
@@ -92,7 +92,8 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             Swal.fire({ title: '¡Actualizado!', text: 'El color se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const collectionRef = collection(firestore, 'colores');
-            await addDoc(collectionRef, data);
+            const finalData = { ...data, createdAt: serverTimestamp() };
+            await addDoc(collectionRef, finalData);
             Swal.fire({ title: '¡Creado!', text: 'El nuevo color se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);

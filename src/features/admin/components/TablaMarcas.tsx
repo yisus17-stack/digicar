@@ -14,7 +14,7 @@ import { Edit, Trash2, Tag, PlusCircle, Save } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import { useFirestore } from '@/firebase';
-import { collection, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, deleteDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -116,7 +116,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'marcas'));
             const idEntidad = nuevaMarcaRef.id;
-            const datosMarca = { ...finalBrandData, id: idEntidad };
+            const datosMarca = { ...finalBrandData, id: idEntidad, createdAt: serverTimestamp() };
             await setDoc(nuevaMarcaRef, datosMarca);
             Swal.fire({ title: '¡Creada!', text: 'La nueva marca se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }

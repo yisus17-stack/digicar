@@ -14,7 +14,7 @@ import { Edit, Trash2, PlusCircle, Save } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
@@ -91,7 +91,8 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             Swal.fire({ title: '¡Actualizada!', text: 'La transmisión se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const collectionRef = collection(firestore, 'transmisiones');
-            await addDoc(collectionRef, data);
+            const finalData = { ...data, createdAt: serverTimestamp() };
+            await addDoc(collectionRef, finalData);
             Swal.fire({ title: '¡Creada!', text: 'La nueva transmisión se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);

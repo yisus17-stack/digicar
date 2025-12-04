@@ -12,22 +12,26 @@ export type Car = {
   cilindrosMotor: number;
   color: string;
   pasajeros: number;
+  createdAt?: Date;
 };
 
 export type Marca = {
     id: string;
     nombre:string;
     logoUrl?: string;
+    createdAt?: Date;
 }
 
 export type Color = {
     id: string;
     nombre: string;
+    createdAt?: Date;
 }
 
 export type Transmision = {
   id: string;
   nombre: string;
+  createdAt?: Date;
 }
 
 export type UserProfile = {
