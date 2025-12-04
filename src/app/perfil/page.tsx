@@ -59,19 +59,6 @@ export default function PaginaPerfil() {
       setDisplayName(user.displayName || '');
     }
   }, [user, loading, router]);
-  
-  useEffect(() => {
-    if (user && user.photoURL && user.photoURL.includes('supabase')) {
-      updateProfile(user, { photoURL: null })
-        .then(() => {
-          console.log('Profile photo URL cleared successfully.');
-          // You might want to refresh the user state here if your useUser hook doesn't automatically update
-        })
-        .catch((error) => {
-          console.error('Error clearing profile photo URL:', error);
-        });
-    }
-  }, [user]);
 
   if (loading || !user) {
     return <EsqueletoPerfil />;
@@ -124,10 +111,13 @@ export default function PaginaPerfil() {
         <aside className="lg:col-span-1 space-y-8 sticky top-24">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
-              <AvatarFallback className="text-2xl">
-                  {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-              </AvatarFallback>
+              {user.photoURL && !user.photoURL.includes('supabase') ? (
+                <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+              ) : (
+                <AvatarFallback className="text-2xl">
+                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              )}
             </Avatar>
             <div>
               <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
@@ -211,8 +201,11 @@ export default function PaginaPerfil() {
                   <Label>Foto de Perfil</Label>
                   <div className="flex items-center gap-4">
                       <Avatar className="h-20 w-20">
-                          {user.photoURL && <AvatarImage src={user.photoURL} />}
-                          <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
+                          {user.photoURL && !user.photoURL.includes('supabase') ? (
+                            <AvatarImage src={user.photoURL} />
+                          ) : (
+                            <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
+                          )}
                       </Avatar>
                   </div>
                 </div>
