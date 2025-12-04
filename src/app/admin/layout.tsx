@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
@@ -82,9 +83,9 @@ function BarraLateralAdmin() {
       )}
     >
       <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20">
-        <div className={cn('h-10 w-10 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
-            <Car className={cn('h-7 w-7 text-primary transition-all', {'h-6 w-6': estaCerrada})} />
-        </div>
+        <Link href="/" className={cn('relative h-10 w-10 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
+            <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" />
+        </Link>
         <div className={cn('flex flex-col', { 'hidden': estaCerrada })}>
             <span className="font-bold text-lg">DigiCar</span>
             <span className="text-xs text-muted-foreground">Panel de Admin</span>
