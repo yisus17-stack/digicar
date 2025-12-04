@@ -30,6 +30,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { uploadImage } from '@/core/services/storageService';
+import { useUpload } from '@/core/contexts/UploadContext';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -40,10 +41,10 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [marcaAEliminar, setMarcaAEliminar] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useUpload();
 
   const manejarAnadir = () => {
     setMarcaSeleccionada(null);
@@ -78,14 +79,18 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   };
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
-    setIsUploading(true);
-    setUploadProgress(0);
+    setIsSaving(true);
+    let uploadId: string | null = null;
     try {
         let finalBrandData: any = { ...data };
 
         if (file) {
-            const logoUrl = await uploadImage(file, setUploadProgress);
+            uploadId = startUpload(file);
+            const logoUrl = await uploadImage(file, (progress) => {
+                if(uploadId) updateUploadProgress(uploadId, progress);
+            });
             finalBrandData.logoUrl = logoUrl;
+            if (uploadId) completeUpload(uploadId);
         } else if (marcaSeleccionada && data.logoUrl) {
             finalBrandData.logoUrl = data.logoUrl;
         } else if (marcaSeleccionada) {
@@ -107,6 +112,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
+        if (uploadId) errorUpload(uploadId);
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
         console.error("Error al guardar la marca:", error);
         
@@ -119,7 +125,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             errorEmitter.emit('permission-error', contextualError);
         }
     } finally {
-        setIsUploading(false);
+        setIsSaving(false);
     }
   };
 
@@ -127,8 +133,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     setEstaFormularioAbierto(open);
     if (!open) {
       setMarcaSeleccionada(null);
-      setIsUploading(false);
-      setUploadProgress(0);
     }
   };
 
@@ -188,8 +192,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             alCambiarApertura={alCambiarAperturaFormulario}
             marca={marcaSeleccionada}
             alGuardar={manejarGuardar}
-            isUploading={isUploading}
-            uploadProgress={uploadProgress}
+            isSaving={isSaving}
         />
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>

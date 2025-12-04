@@ -30,10 +30,9 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
 
 const esquemaFormulario = z.object({
   marca: z.string().min(1, 'La marca es requerida.'),
@@ -60,8 +59,7 @@ interface PropsFormularioAuto {
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
-  isUploading: boolean;
-  uploadProgress: number;
+  isSaving: boolean;
 }
 
 export default function FormularioAuto({
@@ -72,8 +70,7 @@ export default function FormularioAuto({
   marcas,
   colores,
   transmisiones,
-  isUploading,
-  uploadProgress,
+  isSaving,
 }: PropsFormularioAuto) {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
@@ -408,6 +405,7 @@ export default function FormularioAuto({
                                   accept="image/*"
                                   onChange={handleFileChange}
                                   className="hidden"
+                                  disabled={isSaving}
                                 />
                               </label>
                             </FormControl>
@@ -429,14 +427,7 @@ export default function FormularioAuto({
                                 Vista previa
                               </div>
                             )}
-
                           </div>
-                           {isUploading && (
-                            <div className="mt-2 space-y-1">
-                                <p className="text-sm text-muted-foreground">Subiendo imagen... {uploadProgress}%</p>
-                                <Progress value={uploadProgress} className="w-full" />
-                            </div>
-                           )}
                           <FormMessage />
                         </FormItem>
                         <FormField
@@ -461,11 +452,14 @@ export default function FormularioAuto({
             <DialogFooter className="pt-4 mt-auto border-t">
               <div className="flex justify-end w-full items-center gap-2">
                 <DialogClose asChild>
-                  <Button type="button" variant="secondary">
+                  <Button type="button" variant="secondary" disabled={isSaving}>
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button type="submit" disabled={isUploading}>{auto ? 'Actualizar Auto' : 'Crear Auto'}</Button>
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {auto ? 'Actualizar Auto' : 'Crear Auto'}
+                </Button>
               </div>
             </DialogFooter>
 

@@ -30,6 +30,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
 import { uploadImage } from '@/core/services/storageService';
+import { useUpload } from '@/core/contexts/UploadContext';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -43,10 +44,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useUpload();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -81,44 +82,44 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   };
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
-    setIsUploading(true);
-    setUploadProgress(0);
+    setIsSaving(true);
+    let uploadId: string | null = null;
+    
     try {
         let finalCarData: any = { ...datosAuto };
 
         if (file) {
-            const imageUrl = await uploadImage(file, setUploadProgress);
+            uploadId = startUpload(file);
+            const imageUrl = await uploadImage(file, (progress) => {
+              if (uploadId) updateUploadProgress(uploadId, progress);
+            });
             finalCarData.imagenUrl = imageUrl;
+            if (uploadId) completeUpload(uploadId);
         }
 
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
-            updateDoc(autoRef, finalCarData).catch((error) => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'update',
-                path: autoRef.path,
-                requestResourceData: finalCarData,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
+            await updateDoc(autoRef, finalCarData);
             toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
         } else {
             const coleccionRef = collection(firestore, 'autos');
-            addDoc(coleccionRef, finalCarData).catch(error => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'create',
-                path: coleccionRef.path,
-                requestResourceData: finalCarData,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
+            await addDoc(coleccionRef, finalCarData);
             toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
+        if (uploadId) errorUpload(uploadId);
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+        if (error.code && error.code.includes('permission-denied')) {
+          const contextualError = new FirestorePermissionError({
+            operation: autoSeleccionado ? 'update' : 'create',
+            path: autoSeleccionado ? `autos/${autoSeleccionado.id}` : 'autos',
+            requestResourceData: datosAuto,
+          });
+          errorEmitter.emit('permission-error', contextualError);
+        }
     } finally {
-        setIsUploading(false);
+        setIsSaving(false);
     }
   };
 
@@ -126,8 +127,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(open);
     if (!open) {
       setAutoSeleccionado(null);
-      setIsUploading(false);
-      setUploadProgress(0);
     }
   };
 
@@ -208,8 +207,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             marcas={marcas}
             colores={colores}
             transmisiones={transmisiones}
-            isUploading={isUploading}
-            uploadProgress={uploadProgress}
+            isSaving={isSaving}
         />
 
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
