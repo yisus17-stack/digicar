@@ -109,7 +109,7 @@ export default function PaginaPerfil() {
   ];
 
   return (
-    <div className="bg-muted/40 min-h-screen">
+    <div className="bg-background min-h-screen">
         <div className="container mx-auto px-4 py-8">
             <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
