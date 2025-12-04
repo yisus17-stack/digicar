@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
@@ -170,7 +171,6 @@ export default function PaginaDashboardAdmin() {
                     <CardContent className="pl-2">
                         <ResponsiveContainer width="100%" height={350}>
                             <BarChart data={datosGrafico}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))"/>
                                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                                 <Tooltip
