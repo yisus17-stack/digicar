@@ -334,6 +334,19 @@
         }
       },
       "required": [ "uid", "email", "createdAt" ]
+    },
+    "Counter": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Counter",
+      "description": "A generic counter document.",
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number",
+          "description": "The current total count."
+        }
+      },
+      "required": ["total"]
     }
   },
   "auth": {
@@ -470,6 +483,15 @@
               "description": "The user's unique ID, same as their Auth UID."
             }
           ]
+        }
+      },
+      {
+        "path": "/contadores/usuarios",
+        "definition": {
+            "entityName": "Counter",
+            "schema": { "$ref": "#/backend/entities/Counter" },
+            "description": "Stores the total count of registered users. Admins can read, authenticated users can update (increment) during registration.",
+            "params": []
         }
       }
     ],

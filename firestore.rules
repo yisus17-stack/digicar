@@ -15,6 +15,7 @@
  * - /recomendaciones/{recomendacionId}: Publicly accessible car recommendations.
  * - /clientes_potenciales/{clientePotencialId}: Customer leads, accessible only to authenticated users.
  * - /usuarios/{usuarioId}: User profiles. Users can create their own. Admins can list.
+ * - /contadores/usuarios: A counter for the total number of users.
  *
  * Key Security Decisions:
  * - Public read access to car, brand, color, scenario, and recommendation data.
@@ -136,6 +137,18 @@ service cloud.firestore {
     match /fuelTypes/{fuelTypeId} {
       allow get, list: if true;
       allow create, update, delete: if true;
+    }
+
+    /**
+     * @description Rules for the user counter.
+     * @path /contadores/usuarios
+     * @allow (get) Admins can read the total count.
+     * @allow (update) Any authenticated user can increment the counter (during registration).
+     */
+    match /contadores/usuarios {
+      allow get: if isAdmin();
+      allow create, update: if isSignedIn(); // Allows increment during registration
+      allow list, delete: if false;
     }
 
     /**

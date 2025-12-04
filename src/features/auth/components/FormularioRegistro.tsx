@@ -28,7 +28,7 @@ import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import PasswordStrength from './PasswordStrength';
 import { Checkbox } from '@/components/ui/checkbox';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
 
 const esquemaFormulario = z
   .object({
@@ -169,6 +169,20 @@ export default function FormularioRegistro() {
         displayName: data.name,
         createdAt: serverTimestamp(),
       });
+      
+      // Increment user counter
+      const contadorRef = doc(firestore, "contadores", "usuarios");
+      await updateDoc(contadorRef, {
+        total: increment(1),
+      }).catch(async (error) => {
+          // If the counter document doesn't exist, create it.
+          if (error.code === 'not-found') {
+             await setDoc(contadorRef, { total: 1 });
+          } else {
+            console.error("Error al incrementar el contador de usuarios:", error);
+          }
+      });
+
 
       toast({
         title: '¡Cuenta Creada!',

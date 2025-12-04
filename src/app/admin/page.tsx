@@ -1,11 +1,15 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
+import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, doc } from "firebase/firestore";
 import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { Car as CarType, Marca, UserProfile } from '@/core/types';
+
+type ContadorUsuarios = {
+    total: number;
+}
 
 function EsqueletoDashboard() {
     return (
@@ -52,8 +56,11 @@ export default function PaginaDashboardAdmin() {
     
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection(coleccionTransmisiones);
+    
+    const refContadorUsuarios = useMemoFirebase(() => doc(firestore, 'contadores', 'usuarios'), [firestore]);
+    const { data: contadorUsuarios, isLoading: cargandoContador } = useDoc<ContadorUsuarios>(refContadorUsuarios);
 
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
+    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador) {
         return <EsqueletoDashboard />;
     }
 
@@ -65,7 +72,7 @@ export default function PaginaDashboardAdmin() {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -115,6 +122,19 @@ export default function PaginaDashboardAdmin() {
                     <CardContent>
                         <div className="text-2xl font-bold">
                            {transmisiones?.length ?? 0}
+                        </div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Total de Usuarios
+                        </CardTitle>
+                        <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">
+                           {contadorUsuarios?.total ?? 0}
                         </div>
                     </CardContent>
                 </Card>
