@@ -152,9 +152,6 @@ const EsqueletoLayoutAdmin = () => {
                     <Skeleton className="h-10 w-full rounded-lg" />
                     <Skeleton className="h-10 w-full rounded-lg" />
                 </nav>
-                 <div className="mt-auto border-t p-2">
-                     <Skeleton className="h-12 w-full rounded-lg" />
-                 </div>
             </aside>
             <div className={cn("flex flex-col sm:gap-4 sm:py-4 w-full transition-all duration-300", estaCerrada ? 'sm:pl-20' : 'sm:pl-64')}>
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
