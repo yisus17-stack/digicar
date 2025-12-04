@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { Bell, LogOut, Shield, User as UserIcon } from 'lucide-react';
+import { Bell, LogOut, Shield, User as UserIcon, Heart, Repeat, CreditCard } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -78,9 +78,9 @@ export default function PaginaPerfil() {
   ];
 
   const actividadReciente = [
-      { id: 1, icon: '❤️', text: 'Agregaste el Porsche 911 a tus favoritos.', time: 'Hace 2 horas' },
-      { id: 2, icon: '🔄', text: 'Comparaste el Honda CR-V con el Hyundai Ioniq 5.', time: 'Ayer' },
-      { id: 3, icon: '💳', text: 'Guardaste una simulación para el Toyota Camry.', time: 'Hace 3 días' },
+      { id: 1, icon: Heart, text: 'Agregaste el Porsche 911 a tus favoritos.', time: 'Hace 2 horas' },
+      { id: 2, icon: Repeat, text: 'Comparaste el Honda CR-V con el Hyundai Ioniq 5.', time: 'Ayer' },
+      { id: 3, icon: CreditCard, text: 'Guardaste una simulación para el Toyota Camry.', time: 'Hace 3 días' },
   ]
 
   return (
@@ -142,7 +142,7 @@ export default function PaginaPerfil() {
                                     <li key={sim.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                                         <div className="flex items-center gap-4">
                                             <div className="p-2 bg-background rounded-md border">
-                                                <span role="img" aria-label="credit-card">💳</span>
+                                                <CreditCard className="h-5 w-5 text-muted-foreground" />
                                             </div>
                                             <div>
                                                 <p className="font-semibold">{sim.car}</p>
@@ -165,7 +165,7 @@ export default function PaginaPerfil() {
                                     {actividadReciente.map(item => (
                                         <li key={item.id} className="flex items-start gap-4">
                                             <div className="p-2 bg-background rounded-full border mt-1">
-                                                <span role="img" aria-label="icon">{item.icon}</span>
+                                                <item.icon className="h-4 w-4 text-muted-foreground" />
                                             </div>
                                             <div>
                                                 <p className='text-sm'>{item.text}</p>
