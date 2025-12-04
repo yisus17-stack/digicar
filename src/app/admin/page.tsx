@@ -23,7 +23,7 @@ function calculateChange(items: ItemConFecha[] | null) {
     }
 
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+    const thirtyDaysAgo = new Date(new Date().setDate(now.getDate() - 30));
 
     let recentCount = 0;
     let pastCount = 0;
@@ -43,9 +43,9 @@ function calculateChange(items: ItemConFecha[] | null) {
            pastCount++;
         }
     });
-
+    
     if (pastCount === 0) {
-        return { count: recentCount, percentage: recentCount > 0 ? 100 : 0, sign: 1 };
+        return { count: recentCount, percentage: recentCount > 0 ? 100 : 0, sign: recentCount > 0 ? 1 : 0 };
     }
 
     const percentageChange = (recentCount / pastCount) * 100;
