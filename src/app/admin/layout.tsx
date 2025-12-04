@@ -82,9 +82,9 @@ function BarraLateralAdmin() {
       )}
     >
       <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20">
-         <Avatar className={cn('h-10 w-10 transition-all', {'h-8 w-8': estaCerrada})}>
-            <AvatarFallback>DC</AvatarFallback>
-         </Avatar>
+        <div className={cn('h-10 w-10 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
+            <Car className={cn('h-7 w-7 text-primary transition-all', {'h-6 w-6': estaCerrada})} />
+        </div>
         <div className={cn('flex flex-col', { 'hidden': estaCerrada })}>
             <span className="font-bold text-lg">DigiCar</span>
             <span className="text-xs text-muted-foreground">Panel de Admin</span>
