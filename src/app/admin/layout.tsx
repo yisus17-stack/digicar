@@ -74,20 +74,6 @@ const elementosNav = [
 function BarraLateralAdmin() {
   const { estaCerrada, alternarBarraLateral } = usarBarraLateral();
   const pathname = usePathname();
-  const { user } = useUser();
-  const auth = useAuth();
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const manejarCierreSesion = async () => {
-    try {
-      await signOut(auth);
-      toast({ title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.' });
-      router.push('/');
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cerrar sesión. Inténtalo de nuevo.' });
-    }
-  };
 
   return (
     <aside
@@ -121,7 +107,7 @@ function BarraLateralAdmin() {
         </div>
       </div>
       
-      <nav className="flex flex-col gap-2 p-2">
+      <nav className="flex-1 flex-col gap-2 p-2">
         {elementosNav.map((item) => (
           <Link
             key={item.href}
@@ -137,26 +123,6 @@ function BarraLateralAdmin() {
           </Link>
         ))}
       </nav>
-      <div className="mt-auto border-t p-2">
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                 <div className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-muted">
-                    <div className={cn("flex flex-col items-start truncate", {'items-center': estaCerrada})}>
-                        <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
-                        <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
-                    </div>
-                     <MoreVertical className="h-4 w-4 ml-auto shrink-0" />
-                </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="top" className="w-56 mb-2">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild><Link href="/profile">Mi Perfil</Link></DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={manejarCierreSesion} className="text-destructive">Cerrar Sesión</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
     </aside>
   );
 }
