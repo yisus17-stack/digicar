@@ -181,40 +181,52 @@ export default function PaginaPerfil() {
                     </div>
                 )}
                 {activeTab === 'settings' && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Configuración de Perfil</CardTitle>
-                            <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-2">
-                                <Label>Foto de Perfil</Label>
-                                <Avatar className="h-20 w-20">
-                                    {user.photoURL && !user.photoURL.includes('supabase') ? (
-                                        <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
-                                    ) : (
-                                        <AvatarFallback className="text-3xl">
-                                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                                        </AvatarFallback>
-                                    )}
-                                </Avatar>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="displayName">Nombre de Usuario</Label>
-                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Correo Electrónico</Label>
-                                <Input defaultValue={user.email || ''} disabled />
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Guardar Cambios
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                  <div className="bg-card rounded-lg border p-6">
+                      <div className="space-y-6">
+                          <div>
+                              <h3 className="text-lg font-medium">Configuración de Perfil</h3>
+                              <p className="text-sm text-muted-foreground">
+                                Actualiza la información de tu cuenta.
+                              </p>
+                          </div>
+                          <div className="border-t border-border"></div>
+                          <div className="grid grid-cols-3 items-center">
+                              <Label className="col-span-1">Foto de Perfil</Label>
+                              <div className="col-span-2">
+                                  <Avatar className="h-20 w-20">
+                                      {user.photoURL && !user.photoURL.includes('supabase') ? (
+                                          <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                                      ) : (
+                                          <AvatarFallback className="text-3xl">
+                                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                                          </AvatarFallback>
+                                      )}
+                                  </Avatar>
+                              </div>
+                          </div>
+                          <div className="border-t border-border"></div>
+                          <div className="grid grid-cols-3 items-center">
+                              <Label htmlFor="displayName" className="col-span-1">Nombre de Usuario</Label>
+                              <div className="col-span-2">
+                                  <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
+                              </div>
+                          </div>
+                           <div className="border-t border-border"></div>
+                          <div className="grid grid-cols-3 items-center">
+                              <Label className="col-span-1">Correo Electrónico</Label>
+                              <div className="col-span-2">
+                                  <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
+                              </div>
+                          </div>
+                          <div className="border-t border-border"></div>
+                           <div className="flex justify-end">
+                                <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                  Guardar Cambios
+                                </Button>
+                          </div>
+                      </div>
+                  </div>
                 )}
                 {activeTab === 'security' && (
                     <Card>
