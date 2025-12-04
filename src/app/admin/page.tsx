@@ -14,7 +14,8 @@ type ContadorUsuarios = {
     total: number;
 }
 
-const RadialProgressChart = ({ value, goal }: { value: number; goal: number }) => {
+const RadialProgressChart = ({ value }: { value: number; }) => {
+  const goal = 100; // El círculo se llenará a medida que se acerque a 100
   const percentage = Math.min((value / goal) * 100, 100);
   const circumference = 2 * Math.PI * 45; // 45 es el radio (50 - 5 de stroke)
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
@@ -47,7 +48,6 @@ const RadialProgressChart = ({ value, goal }: { value: number; goal: number }) =
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-3xl font-bold">{value}</span>
-        <span className="text-xs text-muted-foreground">de {goal}</span>
       </div>
     </div>
   );
@@ -132,7 +132,6 @@ export default function PaginaDashboardAdmin() {
     ];
 
     const totalUsuarios = contadorUsuarios?.total ?? 0;
-    const metaUsuarios = 100;
 
     return (
         <div className="space-y-6">
@@ -158,10 +157,10 @@ export default function PaginaDashboardAdmin() {
                 <Card className="lg:col-span-1 flex flex-col">
                     <CardHeader>
                         <CardTitle>Total de Usuarios</CardTitle>
-                        <CardDescription>Meta para el primer mes: {metaUsuarios} usuarios.</CardDescription>
+                        <CardDescription>Usuarios registrados en la plataforma.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow flex items-center justify-center">
-                        <RadialProgressChart value={totalUsuarios} goal={metaUsuarios} />
+                        <RadialProgressChart value={totalUsuarios} />
                     </CardContent>
                 </Card>
                 <Card className="lg:col-span-2">
