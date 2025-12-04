@@ -2,11 +2,10 @@
 
 import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
@@ -60,6 +59,7 @@ export default function PaginaPerfil() {
     }
   }, [user, loading, router]);
 
+
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
@@ -103,142 +103,124 @@ export default function PaginaPerfil() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
-      
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
-        {/* Columna Izquierda - Navegación */}
-        <aside className="lg:col-span-1 space-y-8 sticky top-24">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
-              {user.photoURL && !user.photoURL.includes('supabase') ? (
-                <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
-              ) : (
-                <AvatarFallback className="text-2xl">
-                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              )}
-            </Avatar>
-            <div>
-              <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
-              <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-            </div>
-          </div>
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
-                  activeTab === item.id
-                    ? 'bg-muted text-primary font-semibold'
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                )}
-              >
-                <item.icon className="mr-3 h-5 w-5" />
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </aside>
+    <div className="min-h-screen bg-muted/40">
+        <div className="container mx-auto px-4 py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
+                {/* Columna Izquierda - Navegación */}
+                <aside className="lg:col-span-1 space-y-8 sticky top-24">
+                <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16">
+                      {user.photoURL && !user.photoURL.includes('supabase') ? (
+                        <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                      ) : (
+                        <AvatarFallback className="text-2xl">
+                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    <div>
+                    <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
+                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+                    </div>
+                </div>
+                <nav className="space-y-1">
+                    {menuItems.map((item) => (
+                    <button
+                        key={item.id}
+                        onClick={() => setActiveTab(item.id)}
+                        className={cn(
+                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors relative',
+                        activeTab !== item.id && 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                        )}
+                    >
+                        {activeTab === item.id && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>}
+                        <item.icon className={cn("mr-3 h-5 w-5", activeTab === item.id ? 'text-primary' : '')} />
+                        <span className={cn(activeTab === item.id ? 'text-primary font-semibold' : '')}>{item.label}</span>
+                    </button>
+                    ))}
+                </nav>
+                </aside>
 
-        {/* Columna Derecha - Contenido */}
-        <main className="lg:col-span-3">
-          {activeTab === 'overview' && (
-            <div className="space-y-8">
-                <Card>
+                {/* Columna Derecha - Contenido */}
+                <main className="lg:col-span-3">
+                {activeTab === 'overview' && (
+                    <div className="space-y-8">
+                        <div>
+                            <h2 className="text-2xl font-bold mb-4">Actividad Reciente</h2>
+                            <div className="relative pl-6">
+                                <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-border"></div>
+                                <ul className="space-y-8">
+                                    {actividadReciente.map((item, index) => (
+                                        <li key={index} className="flex items-start gap-4">
+                                            <div className="bg-background border-2 border-border p-2 rounded-full z-10">
+                                                <item.icon className="h-5 w-5 text-muted-foreground" />
+                                            </div>
+                                            <div>
+                                                <p>{item.text}</p>
+                                                <p className="text-sm text-muted-foreground">{item.time}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold mb-4">Simulaciones Guardadas</h2>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {simulacionesGuardadas.map((item, index) => (
+                                    <Card key={index} className="hover:shadow-md transition-shadow">
+                                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                            <CardTitle className="text-base font-medium">{item.name}</CardTitle>
+                                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-2xl font-bold">{item.payment}</p>
+                                            <p className="text-xs text-muted-foreground">Guardado el {item.date}</p>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'settings' && (
+                    <Card>
                     <CardHeader>
-                        <CardTitle>Actividad Reciente</CardTitle>
+                        <CardTitle>Configuración de Perfil</CardTitle>
+                        <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-2">
+                        <Label htmlFor="displayName">Nombre de Usuario</Label>
+                        <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                        <Label>Correo Electrónico</Label>
+                        <Input defaultValue={user.email || ''} disabled />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Guardar Cambios
+                        </Button>
+                    </CardFooter>
+                    </Card>
+                )}
+                {activeTab === 'security' && (
+                    <Card>
+                    <CardHeader>
+                        <CardTitle>Seguridad</CardTitle>
+                        <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ul className="space-y-4">
-                            {actividadReciente.map((item, index) => (
-                                <li key={index} className="flex items-start gap-3">
-                                    <div className="bg-muted p-2 rounded-full">
-                                        <item.icon className="h-5 w-5 text-muted-foreground" />
-                                    </div>
-                                    <div>
-                                        <p>{item.text}</p>
-                                        <p className="text-sm text-muted-foreground">{item.time}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                        <ChangePasswordForm />
                     </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Simulaciones Guardadas</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="space-y-4">
-                            {simulacionesGuardadas.map((item, index) => (
-                                <li key={index} className="flex items-center justify-between">
-                                    <div className='flex items-center gap-3'>
-                                        <CreditCard className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className='font-medium'>{item.name}</p>
-                                            <p className="text-sm text-muted-foreground">Guardado el {item.date}</p>
-                                        </div>
-                                    </div>
-                                    <p className="font-semibold text-primary">{item.payment}</p>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                </Card>
+                    </Card>
+                )}
+                </main>
             </div>
-          )}
-          {activeTab === 'settings' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Configuración de Perfil</CardTitle>
-                <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                 <div className="space-y-3">
-                  <Label>Foto de Perfil</Label>
-                  <div className="flex items-center gap-4">
-                      <Avatar className="h-20 w-20">
-                          {user.photoURL && !user.photoURL.includes('supabase') ? (
-                            <AvatarImage src={user.photoURL} />
-                          ) : (
-                            <AvatarFallback className="text-3xl">{user.displayName?.charAt(0)}</AvatarFallback>
-                          )}
-                      </Avatar>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="displayName">Nombre de Usuario</Label>
-                  <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Correo Electrónico</Label>
-                  <Input defaultValue={user.email || ''} disabled />
-                </div>
-              </CardContent>
-              <CardContent>
-                <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Guardar Cambios
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-          {activeTab === 'security' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Seguridad</CardTitle>
-                <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChangePasswordForm />
-              </CardContent>
-            </Card>
-          )}
-        </main>
-      </div>
+        </div>
     </div>
   );
 }
