@@ -183,22 +183,28 @@ export default function PaginaPerfil() {
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                   </div>
               </div>
-              <nav className="space-y-1">
-                  {menuItems.map((item) => (
+              <nav className="space-y-2">
+                {menuItems.map((item) => (
                   <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={cn(
-                      'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={cn(
+                      'w-full flex items-center gap-3 px-3 py-2 text-base transition-colors relative',
                       activeTab === item.id
-                          ? 'bg-muted font-semibold text-primary'
-                          : 'text-foreground hover:bg-muted/50'
-                      )}
+                        ? 'font-semibold text-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
                   >
-                      <item.icon className="h-5 w-5 text-muted-foreground" />
-                      <span>{item.label}</span>
+                    <div
+                      className={cn(
+                        'absolute left-0 top-0 bottom-0 w-1 rounded-r-lg',
+                        activeTab === item.id ? 'bg-primary' : 'bg-transparent'
+                      )}
+                    />
+                    <item.icon className={cn('h-5 w-5', activeTab === item.id ? 'text-primary' : 'text-muted-foreground')} />
+                    <span>{item.label}</span>
                   </button>
-                  ))}
+                ))}
               </nav>
             </aside>
 
@@ -301,5 +307,3 @@ export default function PaginaPerfil() {
     </div>
   );
 }
-
-    
