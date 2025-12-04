@@ -1,5 +1,5 @@
 /**
- * @fileoverview Firestore Security Rules for Prototyping.
+ * @fileoverview Firestore Security Rules for Prototyaping.
  *
  * Core Philosophy: This ruleset prioritizes security by enforcing authentication
  * and ownership where appropriate while remaining flexible on data shapes for rapid
@@ -146,11 +146,11 @@ service cloud.firestore {
     }
     
     /**
-     * @description Checks if the user is an admin.
-     * @return {bool} True if the user is an admin, false otherwise.
+     * @description Checks if the user is an admin by verifying a custom claim.
+     * @return {bool} True if the user has the 'admin' custom claim, false otherwise.
      */
     function isAdmin() {
-        return request.auth.token.email == "[[env/NEXT_PUBLIC_ADMIN_EMAIL]]";
+        return request.auth.token.admin == true;
     }
   }
 }
