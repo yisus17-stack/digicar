@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Accessibility,
+  PersonStanding,
   ZoomIn,
   ZoomOut,
   Contrast,
@@ -211,13 +211,13 @@ export default function AccessibilityWidget() {
           className="fixed bottom-6 left-6 h-14 w-14 rounded-full shadow-lg z-50"
           aria-label="Opciones de accesibilidad"
         >
-          <Accessibility className="h-7 w-7" />
+          <PersonStanding className="h-7 w-7" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[320px] p-0 flex flex-col">
         <SheetHeader className='p-4 border-b'>
           <SheetTitle className="flex items-center gap-2 text-lg">
-            <Accessibility /> Herramientas de Accesibilidad
+            <PersonStanding /> Herramientas de Accesibilidad
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="flex-1">
