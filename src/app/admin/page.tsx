@@ -3,14 +3,56 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, doc } from "firebase/firestore";
-import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon } from "lucide-react";
+import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import type { Car as CarType, Marca, Color, Transmision } from '@/core/types';
+import type { Car as CarType, Marca, Color, Transmision, UserProfile } from '@/core/types';
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 type ContadorUsuarios = {
     total: number;
 }
+
+const RadialProgressChart = ({ value, goal }: { value: number; goal: number }) => {
+  const percentage = Math.min((value / goal) * 100, 100);
+  const circumference = 2 * Math.PI * 45; // 45 es el radio (50 - 5 de stroke)
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative h-32 w-32">
+      <svg className="h-full w-full" viewBox="0 0 100 100">
+        {/* Background circle */}
+        <circle
+          className="stroke-current text-muted"
+          strokeWidth="10"
+          cx="50"
+          cy="50"
+          r="45"
+          fill="transparent"
+        />
+        {/* Progress circle */}
+        <circle
+          className="stroke-current text-primary transition-all duration-1000 ease-in-out"
+          strokeWidth="10"
+          strokeLinecap="round"
+          cx="50"
+          cy="50"
+          r="45"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          transform="rotate(-90 50 50)"
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl font-bold">{value}</span>
+        <span className="text-xs text-muted-foreground">de {goal}</span>
+      </div>
+    </div>
+  );
+};
+
 
 function EsqueletoDashboard() {
     return (
@@ -31,12 +73,13 @@ function EsqueletoDashboard() {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 grid grid-cols-1 gap-6 auto-rows-min">
-                    <Card>
+                     <Card>
                         <CardHeader>
                             <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-4 w-full" />
                         </CardHeader>
-                        <CardContent>
-                            <Skeleton className="h-8 w-12" />
+                        <CardContent className="flex items-center justify-center">
+                            <Skeleton className="h-32 w-32 rounded-full" />
                         </CardContent>
                     </Card>
                 </div>
@@ -88,6 +131,9 @@ export default function PaginaDashboardAdmin() {
         { title: "Total de Transmisiones", value: transmisiones?.length ?? 0, icon: GitMerge },
     ];
 
+    const totalUsuarios = contadorUsuarios?.total ?? 0;
+    const metaUsuarios = 100;
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -95,10 +141,8 @@ export default function PaginaDashboardAdmin() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {statCards.map(card => (
                      <Card key={card.title}>
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                            <div>
-                                <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-                            </div>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
                             <card.icon className="h-5 w-5 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
@@ -111,21 +155,15 @@ export default function PaginaDashboardAdmin() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                 <div className="lg:col-span-1 grid grid-cols-1 gap-6 auto-rows-min">
-                    <Card>
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                            <div>
-                                <CardTitle className="text-sm font-medium">Total de Usuarios</CardTitle>
-                            </div>
-                            <UsersIcon className="h-5 w-5 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-4xl font-bold">
-                                {contadorUsuarios?.total ?? 0}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                <Card className="lg:col-span-1 flex flex-col">
+                    <CardHeader>
+                        <CardTitle>Total de Usuarios</CardTitle>
+                        <CardDescription>Meta para el primer mes: {metaUsuarios} usuarios.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow flex items-center justify-center">
+                        <RadialProgressChart value={totalUsuarios} goal={metaUsuarios} />
+                    </CardContent>
+                </Card>
                 <Card className="lg:col-span-2">
                     <CardHeader>
                         <CardTitle>Distribución de Autos por Marca</CardTitle>
