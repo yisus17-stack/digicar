@@ -38,14 +38,14 @@ export default function PaginaAdminAutos() {
 
   if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div>
         <EsqueletoTablaAutos />
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div>
       <TablaAutos autos={autos ?? []} marcas={marcas ?? []} colores={colores ?? []} transmisiones={transmisiones ?? []} />
     </div>
   );

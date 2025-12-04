@@ -28,14 +28,14 @@ export default function PaginaAdminTransmisiones() {
 
   if (cargandoTransmisiones) {
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div>
             <EsqueletoTablaTransmisiones />
         </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div>
       <TablaTransmisiones transmisiones={transmisiones ?? []} />
     </div>
   );

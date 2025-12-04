@@ -27,14 +27,14 @@ export default function PaginaAdminMarcas() {
 
   if (cargandoMarcas) {
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div>
             <EsqueletoTablaMarcas />
         </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div>
       <TablaMarcas marcas={marcas ?? []} />
     </div>
   );

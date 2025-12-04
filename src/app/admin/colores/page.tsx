@@ -28,14 +28,14 @@ export default function PaginaAdminColores() {
 
   if (cargandoColores) {
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div>
             <EsqueletoTablaColores />
         </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div>
       <TablaColores colors={colores ?? []} />
     </div>
   );
