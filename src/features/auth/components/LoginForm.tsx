@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -27,34 +26,8 @@ import Link from 'next/link';
 import Swal from 'sweetalert2';
 
 const formSchema = z.object({
-  email: z.string(),
-  password: z.string(),
-}).superRefine((data, ctx) => {
-    // Email validation
-    if (data.email.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'El correo electrónico es requerido.',
-        path: ['email'],
-      });
-    } else {
-      if (!z.string().email().safeParse(data.email).success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Por favor, introduce un correo electrónico válido.',
-          path: ['email'],
-        });
-      }
-    }
-
-    // Password validation
-    if (data.password.length === 0) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'La contraseña es requerida.',
-            path: ['password'],
-        });
-    }
+  email: z.string().email('Por favor, introduce un correo electrónico válido.').min(1, 'El correo electrónico es requerido.'),
+  password: z.string().min(1, 'La contraseña es requerida.'),
 });
 
 
@@ -94,17 +67,11 @@ export default function LoginForm() {
     } catch (error) {
         let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
         if (error instanceof FirebaseError) {
-            switch (error.code) {
-                case 'auth/invalid-credential':
-                    description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
-                    break;
-                case 'auth/invalid-email':
-                    description = 'El formato del correo electrónico no es válido.';
-                    break;
-                case 'auth/too-many-requests':
-                    description = 'El acceso a esta cuenta ha sido temporalmente deshabilitado debido a muchos intentos fallidos. Inténtalo más tarde.';
-                    break;
-            }
+          if (error.code === 'auth/invalid-credential') {
+            description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
+          } else if (error.code === 'auth/too-many-requests') {
+            description = 'El acceso a esta cuenta ha sido temporalmente deshabilitado debido a muchos intentos fallidos. Inténtalo más tarde.';
+          }
         }
         Swal.fire({
             title: 'Error al iniciar sesión',
