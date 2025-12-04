@@ -104,15 +104,14 @@ export default function PaginaDashboardAdmin() {
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {statCards.map(card => (
-                     <Card key={card.title} className="relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 rounded-full bg-primary/10 transition-transform duration-500 group-hover:scale-[15]"></div>
-                        <CardHeader className="relative flex flex-row items-start justify-between space-y-0 pb-2">
+                     <Card key={card.title}>
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                             <div>
                                 <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
                             </div>
                             <card.icon className="h-5 w-5 text-muted-foreground" />
                         </CardHeader>
-                        <CardContent className="relative">
+                        <CardContent>
                             <div className="text-4xl font-bold">
                                 {card.value}
                             </div>
