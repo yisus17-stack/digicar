@@ -5,7 +5,7 @@ import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase
 import { collection, doc, Timestamp } from "firebase/firestore";
 import { Tag, Palette, GitMerge, Users as UsersIcon, Car as CarIcon, ArrowUpRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import type { Car as CarType, Marca, UserProfile, Color, Transmision } from '@/core/types';
 
 type ContadorUsuarios = {
@@ -82,11 +82,11 @@ export default function PaginaDashboardAdmin() {
     
     // Simulación de datos para la gráfica de usuarios
     const datosUsuarios = [
-        { month: 'Ene', users: Math.max(0, (contadorUsuarios?.total ?? 0) - 15) },
-        { month: 'Feb', users: Math.max(0, (contadorUsuarios?.total ?? 0) - 12) },
-        { month: 'Mar', users: Math.max(0, (contadorUsuarios?.total ?? 0) - 10) },
-        { month: 'Abr', users: Math.max(0, (contadorUsuarios?.total ?? 0) - 7) },
-        { month: 'May', users: Math.max(0, (contadorUsuarios?.total ?? 0) - 3) },
+        { month: 'Ene', users: 0 },
+        { month: 'Feb', users: 0 },
+        { month: 'Mar', users: 1 },
+        { month: 'Abr', users: 1 },
+        { month: 'May', users: 2 },
         { month: 'Jun', users: contadorUsuarios?.total ?? 0 },
     ];
     
@@ -129,20 +129,11 @@ export default function PaginaDashboardAdmin() {
                          <div className="text-4xl font-bold">
                             {contadorUsuarios?.total ?? 0}
                         </div>
-                        <p className="text-xs text-muted-foreground flex items-center">
-                            <ArrowUpRight className="h-4 w-4 text-emerald-500 mr-1" />
-                            <span className="text-emerald-500 font-semibold">+12%</span>
-                            &nbsp;este mes
-                        </p>
                         <div className="h-40 mt-4 -ml-4">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={datosUsuarios}>
-                                    <defs>
-                                        <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
+                                <LineChart data={datosUsuarios} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} domain={[0, 'dataMax + 1']}/>
                                     <Tooltip
                                         contentStyle={{
                                             background: "hsl(var(--background))",
@@ -151,8 +142,8 @@ export default function PaginaDashboardAdmin() {
                                         }}
                                         labelStyle={{ color: "hsl(var(--foreground))" }}
                                     />
-                                    <Area type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorUsers)" />
-                                </AreaChart>
+                                    <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }}/>
+                                </LineChart>
                             </ResponsiveContainer>
                         </div>
                     </CardContent>
