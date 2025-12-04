@@ -29,6 +29,7 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { useDebounce } from 'use-debounce';
 import { useMounted } from '@/hooks/use-mounted';
+import { usePathname } from 'next/navigation';
 
 
 const FONT_STEP_LIMIT = 2;
@@ -43,6 +44,7 @@ export default function AccessibilityWidget() {
   const [readableFont, setReadableFont] = useState(false);
   const [isReadingAloud, setIsReadingAloud] = useState(false);
   const isMounted = useMounted();
+  const pathname = usePathname();
 
   const applySetting = (key: string, value: string) => {
     document.documentElement.setAttribute(key, value);
@@ -107,7 +109,7 @@ export default function AccessibilityWidget() {
         window.speechSynthesis.cancel();
         document.body.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isReadingAloud, debouncedSpeak]);
+  }, [isReadingAloud, debouncedSpeak, pathname]);
 
   const handleFontSizeChange = (step: number) => {
     const newStep = Math.max(-FONT_STEP_LIMIT, Math.min(FONT_STEP_LIMIT, fontSizeStep + step));
