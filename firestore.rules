@@ -124,12 +124,12 @@ service cloud.firestore {
      * @description User profiles.
      * @path /usuarios/{usuarioId}
      * @allow (create) User can create their own profile upon registration.
-     * @allow (list) Admins can list users to get a count.
+     * @allow (list) No one can list all users from the client.
      * @principle Secure user data while allowing admins to get counts.
      */
     match /usuarios/{usuarioId} {
         allow create: if request.auth.uid == usuarioId;
-        allow list: if isAdmin();
+        allow list: if false;
         allow get, update, delete: if false;
     }
     

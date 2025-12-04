@@ -1,5 +1,3 @@
-
-
 'use client';
 import {
   LayoutDashboard,
@@ -129,32 +127,9 @@ function BarraLateralAdmin() {
 }
 
 const EsqueletoLayoutAdmin = () => {
-    const estaCerrada = false;
     return (
         <div className="flex min-h-screen w-full bg-background">
-            <aside className={cn('fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300', { 'w-20': estaCerrada })}>
-                <div className="flex h-20 shrink-0 items-center justify-start gap-4 border-b px-4">
-                     <Skeleton className={cn('h-10 w-10 transition-all rounded-full', {'h-8 w-8': estaCerrada})} />
-                     <div className={cn('flex flex-col gap-1', { 'hidden': estaCerrada })}>
-                        <Skeleton className="h-5 w-20" />
-                        <Skeleton className="h-3 w-16" />
-                     </div>
-                     <div className="ml-auto">
-                        <Skeleton className="h-8 w-8" />
-                     </div>
-                </div>
-                <div className="p-4">
-                    <Skeleton className="h-10 w-full" />
-                </div>
-                <nav className="flex flex-col gap-2 p-2">
-                    <Skeleton className="h-10 w-full rounded-lg" />
-                    <Skeleton className="h-10 w-full rounded-lg" />
-                    <Skeleton className="h-10 w-full rounded-lg" />
-                    <Skeleton className="h-10 w-full rounded-lg" />
-                    <Skeleton className="h-10 w-full rounded-lg" />
-                </nav>
-            </aside>
-            <div className={cn("flex flex-col sm:gap-4 sm:py-4 w-full transition-all duration-300", estaCerrada ? 'sm:pl-20' : 'sm:pl-64')}>
+            <div className="flex flex-col sm:gap-4 sm:py-4 w-full">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                      <div className="ml-auto flex items-center gap-4">
                         <Skeleton className="h-8 w-8 rounded-full" />
@@ -162,9 +137,11 @@ const EsqueletoLayoutAdmin = () => {
                      </div>
                 </header>
                 <main className="flex-1 p-4 sm:px-6 sm:py-0">
-                    <div className="space-y-4">
-                        <Skeleton className="h-9 w-48" />
-                        <Skeleton className="h-64 w-full" />
+                    <div className="flex items-center justify-center h-[80vh] text-center">
+                        <div className="space-y-4">
+                            <Skeleton className="h-8 w-64 mx-auto" />
+                            <Skeleton className="h-6 w-48 mx-auto" />
+                        </div>
                     </div>
                 </main>
             </div>
@@ -185,8 +162,9 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
     return (
         <div className='flex items-center justify-center h-screen bg-background'>
             <div className='text-center'>
-                <p className='text-lg text-muted-foreground'>Acceso denegado</p>
-                <Button onClick={() => router.push('/login')} className='mt-4'>
+                <h1 className='text-3xl font-bold mb-2'>Acceso Denegado</h1>
+                <p className='text-lg text-muted-foreground'>No tienes permiso para ver esta página.</p>
+                <Button onClick={() => router.push('/login')} className='mt-6'>
                     Ir a Iniciar Sesión
                 </Button>
             </div>
