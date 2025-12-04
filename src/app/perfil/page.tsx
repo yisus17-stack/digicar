@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useUser } from '@/firebase';
+import { useUser, useAuth } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 function EsqueletoPerfil() {
   return (
@@ -53,23 +55,42 @@ function EsqueletoPerfil() {
 
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
+  const auth = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: 'Sesión cerrada',
+        description: 'Has cerrado sesión correctamente.',
+      });
+      router.push('/');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
+      });
+    }
+  };
 
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
   
   const menuPerfil = [
-      { label: 'Mi Perfil', icon: UserIcon, href: '/perfil' },
-      { label: 'Notificaciones', icon: Bell, href: '#' },
-      { label: 'Seguridad', icon: Shield, href: '#' },
-      { label: 'Cerrar Sesión', icon: LogOut, href: '#' },
+      { label: 'Mi Perfil', icon: UserIcon, action: () => {}, active: true },
+      { label: 'Notificaciones', icon: Bell, action: () => {}, active: false },
+      { label: 'Seguridad', icon: Shield, action: () => {}, active: false },
+      { label: 'Cerrar Sesión', icon: LogOut, action: handleSignOut, active: false },
   ]
 
   const simulacionesGuardadas = [
@@ -106,7 +127,12 @@ export default function PaginaPerfil() {
             <CardContent className="p-2">
                  <nav className="flex flex-col space-y-1">
                     {menuPerfil.map((item) => (
-                        <Button key={item.label} variant={item.href === '/perfil' ? 'default' : 'ghost'} className="justify-start gap-3">
+                        <Button 
+                            key={item.label} 
+                            variant={item.active ? 'default' : 'ghost'} 
+                            className="justify-start gap-3"
+                            onClick={item.action}
+                        >
                             <item.icon className="h-5 w-5" />
                             {item.label}
                         </Button>
