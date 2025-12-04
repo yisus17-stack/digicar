@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2 } from 'lucide-react';
+import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2, ShieldCheck } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
@@ -103,6 +103,7 @@ export default function PaginaPerfil() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
+  const [isAdminProcessing, setIsAdminProcessing] = useState(false);
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -145,6 +146,41 @@ export default function PaginaPerfil() {
       setIsSaving(false);
     }
   };
+
+  const makeAdmin = async () => {
+    if (!user) {
+      toast({ title: 'Error', description: 'Debes iniciar sesión primero.', variant: 'destructive' });
+      return;
+    }
+    setIsAdminProcessing(true);
+    try {
+      const res = await fetch("/api/makeAdmin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: user.uid })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        toast({
+          title: '¡Éxito!',
+          description: 'Ahora eres administrador. Por favor, cierra sesión y vuelve a iniciarla para aplicar los cambios.',
+        });
+      } else {
+        throw new Error(data.error || 'Algo salió mal');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      toast({
+        title: 'Error al asignar rol de administrador',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsAdminProcessing(false);
+    }
+  };
+
 
   const menuItems = [
     { id: 'overview', label: 'Resumen', icon: List },
@@ -292,6 +328,7 @@ export default function PaginaPerfil() {
               </Card>
             )}
             {activeTab === 'security' && (
+              <div className="space-y-8">
                 <Card>
                   <CardHeader>
                       <CardTitle>Seguridad</CardTitle>
@@ -301,6 +338,24 @@ export default function PaginaPerfil() {
                       <ChangePasswordForm />
                   </CardContent>
                 </Card>
+                <Card>
+                  <CardHeader>
+                      <CardTitle>Zona de Administrador</CardTitle>
+                      <CardDescription>Asigna permisos de administrador a tu cuenta.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Haz clic en el botón de abajo para convertir tu cuenta en administrador. 
+                        Una vez hecho, deberás cerrar sesión y volver a iniciarla para que los cambios surtan efecto.
+                      </p>
+                      <Button onClick={makeAdmin} disabled={isAdminProcessing}>
+                        {isAdminProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Convertirme en Administrador
+                      </Button>
+                  </CardContent>
+                </Card>
+              </div>
             )}
             </main>
         </div>

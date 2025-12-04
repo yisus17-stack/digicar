@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview Firestore Security Rules for Prototyaping.
  *
@@ -17,8 +18,8 @@
  *
  * Key Security Decisions:
  * - Public read access to car, brand, color, scenario, and recommendation data.
- * - Writes to cars are restricted to signed-in users (assumed to be admins).
- * - Writes to brands, colors, transmissions are public to allow seeding.
+ * - Writes to cars are restricted to admins.
+ * - Writes to brands, colors, transmissions are restricted to admins.
  * - Leads are only accessible to authenticated users. No public listing is allowed.
  * - No schema validation is performed beyond essential checks for authorization.
  *
@@ -36,48 +37,48 @@ service cloud.firestore {
      * @description Public read, admin write access to car data.
      * @path /autos/{autoId}
      * @allow (get, list) Any user can read car data.
-     * @allow (create, update, delete) Only authenticated users (admins) can manage car data.
+     * @allow (create, update, delete) Only authenticated admins can manage car data.
      * @principle Allows public read access while restricting write access to admins.
      */
     match /autos/{autoId} {
       allow get, list: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create, update, delete: if isAdmin();
     }
     
     /**
-     * @description Public read, public write access to brand data.
+     * @description Public read, admin write access to brand data.
      * @path /marcas/{marcaId}
      * @allow (get, list) Any user can read brand data.
-     * @allow (create, update, delete) Any user can manage brand data (for seeder).
-     * @principle Allows public access for seeder.
+     * @allow (create, update, delete) Only authenticated admins can manage brand data.
+     * @principle Allows public read access while restricting write access to admins.
      */
     match /marcas/{marcaId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     /**
-     * @description Public read, public write access to color data.
+     * @description Public read, admin write access to color data.
      * @path /colores/{colorId}
      * @allow (get, list) Any user can read color data.
-     * @allow (create, update, delete) Any user can manage color data (for seeder).
-     * @principle Allows public access for seeder.
+     * @allow (create, update, delete) Only authenticated admins can manage color data.
+     * @principle Allows public read access while restricting write access to admins.
      */
     match /colores/{colorId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     /**
-     * @description Public read, public write access to transmission data.
+     * @description Public read, admin write access to transmission data.
      * @path /transmisiones/{transmisionId}
      * @allow (get, list) Any user can read transmission data.
-     * @allow (create, update, delete) Any user can manage transmission data (for seeder).
-     * @principle Allows public access for seeder.
+     * @allow (create, update, delete) Only authenticated admins can manage transmission data.
+     * @principle Allows public read access while restricting write access to admins.
      */
     match /transmisiones/{transmisionId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     /**
@@ -150,7 +151,7 @@ service cloud.firestore {
      * @return {bool} True if the user has the 'admin' custom claim, false otherwise.
      */
     function isAdmin() {
-        return request.auth.token.admin == true;
+        return isSignedIn() && request.auth.token.admin == true;
     }
   }
 }
