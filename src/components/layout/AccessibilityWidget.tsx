@@ -29,8 +29,6 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { useMounted } from '@/hooks/use-mounted';
 import { usePathname } from 'next/navigation';
-import { useDebounce } from 'use-debounce';
-
 
 const FONT_STEP_LIMIT = 2;
 
@@ -76,28 +74,26 @@ export default function AccessibilityWidget() {
     });
   }, []);
   
-  const speak = (text: string) => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-MX';
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-    }
-  };
-
-  const [debouncedSpeak] = useDebounce(speak, 150);
-
-  const handleMouseOver = useCallback((event: MouseEvent) => {
-      if (event.target instanceof HTMLElement) {
-          const target = event.target;
-          const text = target.innerText;
-          if (text && text.trim().length > 0) {
-              debouncedSpeak(text);
-          }
-      }
-  }, [debouncedSpeak]);
-
   useEffect(() => {
+    const speak = (text: string) => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'es-MX';
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+      }
+    };
+
+    const handleMouseOver = (event: MouseEvent) => {
+        if (event.target instanceof HTMLElement) {
+            const target = event.target;
+            const text = target.innerText;
+            if (text && text.trim().length > 0) {
+                speak(text);
+            }
+        }
+    };
+    
     if (isReadingAloud) {
         document.body.addEventListener('mouseover', handleMouseOver);
     } else {
@@ -109,7 +105,7 @@ export default function AccessibilityWidget() {
         window.speechSynthesis.cancel();
         document.body.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isReadingAloud, handleMouseOver, pathname]);
+  }, [isReadingAloud, pathname]);
 
   const handleFontSizeChange = (step: number) => {
     const newStep = Math.max(-FONT_STEP_LIMIT, Math.min(FONT_STEP_LIMIT, fontSizeStep + step));
