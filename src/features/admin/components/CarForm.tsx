@@ -33,6 +33,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { X } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
 
 const esquemaFormulario = z.object({
   marca: z.string().min(1, 'La marca es requerida.'),
@@ -59,6 +60,8 @@ interface PropsFormularioAuto {
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
+  isUploading: boolean;
+  uploadProgress: number;
 }
 
 export default function FormularioAuto({
@@ -69,6 +72,8 @@ export default function FormularioAuto({
   marcas,
   colores,
   transmisiones,
+  isUploading,
+  uploadProgress,
 }: PropsFormularioAuto) {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
@@ -157,7 +162,6 @@ export default function FormularioAuto({
       imagenUrl: preview || data.imagenUrl,
     };
     alGuardar(datosAuto, selectedFile);
-    alCambiarApertura(false);
   };
 
   const removeImage = () => {
@@ -427,6 +431,12 @@ export default function FormularioAuto({
                             )}
 
                           </div>
+                           {isUploading && (
+                            <div className="mt-2 space-y-1">
+                                <p className="text-sm text-muted-foreground">Subiendo imagen... {uploadProgress}%</p>
+                                <Progress value={uploadProgress} className="w-full" />
+                            </div>
+                           )}
                           <FormMessage />
                         </FormItem>
                         <FormField
@@ -455,7 +465,7 @@ export default function FormularioAuto({
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button type="submit">{auto ? 'Actualizar Auto' : 'Crear Auto'}</Button>
+                <Button type="submit" disabled={isUploading}>{auto ? 'Actualizar Auto' : 'Crear Auto'}</Button>
               </div>
             </DialogFooter>
 

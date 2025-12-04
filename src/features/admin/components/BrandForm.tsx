@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Marca } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -37,9 +38,11 @@ interface PropsFormularioMarca {
   alCambiarApertura: (open: boolean) => void;
   marca: Marca | null;
   alGuardar: (data: Omit<Marca, 'id'>, file?: File) => void;
+  isUploading: boolean;
+  uploadProgress: number;
 }
 
-export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca, alGuardar }: PropsFormularioMarca) {
+export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca, alGuardar, isUploading, uploadProgress }: PropsFormularioMarca) {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   
@@ -93,7 +96,6 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
   const alEnviar = (data: DatosFormulario) => {
     const finalData = { ...data, logoUrl: preview || data.logoUrl || '' };
     alGuardar(finalData, selectedFile);
-    alCambiarApertura(false);
   };
   
   return (
@@ -141,6 +143,12 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
                   </div>
                 )}
               </div>
+              {isUploading && (
+                <div className="mt-2 space-y-1">
+                    <p className="text-sm text-muted-foreground">Subiendo logo... {uploadProgress}%</p>
+                    <Progress value={uploadProgress} className="w-full" />
+                </div>
+              )}
               <FormMessage />
             </FormItem>
             
@@ -154,7 +162,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
 
             <DialogFooter>
                 <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
-                <Button type="submit">Guardar Cambios</Button>
+                <Button type="submit" disabled={isUploading}>Guardar Cambios</Button>
             </DialogFooter>
           </form>
         </Form>

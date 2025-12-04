@@ -43,6 +43,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -79,11 +81,13 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   };
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
+    setIsUploading(true);
+    setUploadProgress(0);
     try {
         let finalCarData: any = { ...datosAuto };
 
         if (file) {
-            const imageUrl = await uploadImage(file);
+            const imageUrl = await uploadImage(file, setUploadProgress);
             finalCarData.imagenUrl = imageUrl;
         }
 
@@ -110,10 +114,11 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             });
             toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
         }
+        alCambiarAperturaFormulario(false);
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
     } finally {
-        alCambiarAperturaFormulario(false);
+        setIsUploading(false);
     }
   };
 
@@ -121,6 +126,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(open);
     if (!open) {
       setAutoSeleccionado(null);
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -201,6 +208,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             marcas={marcas}
             colores={colores}
             transmisiones={transmisiones}
+            isUploading={isUploading}
+            uploadProgress={uploadProgress}
         />
 
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>

@@ -13,27 +13,29 @@ export const uploadImage = async (file: File, onProgress?: (progress: number) =>
   const fileName = `${Math.random()}-${Date.now()}.${fileExt}`;
   const filePath = `${fileName}`;
 
+  // Simulate progress for UX
+  if (onProgress) {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      if (progress <= 90) {
+        onProgress(progress);
+      } else {
+        clearInterval(interval);
+      }
+    }, 150); // Adjust time for a more realistic feel
+  }
+
   const { error: uploadError } = await supabase.storage
     .from(BUCKET_NAME)
     .upload(filePath, file, {
       cacheControl: '3600',
       upsert: false,
     });
-    
-  // Simulating progress for UX as Supabase JS client v2 doesn't support progress handlers on upload directly.
-  // A real implementation might use tus-js-client or a backend endpoint.
-  if (onProgress) {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      if (progress <= 100) {
-        onProgress(progress);
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-  }
 
+  if (onProgress) {
+    onProgress(100); // Ensure it completes to 100
+  }
 
   if (uploadError) {
     throw new Error(`Supabase upload error: ${uploadError.message}`);

@@ -40,6 +40,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
   const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
   const [marcaAEliminar, setMarcaAEliminar] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -76,11 +78,13 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   };
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
+    setIsUploading(true);
+    setUploadProgress(0);
     try {
         let finalBrandData: any = { ...data };
 
         if (file) {
-            const logoUrl = await uploadImage(file);
+            const logoUrl = await uploadImage(file, setUploadProgress);
             finalBrandData.logoUrl = logoUrl;
         } else if (marcaSeleccionada && data.logoUrl) {
             finalBrandData.logoUrl = data.logoUrl;
@@ -101,6 +105,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             await setDoc(nuevaMarcaRef, datosMarca);
             toast({ title: "Marca añadida", description: "La nueva marca se ha añadido a la base de datos." });
         }
+        alCambiarAperturaFormulario(false);
     } catch (error: any) {
         toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
         console.error("Error al guardar la marca:", error);
@@ -114,7 +119,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             errorEmitter.emit('permission-error', contextualError);
         }
     } finally {
-        alCambiarAperturaFormulario(false);
+        setIsUploading(false);
     }
   };
 
@@ -122,6 +127,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     setEstaFormularioAbierto(open);
     if (!open) {
       setMarcaSeleccionada(null);
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -181,6 +188,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             alCambiarApertura={alCambiarAperturaFormulario}
             marca={marcaSeleccionada}
             alGuardar={manejarGuardar}
+            isUploading={isUploading}
+            uploadProgress={uploadProgress}
         />
         <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
             <AlertDialogContent>
