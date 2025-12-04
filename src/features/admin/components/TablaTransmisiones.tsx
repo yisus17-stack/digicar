@@ -17,7 +17,6 @@ import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { useNotification } from '@/core/contexts/NotificationContext';
 import Swal from 'sweetalert2';
 
 interface TablaTransmisionesProps {
@@ -29,7 +28,6 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const [transmisionSeleccionada, setTransmisionSeleccionada] = useState<Transmision | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setTransmisionSeleccionada(null);
@@ -61,12 +59,19 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const manejarEliminar = async (transmisionId: string) => {
     if (!transmisionId) return;
     const transmisionRef = doc(firestore, 'transmisiones', transmisionId);
-    const notificationId = showNotification({ title: 'Eliminando transmisión...', status: 'loading' });
     try {
         await deleteDoc(transmisionRef);
-        updateNotificationStatus(notificationId, 'success', 'Transmisión eliminada con éxito');
+        Swal.fire({
+          title: '¡Eliminada!',
+          text: 'La transmisión ha sido eliminada con éxito.',
+          icon: 'success'
+        });
     } catch (error) {
-        updateNotificationStatus(notificationId, 'error', 'Error al eliminar la transmisión');
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar la transmisión. Verifica los permisos.',
+          icon: 'error'
+        });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: transmisionRef.path,
@@ -77,20 +82,19 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
     setIsSaving(true);
-    const notificationId = showNotification({ title: 'Guardando transmisión...', status: 'loading' });
     try {
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
             await updateDoc(transmisionRef, data);
-            updateNotificationStatus(notificationId, 'success', 'Transmisión actualizada con éxito');
+            Swal.fire({ title: '¡Actualizada!', text: 'La transmisión se ha actualizado correctamente.', icon: 'success' });
         } else {
             const collectionRef = collection(firestore, 'transmisiones');
             await addDoc(collectionRef, data);
-            updateNotificationStatus(notificationId, 'success', 'Transmisión añadida con éxito');
+            Swal.fire({ title: '¡Creada!', text: 'La nueva transmisión se ha añadido con éxito.', icon: 'success' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        updateNotificationStatus(notificationId, 'error', 'Error al guardar la transmisión');
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la transmisión.', icon: 'error' });
          if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: transmisionSeleccionada ? 'update' : 'create',

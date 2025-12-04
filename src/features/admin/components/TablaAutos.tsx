@@ -34,7 +34,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -66,12 +66,19 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const manejarEliminar = async (autoId: string) => {
     if (!autoId) return;
     const autoRef = doc(firestore, 'autos', autoId);
-    const notificationId = showNotification({ title: 'Eliminando auto...', status: 'loading' });
     try {
         await deleteDoc(autoRef);
-        updateNotificationStatus(notificationId, 'success', 'Auto eliminado con éxito');
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El auto ha sido eliminado con éxito.',
+          icon: 'success'
+        });
     } catch (error) {
-        updateNotificationStatus(notificationId, 'error', 'Error al eliminar el auto');
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el auto. Verifica los permisos.',
+          icon: 'error'
+        });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: autoRef.path,
@@ -83,16 +90,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
     setIsSaving(true);
     let uploadId: string | null = null;
-    let notificationId: string | null = null;
-
+    
     try {
         let finalCarData: any = { ...datosAuto };
         
-        notificationId = showNotification({ 
-            title: autoSeleccionado ? 'Actualizando auto...' : 'Creando nuevo auto...', 
-            status: 'loading' 
-        });
-
         if (file) {
             uploadId = startUpload(file);
             const imageUrl = await uploadImage(file, (progress) => {
@@ -105,16 +106,16 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
             await updateDoc(autoRef, finalCarData);
-            if(notificationId) updateNotificationStatus(notificationId, 'success', 'Auto actualizado con éxito');
+            Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success' });
         } else {
             const coleccionRef = collection(firestore, 'autos');
             await addDoc(coleccionRef, finalCarData);
-            if(notificationId) updateNotificationStatus(notificationId, 'success', 'Auto añadido con éxito');
+            Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
         if (uploadId) errorUpload(uploadId);
-        if (notificationId) updateNotificationStatus(notificationId, 'error', 'Error al guardar los cambios');
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar los cambios.', icon: 'error' });
         
         if (error.code && error.code.includes('permission-denied')) {
           const contextualError = new FirestorePermissionError({

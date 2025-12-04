@@ -17,7 +17,6 @@ import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { useNotification } from '@/core/contexts/NotificationContext';
 import Swal from 'sweetalert2';
 
 
@@ -30,8 +29,6 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const [colorSeleccionado, setColorSeleccionado] = useState<Color | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { showNotification, updateNotificationStatus } = useNotification();
-
 
   const manejarAnadir = () => {
     setColorSeleccionado(null);
@@ -63,12 +60,19 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const manejarEliminar = async (colorId: string) => {
     if (!colorId) return;
     const colorRef = doc(firestore, 'colores', colorId);
-    const notificationId = showNotification({ title: 'Eliminando color...', status: 'loading' });
     try {
         await deleteDoc(colorRef);
-        updateNotificationStatus(notificationId, 'success', 'Color eliminado con éxito');
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El color ha sido eliminado con éxito.',
+          icon: 'success'
+        });
     } catch (error) {
-        updateNotificationStatus(notificationId, 'error', 'Error al eliminar el color');
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el color. Verifica los permisos.',
+          icon: 'error'
+        });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: colorRef.path,
@@ -79,20 +83,19 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
 
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
     setIsSaving(true);
-    const notificationId = showNotification({ title: 'Guardando color...', status: 'loading' });
     try {
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
             await updateDoc(colorRef, data);
-            updateNotificationStatus(notificationId, 'success', 'Color actualizado con éxito');
+            Swal.fire({ title: '¡Actualizado!', text: 'El color se ha actualizado correctamente.', icon: 'success' });
         } else {
             const collectionRef = collection(firestore, 'colores');
             await addDoc(collectionRef, data);
-            updateNotificationStatus(notificationId, 'success', 'Color añadido con éxito');
+            Swal.fire({ title: '¡Creado!', text: 'El nuevo color se ha añadido con éxito.', icon: 'success' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        updateNotificationStatus(notificationId, 'error', 'Error al guardar el color');
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el color.', icon: 'error' });
         if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: colorSeleccionado ? 'update' : 'create',
