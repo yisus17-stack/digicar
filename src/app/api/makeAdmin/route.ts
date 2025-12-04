@@ -12,15 +12,12 @@ export async function POST(request: Request) {
   }
   
   try {
-    // Check if the user making the request is the super admin
-    // In a real app, you'd have more robust checks here
-    // For now, we trust the client-side check, but this is where you'd add server-side validation.
-    
+    // Use the initialized admin SDK to set the custom claim
     await getAuth(admin.app()).setCustomUserClaims(uid, { admin: true });
-    return NextResponse.json({ message: `Usuario ${uid} ahora es admin` });
+    return NextResponse.json({ message: `¡Éxito! El usuario ${uid} ahora es administrador. Por favor, cierra sesión y vuelve a iniciarla para aplicar los cambios.` });
   } catch (error) {
     console.error("Error asignando admin:", error);
-    const errorMessage = error instanceof Error ? error.message : "No se pudo asignar admin";
+    const errorMessage = error instanceof Error ? error.message : "No se pudo asignar el rol de administrador. Verifica los registros del servidor.";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

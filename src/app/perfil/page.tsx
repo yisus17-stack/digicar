@@ -161,18 +161,20 @@ export default function PaginaPerfil() {
       });
 
       const data = await res.json();
+      
       if (res.ok) {
         toast({
-          title: '¡Éxito!',
-          description: 'Ahora eres administrador. Por favor, cierra sesión y vuelve a iniciarla para aplicar los cambios.',
+          title: '¡Rol de Administrador Asignado!',
+          description: data.message,
+          duration: 9000,
         });
       } else {
-        throw new Error(data.error || 'Algo salió mal');
+        throw new Error(data.error || 'Algo salió mal en el servidor.');
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al contactar la API.';
       toast({
-        title: 'Error al asignar rol de administrador',
+        title: 'Error al Asignar Rol',
         description: errorMessage,
         variant: 'destructive',
       });
