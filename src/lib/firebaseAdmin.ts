@@ -15,9 +15,7 @@ if (!admin.apps.length) {
   } else {
     // Para entornos locales o donde Application Default Credentials esté configurado
     console.warn("Inicializando Firebase Admin sin Service Account. Asegúrate de que ADC esté configurado.");
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault()
-    });
+    admin.initializeApp();
   }
 }
 

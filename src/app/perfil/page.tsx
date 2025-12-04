@@ -199,6 +199,8 @@ export default function PaginaPerfil() {
     { name: "Plan Model 3 LR", date: "Guardado el 2023-11-10", payment: "$12,300 MXN/mes" },
   ];
 
+  const canBecomeAdmin = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
   return (
     <div className="container mx-auto px-4 py-8">
         <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
@@ -338,23 +340,25 @@ export default function PaginaPerfil() {
                       <ChangePasswordForm />
                   </CardContent>
                 </Card>
-                <Card>
-                  <CardHeader>
-                      <CardTitle>Zona de Administrador</CardTitle>
-                      <CardDescription>Asigna permisos de administrador a tu cuenta.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Haz clic en el botón de abajo para convertir tu cuenta en administrador. 
-                        Una vez hecho, deberás cerrar sesión y volver a iniciarla para que los cambios surtan efecto.
-                      </p>
-                      <Button onClick={makeAdmin} disabled={isAdminProcessing}>
-                        {isAdminProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        <ShieldCheck className="mr-2 h-4 w-4" />
-                        Convertirme en Administrador
-                      </Button>
-                  </CardContent>
-                </Card>
+                {canBecomeAdmin && (
+                    <Card>
+                    <CardHeader>
+                        <CardTitle>Zona de Administrador</CardTitle>
+                        <CardDescription>Asigna permisos de administrador a tu cuenta.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Haz clic en el botón de abajo para convertir tu cuenta en administrador. 
+                            Una vez hecho, deberás cerrar sesión y volver a iniciarla para que los cambios surtan efecto.
+                        </p>
+                        <Button onClick={makeAdmin} disabled={isAdminProcessing}>
+                            {isAdminProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            Convertirme en Administrador
+                        </Button>
+                    </CardContent>
+                    </Card>
+                )}
               </div>
             )}
             </main>
