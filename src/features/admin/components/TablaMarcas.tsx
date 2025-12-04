@@ -10,19 +10,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Tag, AlertTriangle } from 'lucide-react';
+import { Edit, Trash2, Tag } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -30,6 +20,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { uploadImage } from '@/core/services/storageService';
 import { useNotification } from '@/core/contexts/NotificationContext';
+import Swal from 'sweetalert2';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -38,8 +29,6 @@ interface TablaMarcasProps {
 export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
-  const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
-  const [marcaAEliminar, setMarcaAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
@@ -55,13 +44,25 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   };
   
   const confirmarEliminar = (marcaId: string) => {
-    setMarcaAEliminar(marcaId);
-    setEstaAlertaAbierta(true);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente la marca de la base de datos.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        manejarEliminar(marcaId);
+      }
+    });
   };
 
-  const manejarEliminar = async () => {
-    if (!marcaAEliminar) return;
-    const marcaRef = doc(firestore, 'marcas', marcaAEliminar);
+  const manejarEliminar = async (marcaId: string) => {
+    if (!marcaId) return;
+    const marcaRef = doc(firestore, 'marcas', marcaId);
     const notificationId = showNotification({ title: 'Eliminando marca...', status: 'loading' });
     try {
         await deleteDoc(marcaRef);
@@ -73,8 +74,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             path: marcaRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-    } finally {
-        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -143,13 +142,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     }
   };
 
-  const alCambiarAperturaAlerta = (open: boolean) => {
-    setEstaAlertaAbierta(open);
-    if (!open) {
-      setMarcaAEliminar(null);
-    }
-  };
-
   return (
     <>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
@@ -201,25 +193,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             alGuardar={manejarGuardar}
             isSaving={isSaving}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
-            <AlertDialogContent>
-                <AlertDialogHeader className="items-center text-center">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/20 sm:mx-0 sm:h-10 sm:w-10">
-                        <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" aria-hidden="true" />
-                    </div>
-                    <AlertDialogTitle className="pt-2">¿Estás seguro?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente la marca de la base de datos.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter className="sm:justify-center">
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
-                        Sí, eliminar
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
     </>
   );
 }

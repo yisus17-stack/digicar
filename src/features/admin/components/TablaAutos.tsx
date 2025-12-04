@@ -10,19 +10,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Car as IconoAuto, AlertTriangle } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogCancel
-} from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -30,6 +20,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
 import { uploadImage } from '@/core/services/storageService';
 import { useNotification } from '@/core/contexts/NotificationContext';
+import Swal from 'sweetalert2';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -41,8 +32,6 @@ interface TablaAutosProps {
 export default function TablaAutos({ autos: autosIniciales, marcas, colores, transmisiones }: TablaAutosProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
-  const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
-  const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
@@ -58,13 +47,25 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   };
   
   const confirmarEliminar = (autoId: string) => {
-    setAutoAEliminar(autoId);
-    setEstaAlertaAbierta(true);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        manejarEliminar(autoId);
+      }
+    })
   };
 
-  const manejarEliminar = async () => {
-    if (!autoAEliminar) return;
-    const autoRef = doc(firestore, 'autos', autoAEliminar);
+  const manejarEliminar = async (autoId: string) => {
+    if (!autoId) return;
+    const autoRef = doc(firestore, 'autos', autoId);
     const notificationId = showNotification({ title: 'Eliminando auto...', status: 'loading' });
     try {
         await deleteDoc(autoRef);
@@ -76,8 +77,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             path: autoRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-    } finally {
-        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -134,13 +133,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(open);
     if (!open) {
       setAutoSeleccionado(null);
-    }
-  };
-
-  const alCambiarAperturaAlerta = (open: boolean) => {
-    setEstaAlertaAbierta(open);
-    if (!open) {
-      setAutoAEliminar(null);
     }
   };
 
@@ -216,29 +208,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             transmisiones={transmisiones}
             isSaving={isSaving}
         />
-
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
-            <AlertDialogContent>
-                <AlertDialogHeader className="items-center text-center">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/20 sm:mx-0 sm:h-10 sm:w-10">
-                        <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" aria-hidden="true" />
-                    </div>
-                    <AlertDialogTitle className="pt-2">¿Estás seguro?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter className="sm:justify-center">
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={(e) => { e.preventDefault(); manejarEliminar(); }}
-                        className="bg-destructive hover:bg-destructive/90"
-                    >
-                        Sí, eliminar
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
     </>
   );
 }

@@ -10,24 +10,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useNotification } from '@/core/contexts/NotificationContext';
+import Swal from 'sweetalert2';
 
 interface TablaTransmisionesProps {
   transmisiones: Transmision[];
@@ -36,8 +27,6 @@ interface TablaTransmisionesProps {
 export default function TablaTransmisiones({ transmisiones: transmisionesIniciales }: TablaTransmisionesProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
   const [transmisionSeleccionada, setTransmisionSeleccionada] = useState<Transmision | null>(null);
-  const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
-  const [transmisionAEliminar, setTransmisionAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { showNotification, updateNotificationStatus } = useNotification();
@@ -53,13 +42,25 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   };
   
   const confirmarEliminar = (transmisionId: string) => {
-    setTransmisionAEliminar(transmisionId);
-    setEstaAlertaAbierta(true);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el tipo de transmisión de la base de datos.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        manejarEliminar(transmisionId);
+      }
+    });
   };
 
-  const manejarEliminar = async () => {
-    if (!transmisionAEliminar) return;
-    const transmisionRef = doc(firestore, 'transmisiones', transmisionAEliminar);
+  const manejarEliminar = async (transmisionId: string) => {
+    if (!transmisionId) return;
+    const transmisionRef = doc(firestore, 'transmisiones', transmisionId);
     const notificationId = showNotification({ title: 'Eliminando transmisión...', status: 'loading' });
     try {
         await deleteDoc(transmisionRef);
@@ -71,8 +72,6 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             path: transmisionRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-    } finally {
-        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -109,13 +108,6 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     setEstaFormularioAbierto(open);
     if (!open) {
       setTransmisionSeleccionada(null);
-    }
-  };
-
-  const alCambiarAperturaAlerta = (open: boolean) => {
-    setEstaAlertaAbierta(open);
-    if (!open) {
-      setTransmisionAEliminar(null);
     }
   };
 
@@ -161,25 +153,6 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             alGuardar={manejarGuardar}
             isSaving={isSaving}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
-            <AlertDialogContent>
-                <AlertDialogHeader className="items-center text-center">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/20 sm:mx-0 sm:h-10 sm:w-10">
-                        <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" aria-hidden="true" />
-                    </div>
-                    <AlertDialogTitle className="pt-2">¿Estás seguro?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente el tipo de transmisión de la base de datos.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter className="sm:justify-center">
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
-                        Sí, eliminar
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
     </>
   );
 }

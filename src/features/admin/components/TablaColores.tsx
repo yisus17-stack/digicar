@@ -10,24 +10,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import type { Color } from '@/core/types';
 import FormularioColor from './ColorForm';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useNotification } from '@/core/contexts/NotificationContext';
+import Swal from 'sweetalert2';
 
 
 interface TablaColoresProps {
@@ -37,8 +28,6 @@ interface TablaColoresProps {
 export default function TablaColores({ colors: coloresIniciales }: TablaColoresProps) {
   const [estaFormularioAbierto, setEstaFormularioAbierto] = useState(false);
   const [colorSeleccionado, setColorSeleccionado] = useState<Color | null>(null);
-  const [estaAlertaAbierta, setEstaAlertaAbierta] = useState(false);
-  const [colorAEliminar, setColorAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
   const { showNotification, updateNotificationStatus } = useNotification();
@@ -55,13 +44,25 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   };
   
   const confirmarEliminar = (colorId: string) => {
-    setColorAEliminar(colorId);
-    setEstaAlertaAbierta(true);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        manejarEliminar(colorId);
+      }
+    });
   };
 
-  const manejarEliminar = async () => {
-    if (!colorAEliminar) return;
-    const colorRef = doc(firestore, 'colores', colorAEliminar);
+  const manejarEliminar = async (colorId: string) => {
+    if (!colorId) return;
+    const colorRef = doc(firestore, 'colores', colorId);
     const notificationId = showNotification({ title: 'Eliminando color...', status: 'loading' });
     try {
         await deleteDoc(colorRef);
@@ -73,8 +74,6 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             path: colorRef.path,
         });
         errorEmitter.emit('permission-error', contextualError);
-    } finally {
-        alCambiarAperturaAlerta(false);
     }
   };
 
@@ -111,13 +110,6 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     setEstaFormularioAbierto(open);
     if (!open) {
       setColorSeleccionado(null);
-    }
-  };
-
-  const alCambiarAperturaAlerta = (open: boolean) => {
-    setEstaAlertaAbierta(open);
-    if (!open) {
-      setColorAEliminar(null);
     }
   };
 
@@ -163,25 +155,6 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             alGuardar={manejarGuardar}
             isSaving={isSaving}
         />
-        <AlertDialog open={estaAlertaAbierta} onOpenChange={alCambiarAperturaAlerta}>
-            <AlertDialogContent>
-                <AlertDialogHeader className="items-center text-center">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/20 sm:mx-0 sm:h-10 sm:w-10">
-                        <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" aria-hidden="true" />
-                    </div>
-                    <AlertDialogTitle className="pt-2">¿Estás seguro?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter className="sm:justify-center">
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={(e) => { e.preventDefault(); manejarEliminar(); }} className="bg-destructive hover:bg-destructive/90">
-                        Sí, eliminar
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
     </>
   );
 }
