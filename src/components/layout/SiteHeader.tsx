@@ -40,7 +40,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
-import { useToast } from '@/hooks/use-toast';
+import Swal from 'sweetalert2';
 
 const SiteHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -50,7 +50,6 @@ const SiteHeader = () => {
   const router = useRouter();
   const { user } = useUser();
   const auth = useAuth();
-  const { toast } = useToast();
   const isAdmin = user?.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
   const openSearch = () => setIsSearchVisible(true);
@@ -96,16 +95,19 @@ const SiteHeader = () => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      toast({
+      Swal.fire({
         title: 'Sesión cerrada',
-        description: 'Has cerrado sesión correctamente.',
+        text: 'Has cerrado sesión correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
       });
       router.push('/');
     } catch (error) {
-      toast({
-        variant: 'destructive',
+      Swal.fire({
         title: 'Error',
-        description: 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
+        text: 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#595c97',
       });
     }
   };

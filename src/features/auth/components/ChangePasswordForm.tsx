@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { useAuth, useUser } from '@/firebase';
 import {
   EmailAuthProvider,
@@ -25,6 +24,7 @@ import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';
 import PasswordStrength from './PasswordStrength';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z
   .object({
@@ -69,7 +69,6 @@ const esquemaFormulario = z
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
 export default function ChangePasswordForm() {
-  const { toast } = useToast();
   const auth = useAuth();
   const { user } = useUser();
   const [cargando, setCargando] = useState(false);
@@ -89,10 +88,11 @@ export default function ChangePasswordForm() {
     setCargando(true);
 
     if (!user || !user.email) {
-      toast({
-        variant: 'destructive',
+      Swal.fire({
         title: 'Error',
-        description: 'No se ha podido identificar al usuario.',
+        text: 'No se ha podido identificar al usuario.',
+        icon: 'error',
+        confirmButtonColor: '#595c97',
       });
       setCargando(false);
       return;
@@ -103,9 +103,11 @@ export default function ChangePasswordForm() {
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, data.newPassword);
 
-      toast({
+      Swal.fire({
         title: '¡Contraseña Actualizada!',
-        description: 'Tu contraseña ha sido cambiada exitosamente.',
+        text: 'Tu contraseña ha sido cambiada exitosamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
       });
       form.reset();
       setPasswordValue('');
@@ -126,10 +128,11 @@ export default function ChangePasswordForm() {
             break;
         }
       }
-      toast({
-        variant: 'destructive',
+      Swal.fire({
         title: 'Error al cambiar la contraseña',
-        description,
+        text: description,
+        icon: 'error',
+        confirmButtonColor: '#595c97',
       });
     } finally {
       setCargando(false);

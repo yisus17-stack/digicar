@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth, useFirestore } from '@/firebase';
 import {
@@ -29,6 +28,7 @@ import Link from 'next/link';
 import PasswordStrength from './PasswordStrength';
 import { Checkbox } from '@/components/ui/checkbox';
 import { doc, setDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z
   .object({
@@ -126,7 +126,6 @@ const esquemaFormulario = z
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
 export default function FormularioRegistro() {
-  const { toast } = useToast();
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
@@ -183,10 +182,11 @@ export default function FormularioRegistro() {
           }
       });
 
-
-      toast({
+      Swal.fire({
         title: '¡Cuenta Creada!',
-        description: 'Tu cuenta ha sido creada exitosamente.',
+        text: 'Tu cuenta ha sido creada exitosamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
       });
       router.push('/');
     } catch (error) {
@@ -205,10 +205,11 @@ export default function FormularioRegistro() {
             break;
         }
       }
-      toast({
-        variant: 'destructive',
+      Swal.fire({
         title: 'Error al crear la cuenta',
-        description,
+        text: description,
+        icon: 'error',
+        confirmButtonColor: '#595c97',
       });
     } finally {
       setCargando(false);

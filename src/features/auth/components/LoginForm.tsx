@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/firebase';
 import {
@@ -25,6 +24,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader } from 'lucide-react';
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 const formSchema = z.object({
   email: z.string(),
@@ -62,7 +62,6 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
-  const { toast } = useToast();
   const auth = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -80,12 +79,14 @@ export default function LoginForm() {
     setIsLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      toast({
+      Swal.fire({
         title: '¡Bienvenido de vuelta!',
-        description: 'Has iniciado sesión correctamente.',
+        text: 'Has iniciado sesión correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
       });
 
-      if (userCredential.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      if (userCredential.user.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2") {
         router.push('/admin');
       } else {
         router.push('/');
@@ -108,10 +109,11 @@ export default function LoginForm() {
                     break;
             }
         }
-        toast({
-            variant: 'destructive',
+        Swal.fire({
             title: 'Error al iniciar sesión',
-            description,
+            text: description,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
         });
     } finally {
       setIsLoading(false);

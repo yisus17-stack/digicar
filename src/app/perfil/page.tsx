@@ -13,13 +13,13 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
 import { updateProfile } from 'firebase/auth';
-import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import Swal from 'sweetalert2';
 
 const profileSchema = z.object({
   displayName: z.string(),
@@ -100,7 +100,6 @@ function EsqueletoPerfil() {
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
   const router = useRouter();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
@@ -134,15 +133,18 @@ export default function PaginaPerfil() {
     setIsSaving(true);
     try {
       await updateProfile(user, { displayName: data.displayName });
-      toast({
+      Swal.fire({
         title: 'Perfil Actualizado',
-        description: 'Tu nombre se ha actualizado correctamente.',
+        text: 'Tu nombre se ha actualizado correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
       });
     } catch (error) {
-      toast({
+      Swal.fire({
         title: 'Error',
-        description: 'No se pudo actualizar tu nombre.',
-        variant: 'destructive',
+        text: 'No se pudo actualizar tu nombre.',
+        icon: 'error',
+        confirmButtonColor: '#595c97',
       });
     } finally {
       setIsSaving(false);
