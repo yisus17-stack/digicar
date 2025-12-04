@@ -15,11 +15,12 @@ import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
 import { updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 function EsqueletoPerfil() {
   return (
     <div className="container mx-auto px-4 py-8">
+      <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 space-y-4">
           <div className="flex items-center gap-3">
@@ -34,8 +35,14 @@ function EsqueletoPerfil() {
           <Skeleton className="h-10 w-full" />
         </div>
         <div className="md:col-span-3 space-y-6">
-          <Skeleton className="h-8 w-48 mb-4" />
-          <Skeleton className="h-64 w-full" />
+          <Card>
+            <CardHeader><Skeleton className="h-8 w-48 mb-4" /></CardHeader>
+            <CardContent><Skeleton className="h-48 w-full" /></CardContent>
+          </Card>
+           <Card>
+            <CardHeader><Skeleton className="h-8 w-48 mb-4" /></CardHeader>
+            <CardContent><Skeleton className="h-24 w-full" /></CardContent>
+          </Card>
         </div>
       </div>
     </div>
@@ -97,49 +104,49 @@ export default function PaginaPerfil() {
   ];
 
   const simulacionesGuardadas = [
-    { name: "Plan Camry XSE", date: "2023-11-15", payment: "$8,500 MXN/mes" },
-    { name: "Plan Model 3 LR", date: "2023-11-10", payment: "$12,300 MXN/mes" },
-  ]
-
+    { name: "Plan Camry XSE", date: "Guardado el 2023-11-15", payment: "$8,500 MXN/mes" },
+    { name: "Plan Model 3 LR", date: "Guardado el 2023-11-10", payment: "$12,300 MXN/mes" },
+  ];
 
   return (
-    <div className="bg-background">
+    <div className="bg-muted/40 min-h-screen">
         <div className="container mx-auto px-4 py-8">
+            <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
                 {/* Columna Izquierda - Navegación */}
                 <aside className="lg:col-span-1 space-y-8 sticky top-24">
-                <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16">
-                      {user.photoURL && !user.photoURL.includes('supabase') ? (
-                        <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
-                      ) : (
-                        <AvatarFallback className="text-2xl">
-                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
-                    <div>
-                    <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
-                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-                    </div>
-                </div>
-                <nav className="space-y-1">
-                    {menuItems.map((item) => (
-                    <button
-                        key={item.id}
-                        onClick={() => setActiveTab(item.id)}
-                        className={cn(
-                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
-                        activeTab === item.id
-                            ? 'bg-muted font-semibold text-foreground'
-                            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                  <div className="flex items-center gap-4">
+                      <Avatar className="h-16 w-16">
+                        {user.photoURL && !user.photoURL.includes('supabase') ? (
+                          <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                        ) : (
+                          <AvatarFallback className="text-2xl">
+                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                          </AvatarFallback>
                         )}
-                    >
-                        <item.icon className="h-5 w-5" />
-                        <span>{item.label}</span>
-                    </button>
-                    ))}
-                </nav>
+                      </Avatar>
+                      <div>
+                      <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
+                      <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+                      </div>
+                  </div>
+                  <nav className="space-y-1">
+                      {menuItems.map((item) => (
+                      <button
+                          key={item.id}
+                          onClick={() => setActiveTab(item.id)}
+                          className={cn(
+                          'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
+                          activeTab === item.id
+                              ? 'bg-muted font-semibold text-primary'
+                              : 'text-foreground hover:bg-muted/50'
+                          )}
+                      >
+                          <item.icon className="h-5 w-5 text-muted-foreground" />
+                          <span>{item.label}</span>
+                      </button>
+                      ))}
+                  </nav>
                 </aside>
 
                 {/* Columna Derecha - Contenido */}
@@ -148,36 +155,36 @@ export default function PaginaPerfil() {
                     <div className="space-y-8">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Actividad Reciente</CardTitle>
+                                <CardTitle className="text-xl">Actividad Reciente</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {actividadReciente.map((item, index) => (
                                     <div key={index} className="flex items-center gap-4">
-                                        <div className="bg-muted p-2 rounded-full">
+                                        <div className="bg-muted p-3 rounded-full">
                                             <item.icon className="h-5 w-5 text-muted-foreground" />
                                         </div>
-                                        <div className="flex-1">
+                                        <div>
                                             <p>{item.text}</p>
+                                            <p className="text-sm text-muted-foreground">{item.time}</p>
                                         </div>
-                                        <p className="text-sm text-muted-foreground">{item.time}</p>
                                     </div>
                                 ))}
                             </CardContent>
                         </Card>
                         <Card>
                              <CardHeader>
-                                <CardTitle>Simulaciones Guardadas</CardTitle>
+                                <CardTitle className="text-xl">Simulaciones Guardadas</CardTitle>
                             </CardHeader>
                              <CardContent className="space-y-4">
                                 {simulacionesGuardadas.map((item, index) => (
                                     <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
                                         <div className="flex items-center gap-4">
-                                            <div className="bg-muted p-2 rounded-full">
+                                            <div className="bg-muted p-3 rounded-full">
                                                 <CreditCard className="h-5 w-5 text-muted-foreground" />
                                             </div>
                                             <div>
                                                 <p className="font-medium">{item.name}</p>
-                                                <p className="text-sm text-muted-foreground">Guardado el {item.date}</p>
+                                                <p className="text-sm text-muted-foreground">{item.date}</p>
                                             </div>
                                         </div>
                                         <p className="font-semibold text-muted-foreground">{item.payment}</p>
@@ -188,44 +195,42 @@ export default function PaginaPerfil() {
                     </div>
                 )}
                 {activeTab === 'settings' && (
-                  <div>
-                      <div className="mb-8">
-                          <h3 className="text-xl font-bold">Configuración de Perfil</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Actualiza la información de tu cuenta.
-                          </p>
-                      </div>
-                      <div className="space-y-6">
-                          <div className="flex items-center justify-between border-b pb-6">
-                              <Label className="font-medium">Nombre de Usuario</Label>
-                              <div className="flex items-center gap-4 w-2/3">
-                                  <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
-                              </div>
-                          </div>
-                          <div className="flex items-center justify-between border-b pb-6">
-                              <Label className="font-medium">Correo Electrónico</Label>
-                               <div className="w-2/3">
-                                  <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
-                               </div>
-                          </div>
-                           <div className="flex justify-end pt-2">
-                                <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                  Guardar Cambios
-                                </Button>
-                          </div>
-                      </div>
-                  </div>
+                  <Card>
+                    <CardHeader>
+                        <CardTitle>Configuración de Perfil</CardTitle>
+                        <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="flex items-center justify-between border-b pb-6">
+                            <Label className="font-medium">Nombre de Usuario</Label>
+                            <div className="flex items-center gap-4 w-2/3">
+                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between border-b pb-6">
+                            <Label className="font-medium">Correo Electrónico</Label>
+                             <div className="w-2/3">
+                                <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
+                             </div>
+                        </div>
+                         <div className="flex justify-end pt-2">
+                              <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Guardar Cambios
+                              </Button>
+                        </div>
+                    </CardContent>
+                  </Card>
                 )}
                 {activeTab === 'security' && (
                     <Card>
-                    <CardHeader>
-                        <CardTitle>Seguridad</CardTitle>
-                        <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ChangePasswordForm />
-                    </CardContent>
+                      <CardHeader>
+                          <CardTitle>Seguridad</CardTitle>
+                          <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                          <ChangePasswordForm />
+                      </CardContent>
                     </Card>
                 )}
                 </main>
@@ -234,4 +239,3 @@ export default function PaginaPerfil() {
     </div>
   );
 }
-
