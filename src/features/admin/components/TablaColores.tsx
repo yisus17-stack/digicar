@@ -25,9 +25,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { useNotification } from '@/core/contexts/NotificationContext';
+
 
 interface TablaColoresProps {
   colors: Color[];
@@ -40,7 +41,8 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const [colorAEliminar, setColorAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { toast } = useToast();
+  const { showNotification } = useNotification();
+
 
   const manejarAnadir = () => {
     setColorSeleccionado(null);
@@ -60,10 +62,12 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const manejarEliminar = async () => {
     if (!colorAEliminar) return;
     const colorRef = doc(firestore, 'colores', colorAEliminar);
+    showNotification({ title: 'Eliminando color...', status: 'loading' });
     try {
         await deleteDoc(colorRef);
-        toast({ title: "Color eliminado", description: "El color se ha eliminado correctamente." });
+        showNotification({ title: "Color eliminado con éxito", status: 'success' });
     } catch (error) {
+        showNotification({ title: "Error al eliminar el color", status: 'error' });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: colorRef.path,
@@ -76,33 +80,28 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
 
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
     setIsSaving(true);
+    const notificationId = showNotification({ title: 'Guardando color...', status: 'loading' });
     try {
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
-            updateDoc(colorRef, data).catch((error) => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'update',
-                path: colorRef.path,
-                requestResourceData: data,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
-            toast({ title: "Color actualizado", description: "Los cambios se guardaron correctamente." });
+            await updateDoc(colorRef, data);
+            showNotification({ title: "Color actualizado", status: 'success' });
         } else {
             const collectionRef = collection(firestore, 'colores');
-            addDoc(collectionRef, data).catch(error => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'create',
-                path: collectionRef.path,
-                requestResourceData: data,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
-            toast({ title: "Color añadido", description: "El nuevo color se ha añadido a la base de datos." });
+            await addDoc(collectionRef, data);
+            showNotification({ title: "Color añadido", status: 'success' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+        showNotification({ title: "Error al guardar el color", status: 'error' });
+        if (error.code && error.code.includes('permission-denied')) {
+            const contextualError = new FirestorePermissionError({
+                operation: colorSeleccionado ? 'update' : 'create',
+                path: colorSeleccionado ? `colores/${colorSeleccionado.id}` : 'colores',
+                requestResourceData: data,
+            });
+            errorEmitter.emit('permission-error', contextualError);
+        }
     } finally {
         setIsSaving(false);
     }

@@ -34,8 +34,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { UploadProvider } from '@/core/contexts/UploadContext';
-import UploadNotifier from '@/features/admin/components/UploadNotifier';
+import { NotificationProvider } from '@/core/contexts/NotificationContext';
+import NotificationCenter from '@/features/admin/components/NotificationCenter';
 
 
 // Contexto para el estado de la barra lateral
@@ -197,13 +197,13 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
   }
 
   return (
-    <UploadProvider>
+    <NotificationProvider>
         <ProveedorBarraLateral>
         <LayoutAdminConProveedor>
             {children}
         </LayoutAdminConProveedor>
         </ProveedorBarraLateral>
-    </UploadProvider>
+    </NotificationProvider>
   );
 }
 
@@ -291,7 +291,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                 </div>
               </header>
               <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
-              <UploadNotifier />
+              <NotificationCenter />
           </div>
       </div>
   );

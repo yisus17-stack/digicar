@@ -25,9 +25,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { useNotification } from '@/core/contexts/NotificationContext';
 
 interface TablaTransmisionesProps {
   transmisiones: Transmision[];
@@ -40,7 +40,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const [transmisionAEliminar, setTransmisionAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { toast } = useToast();
+  const { showNotification } = useNotification();
 
   const manejarAnadir = () => {
     setTransmisionSeleccionada(null);
@@ -60,10 +60,12 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const manejarEliminar = async () => {
     if (!transmisionAEliminar) return;
     const transmisionRef = doc(firestore, 'transmisiones', transmisionAEliminar);
+    showNotification({ title: 'Eliminando transmisión...', status: 'loading' });
     try {
         await deleteDoc(transmisionRef);
-        toast({ title: "Transmisión eliminada", description: "El tipo de transmisión se ha eliminado correctamente." });
+        showNotification({ title: "Transmisión eliminada con éxito", status: 'success' });
     } catch (error) {
+        showNotification({ title: "Error al eliminar la transmisión", status: 'error' });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: transmisionRef.path,
@@ -76,33 +78,28 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
     setIsSaving(true);
+    showNotification({ title: 'Guardando transmisión...', status: 'loading' });
     try {
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
-            updateDoc(transmisionRef, data).catch((error) => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'update',
-                path: transmisionRef.path,
-                requestResourceData: data,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
-            toast({ title: "Transmisión actualizada", description: "Los cambios se guardaron correctamente." });
+            await updateDoc(transmisionRef, data);
+            showNotification({ title: "Transmisión actualizada", status: 'success' });
         } else {
             const collectionRef = collection(firestore, 'transmisiones');
-            addDoc(collectionRef, data).catch(error => {
-              const contextualError = new FirestorePermissionError({
-                operation: 'create',
-                path: collectionRef.path,
-                requestResourceData: data,
-              });
-              errorEmitter.emit('permission-error', contextualError);
-            });
-            toast({ title: "Transmisión añadida", description: "El nuevo tipo de transmisión se ha añadido a la base de datos." });
+            await addDoc(collectionRef, data);
+            showNotification({ title: "Transmisión añadida", status: 'success' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+        showNotification({ title: "Error al guardar la transmisión", status: 'error' });
+         if (error.code && error.code.includes('permission-denied')) {
+            const contextualError = new FirestorePermissionError({
+                operation: transmisionSeleccionada ? 'update' : 'create',
+                path: transmisionSeleccionada ? `transmisiones/${transmisionSeleccionada.id}` : 'transmisiones',
+                requestResourceData: data,
+            });
+            errorEmitter.emit('permission-error', contextualError);
+        }
     } finally {
         setIsSaving(false);
     }

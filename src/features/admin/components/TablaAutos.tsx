@@ -25,12 +25,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
 import { uploadImage } from '@/core/services/storageService';
-import { useUpload } from '@/core/contexts/UploadContext';
+import { useNotification } from '@/core/contexts/NotificationContext';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -46,8 +45,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoAEliminar, setAutoAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { toast } = useToast();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload } = useUpload();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -67,10 +65,12 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const manejarEliminar = async () => {
     if (!autoAEliminar) return;
     const autoRef = doc(firestore, 'autos', autoAEliminar);
+    const notificationId = showNotification({ title: 'Eliminando auto...', status: 'loading' });
     try {
         await deleteDoc(autoRef);
-        toast({ title: "Auto eliminado", description: "El auto se ha eliminado correctamente." });
+        showNotification({ title: "Auto eliminado con éxito", status: 'success' });
     } catch (error) {
+        showNotification({ title: "Error al eliminar el auto", status: 'error' });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: autoRef.path,
@@ -84,9 +84,15 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
     setIsSaving(true);
     let uploadId: string | null = null;
-    
+    let notificationId: string | null = null;
+
     try {
         let finalCarData: any = { ...datosAuto };
+        
+        if (!autoSeleccionado) { // Solo para creación
+          notificationId = showNotification({ title: 'Creando nuevo auto...', status: 'loading' });
+        }
+
 
         if (file) {
             uploadId = startUpload(file);
@@ -100,16 +106,23 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
             await updateDoc(autoRef, finalCarData);
-            toast({ title: "Auto actualizado", description: "Los cambios se guardaron correctamente." });
+            showNotification({ title: "Auto actualizado", status: 'success' });
         } else {
             const coleccionRef = collection(firestore, 'autos');
             await addDoc(coleccionRef, finalCarData);
-            toast({ title: "Auto añadido", description: "El nuevo auto se ha añadido a la base de datos." });
+            if(notificationId) {
+                // Actualizamos la notificación existente en lugar de crear una nueva
+                showNotification({ title: "Auto añadido con éxito", status: 'success' });
+            } else {
+                 showNotification({ title: "Auto añadido", status: 'success' });
+            }
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
         if (uploadId) errorUpload(uploadId);
-        toast({ title: "Error", description: `No se pudieron guardar los cambios: ${error.message}`, variant: "destructive" });
+        if (notificationId) showNotification({ title: "Error al crear el auto", status: 'error' });
+        else showNotification({ title: "Error al guardar los cambios", status: 'error' });
+        
         if (error.code && error.code.includes('permission-denied')) {
           const contextualError = new FirestorePermissionError({
             operation: autoSeleccionado ? 'update' : 'create',
