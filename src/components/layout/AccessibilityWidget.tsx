@@ -87,17 +87,17 @@ export default function AccessibilityWidget() {
 
   const [debouncedSpeak] = useDebounce(speak, 300);
 
-  useEffect(() => {
-    const handleMouseOver = (event: MouseEvent) => {
-        if (event.target instanceof HTMLElement) {
-            const target = event.target;
-            const text = target.innerText;
-            if (text) {
-                debouncedSpeak(text);
-            }
-        }
-    };
+  const handleMouseOver = useCallback((event: MouseEvent) => {
+      if (event.target instanceof HTMLElement) {
+          const target = event.target;
+          const text = target.innerText;
+          if (text) {
+              debouncedSpeak(text);
+          }
+      }
+  }, [debouncedSpeak]);
 
+  useEffect(() => {
     if (isReadingAloud) {
         document.body.addEventListener('mouseover', handleMouseOver);
     } else {
@@ -109,7 +109,7 @@ export default function AccessibilityWidget() {
         window.speechSynthesis.cancel();
         document.body.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isReadingAloud, debouncedSpeak, pathname]);
+  }, [isReadingAloud, handleMouseOver, pathname]);
 
   const handleFontSizeChange = (step: number) => {
     const newStep = Math.max(-FONT_STEP_LIMIT, Math.min(FONT_STEP_LIMIT, fontSizeStep + step));
