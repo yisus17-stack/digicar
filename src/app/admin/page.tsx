@@ -1,7 +1,7 @@
 
 'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useCollection, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useDoc, useFirestore, useMemoFirebase, useUser } from "@/firebase";
 import { collection, doc, getDocs, query, where, Timestamp } from "firebase/firestore";
 import { Tag, Palette, GitMerge, Users, Car as CarIcon, TrendingUp, Circle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -97,6 +97,7 @@ function EsqueletoDashboard() {
 
 export default function PaginaDashboardAdmin() {
     const firestore = useFirestore();
+    const { user, loading: cargandoUsuario } = useUser();
     
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading: cargandoAutos } = useCollection<CarType>(coleccionAutos);
@@ -110,10 +111,14 @@ export default function PaginaDashboardAdmin() {
     const coleccionTransmisiones = useMemoFirebase(() => collection(firestore, 'transmisiones'), [firestore]);
     const { data: transmisiones, isLoading: cargandoTransmisiones } = useCollection<Transmision>(coleccionTransmisiones);
     
-    const refContadorUsuarios = useMemoFirebase(() => doc(firestore, 'contadores', 'usuarios'), [firestore]);
+    const refContadorUsuarios = useMemoFirebase(() => {
+        if (!user) return null;
+        return doc(firestore, 'contadores', 'usuarios');
+    }, [firestore, user]);
+
     const { data: contadorUsuarios, isLoading: cargandoContador } = useDoc<ContadorUsuarios>(refContadorUsuarios);
     
-    if (cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador) {
+    if (cargandoUsuario || cargandoAutos || cargandoMarcas || cargandoColores || cargandoTransmisiones || cargandoContador) {
         return <EsqueletoDashboard />;
     }
 
