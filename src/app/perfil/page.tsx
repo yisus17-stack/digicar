@@ -65,15 +65,23 @@ export default function PaginaPerfil() {
       <Breadcrumbs items={[{ label: 'Mi Perfil' }]} />
       
       <Card className="max-w-4xl mx-auto">
-        <CardHeader className="items-center text-center p-6 border-b">
-            <Avatar className="h-24 w-24 mb-4">
-            {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
-            <AvatarFallback className="text-3xl">
-                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-            </AvatarFallback>
-            </Avatar>
-            <CardTitle className="text-2xl">{user.displayName || 'Usuario'}</CardTitle>
-            <CardDescription>{user.email}</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
+            <div>
+                <CardTitle className="text-2xl">Mi Perfil</CardTitle>
+                <CardDescription>Gestiona tu información y actividad.</CardDescription>
+            </div>
+            <div className="flex items-center gap-4">
+                <div className="text-right">
+                    <p className="font-semibold">{user.displayName || 'Usuario'}</p>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
+                <Avatar className="h-14 w-14">
+                    {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
+                    <AvatarFallback className="text-xl">
+                        {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                </Avatar>
+            </div>
         </CardHeader>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="p-2 bg-muted/50">
