@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/firebase';
@@ -181,26 +182,38 @@ export default function PaginaPerfil() {
                 )}
                 {activeTab === 'settings' && (
                     <Card>
-                    <CardHeader>
-                        <CardTitle>Configuración de Perfil</CardTitle>
-                        <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                        <Label htmlFor="displayName">Nombre de Usuario</Label>
-                        <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                        <Label>Correo Electrónico</Label>
-                        <Input defaultValue={user.email || ''} disabled />
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Guardar Cambios
-                        </Button>
-                    </CardFooter>
+                        <CardHeader>
+                            <CardTitle>Configuración de Perfil</CardTitle>
+                            <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label>Foto de Perfil</Label>
+                                <Avatar className="h-20 w-20">
+                                    {user.photoURL && !user.photoURL.includes('supabase') ? (
+                                        <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                                    ) : (
+                                        <AvatarFallback className="text-3xl">
+                                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    )}
+                                </Avatar>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="displayName">Nombre de Usuario</Label>
+                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Correo Electrónico</Label>
+                                <Input defaultValue={user.email || ''} disabled />
+                            </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Guardar Cambios
+                            </Button>
+                        </CardFooter>
                     </Card>
                 )}
                 {activeTab === 'security' && (
