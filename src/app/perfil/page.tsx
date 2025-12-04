@@ -71,16 +71,16 @@ export default function PaginaPerfil() {
                 <CardDescription>Gestiona tu información y actividad.</CardDescription>
             </div>
             <div className="flex items-center gap-4">
-                <div className="text-right">
-                    <p className="font-semibold">{user.displayName || 'Usuario'}</p>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
                 <Avatar className="h-14 w-14">
                     {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />}
                     <AvatarFallback className="text-xl">
                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
+                <div className="text-left">
+                    <p className="font-semibold">{user.displayName || 'Usuario'}</p>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
             </div>
         </CardHeader>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
