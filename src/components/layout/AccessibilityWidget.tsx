@@ -78,20 +78,23 @@ export default function AccessibilityWidget() {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'es-MX';
-        // Detiene cualquier locución anterior antes de empezar una nueva.
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utterance);
     }
   }, []);
 
   const handleMouseOver = useCallback((event: MouseEvent) => {
-      if (event.target instanceof HTMLElement) {
-          const target = event.target;
-          const text = target.innerText;
-          if (text && text.trim().length > 0) {
-              speak(text);
-          }
-      }
+    if (event.target instanceof HTMLElement) {
+        const target = event.target;
+        // Evita leer elementos dentro del propio widget de accesibilidad
+        if (target.closest('[data-radix-sheet-content]')) {
+          return;
+        }
+        const text = target.innerText;
+        if (text && text.trim().length > 0) {
+            speak(text.trim());
+        }
+    }
   }, [speak]);
     
   useEffect(() => {
@@ -106,7 +109,7 @@ export default function AccessibilityWidget() {
         window.speechSynthesis.cancel();
         document.body.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isReadingAloud, handleMouseOver]);
+  }, [isReadingAloud, handleMouseOver, pathname]);
 
 
   const handleFontSizeChange = (step: number) => {
@@ -215,7 +218,7 @@ export default function AccessibilityWidget() {
           <PersonStanding className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[320px] p-0 flex flex-col">
+      <SheetContent side="left" className="w-[320px] p-0 flex flex-col" data-radix-sheet-content>
         <SheetHeader className='p-4 border-b'>
           <SheetTitle className="flex items-center gap-2 text-lg">
             <PersonStanding /> Herramientas de Accesibilidad
