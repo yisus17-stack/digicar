@@ -35,7 +35,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { NotificationProvider } from '@/core/contexts/NotificationContext';
-import NotificationCenter from '@/features/admin/components/NotificationCenter';
 
 
 // Contexto para el estado de la barra lateral
