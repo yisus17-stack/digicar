@@ -51,7 +51,7 @@ const SiteHeader = () => {
   const { user } = useUser();
   const auth = useAuth();
   const { toast } = useToast();
-  const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  const isAdmin = user?.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
   const openSearch = () => setIsSearchVisible(true);
   const closeSearch = () => setIsSearchVisible(false);

@@ -154,7 +154,7 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
   const { user, loading: cargandoUsuario } = useUser();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
-  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID;
+  const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
   useEffect(() => {
     if (!cargandoUsuario) {
@@ -163,29 +163,15 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
       } else if (user.uid === adminUid) {
         setIsAdmin(true);
       } else {
+        router.push('/login');
         setIsAdmin(false);
       }
     }
   }, [user, cargandoUsuario, router, adminUid]);
 
-  if (cargandoUsuario) {
+  if (cargandoUsuario || !isAdmin) {
     return <EsqueletoLayoutAdmin />;
   }
-
-  if (!isAdmin) {
-    return (
-      <div className='flex items-center justify-center h-screen bg-background'>
-        <div className='text-center'>
-          <h1 className='text-3xl font-bold mb-2'>Acceso Denegado</h1>
-          <p className='text-lg text-muted-foreground'>No tienes permiso para ver esta página.</p>
-          <Button onClick={() => router.push('/login')} className='mt-6'>
-            Ir a Iniciar Sesión
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <ProveedorBarraLateral>

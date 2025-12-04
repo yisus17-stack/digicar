@@ -104,7 +104,7 @@ export default function PaginaPerfil() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
-  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID;
+  const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
