@@ -41,7 +41,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const [colorAEliminar, setColorAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { showNotification } = useNotification();
+  const { showNotification, updateNotificationStatus } = useNotification();
 
 
   const manejarAnadir = () => {
@@ -62,12 +62,12 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   const manejarEliminar = async () => {
     if (!colorAEliminar) return;
     const colorRef = doc(firestore, 'colores', colorAEliminar);
-    showNotification({ title: 'Eliminando color...', status: 'loading' });
+    const notificationId = showNotification({ title: 'Eliminando color...', status: 'loading' });
     try {
         await deleteDoc(colorRef);
-        showNotification({ title: "Color eliminado con éxito", status: 'success' });
+        updateNotificationStatus(notificationId, 'success', 'Color eliminado con éxito');
     } catch (error) {
-        showNotification({ title: "Error al eliminar el color", status: 'error' });
+        updateNotificationStatus(notificationId, 'error', 'Error al eliminar el color');
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: colorRef.path,
@@ -85,15 +85,15 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
             await updateDoc(colorRef, data);
-            showNotification({ title: "Color actualizado", status: 'success' });
+            updateNotificationStatus(notificationId, 'success', 'Color actualizado con éxito');
         } else {
             const collectionRef = collection(firestore, 'colores');
             await addDoc(collectionRef, data);
-            showNotification({ title: "Color añadido", status: 'success' });
+            updateNotificationStatus(notificationId, 'success', 'Color añadido con éxito');
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        showNotification({ title: "Error al guardar el color", status: 'error' });
+        updateNotificationStatus(notificationId, 'error', 'Error al guardar el color');
         if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: colorSeleccionado ? 'update' : 'create',

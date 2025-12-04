@@ -42,7 +42,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaAEliminar, setMarcaAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification } = useNotification();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setMarcaSeleccionada(null);
@@ -62,12 +62,12 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const manejarEliminar = async () => {
     if (!marcaAEliminar) return;
     const marcaRef = doc(firestore, 'marcas', marcaAEliminar);
-    showNotification({ title: 'Eliminando marca...', status: 'loading' });
+    const notificationId = showNotification({ title: 'Eliminando marca...', status: 'loading' });
     try {
         await deleteDoc(marcaRef);
-        showNotification({ title: "Marca eliminada con éxito", status: 'success' });
+        updateNotificationStatus(notificationId, 'success', 'Marca eliminada con éxito');
     } catch (error) {
-        showNotification({ title: "Error al eliminar la marca", status: 'error' });
+        updateNotificationStatus(notificationId, 'error', 'Error al eliminar la marca');
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: marcaRef.path,
@@ -86,9 +86,10 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     try {
         let finalBrandData: any = { ...data };
 
-        if (!marcaSeleccionada) {
-            notificationId = showNotification({ title: 'Creando nueva marca...', status: 'loading' });
-        }
+        notificationId = showNotification({ 
+            title: marcaSeleccionada ? 'Actualizando marca...' : 'Creando nueva marca...', 
+            status: 'loading' 
+        });
 
         if (file) {
             uploadId = startUpload(file);
@@ -106,24 +107,19 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         if (marcaSeleccionada) {
             const marcaRef = doc(firestore, 'marcas', marcaSeleccionada.id);
             await updateDoc(marcaRef, finalBrandData);
-            showNotification({ title: "Marca actualizada", status: 'success' });
+            if(notificationId) updateNotificationStatus(notificationId, 'success', 'Marca actualizada con éxito');
 
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'marcas'));
             const idEntidad = nuevaMarcaRef.id;
             const datosMarca = { ...finalBrandData, id: idEntidad };
             await setDoc(nuevaMarcaRef, datosMarca);
-            if(notificationId) {
-                showNotification({ title: "Marca añadida con éxito", status: 'success' });
-            } else {
-                showNotification({ title: "Marca añadida", status: 'success' });
-            }
+            if(notificationId) updateNotificationStatus(notificationId, 'success', 'Marca añadida con éxito');
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
         if (uploadId) errorUpload(uploadId);
-        if (notificationId) showNotification({ title: "Error al crear la marca", status: 'error' });
-        else showNotification({ title: "Error al guardar los cambios", status: 'error' });
+        if (notificationId) updateNotificationStatus(notificationId, 'error', 'Error al guardar la marca');
         
         console.error("Error al guardar la marca:", error);
         

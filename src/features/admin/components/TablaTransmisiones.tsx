@@ -40,7 +40,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const [transmisionAEliminar, setTransmisionAEliminar] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { showNotification } = useNotification();
+  const { showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setTransmisionSeleccionada(null);
@@ -60,12 +60,12 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   const manejarEliminar = async () => {
     if (!transmisionAEliminar) return;
     const transmisionRef = doc(firestore, 'transmisiones', transmisionAEliminar);
-    showNotification({ title: 'Eliminando transmisión...', status: 'loading' });
+    const notificationId = showNotification({ title: 'Eliminando transmisión...', status: 'loading' });
     try {
         await deleteDoc(transmisionRef);
-        showNotification({ title: "Transmisión eliminada con éxito", status: 'success' });
+        updateNotificationStatus(notificationId, 'success', 'Transmisión eliminada con éxito');
     } catch (error) {
-        showNotification({ title: "Error al eliminar la transmisión", status: 'error' });
+        updateNotificationStatus(notificationId, 'error', 'Error al eliminar la transmisión');
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
             path: transmisionRef.path,
@@ -78,20 +78,20 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
     setIsSaving(true);
-    showNotification({ title: 'Guardando transmisión...', status: 'loading' });
+    const notificationId = showNotification({ title: 'Guardando transmisión...', status: 'loading' });
     try {
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
             await updateDoc(transmisionRef, data);
-            showNotification({ title: "Transmisión actualizada", status: 'success' });
+            updateNotificationStatus(notificationId, 'success', 'Transmisión actualizada con éxito');
         } else {
             const collectionRef = collection(firestore, 'transmisiones');
             await addDoc(collectionRef, data);
-            showNotification({ title: "Transmisión añadida", status: 'success' });
+            updateNotificationStatus(notificationId, 'success', 'Transmisión añadida con éxito');
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        showNotification({ title: "Error al guardar la transmisión", status: 'error' });
+        updateNotificationStatus(notificationId, 'error', 'Error al guardar la transmisión');
          if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: transmisionSeleccionada ? 'update' : 'create',
