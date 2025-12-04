@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, PlusCircle } from 'lucide-react';
+import { Edit, Trash2, PlusCircle, Save } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import { useFirestore } from '@/firebase';
@@ -45,7 +45,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el tipo de transmisión de la base de datos.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
@@ -64,13 +64,15 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
         Swal.fire({
           title: '¡Eliminada!',
           text: 'La transmisión ha sido eliminada con éxito.',
-          icon: 'success'
+          icon: 'success',
+          confirmButtonColor: '#595c97',
         });
     } catch (error) {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar la transmisión. Verifica los permisos.',
-          icon: 'error'
+          icon: 'error',
+          confirmButtonColor: '#595c97',
         });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
@@ -86,15 +88,15 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);
             await updateDoc(transmisionRef, data);
-            Swal.fire({ title: '¡Actualizada!', text: 'La transmisión se ha actualizado correctamente.', icon: 'success' });
+            Swal.fire({ title: '¡Actualizada!', text: 'La transmisión se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const collectionRef = collection(firestore, 'transmisiones');
             await addDoc(collectionRef, data);
-            Swal.fire({ title: '¡Creada!', text: 'La nueva transmisión se ha añadido con éxito.', icon: 'success' });
+            Swal.fire({ title: '¡Creada!', text: 'La nueva transmisión se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la transmisión.', icon: 'error' });
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la transmisión.', icon: 'error', confirmButtonColor: '#595c97', });
          if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: transmisionSeleccionada ? 'update' : 'create',

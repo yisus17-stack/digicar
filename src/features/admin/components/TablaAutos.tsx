@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Car as IconoAuto, PlusCircle } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto, PlusCircle, Save } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
@@ -50,7 +50,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
@@ -69,13 +69,15 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         Swal.fire({
           title: '¡Eliminado!',
           text: 'El auto ha sido eliminado con éxito.',
-          icon: 'success'
+          icon: 'success',
+          confirmButtonColor: '#595c97',
         });
     } catch (error) {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar el auto. Verifica los permisos.',
-          icon: 'error'
+          icon: 'error',
+          confirmButtonColor: '#595c97',
         });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
@@ -100,6 +102,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
               didOpen: () => {
                 Swal.showLoading();
               },
+              confirmButtonColor: '#595c97',
             });
             const imageUrl = await uploadImage(file);
             finalCarData.imagenUrl = imageUrl;
@@ -108,15 +111,15 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
             await updateDoc(autoRef, finalCarData);
-            Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success' });
+            Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const coleccionRef = collection(firestore, 'autos');
             await addDoc(coleccionRef, finalCarData);
-            Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success' });
+            Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar los cambios.', icon: 'error' });
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar los cambios.', icon: 'error', confirmButtonColor: '#595c97', });
         
         if (error.code && error.code.includes('permission-denied')) {
           const contextualError = new FirestorePermissionError({

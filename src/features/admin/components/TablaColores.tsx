@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, PlusCircle } from 'lucide-react';
+import { Edit, Trash2, PlusCircle, Save } from 'lucide-react';
 import type { Color } from '@/core/types';
 import FormularioColor from './ColorForm';
 import { useFirestore } from '@/firebase';
@@ -46,7 +46,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
@@ -65,13 +65,15 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         Swal.fire({
           title: '¡Eliminado!',
           text: 'El color ha sido eliminado con éxito.',
-          icon: 'success'
+          icon: 'success',
+          confirmButtonColor: '#595c97',
         });
     } catch (error) {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar el color. Verifica los permisos.',
-          icon: 'error'
+          icon: 'error',
+          confirmButtonColor: '#595c97',
         });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
@@ -87,15 +89,15 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);
             await updateDoc(colorRef, data);
-            Swal.fire({ title: '¡Actualizado!', text: 'El color se ha actualizado correctamente.', icon: 'success' });
+            Swal.fire({ title: '¡Actualizado!', text: 'El color se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const collectionRef = collection(firestore, 'colores');
             await addDoc(collectionRef, data);
-            Swal.fire({ title: '¡Creado!', text: 'El nuevo color se ha añadido con éxito.', icon: 'success' });
+            Swal.fire({ title: '¡Creado!', text: 'El nuevo color se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el color.', icon: 'error' });
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el color.', icon: 'error', confirmButtonColor: '#595c97', });
         if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({
                 operation: colorSeleccionado ? 'update' : 'create',

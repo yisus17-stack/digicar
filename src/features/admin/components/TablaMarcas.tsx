@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Tag, PlusCircle } from 'lucide-react';
+import { Edit, Trash2, Tag, PlusCircle, Save } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import { useFirestore } from '@/firebase';
@@ -47,7 +47,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente la marca de la base de datos.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
@@ -66,13 +66,15 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         Swal.fire({
           title: '¡Eliminada!',
           text: 'La marca ha sido eliminada con éxito.',
-          icon: 'success'
+          icon: 'success',
+          confirmButtonColor: '#595c97',
         });
     } catch (error) {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar la marca. Verifica los permisos.',
-          icon: 'error'
+          icon: 'error',
+          confirmButtonColor: '#595c97',
         });
         const contextualError = new FirestorePermissionError({
             operation: 'delete',
@@ -97,6 +99,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
               didOpen: () => {
                 Swal.showLoading();
               },
+              confirmButtonColor: '#595c97',
             });
             const logoUrl = await uploadImage(file);
             finalBrandData.logoUrl = logoUrl;
@@ -109,17 +112,17 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
         if (marcaSeleccionada) {
             const marcaRef = doc(firestore, 'marcas', marcaSeleccionada.id);
             await updateDoc(marcaRef, finalBrandData);
-            Swal.fire({ title: '¡Actualizada!', text: 'La marca se ha actualizado correctamente.', icon: 'success' });
+            Swal.fire({ title: '¡Actualizada!', text: 'La marca se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'marcas'));
             const idEntidad = nuevaMarcaRef.id;
             const datosMarca = { ...finalBrandData, id: idEntidad };
             await setDoc(nuevaMarcaRef, datosMarca);
-            Swal.fire({ title: '¡Creada!', text: 'La nueva marca se ha añadido con éxito.', icon: 'success' });
+            Swal.fire({ title: '¡Creada!', text: 'La nueva marca se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la marca.', icon: 'error' });
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la marca.', icon: 'error', confirmButtonColor: '#595c97', });
         
         console.error("Error al guardar la marca:", error);
         
