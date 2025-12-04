@@ -107,20 +107,29 @@ function BarraLateralAdmin() {
       </div>
       
       <nav className="flex-1 flex-col gap-2 p-2">
-        {elementosNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-              pathname === item.href ? 'bg-primary text-primary-foreground hover:text-primary-foreground' : '',
-              { 'justify-center': estaCerrada }
-            )}
-          >
-            <item.icon className="h-5 w-5" />
-            <span className={cn({ 'hidden': estaCerrada })}>{item.label}</span>
-          </Link>
-        ))}
+        {elementosNav.map((item) => {
+           const isActive = pathname === item.href;
+           return (
+            <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'relative flex items-center gap-3 rounded-lg px-3 py-2 transition-all',
+                  isActive ? 'font-semibold text-primary' : 'text-muted-foreground hover:text-foreground',
+                  { 'justify-center': estaCerrada }
+                )}
+            >
+                <item.icon className={cn('h-5 w-5', isActive ? 'text-primary' : 'text-muted-foreground')} />
+                <span className={cn({ 'hidden': estaCerrada })}>{item.label}</span>
+                <div
+                    className={cn(
+                    'absolute right-0 top-0 bottom-0 w-1 rounded-l-lg',
+                    isActive ? 'bg-primary' : 'bg-transparent'
+                    )}
+                />
+            </Link>
+           );
+        })}
       </nav>
     </aside>
   );

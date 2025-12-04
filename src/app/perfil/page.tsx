@@ -186,7 +186,7 @@ export default function PaginaPerfil() {
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                   </div>
               </div>
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
