@@ -90,7 +90,6 @@ export default function PaginaPerfil() {
       { label: 'Mi Perfil', icon: UserIcon, action: () => {}, active: true },
       { label: 'Notificaciones', icon: Bell, action: () => {}, active: false },
       { label: 'Seguridad', icon: Shield, action: () => {}, active: false },
-      { label: 'Cerrar Sesión', icon: LogOut, action: handleSignOut, active: false },
   ]
 
   const simulacionesGuardadas = [
