@@ -6,17 +6,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { Bell, Car, CreditCard, GitCompareArrows, Heart, LogOut, Shield, User as UserIcon } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Bell, Shield, User as UserIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
+import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
 
 function EsqueletoPerfil() {
   return (
@@ -32,7 +30,7 @@ function EsqueletoPerfil() {
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-2">
-                {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-9 w-full" />)}
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-9 w-full" />)}
               </div>
             </CardContent>
           </Card>
@@ -40,9 +38,9 @@ function EsqueletoPerfil() {
         <div className="lg:col-span-3">
           <Card>
             <CardHeader>
-              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-10 w-full rounded-md" />
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 mt-6">
               <Skeleton className="h-32 w-full" />
               <Skeleton className="h-48 w-full" />
             </CardContent>
@@ -55,9 +53,8 @@ function EsqueletoPerfil() {
 
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
-  const auth = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -65,31 +62,14 @@ export default function PaginaPerfil() {
     }
   }, [user, loading, router]);
   
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      toast({
-        title: 'Sesión cerrada',
-        description: 'Has cerrado sesión correctamente.',
-      });
-      router.push('/');
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
-      });
-    }
-  };
-
   if (loading || !user) {
     return <EsqueletoPerfil />;
   }
   
   const menuPerfil = [
-      { label: 'Mi Perfil', icon: UserIcon, action: () => {}, active: true },
-      { label: 'Notificaciones', icon: Bell, action: () => {}, active: false },
-      { label: 'Seguridad', icon: Shield, action: () => {}, active: false },
+      { id: 'overview', label: 'Mi Perfil', icon: UserIcon },
+      { id: 'notifications', label: 'Notificaciones', icon: Bell },
+      { id: 'security', label: 'Seguridad', icon: Shield },
   ]
 
   const simulacionesGuardadas = [
@@ -98,9 +78,9 @@ export default function PaginaPerfil() {
   ];
 
   const actividadReciente = [
-      { id: 1, icon: Heart, text: 'Agregaste el Porsche 911 a tus favoritos.', time: 'Hace 2 horas' },
-      { id: 2, icon: GitCompareArrows, text: 'Comparaste el Honda CR-V con el Hyundai Ioniq 5.', time: 'Ayer' },
-      { id: 3, icon: CreditCard, text: 'Guardaste una simulación para el Toyota Camry.', time: 'Hace 3 días' },
+      { id: 1, icon: '❤️', text: 'Agregaste el Porsche 911 a tus favoritos.', time: 'Hace 2 horas' },
+      { id: 2, icon: '🔄', text: 'Comparaste el Honda CR-V con el Hyundai Ioniq 5.', time: 'Ayer' },
+      { id: 3, icon: '💳', text: 'Guardaste una simulación para el Toyota Camry.', time: 'Hace 3 días' },
   ]
 
   return (
@@ -128,9 +108,9 @@ export default function PaginaPerfil() {
                     {menuPerfil.map((item) => (
                         <Button 
                             key={item.label} 
-                            variant={item.active ? 'default' : 'ghost'} 
+                            variant={activeTab === item.id ? 'default' : 'ghost'} 
                             className="justify-start gap-3"
-                            onClick={item.action}
+                            onClick={() => setActiveTab(item.id)}
                         >
                             <item.icon className="h-5 w-5" />
                             {item.label}
@@ -143,10 +123,11 @@ export default function PaginaPerfil() {
 
         {/* Columna Derecha */}
         <div className="lg:col-span-3">
-            <Tabs defaultValue="overview">
-                 <TabsList className="grid w-full grid-cols-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+                 <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="overview">Resumen</TabsTrigger>
                     <TabsTrigger value="settings">Configuración</TabsTrigger>
+                    <TabsTrigger value="security">Seguridad</TabsTrigger>
                 </TabsList>
                 <TabsContent value="overview" className="mt-6">
                     <div className="space-y-8">
@@ -161,7 +142,7 @@ export default function PaginaPerfil() {
                                     <li key={sim.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                                         <div className="flex items-center gap-4">
                                             <div className="p-2 bg-background rounded-md border">
-                                                <CreditCard className="h-6 w-6 text-primary" />
+                                                <span role="img" aria-label="credit-card">💳</span>
                                             </div>
                                             <div>
                                                 <p className="font-semibold">{sim.car}</p>
@@ -184,7 +165,7 @@ export default function PaginaPerfil() {
                                     {actividadReciente.map(item => (
                                         <li key={item.id} className="flex items-start gap-4">
                                             <div className="p-2 bg-background rounded-full border mt-1">
-                                                <item.icon className="h-5 w-5 text-muted-foreground" />
+                                                <span role="img" aria-label="icon">{item.icon}</span>
                                             </div>
                                             <div>
                                                 <p className='text-sm'>{item.text}</p>
@@ -213,6 +194,19 @@ export default function PaginaPerfil() {
                                 <Input defaultValue={user.email || ''} disabled />
                             </div>
                             <Button>Guardar Cambios</Button>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="security" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Cambiar Contraseña</CardTitle>
+                            <CardDescription>
+                                Para tu seguridad, te recomendamos usar una contraseña única que no uses en otros sitios.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChangePasswordForm />
                         </CardContent>
                     </Card>
                 </TabsContent>
