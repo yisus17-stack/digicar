@@ -74,26 +74,27 @@ export default function AccessibilityWidget() {
     });
   }, []);
   
-  useEffect(() => {
-    const speak = (text: string) => {
-      if (typeof window !== 'undefined' && window.speechSynthesis) {
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = 'es-MX';
-          window.speechSynthesis.cancel();
-          window.speechSynthesis.speak(utterance);
-      }
-    };
+  const speak = useCallback((text: string) => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-MX';
+        // Detiene cualquier locución anterior antes de empezar una nueva.
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+    }
+  }, []);
 
-    const handleMouseOver = (event: MouseEvent) => {
-        if (event.target instanceof HTMLElement) {
-            const target = event.target;
-            const text = target.innerText;
-            if (text && text.trim().length > 0) {
-                speak(text);
-            }
-        }
-    };
+  const handleMouseOver = useCallback((event: MouseEvent) => {
+      if (event.target instanceof HTMLElement) {
+          const target = event.target;
+          const text = target.innerText;
+          if (text && text.trim().length > 0) {
+              speak(text);
+          }
+      }
+  }, [speak]);
     
+  useEffect(() => {
     if (isReadingAloud) {
         document.body.addEventListener('mouseover', handleMouseOver);
     } else {
@@ -105,7 +106,8 @@ export default function AccessibilityWidget() {
         window.speechSynthesis.cancel();
         document.body.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isReadingAloud, pathname]);
+  }, [isReadingAloud, handleMouseOver]);
+
 
   const handleFontSizeChange = (step: number) => {
     const newStep = Math.max(-FONT_STEP_LIMIT, Math.min(FONT_STEP_LIMIT, fontSizeStep + step));
