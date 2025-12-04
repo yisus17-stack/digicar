@@ -109,132 +109,130 @@ export default function PaginaPerfil() {
   ];
 
   return (
-    <div className="bg-background min-h-screen">
-        <div className="container mx-auto px-4 py-8">
-            <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
-                {/* Columna Izquierda - Navegación */}
-                <aside className="lg:col-span-1 space-y-8 sticky top-24">
-                  <div className="flex items-center gap-4">
-                      <Avatar className="h-16 w-16">
-                        {user.photoURL && !user.photoURL.includes('supabase') ? (
-                          <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
-                        ) : (
-                          <AvatarFallback className="text-2xl">
-                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                      <div>
-                      <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
-                      <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-                      </div>
+    <div className="container mx-auto px-4 py-8">
+        <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
+            {/* Columna Izquierda - Navegación */}
+            <aside className="lg:col-span-1 space-y-8 sticky top-24">
+              <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    {user.photoURL && !user.photoURL.includes('supabase') ? (
+                      <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                    ) : (
+                      <AvatarFallback className="text-2xl">
+                          {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div>
+                  <p className="font-semibold text-lg truncate">{user.displayName || 'Usuario'}</p>
+                  <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                   </div>
-                  <nav className="space-y-1">
-                      {menuItems.map((item) => (
-                      <button
-                          key={item.id}
-                          onClick={() => setActiveTab(item.id)}
-                          className={cn(
-                          'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
-                          activeTab === item.id
-                              ? 'bg-muted font-semibold text-primary'
-                              : 'text-foreground hover:bg-muted/50'
-                          )}
-                      >
-                          <item.icon className="h-5 w-5 text-muted-foreground" />
-                          <span>{item.label}</span>
-                      </button>
-                      ))}
-                  </nav>
-                </aside>
+              </div>
+              <nav className="space-y-1">
+                  {menuItems.map((item) => (
+                  <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={cn(
+                      'w-full flex items-center gap-3 px-3 py-2 rounded-md text-base transition-colors',
+                      activeTab === item.id
+                          ? 'bg-muted font-semibold text-primary'
+                          : 'text-foreground hover:bg-muted/50'
+                      )}
+                  >
+                      <item.icon className="h-5 w-5 text-muted-foreground" />
+                      <span>{item.label}</span>
+                  </button>
+                  ))}
+              </nav>
+            </aside>
 
-                {/* Columna Derecha - Contenido */}
-                <main className="lg:col-span-3">
-                {activeTab === 'overview' && (
-                    <div className="space-y-8">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-xl">Actividad Reciente</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                {actividadReciente.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-4">
+            {/* Columna Derecha - Contenido */}
+            <main className="lg:col-span-3">
+            {activeTab === 'overview' && (
+                <div className="space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-xl">Actividad Reciente</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {actividadReciente.map((item, index) => (
+                                <div key={index} className="flex items-center gap-4">
+                                    <div className="bg-muted p-3 rounded-full">
+                                        <item.icon className="h-5 w-5 text-muted-foreground" />
+                                    </div>
+                                    <div>
+                                        <p>{item.text}</p>
+                                        <p className="text-sm text-muted-foreground">{item.time}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                    <Card>
+                         <CardHeader>
+                            <CardTitle className="text-xl">Simulaciones Guardadas</CardTitle>
+                        </CardHeader>
+                         <CardContent className="space-y-4">
+                            {simulacionesGuardadas.map((item, index) => (
+                                <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
+                                    <div className="flex items-center gap-4">
                                         <div className="bg-muted p-3 rounded-full">
-                                            <item.icon className="h-5 w-5 text-muted-foreground" />
+                                            <CreditCard className="h-5 w-5 text-muted-foreground" />
                                         </div>
                                         <div>
-                                            <p>{item.text}</p>
-                                            <p className="text-sm text-muted-foreground">{item.time}</p>
+                                            <p className="font-medium">{item.name}</p>
+                                            <p className="text-sm text-muted-foreground">{item.date}</p>
                                         </div>
                                     </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                             <CardHeader>
-                                <CardTitle className="text-xl">Simulaciones Guardadas</CardTitle>
-                            </CardHeader>
-                             <CardContent className="space-y-4">
-                                {simulacionesGuardadas.map((item, index) => (
-                                    <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
-                                        <div className="flex items-center gap-4">
-                                            <div className="bg-muted p-3 rounded-full">
-                                                <CreditCard className="h-5 w-5 text-muted-foreground" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium">{item.name}</p>
-                                                <p className="text-sm text-muted-foreground">{item.date}</p>
-                                            </div>
-                                        </div>
-                                        <p className="font-semibold text-muted-foreground">{item.payment}</p>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    </div>
-                )}
-                {activeTab === 'settings' && (
-                  <Card>
-                    <CardHeader>
-                        <CardTitle>Configuración de Perfil</CardTitle>
-                        <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="flex items-center justify-between border-b pb-6">
-                            <Label className="font-medium">Nombre de Usuario</Label>
-                            <div className="flex items-center gap-4 w-2/3">
-                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-between border-b pb-6">
-                            <Label className="font-medium">Correo Electrónico</Label>
-                             <div className="w-2/3">
-                                <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
-                             </div>
-                        </div>
-                         <div className="flex justify-end pt-2">
-                              <Button onClick={handleProfileUpdate} disabled={isSaving}>
-                                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Guardar Cambios
-                              </Button>
-                        </div>
-                    </CardContent>
-                  </Card>
-                )}
-                {activeTab === 'security' && (
-                    <Card>
-                      <CardHeader>
-                          <CardTitle>Seguridad</CardTitle>
-                          <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                          <ChangePasswordForm />
-                      </CardContent>
+                                    <p className="font-semibold text-muted-foreground">{item.payment}</p>
+                                </div>
+                            ))}
+                        </CardContent>
                     </Card>
-                )}
-                </main>
-            </div>
+                </div>
+            )}
+            {activeTab === 'settings' && (
+              <Card>
+                <CardHeader>
+                    <CardTitle>Configuración de Perfil</CardTitle>
+                    <CardDescription>Actualiza la información de tu cuenta.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="flex items-center justify-between border-b pb-6">
+                        <Label className="font-medium">Nombre de Usuario</Label>
+                        <div className="flex items-center gap-4 w-2/3">
+                            <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="max-w-sm" />
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between border-b pb-6">
+                        <Label className="font-medium">Correo Electrónico</Label>
+                         <div className="w-2/3">
+                            <Input defaultValue={user.email || ''} disabled className="max-w-sm" />
+                         </div>
+                    </div>
+                     <div className="flex justify-end pt-2">
+                          <Button onClick={handleProfileUpdate} disabled={isSaving}>
+                            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Guardar Cambios
+                          </Button>
+                    </div>
+                </CardContent>
+              </Card>
+            )}
+            {activeTab === 'security' && (
+                <Card>
+                  <CardHeader>
+                      <CardTitle>Seguridad</CardTitle>
+                      <CardDescription>Gestiona la seguridad de tu cuenta.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <ChangePasswordForm />
+                  </CardContent>
+                </Card>
+            )}
+            </main>
         </div>
     </div>
   );
