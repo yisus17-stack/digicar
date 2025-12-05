@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -31,13 +32,7 @@ import Swal from 'sweetalert2';
 
 const esquemaFormulario = z
   .object({
-    name: z.string().min(1, 'El nombre es requerido.').refine(value => value.trim().split(/\s+/).length >= 2, {
-        message: 'Por favor, introduce tu nombre y al menos un apellido.',
-    }).refine(value => value.trim().split(/\s+/).every(word => word.length >= 3), {
-        message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
-    }).refine(value => /^[a-zA-Z\u00C0-\u017F\s]+$/.test(value), {
-        message: 'El nombre solo puede contener letras y espacios.',
-    }),
+    name: z.string().min(2, 'El nombre es requerido y debe tener al menos 2 caracteres.'),
     email: z.string().min(1, 'El correo electrónico es requerido.').email('Por favor, introduce un correo electrónico válido.'),
     password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres.')
         .refine(value => /[A-Z]/.test(value), { message: 'Debe contener al menos una letra mayúscula.' })
