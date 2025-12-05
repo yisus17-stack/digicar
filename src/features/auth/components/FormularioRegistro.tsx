@@ -32,7 +32,7 @@ import Swal from 'sweetalert2';
 
 const esquemaFormulario = z
   .object({
-    name: z.string().min(2, 'El nombre es requerido y debe tener al menos 2 caracteres.'),
+    name: z.string(),
     email: z.string().min(1, 'El correo electrónico es requerido.').email('Por favor, introduce un correo electrónico válido.'),
     password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres.')
         .refine(value => /[A-Z]/.test(value), { message: 'Debe contener al menos una letra mayúscula.' })
@@ -47,7 +47,45 @@ const esquemaFormulario = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas no coinciden.',
     path: ['confirmPassword'],
-  });
+  }).superRefine((data, ctx) => {
+    if (data.name.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El nombre es requerido.',
+        path: ['name'],
+      });
+    } else {
+      const nameRegex = /^[a-zA-Z\u00C0-\u017F\s]+$/;
+      if (!nameRegex.test(data.name)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'El nombre solo puede contener letras y espacios.',
+          path: ['name'],
+        });
+      } else {
+        const words = data.name.trim().split(/\s+/);
+        if (words.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Por favor, introduce tu nombre y al menos un apellido.',
+            path: ['name'],
+          });
+        } else {
+          for (const word of words) {
+            if (word.length < 3) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
+                path: ['name'],
+              });
+              break; 
+            }
+          }
+        }
+      }
+    }
+});
+
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
 
