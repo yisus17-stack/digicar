@@ -160,9 +160,7 @@ export default function FormularioRegistro() {
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input {...field} onChange={e => {
-                        field.onChange(e.target.value);
-                    }}/>
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
