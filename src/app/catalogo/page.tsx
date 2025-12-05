@@ -223,17 +223,8 @@ function CatalogPageContent() {
         setSortOrder('relevance');
     };
     
-    if (isLoadingCars) {
+    if (isLoadingCars || !datosTodosLosAutos) {
         return <CatalogSkeleton />;
-    }
-
-    if (!datosTodosLosAutos) {
-        return (
-            <div className="container mx-auto px-4 py-8 text-center">
-                <h1 className="text-2xl font-bold">Error al cargar el catálogo</h1>
-                <p className="text-muted-foreground">No se pudieron obtener los datos de los vehículos. Por favor, intenta de nuevo más tarde.</p>
-            </div>
-        );
     }
     
     const sortOptions = (
@@ -300,13 +291,11 @@ function CatalogPageContent() {
 
                     {paginatedCars.length > 0 ? (
                         <>
-                            {/* Mobile View */}
-                            <div className="block md:hidden border rounded-lg overflow-hidden">
+                           <div className="block md:hidden border rounded-lg overflow-hidden">
                                 {paginatedCars.map(car => (
                                     <CarCardMobile key={`mobile-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
                                 ))}
                             </div>
-                            {/* Desktop View */}
                             <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                                 {paginatedCars.map(car => (
                                     <CarCard key={`desktop-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
