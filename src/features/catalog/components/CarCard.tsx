@@ -41,7 +41,7 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
-        <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}</p>
+        <p className="text-sm text-muted-foreground">{(traducciones.tipo && traducciones.tipo[tipoAuto]) || car.tipo} • {car.anio}</p>
         <CardTitle className="text-lg font-bold mt-1 mb-2">
             <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
                 {car.marca} {car.modelo}
