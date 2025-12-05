@@ -6,7 +6,7 @@ import { useCollection, useMemoFirebase } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Car } from '@/core/types';
+import type { Car } from '@/core/types';
 import { Suspense } from 'react';
 
 const EsqueletoCatalogo = () => (
@@ -45,12 +45,12 @@ function ContenidoCatalogo() {
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
-    if (isLoading) {
+    if (isLoading || !autos) {
         return <EsqueletoCatalogo />;
     }
 
     return (
-        <PaginaCatalogoAutos datosTodosLosAutos={autos ?? []} />
+        <PaginaCatalogoAutos datosTodosLosAutos={autos} />
     );
 }
 

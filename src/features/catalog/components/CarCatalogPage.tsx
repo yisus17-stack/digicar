@@ -115,8 +115,10 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
   };
 
   const filteredCars = useMemo(() => {
-    if (!datosTodosLosAutos) return [];
-    let filtered = datosTodosLosAutos.filter(car => {
+    let filtered = datosTodosLosAutos;
+    if (!filtered) return [];
+
+    filtered = filtered.filter(car => {
       const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
       if (brand !== 'all' && car.marca !== brand) return false;
       if (fuelType !== 'all' && car.tipoCombustible !== fuelType) return false;
@@ -278,7 +280,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
 
 
                 {/* Desktop View */}
-                <div className="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
                         <CarCard 
                           key={`desktop-${car.id}`} 
