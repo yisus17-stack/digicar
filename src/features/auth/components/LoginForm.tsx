@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -37,6 +38,7 @@ export default function LoginForm() {
   const auth = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -51,13 +53,20 @@ export default function LoginForm() {
     setIsLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      Swal.fire({
+      const user = userCredential.user;
+
+      await Swal.fire({
         title: '¡Bienvenido de vuelta!',
         text: 'Has iniciado sesión correctamente.',
         icon: 'success',
         confirmButtonColor: '#595c97',
       });
-      router.push('/');
+      
+      if (user.uid === adminUid) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
 
     } catch (error) {
         let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
