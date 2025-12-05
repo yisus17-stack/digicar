@@ -7,7 +7,7 @@ import CarCard from './CarCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ComparisonBar } from './CarCatalogPage';
+import { ComparisonBar } from '@/app/catalogo/page';
 
 export default function PopularCarsSection() {
     const firestore = useFirestore();

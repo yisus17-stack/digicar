@@ -9,7 +9,7 @@ import { useDebounce } from 'use-debounce';
 import CarFilters from '@/features/catalog/components/CarFilters';
 import CarCard from '@/features/catalog/components/CarCard';
 import CarCardMobile from '@/features/catalog/components/CarCardMobile';
-import { SlidersHorizontal, GitCompareArrows, Car as CarIcon, X } from 'lucide-react';
+import { SlidersHorizontal, GitCompareArrows, Car as CarIcon, X, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,7 +19,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ComparisonBar } from '@/features/catalog/components/CarCatalogPage';
+import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 
 const ITEMS_PER_PAGE = 9;
 const MAX_PRICE = 2000000;
@@ -28,13 +29,14 @@ export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
 const CatalogSkeleton = () => (
     <div className="container mx-auto px-4 py-8">
+        <Breadcrumbs items={[{ label: 'Catálogo' }]} />
         <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
             <aside className="hidden lg:block lg:w-1/4 space-y-6">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
             </aside>
             <main className="flex-1">
                 <div className="flex justify-between items-center mb-6">
@@ -50,6 +52,52 @@ const CatalogSkeleton = () => (
         </div>
     </div>
 );
+
+export function ComparisonBar({ selectedIds, onRemove, onClear, onCompare, allCars }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, allCars: Car[] }) {
+  const selectedCars = selectedIds.map(id => allCars.find(car => car.id === id)).filter((c): c is Car => !!c);
+
+  return (
+    <AnimatePresence>
+      {selectedIds.length > 0 && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl z-50"
+        >
+          <div className="bg-card border rounded-lg shadow-2xl p-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
+                <h3 className="font-semibold text-sm sm:text-base whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
+                <div className="flex items-center gap-2">
+                  {selectedCars.map(car => (
+                    <div key={car.id} className="relative flex items-center gap-2 bg-muted p-1.5 rounded-md text-xs">
+                       <Image src={car.imagenUrl} alt={car.modelo} width={24} height={24} className="rounded-sm object-cover" />
+                       <span className="font-medium truncate max-w-[100px]">{car.marca} {car.modelo}</span>
+                       <button onClick={() => onRemove(car.id)} className="ml-1 text-muted-foreground hover:text-foreground">
+                         <X size={14} />
+                       </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                 <Button variant="outline" size="sm" onClick={onClear} className="flex-grow sm:flex-grow-0">
+                    <Trash2 className="mr-2 h-4 w-4" /> Limpiar
+                 </Button>
+                 <Button onClick={onCompare} disabled={selectedIds.length < 1} className="flex-grow sm:flex-grow-0">
+                    <GitCompareArrows className="mr-2 h-4 w-4" /> Comparar
+                 </Button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 
 function CatalogPageContent() {
     const firestore = useFirestore();
@@ -85,20 +133,34 @@ function CatalogPageContent() {
         setSearchTerm(initialSearchTerm);
     }, [initialSearchTerm]);
 
+    useEffect(() => {
+        const storedIds = sessionStorage.getItem('comparisonIds');
+        if (storedIds) {
+            setComparisonIds(JSON.parse(storedIds));
+        }
+    }, []);
+
     const handleToggleCompare = (carId: string) => {
         setComparisonIds(prevIds => {
+            let newIds;
             if (prevIds.includes(carId)) {
-                return prevIds.filter(id => id !== carId);
+                newIds = prevIds.filter(id => id !== carId);
+            } else if (prevIds.length < 2) {
+                newIds = [...prevIds, carId];
+            } else {
+                return prevIds;
             }
-            if (prevIds.length < 2) {
-                return [...prevIds, carId];
-            }
-            return prevIds;
+            sessionStorage.setItem('comparisonIds', JSON.stringify(newIds));
+            return newIds;
         });
     };
 
+    const handleClearCompare = () => {
+        setComparisonIds([]);
+        sessionStorage.removeItem('comparisonIds');
+    };
+
     const handleCompare = () => {
-        sessionStorage.setItem('comparisonIds', JSON.stringify(comparisonIds));
         router.push('/comparacion');
     };
 
@@ -238,7 +300,7 @@ function CatalogPageContent() {
 
                     {paginatedCars.length > 0 ? (
                         <>
-                             {/* Mobile View */}
+                            {/* Mobile View */}
                             <div className="block md:hidden border rounded-lg overflow-hidden">
                                 {paginatedCars.map(car => (
                                     <CarCardMobile key={`mobile-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
@@ -277,7 +339,7 @@ function CatalogPageContent() {
              <ComparisonBar 
                 selectedIds={comparisonIds}
                 onRemove={handleToggleCompare}
-                onClear={() => setComparisonIds([])}
+                onClear={handleClearCompare}
                 onCompare={handleCompare}
                 allCars={datosTodosLosAutos}
             />
