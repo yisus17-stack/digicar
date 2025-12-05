@@ -1,3 +1,4 @@
+
 import { Timestamp } from "firebase/firestore";
 
 export type Car = {
@@ -7,12 +8,12 @@ export type Car = {
   anio: number;
   precio: number;
   tipoCombustible: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
-  transmision: string;
+  transmision: 'Automática' | 'Manual';
   caracteristicas: string[];
   imagenUrl: string;
   tipo: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
   cilindrosMotor: number;
-  color: string;
+  color: 'Rojo' | 'Azul' | 'Blanco' | 'Gris' | 'Negro' | 'Amarillo' | 'Plata' | 'Verde';
   pasajeros: number;
   createdAt?: Date;
 };
