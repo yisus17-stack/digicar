@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import PopularCarsSection from '@/features/catalog/components/PopularCarsSection';
 
 
 const EsqueletoSeccionHero = () => {
@@ -92,6 +93,9 @@ export default function Home() {
         <>
             <Suspense fallback={<EsqueletoSeccionHero />}>
               <SeccionHero />
+            </Suspense>
+            <Suspense fallback={<div>Cargando...</div>}>
+              <PopularCarsSection />
             </Suspense>
         </>
     );
