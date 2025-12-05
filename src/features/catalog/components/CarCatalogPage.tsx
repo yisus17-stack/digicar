@@ -266,27 +266,26 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
 
             
             <div className="flex-grow">
-                {/* Mobile View */}
-                <div className="md:hidden border rounded-lg overflow-hidden">
-                  {paginatedCars.map(car => (
-                    <CarCardMobile 
-                      key={`mobile-${car.id}`} 
-                      car={car}
-                      isSelected={comparisonIds.includes(car.id)}
-                      onToggleCompare={handleToggleCompare}
-                    />
-                  ))}
+                <div className="block md:hidden">
+                    <div className="border rounded-lg overflow-hidden">
+                    {paginatedCars.map(car => (
+                        <CarCardMobile 
+                        key={`mobile-${car.id}`} 
+                        car={car}
+                        isSelected={comparisonIds.includes(car.id)}
+                        onToggleCompare={handleToggleCompare}
+                        />
+                    ))}
+                    </div>
                 </div>
 
-
-                {/* Desktop View */}
                 <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
                         <CarCard 
-                          key={`desktop-${car.id}`} 
-                          car={car}
-                          isSelected={comparisonIds.includes(car.id)}
-                          onToggleCompare={handleToggleCompare}
+                        key={`desktop-${car.id}`} 
+                        car={car}
+                        isSelected={comparisonIds.includes(car.id)}
+                        onToggleCompare={handleToggleCompare}
                         />
                     ))}
                 </div>
