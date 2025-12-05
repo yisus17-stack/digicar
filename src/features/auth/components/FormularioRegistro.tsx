@@ -57,6 +57,7 @@ export default function FormularioRegistro() {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
   const [passwordValue, setPasswordValue] = useState('');
+  const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
 
   const form = useForm<DatosFormulario>({
@@ -108,13 +109,19 @@ export default function FormularioRegistro() {
           }
       });
 
-      Swal.fire({
+      await Swal.fire({
         title: '¡Cuenta Creada!',
         text: 'Tu cuenta ha sido creada exitosamente.',
         icon: 'success',
         confirmButtonColor: '#595c97',
       });
-      router.push('/');
+      
+      if (user.uid === adminUid) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
+
     } catch (error) {
       console.error(error);
       let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
