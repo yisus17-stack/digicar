@@ -24,7 +24,7 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl group">
       <CardHeader className="p-0">
         <Link href={`/car/${car.id}`}>
-          <AspectRatio ratio={16 / 9} className="overflow-hidden">
+          <AspectRatio ratio={4 / 3} className="overflow-hidden">
             {car.imagenUrl ? (
               <Image
                 src={car.imagenUrl}

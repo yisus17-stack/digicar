@@ -7,6 +7,7 @@ import type { Car } from '@/core/types';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { traducciones } from '@/lib/translations';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface CarCardMobileProps {
   car: Car;
@@ -20,19 +21,21 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
     return (
         <div className="border-b p-4 flex gap-4 last:border-b-0">
              <div className="w-2/5 flex-shrink-0">
-                 <Link href={`/car/${car.id}`} className="block relative aspect-video">
-                    {car.imagenUrl ? (
-                        <Image
-                            src={car.imagenUrl}
-                            alt={`${car.marca} ${car.modelo}`}
-                            fill
-                            className="object-cover rounded-md"
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center rounded-md">
-                            <CarIcon className="w-8 h-8 text-muted-foreground" />
-                        </div>
-                    )}
+                 <Link href={`/car/${car.id}`} className="block">
+                    <AspectRatio ratio={4/3}>
+                        {car.imagenUrl ? (
+                            <Image
+                                src={car.imagenUrl}
+                                alt={`${car.marca} ${car.modelo}`}
+                                fill
+                                className="object-cover rounded-md"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-muted flex items-center justify-center rounded-md">
+                                <CarIcon className="w-8 h-8 text-muted-foreground" />
+                            </div>
+                        )}
+                    </AspectRatio>
                 </Link>
              </div>
              <div className="w-3/5 flex flex-col justify-between">
