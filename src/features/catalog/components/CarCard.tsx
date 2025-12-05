@@ -23,7 +23,7 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl group">
       <Link href={`/car/${car.id}`} className="block">
-        <AspectRatio ratio={4/3} className="overflow-hidden rounded-t-lg">
+        <AspectRatio ratio={16/9} className="overflow-hidden rounded-t-lg">
             {car.imagenUrl ? (
             <Image
                 src={car.imagenUrl}

@@ -22,7 +22,7 @@ export default function CarCardMobile({ car, isSelected, onToggleCompare }: CarC
         <div className="border-b p-4 flex gap-4 last:border-b-0">
              <div className="w-2/5 flex-shrink-0">
                  <Link href={`/car/${car.id}`} className="block">
-                    <AspectRatio ratio={4/3}>
+                    <AspectRatio ratio={16/9}>
                         {car.imagenUrl ? (
                             <Image
                                 src={car.imagenUrl}
