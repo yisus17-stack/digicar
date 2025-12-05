@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Car } from '@/core/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Car as CarIcon, Gauge, Droplets, GitCompareArrows } from 'lucide-react';
 import { traducciones } from '@/lib/translations';
@@ -22,31 +21,29 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl group">
-      <CardHeader className="p-0">
-        <Link href={`/car/${car.id}`}>
-          <AspectRatio ratio={1.91 / 1} className="overflow-hidden">
-            {car.imagenUrl ? (
-              <Image
-                src={car.imagenUrl}
-                alt={`${car.marca} ${car.modelo}`}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : (
-                <div className="w-full h-full bg-muted flex items-center justify-center">
-                    <CarIcon className="w-12 h-12 text-muted-foreground" />
-                </div>
-            )}
-          </AspectRatio>
-        </Link>
-      </CardHeader>
       <CardContent className="p-4 flex-grow">
+         <Link href={`/car/${car.id}`} className="block mb-4">
+            <div className="relative h-40 w-full overflow-hidden rounded-lg">
+                {car.imagenUrl ? (
+                <Image
+                    src={car.imagenUrl}
+                    alt={`${car.marca} ${car.modelo}`}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <CarIcon className="w-12 h-12 text-muted-foreground" />
+                    </div>
+                )}
+            </div>
+        </Link>
         <p className="text-sm text-muted-foreground">{(traducciones.tipo && traducciones.tipo[tipoAuto]) || car.tipo} • {car.anio}</p>
-        <CardTitle className="text-lg font-bold mt-1 mb-2">
+        <h3 className="text-lg font-bold mt-1 mb-2">
             <Link href={`/car/${car.id}`} className="hover:text-primary transition-colors">
                 {car.marca} {car.modelo}
             </Link>
-        </CardTitle>
+        </h3>
         <div className="flex justify-between items-center text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
                 <Droplets className="h-4 w-4" />
