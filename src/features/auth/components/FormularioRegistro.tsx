@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -32,95 +31,27 @@ import Swal from 'sweetalert2';
 
 const esquemaFormulario = z
   .object({
-    name: z.string(),
-    email: z.string(),
-    password: z.string(),
+    name: z.string().min(1, 'El nombre es requerido.').refine(value => value.trim().split(/\s+/).length >= 2, {
+        message: 'Por favor, introduce tu nombre y al menos un apellido.',
+    }).refine(value => value.trim().split(/\s+/).every(word => word.length >= 3), {
+        message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
+    }).refine(value => /^[a-zA-Z\u00C0-\u017F\s]+$/.test(value), {
+        message: 'El nombre solo puede contener letras y espacios.',
+    }),
+    email: z.string().min(1, 'El correo electrónico es requerido.').email('Por favor, introduce un correo electrónico válido.'),
+    password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres.')
+        .refine(value => /[A-Z]/.test(value), { message: 'Debe contener al menos una letra mayúscula.' })
+        .refine(value => /[a-z]/.test(value), { message: 'Debe contener al menos una letra minúscula.' })
+        .refine(value => /[0-9]/.test(value), { message: 'Debe contener al menos un número.' })
+        .refine(value => /[^a-zA-Z0-9]/.test(value), { message: 'Debe contener al menos un carácter especial.' }),
     confirmPassword: z.string(),
     acceptTerms: z.boolean().refine((val) => val === true, {
       message: 'Debes aceptar los términos y condiciones para continuar.',
     }),
   })
-  .superRefine((data, ctx) => {
-    // Validación del nombre
-    if (data.name.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'El nombre es requerido.',
-        path: ['name'],
-      });
-    } else {
-      const nameRegex = /^[a-zA-Z\u00C0-\u017F\s]+$/;
-      if (!nameRegex.test(data.name)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'El nombre solo puede contener letras y espacios.',
-          path: ['name'],
-        });
-      } else {
-        const words = data.name.trim().split(/\s+/);
-        if (words.length < 2) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Por favor, introduce tu nombre y al menos un apellido.',
-            path: ['name'],
-          });
-        } else {
-          for (const word of words) {
-            if (word.length < 3) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'Cada nombre y apellido debe tener al menos 3 caracteres.',
-                path: ['name'],
-              });
-              break; 
-            }
-          }
-        }
-      }
-    }
-
-
-    // Validación del email
-    if (data.email.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'El correo electrónico es requerido.',
-        path: ['email'],
-      });
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-      if (!emailRegex.test(data.email) || !z.string().email().safeParse(data.email).success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Por favor, introduce un correo electrónico válido.',
-          path: ['email'],
-        });
-      }
-    }
-    
-    // Validación de la contraseña
-    if (data.password.length === 0) {
-         ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'La contraseña es requerida.',
-            path: ['password'],
-        });
-    } else {
-        if (data.password.length < 8) ctx.addIssue({ code: 'custom', message: 'La contraseña debe tener al menos 8 caracteres.', path: ['password'] });
-        if (!/[A-Z]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos una letra mayúscula.', path: ['password'] });
-        if (!/[a-z]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos una letra minúscula.', path: ['password'] });
-        if (!/[0-9]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos un número.', path: ['password'] });
-        if (!/[^a-zA-Z0-9]/.test(data.password)) ctx.addIssue({ code: 'custom', message: 'Debe contener al menos un carácter especial.', path: ['password'] });
-    }
-
-    // Validación de confirmación de contraseña
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Las contraseñas no coinciden.',
-        path: ['confirmPassword'],
-      });
-    }
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Las contraseñas no coinciden.',
+    path: ['confirmPassword'],
   });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -235,8 +166,7 @@ export default function FormularioRegistro() {
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input {...field} onChange={e => {
-                        const sanitized = e.target.value.replace(/[^a-zA-Z\u00C0-\u017F ]/g, '');
-                        field.onChange(sanitized);
+                        field.onChange(e.target.value);
                     }}/>
                   </FormControl>
                   <FormMessage />
