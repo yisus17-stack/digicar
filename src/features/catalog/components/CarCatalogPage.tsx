@@ -279,7 +279,7 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
                     </div>
                 </div>
 
-                <div className="md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedCars.map(car => (
                         <CarCard 
                         key={`desktop-${car.id}`} 
