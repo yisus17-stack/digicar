@@ -291,7 +291,7 @@ function CatalogPageContent() {
                     {paginatedCars.length > 0 ? (
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                             {paginatedCars.map(car => (
-                                <CarCard key={`car-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
+                                <CarCard key={`car-${car.id}`} car={car} />
                             ))}
                         </div>
                     ) : (
