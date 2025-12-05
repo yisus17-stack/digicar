@@ -8,7 +8,6 @@ import type { Car } from '@/core/types';
 import { useDebounce } from 'use-debounce';
 import CarFilters from '@/features/catalog/components/CarFilters';
 import CarCard from '@/features/catalog/components/CarCard';
-import CarCardMobile from '@/features/catalog/components/CarCardMobile';
 import { SlidersHorizontal, GitCompareArrows, Car as CarIcon, X, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
@@ -290,18 +289,11 @@ function CatalogPageContent() {
                     </div>
 
                     {paginatedCars.length > 0 ? (
-                        <>
-                           <div className="block md:hidden border rounded-lg overflow-hidden">
-                                {paginatedCars.map(car => (
-                                    <CarCardMobile key={`mobile-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
-                                ))}
-                            </div>
-                            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {paginatedCars.map(car => (
-                                    <CarCard key={`desktop-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
-                                ))}
-                            </div>
-                        </>
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+                            {paginatedCars.map(car => (
+                                <CarCard key={`car-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
+                            ))}
+                        </div>
                     ) : (
                         <div className="text-center py-16">
                             <X className="mx-auto h-12 w-12 text-muted-foreground" />
