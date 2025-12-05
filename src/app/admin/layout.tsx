@@ -1,4 +1,3 @@
-
 'use client';
 import {
   LayoutDashboard,
@@ -176,7 +175,8 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
       } else if (user.uid === adminUid) {
         setIsAdmin(true);
       } else {
-        router.push('/login');
+        // Si no es admin, no debería estar aquí
+        router.push('/');
         setIsAdmin(false);
       }
     }
