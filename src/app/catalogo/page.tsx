@@ -22,7 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 
-const ITEMS_PER_PAGE = 8; // Ajustado para una cuadrícula de 2 columnas
+const ITEMS_PER_PAGE = 9;
 const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
@@ -43,9 +43,9 @@ const CatalogSkeleton = () => (
                     <Skeleton className="h-6 w-24" />
                     <Skeleton className="h-10 w-48" />
                 </div>
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
-                        <Skeleton key={i} className="h-48 w-full" />
+                        <Skeleton key={i} className="h-96 w-full" />
                     ))}
                 </div>
             </main>
@@ -296,7 +296,7 @@ function CatalogPageContent() {
                                     <CarCardMobile key={`mobile-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
                                 ))}
                             </div>
-                            <div className="hidden md:grid md:grid-cols-2 gap-6">
+                            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {paginatedCars.map(car => (
                                     <CarCard key={`desktop-${car.id}`} car={car} isSelected={comparisonIds.includes(car.id)} onToggleCompare={handleToggleCompare} />
                                 ))}
@@ -343,3 +343,5 @@ export default function Catalog() {
         </Suspense>
     )
 }
+
+    
