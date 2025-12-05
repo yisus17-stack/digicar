@@ -57,12 +57,7 @@ export default function LoginForm() {
         icon: 'success',
         confirmButtonColor: '#595c97',
       });
-
-      if (userCredential.user.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2") {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      router.push('/');
 
     } catch (error) {
         let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';

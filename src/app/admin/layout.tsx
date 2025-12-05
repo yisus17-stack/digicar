@@ -162,38 +162,43 @@ const EsqueletoLayoutAdmin = () => {
 };
 
 
-export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
-  const { user, loading: cargandoUsuario } = useUser();
-  const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
+function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
+    const { user, loading } = useUser();
+    const router = useRouter();
+    const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 
-  useEffect(() => {
-    if (!cargandoUsuario) {
-      if (!user) {
-        router.push('/login');
-      } else if (user.uid === adminUid) {
-        setIsAdmin(true);
-      } else {
-        // Si no es admin, no debería estar aquí
-        router.push('/');
-        setIsAdmin(false);
-      }
+    useEffect(() => {
+        if (!loading) {
+            if (!user) {
+                // No user logged in, redirect to login
+                router.replace('/login');
+            } else if (user.uid !== adminUid) {
+                // User is not admin, redirect to home
+                router.replace('/');
+            }
+        }
+    }, [user, loading, router, adminUid]);
+
+    // While loading, or if the user is not the admin yet, show a loading skeleton.
+    // This prevents a flash of the admin content before redirection.
+    if (loading || user?.uid !== adminUid) {
+        return <EsqueletoLayoutAdmin />;
     }
-  }, [user, cargandoUsuario, router, adminUid]);
 
-  if (cargandoUsuario || !isAdmin) {
-    return <EsqueletoLayoutAdmin />;
-  }
+    // If checks pass, render the admin layout
+    return <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>;
+}
 
+export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   return (
     <ProveedorBarraLateral>
-      <LayoutAdminConProveedor>
+      <AdminLayoutAuthWrapper>
         {children}
-      </LayoutAdminConProveedor>
+      </AdminLayoutAuthWrapper>
     </ProveedorBarraLateral>
   );
 }
+
 
 function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   const contextoBarraLateral = useContext(ContextoBarraLateral);
@@ -278,9 +283,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={manejarCierreSesion} className="cursor-pointer">
+                      <DropdownMenuItem onClick={manejarCierreSesion} className="cursor-pointer text-foreground">
                         <LogOut className="mr-2 h-4 w-4" />
                         Cerrar Sesión
                       </DropdownMenuItem>
