@@ -110,7 +110,8 @@ export default function PaginaCatalogoAutos({ datosTodosLosAutos }: { datosTodos
   };
 
   const handleCompare = () => {
-    router.push(`/comparacion?ids=${comparisonIds.join(',')}`);
+    sessionStorage.setItem('comparisonIds', JSON.stringify(comparisonIds));
+    router.push('/comparacion');
   };
 
   const filteredCars = useMemo(() => {

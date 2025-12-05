@@ -31,7 +31,10 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
     } else {
         newIds = [currentIds[0], carId].filter(Boolean);
     }
-    router.push(`/comparacion?ids=${newIds.join(',')}`);
+    
+    // En lugar de pushear a la URL, guardamos en sessionStorage y recargamos
+    sessionStorage.setItem('comparisonIds', JSON.stringify(newIds));
+    router.refresh(); 
   };
 
   const features = [

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import PaginaComparacion from "@/features/comparison/components/ComparisonPage";
 import { GitCompareArrows } from "lucide-react";
 import Link from 'next/link';
@@ -28,13 +28,25 @@ const EsqueletoComparacion = () => (
 );
 
 function ContenidoComparacion() {
-  const searchParams = useSearchParams();
   const firestore = useFirestore();
+  const [ids, setIds] = useState<string[]>([]);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
-  const ids = searchParams.get('ids')?.split(',').filter(Boolean) || [];
+  useEffect(() => {
+    const storedIds = sessionStorage.getItem('comparisonIds');
+    if (storedIds) {
+      setIds(JSON.parse(storedIds));
+      // Limpia para que no se reutilice en futuras visitas a la página
+      // sessionStorage.removeItem('comparisonIds'); 
+    }
+
+    // Limpiar al desmontar el componente (cuando el usuario navega fuera)
+    return () => {
+      sessionStorage.removeItem('comparisonIds');
+    };
+  }, []);
   
   if (isLoading || !todosLosAutos) {
       return <EsqueletoComparacion />;
