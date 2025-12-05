@@ -10,18 +10,18 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface CarCardProps {
   car: Car;
-  isSelected: boolean;
-  onToggleCompare: (carId: string) => void;
 }
 
-export default function CarCard({ car, isSelected, onToggleCompare }: CarCardProps) {
+export default function CarCard({ car }: CarCardProps) {
+  if (!car) {
+    return null;
+  }
   const tipoAuto = car.tipo as keyof (typeof traducciones.tipo);
 
   return (
-    <Link href={`/car/${car.id}`} passHref legacyBehavior>
-      <a className="group flex h-full flex-col">
+    <Link href={`/car/${car.id}`} className="group flex h-full flex-col">
         <div className="mb-4">
-          <AspectRatio ratio={4 / 3} className="overflow-hidden rounded-lg bg-muted">
+          <AspectRatio ratio={16 / 9} className="overflow-hidden rounded-lg bg-muted">
             {car.imagenUrl ? (
               <Image
                 src={car.imagenUrl}
@@ -42,7 +42,6 @@ export default function CarCard({ car, isSelected, onToggleCompare }: CarCardPro
           <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}</p>
           <p className="mt-2 text-base font-semibold text-foreground">${car.precio.toLocaleString('es-MX')}</p>
         </div>
-      </a>
     </Link>
   );
 }
