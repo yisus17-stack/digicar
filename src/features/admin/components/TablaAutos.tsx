@@ -114,7 +114,10 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
-            await updateDoc(autoRef, finalCarData);
+            await updateDoc(autoRef, {
+                ...finalCarData,
+                variantes: finalCarData.variantes, // Explicitly pass the updated variants array
+            });
             Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const coleccionRef = collection(firestore, 'autos');
