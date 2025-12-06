@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
@@ -95,9 +95,11 @@ function EsqueletoDetalleAuto() {
   );
 }
 
-export default function PaginaDetalleAuto({ params }: { params: { id: string } }) {
+export default function PaginaDetalleAuto() {
   const firestore = useFirestore();
-  const id = params.id;
+  const params = useParams();
+  const id = params.id as string;
+
   const refAuto = useMemoFirebase(() => doc(firestore, 'autos', id), [firestore, id]);
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
