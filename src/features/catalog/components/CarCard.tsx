@@ -57,5 +57,3 @@ export default function CarCard({ car }: CarCardProps) {
     </Link>
   );
 }
-
-    

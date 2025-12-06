@@ -1,7 +1,8 @@
 export const traducciones = {
   transmision: {
     'Automatic': 'Automática',
-    'Manual': 'Manual'
+    'Manual': 'Manual',
+    'Automática': 'Automática'
   },
   tipoCombustible: {
     'Gasoline': 'Gasolina',
@@ -38,5 +39,3 @@ export const colorHexMap: Record<keyof typeof traducciones.color, string> = {
   'Plata': '#D1D5DB',
   'Verde': '#10B981',
 };
-
-    
