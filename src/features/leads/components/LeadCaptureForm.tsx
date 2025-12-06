@@ -12,25 +12,23 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.'),
   email: z.string().email('Por favor, introduce un correo electrónico válido.'),
-  phone: z.string().optional(),
-  interestedCars: z.string(),
-  message: z.string().optional(),
+  interestedCar: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 interface LeadCaptureFormProps {
-  interestedCars?: string;
+  interestedCar?: string;
 }
 
-export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureFormProps) {
+export default function LeadCaptureForm({ interestedCar = '' }: LeadCaptureFormProps) {
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -38,11 +36,13 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
     defaultValues: {
       name: '',
       email: '',
-      phone: '',
-      interestedCars: interestedCars,
-      message: '',
+      interestedCar: interestedCar,
     },
   });
+
+  useEffect(() => {
+    form.setValue('interestedCar', interestedCar);
+  }, [interestedCar, form]);
 
   const onSubmit = (data: FormData) => {
     console.log('Cliente potencial capturado:', data);
@@ -50,7 +50,7 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
       title: '¡Consulta Enviada!',
       description: "Gracias por tu interés. Nos pondremos en contacto en breve.",
     });
-    form.reset();
+    form.reset({ name: '', email: '', interestedCar: interestedCar });
   };
 
   return (
@@ -85,49 +85,19 @@ export default function LeadCaptureForm({ interestedCars = '' }: LeadCaptureForm
           />
         </div>
         <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Número de Teléfono (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="(123) 456-7890" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
             control={form.control}
-            name="interestedCars"
+            name="interestedCar"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Auto(s) de Interés</FormLabel>
+              <FormItem className="hidden">
+                <FormLabel>Auto de Interés</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} readOnly />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mensaje (Opcional)</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="¿Alguna pregunta? Háznosla saber..."
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Enviar Consulta</Button>
+        <Button type="submit" className="w-full">Enviar Consulta</Button>
       </form>
     </Form>
   );

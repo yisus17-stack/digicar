@@ -43,8 +43,8 @@ function SkeletonDetalle() {
       <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
         <div className="lg:col-span-2 space-y-8">
-          <AspectRatio ratio={16/10}>
-              <Skeleton className="w-full h-full rounded-lg" />
+          <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
+              <Skeleton className="w-full h-full" />
           </AspectRatio>
           <Skeleton className="h-40 w-full" />
           <Skeleton className="h-32 w-full" />
@@ -114,13 +114,13 @@ export default function PaginaDetalleAuto() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
         {/* Izquierda: Imagen y especificaciones */}
         <div className="lg:col-span-2 space-y-8">
-          <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
                 alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             ) : (
               <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -185,7 +185,7 @@ export default function PaginaDetalleAuto() {
                       )}
                       title={v.color}
                     >
-                      <Image src={v.imagenUrl} alt={v.color} fill className="object-contain" />
+                      <Image src={v.imagenUrl} alt={v.color} width={48} height={48} className="object-contain" />
                     </button>
                   ))}
                 </div>
@@ -198,7 +198,7 @@ export default function PaginaDetalleAuto() {
                 <CardDescription>Déjanos tus datos y un asesor se pondrá en contacto contigo.</CardDescription>
               </CardHeader>
               <CardContent>
-                <LeadCaptureForm interestedCars={`${auto.marca} ${auto.modelo}`} />
+                <LeadCaptureForm interestedCar={`${auto.marca} ${auto.modelo}`} />
               </CardContent>
             </Card>
           </div>

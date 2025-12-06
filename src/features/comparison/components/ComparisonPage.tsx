@@ -160,7 +160,7 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
           </CardHeader>
           <CardContent>
               <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
-              <LeadCaptureForm interestedCars={[auto1, auto2].filter(Boolean).map(c => `${c?.marca} ${c?.modelo}`).join(', ')} />
+              <LeadCaptureForm interestedCar={[auto1, auto2].filter(Boolean).map(c => `${c?.marca} ${c?.modelo}`).join(', ')} />
           </CardContent>
         </Card>
       )}
