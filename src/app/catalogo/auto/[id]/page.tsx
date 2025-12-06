@@ -212,7 +212,7 @@ export default function PaginaDetalleAuto() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {auto.caracteristicas.map((feature, index) => (
+                {auto.caracteristicas?.map((feature, index) => (
                   <li key={index} className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span>{feature}</span>
