@@ -224,8 +224,7 @@ export default function FormularioAuto({
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-            <form id="auto-form" onSubmit={form.handleSubmit(alEnviar)} className="flex-grow flex flex-col overflow-hidden">
+        <form id="auto-form" onSubmit={form.handleSubmit(alEnviar)} className="flex-grow flex flex-col overflow-hidden">
                 <Tabs defaultValue="general" className="flex-grow flex flex-col overflow-hidden">
                 <TabsList className="w-full grid grid-cols-2">
                     <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>
@@ -296,7 +295,7 @@ export default function FormularioAuto({
                     )}
                 </TabsContent>
                 
-                <TabsContent value="variantes" className="flex-grow flex flex-col overflow-hidden p-4">
+                <TabsContent value="variantes" className="flex-grow flex flex-col p-4">
                     {fields.length > 0 && (
                         <div className="flex items-center justify-center gap-4 mb-4">
                             <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
@@ -313,7 +312,7 @@ export default function FormularioAuto({
                         </div>
                     )}
                     
-                    <div className="flex-grow overflow-y-auto pr-4">
+                    <div className="flex-grow">
                         {fields.map((field, index) => (
                         <div key={field.id} className={cn("border p-4 rounded-lg space-y-4", activeVariantIndex === index ? 'block' : 'hidden')}>
                             <div className='flex justify-between items-center'>
@@ -347,26 +346,26 @@ export default function FormularioAuto({
                             <FormField
                                 control={form.control}
                                 name={`variantes.${index}.imagenUrl`}
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Imagen *</FormLabel>
-                                    <div className="flex items-center gap-4">
-                                        <FormControl>
-                                            <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                                                Elegir archivo
-                                                <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
-                                            </label>
-                                        </FormControl>
-                                        {field.value ? (
-                                            <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                                <img src={field.value} alt="Vista previa" className="object-cover w-full h-full" />
-                                            </div>
-                                        ) : (
-                                            <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
-                                        )}
-                                    </div>
-                                    <FormMessage className="h-5" />
-                                </FormItem>
+                                render={({ field: imageField }) => (
+                                    <FormItem>
+                                        <FormLabel>Imagen *</FormLabel>
+                                        <div className="flex items-center gap-4">
+                                            <FormControl>
+                                                <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                                    Elegir archivo
+                                                    <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
+                                                </label>
+                                            </FormControl>
+                                            {imageField.value ? (
+                                                <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                                    <img src={imageField.value} alt="Vista previa" className="object-cover w-full h-full" />
+                                                </div>
+                                            ) : (
+                                                <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
+                                            )}
+                                        </div>
+                                        <FormMessage className="h-5"/>
+                                    </FormItem>
                                 )}
                             />
                         </div>
@@ -381,8 +380,7 @@ export default function FormularioAuto({
                     </div>
                 </TabsContent>
                 </Tabs>
-            </form>
-        </Form>
+        </form>
         <DialogFooter className="pt-4 mt-2 border-t">
             <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
             <Button type="submit" form="auto-form" disabled={isSaving}>
