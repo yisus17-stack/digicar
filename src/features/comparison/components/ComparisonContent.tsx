@@ -134,12 +134,14 @@ export default function ComparisonContent() {
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
   useEffect(() => {
-    if (todosLosAutos && !loadingUser) {
+    if (todosLosAutos && todosLosAutos.length > 0) {
       try {
         const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
-        if (storedIds.length > 0) {
-          setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
-          if (storedIds.length > 1) {
+        if (Array.isArray(storedIds) && storedIds.length > 0) {
+          if (storedIds[0]) {
+            setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
+          }
+          if (storedIds[1]) {
             setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
           }
         }
@@ -148,7 +150,7 @@ export default function ComparisonContent() {
         sessionStorage.removeItem('comparisonIds');
       }
     }
-  }, [todosLosAutos, loadingUser]);
+  }, [todosLosAutos]);
 
   useEffect(() => {
     // This effect ensures that if the user logs out while on the page, the state is cleared.
@@ -162,16 +164,24 @@ export default function ComparisonContent() {
   const handleSelectCar1 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar1(selected);
-    const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
-    sessionStorage.setItem('comparisonIds', JSON.stringify([carId, storedIds[1]]));
+    sessionStorage.setItem('comparisonIds', JSON.stringify([carId, car2?.id]));
   };
 
   const handleSelectCar2 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar2(selected);
-    const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
-    sessionStorage.setItem('comparisonIds', JSON.stringify([storedIds[0], carId]));
+    sessionStorage.setItem('comparisonIds', JSON.stringify([car1?.id, carId]));
   };
+
+  const clearCar1 = () => {
+    setCar1(undefined);
+    sessionStorage.setItem('comparisonIds', JSON.stringify([undefined, car2?.id]));
+  }
+  
+  const clearCar2 = () => {
+    setCar2(undefined);
+    sessionStorage.setItem('comparisonIds', JSON.stringify([car1?.id, undefined]));
+  }
 
 
   const handleSaveComparison = async () => {
@@ -274,7 +284,7 @@ export default function ComparisonContent() {
                     allCars={todosLosAutos} 
                     onSelect={handleSelectCar1} 
                     otherCarId={car2?.id} 
-                    onClear={() => setCar1(undefined)}
+                    onClear={clearCar1}
                 />
                 <div className="flex items-center h-full pt-16">
                     <GitCompareArrows className="h-8 w-8 text-muted-foreground" />
@@ -284,7 +294,7 @@ export default function ComparisonContent() {
                     allCars={todosLosAutos} 
                     onSelect={handleSelectCar2} 
                     otherCarId={car1?.id}
-                    onClear={() => setCar2(undefined)}
+                    onClear={clearCar2}
                 />
             </div>
 
@@ -301,7 +311,7 @@ export default function ComparisonContent() {
                     {features.map(feature => (
                         <div key={feature.key}>
                             <div className="grid grid-cols-3 items-center gap-4">
-                                <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
+                                <div className="text-left font-semibold text-muted-foreground col-span-1">{feature.label}</div>
                                 <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car1)}</div>
                                 <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car2)}</div>
                             </div>
@@ -310,7 +320,7 @@ export default function ComparisonContent() {
                     ))}
                     <div>
                         <div className="grid grid-cols-3 items-start gap-4">
-                            <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
+                            <div className="text-left font-semibold text-muted-foreground pt-1 col-span-1">Características</div>
                              <div className="col-span-1 px-4 text-left">
                                 <ul className="list-disc list-inside space-y-1 text-sm">
                                     {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>) ?? (car1 && <li>-</li>)}
