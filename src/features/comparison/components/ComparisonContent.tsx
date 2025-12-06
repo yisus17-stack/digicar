@@ -112,9 +112,6 @@ const CarSelector = ({
           })}
         </SelectContent>
       </Select>
-      <Button variant="link" asChild className="mt-2">
-        <Link href="/catalogo">O buscar en catálogo</Link>
-      </Button>
     </Card>
   );
 };
