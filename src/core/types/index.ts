@@ -57,3 +57,11 @@ export type UserProfile = {
 export type Favorite = {
     carIds: string[];
 }
+
+export type Comparison = {
+    id: string;
+    userId: string;
+    carId1: string;
+    carId2: string;
+    createdAt: Timestamp;
+}

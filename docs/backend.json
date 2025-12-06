@@ -181,6 +181,20 @@
       },
       "required": ["carIds"]
     },
+    "Comparison": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Comparison",
+      "type": "object",
+      "description": "Represents a user's saved car comparison.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the comparison." },
+        "userId": { "type": "string", "description": "The ID of the user who saved the comparison." },
+        "carId1": { "type": "string", "description": "The ID of the first car in the comparison." },
+        "carId2": { "type": "string", "description": "The ID of the second car in the comparison." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the comparison was saved." }
+      },
+      "required": ["id", "userId", "carId1", "carId2", "createdAt"]
+    },
     "Counter": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Counter",
@@ -272,6 +286,15 @@
           "schema": { "$ref": "#/backend/entities/Favorite" },
           "description": "Stores the list of favorite cars for a user. Each user can only access their own list.",
           "params": [{ "name": "usuarioId", "description": "The user's unique ID." }]
+        }
+      },
+      {
+        "path": "/comparaciones/{comparacionId}",
+        "definition": {
+          "entityName": "Comparison",
+          "schema": { "$ref": "#/backend/entities/Comparison" },
+          "description": "Stores a user's saved car comparisons. Each user can only access their own list.",
+          "params": [{ "name": "comparacionId", "description": "Unique identifier for the comparison." }]
         }
       },
       {

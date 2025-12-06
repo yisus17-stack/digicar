@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collection, doc, updateDoc, setDoc, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
@@ -12,8 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle, Save, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
@@ -97,15 +96,16 @@ const CarSelector = ({
               <SelectItem key={car.id} value={car.id}>
                 <div className="flex items-center gap-3">
                   {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt={car.modelo}
-                      width={40}
-                      height={40}
-                      className="rounded-md object-contain h-10 w-10"
-                    />
+                    <div className="relative h-10 w-10 flex-shrink-0">
+                      <Image
+                        src={imageUrl}
+                        alt={car.modelo}
+                        fill
+                        className="rounded-md object-contain"
+                      />
+                    </div>
                   ) : (
-                    <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center">
+                    <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
                       <CarIcon className="h-5 w-5 text-muted-foreground" />
                     </div>
                   )}
@@ -161,17 +161,32 @@ export default function ComparisonContent() {
 
     setIsSaving(true);
     
-    // Aquí irá la lógica para guardar en Firestore
-    // Por ahora, simularemos un guardado exitoso
-    setTimeout(() => {
-        Swal.fire({
-            title: '¡Comparación Guardada!',
-            text: 'Puedes ver tus comparaciones en tu perfil.',
-            icon: 'success',
+    try {
+      const comparacionesRef = collection(firestore, 'comparaciones');
+      await addDoc(comparacionesRef, {
+        userId: user.uid,
+        carId1: car1.id,
+        carId2: car2.id,
+        createdAt: serverTimestamp(),
+      });
+
+      Swal.fire({
+          title: '¡Comparación Guardada!',
+          text: 'Puedes ver tus comparaciones en tu perfil.',
+          icon: 'success',
+          confirmButtonColor: '#595c97',
+      });
+    } catch (error) {
+       console.error("Error guardando la comparación: ", error);
+       Swal.fire({
+            title: 'Error',
+            text: 'No se pudo guardar la comparación. Inténtalo de nuevo.',
+            icon: 'error',
             confirmButtonColor: '#595c97',
         });
+    } finally {
         setIsSaving(false);
-    }, 1000);
+    }
   };
   
   const features = [
