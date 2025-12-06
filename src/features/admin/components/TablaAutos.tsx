@@ -240,7 +240,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       ),
     },
     {
-      accessorKey: 'precio',
+      accessorFn: (row) => row.variantes?.[0]?.precio ?? row.precio ?? 0,
+      id: 'precio',
       header: ({ column }) => (
         <Button
           variant="ghost"
