@@ -54,29 +54,27 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
 
   const manejarEliminar = async (color: Color) => {
     const autosRef = collection(firestore, 'autos');
-    const q = query(autosRef, where('variantes', 'array-contains-any', [{color: color.nombre}]), limit(1));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(autosRef);
+    let isUsed = false;
 
-    if (!querySnapshot.empty) {
-        let isUsed = false;
-        querySnapshot.forEach(doc => {
-            const carData = doc.data();
-            if (carData.variantes && Array.isArray(carData.variantes)) {
-                if (carData.variantes.some(v => v.color === color.nombre)) {
-                    isUsed = true;
-                }
+    for (const doc of querySnapshot.docs) {
+        const carData = doc.data();
+        if (carData.variantes && Array.isArray(carData.variantes)) {
+            if (carData.variantes.some(v => v.color === color.nombre)) {
+                isUsed = true;
+                break; 
             }
-        });
-
-        if (isUsed) {
-            Swal.fire({
-                title: 'No se puede eliminar',
-                text: `El color "${color.nombre}" está siendo utilizado por al menos un auto y no puede ser eliminado.`,
-                icon: 'error',
-                confirmButtonColor: '#595c97',
-            });
-            return;
         }
+    }
+    
+    if (isUsed) {
+        Swal.fire({
+            title: 'No se puede eliminar',
+            text: `El color "${color.nombre}" está siendo utilizado por al menos un auto y no puede ser eliminado.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        return;
     }
     
     if (!color.id) return;
