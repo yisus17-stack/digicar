@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useParams, notFound } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase'; // tu instancia de Firestore
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
@@ -20,17 +20,22 @@ function SkeletonDetalle() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Skeleton className="h-6 w-1/3 mb-4" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
-        {/* Izquierda: Imagen y especificaciones */}
-        <div className="lg:col-span-2 space-y-8">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-6">
+        <div className="space-y-4">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg">
               <Skeleton className="w-full h-full" />
           </AspectRatio>
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-32 w-full" />
+           <div className="grid grid-cols-5 gap-4">
+            {[...Array(4)].map((_, i) => (
+                <AspectRatio key={i} ratio={1/1}><Skeleton className="w-full h-full" /></AspectRatio>
+            ))}
+           </div>
         </div>
-        <div className="lg:col-span-1 space-y-6">
-            <Skeleton className="h-64 w-full" />
+        <div className="space-y-6">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-10 w-1/2" />
+            <Skeleton className="h-12 w-full" />
         </div>
       </div>
     </div>
@@ -46,7 +51,6 @@ export default function PaginaDetalleAuto() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
 
-  // Cargar el auto desde Firestore
   useEffect(() => {
     if (!id) return;
 
@@ -76,7 +80,6 @@ export default function PaginaDetalleAuto() {
   }, [id, firestore]);
 
   if (isLoading) return <SkeletonDetalle />;
-
   if (!auto) return notFound();
 
   const detallesAuto = [
@@ -90,89 +93,116 @@ export default function PaginaDetalleAuto() {
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
-        {/* Izquierda: Imagen y especificaciones */}
-        <div className="lg:col-span-2 space-y-8">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6">
+        {/* Columna Izquierda: Galería de Imágenes */}
+        <div className="space-y-4">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md bg-muted">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
                 alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
                 fill
                 className="object-contain"
+                priority
               />
             ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center">
                 <IconoAuto className="w-24 h-24 text-muted-foreground" />
               </div>
             )}
           </AspectRatio>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Especificaciones</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                {detallesAuto.map((d) => (
-                  <div key={d.label} className="p-4 bg-muted/50 rounded-lg flex flex-col items-center justify-center">
-                    <d.icon className="h-7 w-7 text-primary mb-2" />
-                    <p className="text-sm text-muted-foreground">{d.label}</p>
-                    <p className="font-semibold">{d.value}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {auto.caracteristicas && auto.caracteristicas.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Características Incluidas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 list-disc list-inside text-muted-foreground">
-                  {auto.caracteristicas.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+          {auto.variantes && auto.variantes.length > 1 && (
+            <div className="grid grid-cols-5 gap-4">
+              {auto.variantes.map(v => (
+                 <AspectRatio 
+                    key={`thumb-${v.id}`} 
+                    ratio={1/1} 
+                    className={cn(
+                        "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
+                        selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
+                    )}
+                    onClick={() => setSelectedVariant(v)}
+                    >
+                    <Image
+                        src={v.imagenUrl}
+                        alt={v.color}
+                        fill
+                        className="object-contain"
+                    />
+                 </AspectRatio>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* Derecha: Compra */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-24 space-y-6">
-            <Card className="shadow-md">
-              <CardHeader>
+        {/* Columna Derecha: Información y Compra */}
+        <div className="relative">
+          <div className="lg:sticky top-24 space-y-6">
+            <div>
                 <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
                 <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
                 <p className="text-3xl font-bold text-primary pt-2">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
-              </CardHeader>
-              <CardContent>
-                <Separator className="mb-4" />
-                <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
-                <div className="flex flex-wrap gap-2">
-                  {auto.variantes?.map(v => (
-                    <button
-                      key={v.id}
-                      onClick={() => setSelectedVariant(v)}
-                      className={cn(
-                        'relative h-12 w-12 rounded-md border-2 overflow-hidden transition-all duration-200',
-                        selectedVariant?.id === v.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-border hover:border-primary/50'
-                      )}
-                      title={v.color}
-                    >
-                      <Image src={v.imagenUrl} alt={v.color} width={48} height={48} className="object-contain" />
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+            
+            <Separator />
+            
+            <div>
+              <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
+              <div className="flex flex-wrap gap-2">
+                {auto.variantes?.map(v => (
+                  <button
+                    key={`swatch-${v.id}`}
+                    onClick={() => setSelectedVariant(v)}
+                    className={cn(
+                      'h-8 w-8 rounded-full border-2 transition-all duration-200 ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                      selectedVariant?.id === v.id ? 'ring-2 ring-primary' : 'border-border'
+                    )}
+                    style={{ backgroundColor: colorHexMap[v.color] || '#E5E7EB' }}
+                    title={v.color}
+                  >
+                    <span className="sr-only">{v.color}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+       {/* Secciones de Detalles Adicionales */}
+       <div className="mt-12 lg:mt-16">
+            <Card>
+                <CardHeader>
+                <CardTitle>Especificaciones</CardTitle>
+                </CardHeader>
+                <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    {detallesAuto.map((d) => (
+                    <div key={d.label} className="p-4 bg-muted/50 rounded-lg flex flex-col items-center justify-center">
+                        <d.icon className="h-7 w-7 text-primary mb-2" />
+                        <p className="text-sm text-muted-foreground">{d.label}</p>
+                        <p className="font-semibold">{d.value}</p>
+                    </div>
+                    ))}
+                </div>
+                </CardContent>
+            </Card>
+
+            {auto.caracteristicas && auto.caracteristicas.length > 0 && (
+                <Card className="mt-8">
+                <CardHeader>
+                    <CardTitle>Características Incluidas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 list-disc list-inside text-muted-foreground">
+                    {auto.caracteristicas.map((item) => (
+                        <li key={item}>{item}</li>
+                    ))}
+                    </ul>
+                </CardContent>
+                </Card>
+            )}
+       </div>
     </div>
   );
 }
