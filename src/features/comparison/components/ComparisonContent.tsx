@@ -174,12 +174,18 @@ export default function ComparisonContent() {
         const comparacionesRef = collection(firestore, 'comparaciones');
         await addDoc(comparacionesRef, comparisonData);
 
-        Swal.fire({
+        await Swal.fire({
             title: '¡Comparación Guardada!',
             text: 'Puedes ver tus comparaciones en tu perfil.',
             icon: 'success',
             confirmButtonColor: '#595c97',
         });
+        
+        // Reset state after saving
+        setCar1(undefined);
+        setCar2(undefined);
+        sessionStorage.removeItem('comparisonIds');
+
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
         
