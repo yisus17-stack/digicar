@@ -84,7 +84,6 @@ export default function FormularioAuto({
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
-    mode: 'onChange',
     defaultValues: {
       marca: '',
       modelo: '',
