@@ -13,17 +13,6 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 interface TablaTransmisionesProps {
   transmisiones: Transmision[];
@@ -46,6 +35,21 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
   };
 
   const manejarEliminar = async (transmision: Transmision) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#595c97',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, ¡elimínala!',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
     const autosRef = collection(firestore, 'autos');
     const q = query(autosRef, where('transmision', '==', transmision.nombre), limit(1));
     const querySnapshot = await getDocs(q);
@@ -164,27 +168,9 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             <Button variant="outline" size="sm" onClick={() => manejarEditar(transmision)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="mr-2 h-4 w-4" /> Eliminar
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta acción no se puede deshacer. Esto eliminará permanentemente el tipo de transmisión de la base de datos.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => manejarEliminar(transmision)} className="bg-destructive hover:bg-destructive/90">
-                    Sí, eliminar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(transmision)}>
+                <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+            </Button>
           </div>
         );
       },

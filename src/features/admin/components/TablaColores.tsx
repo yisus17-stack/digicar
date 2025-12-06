@@ -13,17 +13,6 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 
 interface TablaColoresProps {
@@ -47,12 +36,27 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
   };
 
   const manejarEliminar = async (color: Color) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#595c97',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, ¡elimínalo!',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
     const autosRef = collection(firestore, 'autos');
     const querySnapshot = await getDocs(autosRef);
     let isUsed = false;
 
-    for (const doc of querySnapshot.docs) {
-        const carData = doc.data();
+    for (const docSnapshot of querySnapshot.docs) {
+        const carData = docSnapshot.data();
         if (carData.variantes && Array.isArray(carData.variantes)) {
             if (carData.variantes.some(v => v.color === color.nombre)) {
                 isUsed = true;
@@ -175,27 +179,9 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             <Button variant="outline" size="sm" onClick={() => manejarEditar(color)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="mr-2 h-4 w-4" /> Eliminar
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => manejarEliminar(color)} className="bg-destructive hover:bg-destructive/90">
-                    Sí, eliminar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(color)}>
+              <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+            </Button>
           </div>
         );
       },
