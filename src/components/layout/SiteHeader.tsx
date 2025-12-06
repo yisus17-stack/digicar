@@ -98,9 +98,21 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      await Swal.fire({
+        title: 'Sesión Cerrada',
+        text: 'Has cerrado sesión correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#595c97',
+      });
       router.push('/');
     } catch (error) {
       console.error(error);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo cerrar sesión. Inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#595c97',
+      });
     }
   };
 
