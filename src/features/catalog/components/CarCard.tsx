@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -56,3 +57,5 @@ export default function CarCard({ car }: CarCardProps) {
     </Link>
   );
 }
+
+    

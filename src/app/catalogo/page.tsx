@@ -190,20 +190,25 @@ function CatalogPageContent() {
 
         if (debouncedSearchTerm) {
             const lowercasedTerm = debouncedSearchTerm.toLowerCase();
-            filtered = filtered.filter(car =>
-                car.marca.toLowerCase().includes(lowercasedTerm) ||
-                car.modelo.toLowerCase().includes(lowercasedTerm) ||
-                car.tipo.toLowerCase().includes(lowercasedTerm) ||
-                car.caracteristicas.some(f => f.toLowerCase().includes(lowercasedTerm))
-            );
+            filtered = filtered.filter(car => {
+                const features = car.caracteristicas || [];
+                return (
+                    car.marca?.toLowerCase().includes(lowercasedTerm) ||
+                    car.modelo?.toLowerCase().includes(lowercasedTerm) ||
+                    car.tipo?.toLowerCase().includes(lowercasedTerm) ||
+                    features.some(f => f.toLowerCase().includes(lowercasedTerm))
+                );
+            });
         }
+        
+        const getPrice = (car: Car) => car.variantes?.[0]?.precio ?? car.precio ?? 0;
 
         if (sortOrder === 'price-asc') {
-            filtered.sort((a, b) => (a.variantes?.[0]?.precio ?? a.precio ?? 0) - (b.variantes?.[0]?.precio ?? b.precio ?? 0));
+            filtered.sort((a, b) => getPrice(a) - getPrice(b));
         } else if (sortOrder === 'price-desc') {
-            filtered.sort((a, b) => (b.variantes?.[0]?.precio ?? b.precio ?? 0) - (a.variantes?.[0]?.precio ?? a.precio ?? 0));
+            filtered.sort((a, b) => getPrice(b) - getPrice(a));
         } else if (sortOrder === 'year-desc') {
-            filtered.sort((a, b) => b.anio - a.anio);
+            filtered.sort((a, b) => (b.anio || 0) - (a.anio || 0));
         }
 
         return filtered;
@@ -307,7 +312,7 @@ function CatalogPageContent() {
                     {paginatedCars.length > 0 ? (
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                             {paginatedCars.map(car => (
-                                <CarCard key={`car-${car.id}`} car={car} onToggleCompare={handleToggleCompare} isComparing={comparisonIds.includes(car.id)}/>
+                                <CarCard key={`car-${car.id}`} car={car}/>
                             ))}
                         </div>
                     ) : (
@@ -351,3 +356,5 @@ export default function Catalog() {
         </Suspense>
     )
 }
+
+    
