@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { traducciones } from '@/lib/translations';
+import { traducciones, colorHexMap } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car, CarVariant } from '@/core/types';
@@ -20,33 +20,22 @@ function EsqueletoDetalleAuto() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Skeleton className="h-6 w-1/3 mb-4" />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="lg:col-span-3 space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-5 w-full" />
-              <div className="space-y-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-24 w-full" />
-              </div>
-              <Skeleton className="h-10 w-32" />
-            </CardContent>
+            <AspectRatio ratio={16/10}>
+                <Skeleton className="w-full h-full" />
+            </AspectRatio>
           </Card>
         </div>
-        <div className="space-y-6">
-          <Card>
+        <div className="lg:col-span-2 space-y-6">
+           <Card>
             <CardHeader>
                 <Skeleton className="h-4 w-1/2 mb-2" />
                 <Skeleton className="h-8 w-3/4 mb-2" />
                 <Skeleton className="h-8 w-1/3" />
             </CardHeader>
           </Card>
-          
           <Card>
             <CardHeader>
               <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
@@ -63,22 +52,42 @@ function EsqueletoDetalleAuto() {
               ))}
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle><Skeleton className="h-6 w-56" /></CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {[...Array(4)].map((_, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <Skeleton className="h-5 w-5 rounded-full" />
-                    <Skeleton className="h-5 w-full" />
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 mt-8">
+        <div className='lg:col-span-3 space-y-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle><Skeleton className="h-6 w-56" /></CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {[...Array(4)].map((_, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <Skeleton className="h-5 w-5 rounded-full" />
+                      <Skeleton className="h-5 w-full" />
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+        </div>
+        <div className='lg:col-span-2 space-y-6'>
+            <Card>
+                <CardHeader>
+                <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                <Skeleton className="h-5 w-full" />
+                <div className="space-y-2">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                </div>
+                <Skeleton className="h-10 w-32" />
+                </CardContent>
+            </Card>
         </div>
       </div>
     </div>
@@ -114,17 +123,21 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
       { icon: GitMerge, label: 'Transmisión', value: traducciones.transmision[auto.transmision as keyof typeof traducciones.transmision] },
       { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
   ];
+  
+  const handleVariantSelect = (variant: CarVariant) => {
+    setSelectedVariant(variant);
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
        <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="lg:col-span-3 space-y-6">
           <Card className="overflow-hidden">
-             <AspectRatio ratio={4/3}>
+             <AspectRatio ratio={16/10}>
               {selectedVariant ? (
-                <Image src={selectedVariant.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} fill className="object-cover" />
+                <Image src={selectedVariant.imagenUrl} alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
                   <IconoAuto className="w-24 h-24 text-muted-foreground" />
@@ -132,17 +145,9 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
               )}
              </AspectRatio>
           </Card>
-          <Card>
-              <CardHeader>
-                  <CardTitle>Contáctanos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                  <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
-                  <LeadCaptureForm interestedCars={`${auto.marca} ${auto.modelo}`} />
-              </CardContent>
-          </Card>
         </div>
-        <div className="space-y-6">
+
+        <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
                 <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || auto.tipo} • {auto.anio}</p>
@@ -150,17 +155,21 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
                 <p className="text-3xl font-bold text-primary">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
             </CardHeader>
              <CardContent>
-                <p className="text-sm font-medium mb-2">Colores Disponibles</p>
+                <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{traducciones.color[selectedVariant?.color as keyof typeof traducciones.color] || selectedVariant?.color}</span></p>
                 <div className="flex flex-wrap gap-2">
                     {auto.variantes?.map(variant => (
-                        <Button 
+                        <button 
                             key={variant.id}
-                            variant={selectedVariant?.id === variant.id ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setSelectedVariant(variant)}
+                            onClick={() => handleVariantSelect(variant)}
+                            className={cn(
+                                "h-8 w-8 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary",
+                                selectedVariant?.id === variant.id ? 'border-primary scale-110' : 'border-transparent'
+                            )}
+                            style={{ backgroundColor: colorHexMap[variant.color] || '#E5E7EB' }}
+                            title={traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}
                         >
-                            {traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}
-                        </Button>
+                           <span className="sr-only">{traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}</span>
+                        </button>
                     ))}
                 </div>
             </CardContent>
@@ -180,16 +189,13 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
                   </div>
                 </div>
               ))}
-               <div className="flex items-center gap-3">
-                  <Palette className="h-6 w-6 text-primary" strokeWidth={1.5} />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Color</p>
-                    <p className="font-semibold">{traducciones.color[selectedVariant?.color as keyof typeof traducciones.color] || selectedVariant?.color}</p>
-                  </div>
-                </div>
             </CardContent>
           </Card>
-
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 mt-8">
+        <div className='lg:col-span-3 space-y-6'>
           <Card>
             <CardHeader>
               <CardTitle>Características Destacadas</CardTitle>
@@ -206,7 +212,22 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
             </CardContent>
           </Card>
         </div>
+
+        <div className='lg:col-span-2 space-y-6'>
+          <Card>
+              <CardHeader>
+                  <CardTitle>Contáctanos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-muted-foreground mb-4">¿Te interesa este modelo? Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
+                  <LeadCaptureForm interestedCars={`${auto.marca} ${auto.modelo}`} />
+              </CardContent>
+          </Card>
+        </div>
       </div>
+
     </div>
   );
 }
+
+    
