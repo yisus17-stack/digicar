@@ -1,4 +1,3 @@
-
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -17,13 +16,13 @@ interface WizardStepsProps {
 
 export default function WizardSteps({ steps, currentStep, className }: WizardStepsProps) {
   return (
-    <div className={cn('flex items-center justify-center w-full', className)}>
+    <div className={cn('flex items-start justify-center w-full', className)}>
       {steps.map((step, index) => {
         const isCompleted = currentStep > step.number;
         const isActive = currentStep === step.number;
 
         return (
-          <div key={step.number} className="flex items-center w-full">
+          <div key={step.number} className={cn("flex items-start", index < steps.length - 1 ? 'w-full' : 'flex-shrink-0')}>
             <div className="flex flex-col items-center gap-2">
               <div
                 className={cn(
@@ -37,7 +36,7 @@ export default function WizardSteps({ steps, currentStep, className }: WizardSte
               </div>
               <p
                 className={cn(
-                  'text-sm text-center font-medium transition-colors duration-300',
+                  'text-sm text-center font-medium transition-colors duration-300 w-24',
                   isActive ? 'text-primary' : 'text-muted-foreground'
                 )}
               >
@@ -48,7 +47,7 @@ export default function WizardSteps({ steps, currentStep, className }: WizardSte
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  'flex-1 h-1 mx-4 transition-colors duration-300',
+                  'flex-1 h-1 mx-4 mt-5 transition-colors duration-300',
                   currentStep > step.number ? 'bg-primary' : 'bg-muted'
                 )}
               />
