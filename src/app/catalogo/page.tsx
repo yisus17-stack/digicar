@@ -247,7 +247,7 @@ function CatalogPageContent() {
             <SelectItem value="relevance">Relevancia</SelectItem>
             <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
             <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
-            <SelectItem value="year-desc">Año: Más reciente primero</SelectItem>
+            <SelectItem value="year-desc">Año: Más reciente</SelectItem>
           </SelectContent>
         </Select>
       );

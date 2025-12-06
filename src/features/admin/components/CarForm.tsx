@@ -292,7 +292,7 @@ export default function FormularioAuto({
                   <FormField name="anio" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>Año *</FormLabel>
-                      <Select onValuechange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Seleccionar año" />
