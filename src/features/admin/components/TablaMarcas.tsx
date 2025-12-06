@@ -1,16 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Tag, PlusCircle, Save } from 'lucide-react';
+import { Edit, Trash2, Tag, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import { useFirestore } from '@/firebase';
@@ -20,6 +13,8 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { uploadImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
+import { DataTable } from './DataTable';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -146,6 +141,72 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     }
   };
 
+  const columns: ColumnDef<Marca>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Seleccionar todo"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Seleccionar fila"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'logoUrl',
+      header: 'Logo',
+      cell: ({ row }) => {
+        const marca = row.original;
+        return (
+          <Avatar>
+            {marca.logoUrl && <AvatarImage src={marca.logoUrl} alt={marca.nombre} className="object-contain" />}
+            <AvatarFallback>
+              <Tag className='h-5 w-5' />
+            </AvatarFallback>
+          </Avatar>
+        );
+      },
+    },
+    {
+      accessorKey: 'nombre',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Nombre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      id: 'actions',
+      header: 'Acciones',
+      cell: ({ row }) => {
+        const marca = row.original;
+        return (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
+              <Edit className="mr-2 h-4 w-4" /> Editar
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => marca.id && confirmarEliminar(marca.id)}>
+              <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
@@ -155,44 +216,12 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
               Añadir Marca
             </Button>
         </div>
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Logo</TableHead>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Acciones</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {marcasIniciales.map(marca => (
-                    <TableRow key={marca.id}>
-                    <TableCell>
-                        <Avatar>
-                            {marca.logoUrl && <AvatarImage src={marca.logoUrl} alt={marca.nombre} className="object-contain" />}
-                            <AvatarFallback>
-                                <Tag className='h-5 w-5' />
-                            </AvatarFallback>
-                        </Avatar>
-                    </TableCell>
-                    <TableCell className="font-medium">{marca.nombre}</TableCell>
-                    <TableCell>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Editar
-                            </Button>
-                            <Button variant="destructive" size="sm" onClick={() => marca.id && confirmarEliminar(marca.id)}>
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Eliminar
-                            </Button>
-                        </div>
-                    </TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-        </div>
+        <DataTable
+            columns={columns}
+            data={marcasIniciales}
+            filterColumnId="nombre"
+            filterPlaceholder="Buscar por nombre..."
+        />
         <FormularioMarca 
             estaAbierto={estaFormularioAbierto}
             alCambiarApertura={alCambiarAperturaFormulario}

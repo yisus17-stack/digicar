@@ -1,16 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Car as IconoAuto, PlusCircle } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
@@ -20,6 +13,8 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
 import { uploadImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
+import { DataTable } from './DataTable';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -91,7 +86,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setIsSaving(true);
     
     try {
-        let finalCarData: any = { ...datosAuto };
+        const finalCarData: any = { ...datosAuto };
         
         const uploadPromises = finalCarData.variantes.map(async (variante: any, index: number) => {
             const file = files[index];
@@ -121,8 +116,9 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {
             const coleccionRef = collection(firestore, 'autos');
-            finalCarData.createdAt = serverTimestamp();
-            await addDoc(coleccionRef, finalCarData);
+            const newDocRef = doc(coleccionRef);
+            const finalDataWithId = { ...finalCarData, id: newDocRef.id, createdAt: serverTimestamp() };
+            await updateDoc(newDocRef, finalDataWithId);
             Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
@@ -149,6 +145,121 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     }
   };
 
+  const columns: ColumnDef<Car>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Seleccionar todo"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Seleccionar fila"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'imagenUrl',
+      header: 'Imagen',
+      cell: ({ row }) => {
+        const auto = row.original;
+        const displayVariant = auto.variantes && auto.variantes.length > 0 ? auto.variantes[0] : null;
+        const imageUrl = displayVariant?.imagenUrl ?? auto.imagenUrl;
+        return imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={`${auto.marca} ${auto.modelo}`}
+            width={80}
+            height={60}
+            className="rounded-md object-cover"
+          />
+        ) : (
+          <div className="w-20 h-12 flex items-center justify-center bg-muted rounded-md">
+            <IconoAuto className="h-6 w-6 text-muted-foreground" />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: 'marca',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Marca
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: 'modelo',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Modelo
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: 'anio',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Año
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: 'precio',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Precio Base
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const auto = row.original;
+        const price = auto.variantes?.[0]?.precio ?? auto.precio ?? 0;
+        return `$${price.toLocaleString('es-MX')}`;
+      },
+    },
+    {
+      id: 'actions',
+      header: 'Acciones',
+      cell: ({ row }) => {
+        const auto = row.original;
+        return (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
+              <Edit className="mr-2 h-4 w-4" /> Editar
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(auto.id)}>
+              <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
+
   return (
     <>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
@@ -158,67 +269,13 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
               Añadir Auto
             </Button>
         </div>
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Imagen</TableHead>
-                        <TableHead>Marca</TableHead>
-                        <TableHead>Modelo</TableHead>
-                        <TableHead>Año</TableHead>
-                        <TableHead>Precio Base</TableHead>
-                        <TableHead>Acciones</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {autosIniciales
-                        .filter(auto => auto)
-                        .map(auto => {
-                            const displayVariant = auto.variantes && auto.variantes.length > 0 ? auto.variantes[0] : null;
-                            const imageUrl = displayVariant?.imagenUrl ?? auto.imagenUrl;
-                            const price = displayVariant?.precio ?? auto.precio ?? 0;
-
-                            return (
-                                <TableRow key={auto.id ?? Math.random()}>
-                                    <TableCell>
-                                        {imageUrl ? (
-                                            <Image
-                                                src={imageUrl}
-                                                alt={`${auto.marca ?? ''} ${auto.modelo ?? ''}`}
-                                                width={64}
-                                                height={48}
-                                                className="rounded-md object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
-                                                <IconoAuto className="h-6 w-6 text-muted-foreground" />
-                                            </div>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="font-medium">{auto.marca ?? '-'}</TableCell>
-                                    <TableCell>{auto.modelo ?? '-'}</TableCell>
-                                    <TableCell>{auto.anio ?? '-'}</TableCell>
-                                    <TableCell>
-                                        {price != null ? `$${price.toLocaleString('es-MX')}` : '-'}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex gap-2">
-                                            <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
-                                                <Edit className="mr-2 h-4 w-4" />
-                                                Editar
-                                            </Button>
-                                            <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
-                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                Eliminar
-                                            </Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })}
-                </TableBody>
-            </Table>
-        </div>
+        
+        <DataTable
+            columns={columns}
+            data={autosIniciales}
+            filterColumnId="modelo"
+            filterPlaceholder="Buscar por modelo..."
+        />
 
         <FormularioAuto 
             estaAbierto={estaFormularioAbierto}
