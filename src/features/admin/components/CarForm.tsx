@@ -177,7 +177,7 @@ export default function FormularioAuto({
     append({
         id: `new_${Date.now()}_${Math.random()}`,
         color: '',
-        precio: '' as any, // Iniciar como string vacío
+        precio: '' as any,
         imagenUrl: '',
     });
   }
@@ -262,7 +262,7 @@ export default function FormularioAuto({
                 />
               </TabsContent>
               
-              <TabsContent value="variantes" className="flex flex-col p-1 overflow-hidden">
+              <TabsContent value="variantes" className="flex-grow flex flex-col p-1 overflow-hidden">
                 <ScrollArea className="flex-1 overflow-auto p-3 -m-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
