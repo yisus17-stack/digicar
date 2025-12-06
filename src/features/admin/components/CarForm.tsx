@@ -85,6 +85,7 @@ export default function FormularioAuto({
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
+    mode: 'onChange',
     defaultValues: {
       marca: '',
       modelo: '',
@@ -99,7 +100,7 @@ export default function FormularioAuto({
     },
   });
 
-  const { control, getValues, setValue, trigger } = form;
+  const { control, getValues, setValue, trigger, formState } = form;
 
   const { fields, append, remove, update, replace } = useFieldArray({
     control: control,
@@ -414,28 +415,28 @@ export default function FormularioAuto({
                         )}
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
+                        <FormField control={form.control} name={`variantes.${index}.color`} render={({ field, fieldState }) => (
                           <FormItem>
                             <FormLabel>Color *</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                               <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
                             </Select>
-                             {form.formState.isSubmitted && <FormMessage className="h-5" />}
+                            {fieldState.isDirty && <FormMessage className="h-5" />}
                           </FormItem>
                         )}/>
-                        <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
+                        <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field, fieldState }) => (
                           <FormItem>
                             <FormLabel>Precio *</FormLabel>
                             <FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl>
-                            {form.formState.isSubmitted && <FormMessage className="h-5" />}
+                            {fieldState.isDirty && <FormMessage className="h-5" />}
                           </FormItem>
                         )}/>
                       </div>
                       <FormField
                         control={form.control}
                         name={`variantes.${index}.imagenUrl`}
-                        render={({ field: imageField }) => (
+                        render={({ field: imageField, fieldState }) => (
                           <FormItem>
                             <FormLabel>Imagen *</FormLabel>
                             <div className="flex items-center gap-4">
@@ -453,7 +454,7 @@ export default function FormularioAuto({
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                               )}
                             </div>
-                            {form.formState.isSubmitted && <FormMessage className="h-5"/>}
+                            {fieldState.isDirty && <FormMessage className="h-5"/>}
                           </FormItem>
                         )}
                       />
