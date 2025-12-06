@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { GitCompareArrows, Car as CarIcon, PlusCircle } from 'lucide-react';
+import { Car as CarIcon, PlusCircle } from 'lucide-react';
 
 const EsqueletoComparacion = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -86,11 +86,30 @@ const CarSelector = ({
           <SelectValue placeholder="Seleccionar un auto" />
         </SelectTrigger>
         <SelectContent>
-          {availableCars.map(car => (
-            <SelectItem key={car.id} value={car.id}>
-              {car.marca} {car.modelo}
-            </SelectItem>
-          ))}
+          {availableCars.map(car => {
+            const variant = car.variantes?.[0];
+            const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
+            return (
+              <SelectItem key={car.id} value={car.id}>
+                <div className="flex items-center gap-3">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={car.modelo}
+                      width={40}
+                      height={40}
+                      className="rounded-md object-contain h-10 w-10"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center">
+                      <CarIcon className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  )}
+                  <span>{car.marca} {car.modelo}</span>
+                </div>
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <Button variant="link" asChild className="mt-2">
