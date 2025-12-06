@@ -23,31 +23,32 @@ export default function CarCard({ car }: CarCardProps) {
       href={`/car/${car.id}`}
       className="group flex h-full flex-col overflow-hidden rounded-lg bg-card transition-all duration-300 hover:shadow-md"
     >
-      <div className="mb-4">
-        <AspectRatio ratio={16 / 9} className="overflow-hidden rounded-lg bg-muted">
-          {car.imagenUrl ? (
-            <Image
-              src={car.imagenUrl}
-              alt={`${car.marca} ${car.modelo}`}
-              fill
-              className="object-contain transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <CarIcon className="h-12 w-12 text-muted-foreground" />
-            </div>
-          )}
-        </AspectRatio>
-      </div>
+    <div className="h-60 w-full bg-white rounded-xl flex items-center justify-center p-6">
+  {car.imagenUrl ? (
+    <Image
+      src={car.imagenUrl}
+      alt={`${car.marca} ${car.modelo}`}
+      className="max-h-40 max-w-full object-contain"
+      width={280}
+      height={280}
+    />
+  ) : (
+    <CarIcon className="h-12 w-12 text-muted-foreground" />
+  )}
+</div>
 
-      <div className="flex flex-grow flex-col px-4 pb-4">
-        <h3 className="truncate text-base font-semibold text-foreground">
-          {car.marca} {car.modelo}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          {traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}
-        </p>
-        <p className="mt-auto pt-2 text-base font-bold text-foreground">
+
+
+      <div className="flex flex-1 flex-col px-4 pb-4">
+        <div className="flex-grow pt-4">
+            <h3 className="text-base font-semibold text-foreground">
+            {car.marca} {car.modelo}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+            {traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}
+            </p>
+        </div>
+        <p className="pt-2 text-base font-bold text-foreground">
           ${car.precio.toLocaleString('es-MX')}
         </p>
       </div>
