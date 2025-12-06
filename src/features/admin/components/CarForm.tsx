@@ -36,7 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const variantSchema = z.object({
   id: z.string().optional(),
-  color: z.enum(['Rojo', 'Azul', 'Blanco', 'Gris', 'Negro', 'Amarillo', 'Plata', 'Verde'], { required_error: 'El color es requerido.'}),
+  color: z.string().min(1, 'El color es requerido.'),
   precio: z.coerce.number().min(1, 'El precio debe ser mayor a 0.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
@@ -127,7 +127,6 @@ export default function FormularioAuto({
           tipoCombustible: 'Gasoline',
           pasajeros: 5,
           caracteristicas: '',
-          variantes: [],
         });
         replace([]);
       }
@@ -254,7 +253,7 @@ export default function FormularioAuto({
               </TabsContent>
 
               <TabsContent value="variantes" className="flex-grow flex flex-col p-1 overflow-hidden">
-                <ScrollArea className="flex-grow p-3 -m-3">
+                 <div className="flex-grow overflow-y-auto p-3 -m-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
                         <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
@@ -299,7 +298,7 @@ export default function FormularioAuto({
                     ))}
                     <FormMessage>{form.formState.errors.variantes?.message || (form.formState.errors.variantes as any)?.root?.message}</FormMessage>
                   </div>
-                </ScrollArea>
+                </div>
 
                 <div className="pt-4 mt-auto">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
