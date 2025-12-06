@@ -10,6 +10,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  Header,
 } from '@tanstack/react-table';
 
 import {
@@ -30,6 +31,32 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+
+function renderHeader<TData, TValue>(header: Header<TData, TValue>) {
+    const isPlaceholder = header.isPlaceholder;
+    const content = flexRender(
+        header.column.columnDef.header,
+        header.getContext()
+    );
+
+    if (isPlaceholder) {
+        return null;
+    }
+    
+    // Check if the header content is a button (our convention for sortable headers)
+    if (React.isValidElement(content) && content.type === Button) {
+        return (
+            <div className="flex items-center">
+                {content}
+            </div>
+        );
+    }
+    
+    return content;
+}
+
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -80,12 +107,7 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {renderHeader(header)}
                     </TableHead>
                   );
                 })}
