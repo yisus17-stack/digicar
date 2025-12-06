@@ -234,8 +234,8 @@ export default function FormularioAuto({
                     <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="general" className="flex-grow overflow-y-auto p-4 space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <TabsContent value="general" className="flex-grow overflow-y-auto py-3 px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
                     <FormField name="marca" control={form.control} render={({ field }) => (
                         <FormItem>
                             <FormLabel>Marca *</FormLabel>
