@@ -98,18 +98,8 @@ function BarraLateralAdmin() {
             </Button>
         </div>
       </div>
-
-      <div className="p-4">
-        <div className="relative">
-            <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground", { 'hidden': estaCerrada })} />
-             <Button variant="ghost" size="icon" className={cn('mx-auto', { 'hidden': !estaCerrada })}>
-                <Search className="h-5 w-5" />
-             </Button>
-            <Input placeholder="Autos" className={cn("pl-9", { 'hidden': estaCerrada })} />
-        </div>
-      </div>
       
-      <nav className="flex-1 flex-col gap-2 p-2">
+      <nav className="flex-1 flex-col gap-2 p-4">
         {elementosNav.map((item) => {
            const isActive = pathname === item.href;
            return (
@@ -296,5 +286,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
       </div>
   );
 }
+
+    
 
     
