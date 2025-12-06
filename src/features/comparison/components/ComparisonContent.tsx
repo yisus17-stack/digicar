@@ -3,8 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
+import { collection, doc, updateDoc, setDoc, arrayUnion } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
@@ -12,7 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle } from 'lucide-react';
+import { Car as CarIcon, PlusCircle, Save, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+
 
 const EsqueletoComparacion = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -119,8 +123,11 @@ const CarSelector = ({
 
 export default function ComparisonContent() {
   const firestore = useFirestore();
+  const { user, loading: loadingUser } = useUser();
+  const router = useRouter();
   const [car1, setCar1] = useState<Car | undefined>(undefined);
   const [car2, setCar2] = useState<Car | undefined>(undefined);
+  const [isSaving, setIsSaving] = useState(false);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
@@ -137,16 +144,34 @@ export default function ComparisonContent() {
     }
   }, [todosLosAutos]);
 
-  if (isLoading || !todosLosAutos) {
-    return <EsqueletoComparacion />;
-  }
-
   const handleSelectCar1 = (carId: string) => {
-    setCar1(todosLosAutos.find(c => c.id === carId));
+    setCar1(todosLosAutos?.find(c => c.id === carId));
   };
 
   const handleSelectCar2 = (carId: string) => {
-    setCar2(todosLosAutos.find(c => c.id === carId));
+    setCar2(todosLosAutos?.find(c => c.id === carId));
+  };
+
+  const handleSaveComparison = async () => {
+    if (!user) {
+      router.push('/login?redirect=/comparacion');
+      return;
+    }
+    if (!car1 || !car2) return;
+
+    setIsSaving(true);
+    
+    // Aquí irá la lógica para guardar en Firestore
+    // Por ahora, simularemos un guardado exitoso
+    setTimeout(() => {
+        Swal.fire({
+            title: '¡Comparación Guardada!',
+            text: 'Puedes ver tus comparaciones en tu perfil.',
+            icon: 'success',
+            confirmButtonColor: '#595c97',
+        });
+        setIsSaving(false);
+    }, 1000);
   };
   
   const features = [
@@ -172,11 +197,15 @@ export default function ComparisonContent() {
     const value = car[key as keyof Car] as string | number;
     return value || '-';
   }
+  
+  if (isLoading || !todosLosAutos || loadingUser) {
+    return <EsqueletoComparacion />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
         <Breadcrumbs items={[{ label: 'Comparar' }]} />
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                 Comparación de Modelos
             </h1>
@@ -192,8 +221,13 @@ export default function ComparisonContent() {
             </div>
 
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row justify-between items-center">
                     <CardTitle>Especificaciones</CardTitle>
+                     <Button onClick={handleSaveComparison} disabled={!car1 || !car2 || isSaving}>
+                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        <Save className="mr-2 h-4 w-4" />
+                        Guardar Comparación
+                    </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {features.map(feature => (
