@@ -88,7 +88,7 @@ export default function PaginaDetalleAuto() {
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
         {/* Columna Izquierda: Galería de Imágenes */}
         <div className="space-y-4">
            <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
@@ -110,8 +110,8 @@ export default function PaginaDetalleAuto() {
 
         {/* Columna Derecha: Información y Compra */}
         <div className="relative">
-          <div className="lg:sticky top-24">
-            <Card>
+          <div className="lg:sticky top-24 h-full">
+            <Card className="h-full">
               <CardContent className="p-6 space-y-6">
                 <div>
                     <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
