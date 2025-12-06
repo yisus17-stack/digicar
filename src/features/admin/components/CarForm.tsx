@@ -50,7 +50,7 @@ const esquemaFormulario = z.object({
   tipo: z.string({ required_error: 'El tipo es requerido.' }).min(1, 'El tipo es requerido.'),
   cilindrosMotor: z.coerce.number().min(1, 'Debes seleccionar los cilindros.'),
   transmision: z.string().min(1, 'La transmisión es requerida.'),
-  tipoCombustible: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid'], { required_error: 'Debes seleccionar el tipo de combustible.' }),
+  tipoCombustible: z.string().refine(val => val !== '', { message: "Debes seleccionar el tipo de combustible." }),
   pasajeros: z.coerce.number().min(1, 'El número de pasajeros es requerido.'),
   caracteristicas: z.string().optional(),
   variantes: z.array(variantSchema).min(1, "Debes añadir al menos una variante de color."),
@@ -166,6 +166,7 @@ export default function FormularioAuto({
       ...data,
       anio: Number(data.anio),
       tipo: data.tipo as any,
+      tipoCombustible: data.tipoCombustible as 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid',
       caracteristicas: data.caracteristicas
         ? data.caracteristicas
             .split(',')
