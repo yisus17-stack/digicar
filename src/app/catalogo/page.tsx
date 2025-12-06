@@ -256,12 +256,20 @@ function CatalogPageContent() {
     return (
         <div className="container mx-auto px-4 py-8 pb-32">
             <Breadcrumbs items={[{ label: 'Catálogo' }]} />
-            <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
+            <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
+                <AnimatePresence>
                 {showFilters && (
-                    <aside className="hidden lg:block lg:w-1/4 sticky top-24">
+                    <motion.aside 
+                        className="hidden lg:block lg:w-1/4 sticky top-24"
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -50, transition: { duration: 0.3 } }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                    >
                         {filterComponent}
-                    </aside>
+                    </motion.aside>
                 )}
+                </AnimatePresence>
                 
                 <main className="flex-1">
                     <div className='flex justify-between items-center mb-6'>
