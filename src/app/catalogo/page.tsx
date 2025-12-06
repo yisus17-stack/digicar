@@ -330,7 +330,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </main>
+                </motion.main>
             </div>
              <ComparisonBar 
                 selectedIds={comparisonIds}
@@ -350,5 +350,7 @@ export default function Catalog() {
         </Suspense>
     )
 }
+
+    
 
     
