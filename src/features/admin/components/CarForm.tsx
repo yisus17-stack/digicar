@@ -29,9 +29,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { X, Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { X, Loader2, PlusCircle, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Car, Marca, Color, Transmision, CarVariant } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
+import Swal from 'sweetalert2';
 
 const variantSchema = z.object({
   id: z.string().optional(),
@@ -78,6 +80,8 @@ export default function FormularioAuto({
   isSaving,
 }: PropsFormularioAuto) {
   
+  const [activeVariantIndex, setActiveVariantIndex] = useState(0);
+
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
     mode: 'onTouched',
@@ -131,6 +135,7 @@ export default function FormularioAuto({
         });
         replace([]);
       }
+      setActiveVariantIndex(0);
     }
   }, [auto, estaAbierto, form, replace]);
 
@@ -173,12 +178,44 @@ export default function FormularioAuto({
   };
   
   const addVariant = () => {
-    append({
+    const newVariant = {
         id: `new_${Date.now()}_${Math.random()}`,
         color: '',
         precio: '' as any,
         imagenUrl: '',
+    };
+    append(newVariant);
+    setActiveVariantIndex(fields.length); // Switch to the new variant
+  }
+
+  const removeVariant = (index: number) => {
+    Swal.fire({
+      title: '¿Eliminar variante?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#595c97',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        remove(index);
+        if (activeVariantIndex >= index && activeVariantIndex > 0) {
+          setActiveVariantIndex(activeVariantIndex - 1);
+        } else if (fields.length === 1) {
+            setActiveVariantIndex(0);
+        }
+      }
     });
+  }
+
+  const navigateVariant = (direction: 'next' | 'prev') => {
+    if (direction === 'next') {
+        setActiveVariantIndex(prev => Math.min(prev + 1, fields.length - 1));
+    } else {
+        setActiveVariantIndex(prev => Math.max(prev - 1, 0));
+    }
   }
 
   return (
@@ -261,10 +298,32 @@ export default function FormularioAuto({
               </TabsContent>
               
               <TabsContent value="variantes" className="flex-grow flex flex-col overflow-hidden p-4">
-                <div className="flex-grow space-y-4 overflow-y-auto pr-4">
+                 {fields.length > 0 && (
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                        <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
+                            <ChevronLeft className="h-5 w-5" />
+                        </Button>
+                        <div className="flex items-center gap-2">
+                           {fields.map((_, index) => (
+                             <button key={`dot-${index}`} type="button" onClick={() => setActiveVariantIndex(index)} className={cn("h-2 w-2 rounded-full transition-colors", activeVariantIndex === index ? 'bg-primary' : 'bg-muted-foreground/50 hover:bg-muted-foreground')}></button>
+                           ))}
+                        </div>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('next')} disabled={activeVariantIndex === fields.length - 1}>
+                            <ChevronRight className="h-5 w-5" />
+                        </Button>
+                    </div>
+                )}
+                
+                <div className="flex-grow space-y-4 overflow-y-auto pr-2">
                   {fields.map((field, index) => (
-                    <div key={field.id} className="border p-4 rounded-lg space-y-4">
-                      <h4 className="font-semibold">Variante {index + 1}</h4>
+                    <div key={field.id} className={cn("border p-4 rounded-lg space-y-4", activeVariantIndex === index ? 'block' : 'hidden')}>
+                      <div className='flex justify-between items-center'>
+                        <h4 className="font-semibold">Variante {index + 1} de {fields.length}</h4>
+                        <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(index)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Eliminar Variante
+                        </Button>
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
                             <FormItem>
@@ -296,21 +355,15 @@ export default function FormularioAuto({
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                             )}
                           </div>
-                          <FormMessage />
+                           <FormField control={form.control} name={`variantes.${index}.imagenUrl`} render={() => <FormMessage />} />
                       </FormItem>
-                      <div className="flex justify-end">
-                          <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Eliminar Variante
-                          </Button>
-                      </div>
                     </div>
                   ))}
                   <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
                 </div>
-                <div className="pt-4 mt-2">
+                 <div className="pt-4 mt-auto">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
-                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
+                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nueva Variante
                   </Button>
                 </div>
               </TabsContent>
