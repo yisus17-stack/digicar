@@ -304,7 +304,7 @@ export default function FormularioAuto({
                 </TabsContent>
                 
                 <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
-                    <div className='flex-grow overflow-y-auto pr-4'>
+                    <div className="flex-grow overflow-y-auto pr-2">
                         {fields.length > 0 && (
                             <div className="flex items-center justify-center gap-4 mb-4">
                                 <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
@@ -325,7 +325,7 @@ export default function FormularioAuto({
                         <div key={field.id} className={cn("border p-4 rounded-lg space-y-4", activeVariantIndex === index ? 'block' : 'hidden')}>
                             <div className='flex justify-between items-center'>
                             <h4 className="font-semibold">Variante {index + 1}</h4>
-                            {fields.length > 1 && (
+                            {fields.length > 0 && (
                                 <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(index)}>
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Eliminar Variante
@@ -379,13 +379,15 @@ export default function FormularioAuto({
                         </div>
                         ))}
                     </div>
-                    <FormMessage className="h-5 pt-2">{form.formState.errors.variantes?.root?.message}</FormMessage>
-
-                    <div className="pt-4 mt-auto">
-                        <Button type="button" variant="outline" onClick={addVariant} className="w-full">
-                        <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nueva Variante
-                        </Button>
+                    
+                    <div className="flex-shrink-0 pt-4">
+                      <Button type="button" variant="outline" onClick={addVariant} className="w-full">
+                          <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nueva Variante
+                      </Button>
                     </div>
+
+                    <FormMessage className="h-5 pt-2 flex-shrink-0">{form.formState.errors.variantes?.root?.message}</FormMessage>
+
                 </TabsContent>
                 </Tabs>
             </form>
