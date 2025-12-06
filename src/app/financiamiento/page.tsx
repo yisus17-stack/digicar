@@ -5,7 +5,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
 
 const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -39,12 +39,13 @@ export default function PaginaFinanciamiento() {
         <Breadcrumbs items={[{ label: "Financiamiento" }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-            Planes de Financiamiento
+            Estrena el auto de tus sueños
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Descubre la mejor manera de estrenar el auto de tus sueños.
+            Utiliza nuestra calculadora para encontrar el plan de financiamiento perfecto para ti.
             </p>
         </div>
+        <FinancingCalculator allCars={autos} />
         </div>
     );
 }
