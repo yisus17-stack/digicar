@@ -122,21 +122,24 @@ export default function PaginaDetalleAuto() {
           <div className="lg:sticky top-24 h-full">
             <Card className="h-full">
               <CardContent className="p-6 space-y-6">
-                {brandLogoUrl && (
-                  <div className="absolute top-4 right-4 h-12 w-20">
-                    <Image 
-                      src={brandLogoUrl}
-                      alt={`${auto.marca} logo`}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                )}
-                <div>
-                    <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
-                    <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
-                    <p className="text-3xl font-bold text-primary pt-2">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
+                        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
+                    </div>
+                    {brandLogoUrl && (
+                        <div className="relative h-12 w-20 flex-shrink-0">
+                            <Image 
+                            src={brandLogoUrl}
+                            alt={`${auto.marca} logo`}
+                            fill
+                            className="object-contain"
+                            />
+                        </div>
+                    )}
                 </div>
+
+                <p className="text-3xl font-bold text-primary">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
                 
                 <Separator />
                 
