@@ -104,7 +104,6 @@ export default function FormularioAuto({
   useEffect(() => {
     if (estaAbierto) {
       if (auto) {
-        // Reset main form fields
         form.reset({
           marca: auto.marca,
           modelo: auto.modelo,
@@ -116,7 +115,6 @@ export default function FormularioAuto({
           pasajeros: auto.pasajeros,
           caracteristicas: auto.caracteristicas.join(', '),
         });
-        // Use `replace` for the field array
         replace(auto.variantes || []);
       } else {
         form.reset({
@@ -130,7 +128,7 @@ export default function FormularioAuto({
           pasajeros: 5,
           caracteristicas: '',
         });
-        replace([]); // Also clear variants for a new car
+        replace([]);
       }
     }
   }, [auto, estaAbierto, form, replace]);
@@ -157,7 +155,7 @@ export default function FormularioAuto({
             .map((f) => f.trim())
             .filter((f) => f !== '')
         : [],
-      variantes: data.variantes.map(({ file, ...rest }) => ({ // Exclude 'file' from the final object
+      variantes: data.variantes.map(({ file, ...rest }) => ({
         ...rest,
         id: rest.id || `new_${Date.now()}_${Math.random()}`,
       })),
@@ -174,7 +172,6 @@ export default function FormularioAuto({
     });
   }
 
-
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
@@ -183,133 +180,131 @@ export default function FormularioAuto({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col h-full overflow-hidden">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col flex-grow overflow-hidden">
             <Tabs defaultValue="general" className="flex-grow flex flex-col overflow-hidden">
               <TabsList className="w-full grid grid-cols-2">
                 <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>
                 <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="general" className="flex-grow overflow-y-auto p-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField name="marca" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Marca *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Selecciona una marca" /></SelectTrigger></FormControl>
+                          <SelectContent>{marcas.map((m) => (<SelectItem key={`marca-${m.id ?? m.nombre}`} value={m.nombre}>{m.nombre}</SelectItem>))}</SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField name="modelo" render={({ field }) => (<FormItem><FormLabel>Modelo *</FormLabel><FormControl><Input placeholder="Ej: Civic, Corolla" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField name="anio" render={({ field }) => (<FormItem><FormLabel>Año *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                  <FormField name="tipo" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo de Auto *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Selecciona tipo" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="Sedan">Sedán</SelectItem><SelectItem value="SUV">SUV</SelectItem>
+                            <SelectItem value="Sports">Deportivo</SelectItem><SelectItem value="Truck">Camioneta</SelectItem>
+                            <SelectItem value="Hatchback">Hatchback</SelectItem>
+                          </SelectContent>
+                        </Select><FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField name="cilindrosMotor" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField name="transmision" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Transmisión *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Selecciona transmisión" /></SelectTrigger></FormControl>
+                          <SelectContent>{transmisiones.map((t) => (<SelectItem key={`transmision-${t.id ?? t.nombre}`} value={t.nombre}>{t.nombre}</SelectItem>))}</SelectContent>
+                        </Select><FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField name="tipoCombustible" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Combustible *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Selecciona combustible" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="Gasoline">Gasolina</SelectItem><SelectItem value="Diesel">Diésel</SelectItem>
+                            <SelectItem value="Electric">Eléctrico</SelectItem><SelectItem value="Hybrid">Híbrido</SelectItem>
+                          </SelectContent>
+                        </Select><FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField name="pasajeros" render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                </div>
+                <FormField name="caracteristicas" render={({ field }) => (
+                    <FormItem><FormLabel>Características</FormLabel>
+                      <FormControl><Textarea placeholder="Ej: Aire acondicionado, GPS..." {...field} /></FormControl>
+                      <p className="text-sm text-muted-foreground">Separa cada característica con una coma</p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
 
-              <div className="flex-grow overflow-y-auto mt-4">
-                  <TabsContent value="general" className="p-4 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField name="marca" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Marca *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Selecciona una marca" /></SelectTrigger></FormControl>
-                              <SelectContent>{marcas.map((m) => (<SelectItem key={`marca-${m.id ?? m.nombre}`} value={m.nombre}>{m.nombre}</SelectItem>))}</SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField name="modelo" render={({ field }) => (<FormItem><FormLabel>Modelo *</FormLabel><FormControl><Input placeholder="Ej: Civic, Corolla" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                      <FormField name="anio" render={({ field }) => (<FormItem><FormLabel>Año *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField name="tipo" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Tipo de Auto *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Selecciona tipo" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                <SelectItem value="Sedan">Sedán</SelectItem><SelectItem value="SUV">SUV</SelectItem>
-                                <SelectItem value="Sports">Deportivo</SelectItem><SelectItem value="Truck">Camioneta</SelectItem>
-                                <SelectItem value="Hatchback">Hatchback</SelectItem>
-                              </SelectContent>
-                            </Select><FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField name="cilindrosMotor" render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                      <FormField name="transmision" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Transmisión *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Selecciona transmisión" /></SelectTrigger></FormControl>
-                              <SelectContent>{transmisiones.map((t) => (<SelectItem key={`transmision-${t.id ?? t.nombre}`} value={t.nombre}>{t.nombre}</SelectItem>))}</SelectContent>
-                            </Select><FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField name="tipoCombustible" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Combustible *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Selecciona combustible" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                <SelectItem value="Gasoline">Gasolina</SelectItem><SelectItem value="Diesel">Diésel</SelectItem>
-                                <SelectItem value="Electric">Eléctrico</SelectItem><SelectItem value="Hybrid">Híbrido</SelectItem>
-                              </SelectContent>
-                            </Select><FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField name="pasajeros" render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    </div>
-                    <FormField name="caracteristicas" render={({ field }) => (
-                        <FormItem><FormLabel>Características</FormLabel>
-                          <FormControl><Textarea placeholder="Ej: Aire acondicionado, GPS..." {...field} /></FormControl>
-                          <p className="text-sm text-muted-foreground">Separa cada característica con una coma</p>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="variantes" className="p-1 h-full flex flex-col">
-                    <ScrollArea className="flex-grow p-3 -m-3">
-                      <div className="space-y-4">
-                        {fields.map((field, index) => (
-                            <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
-                                <h4 className="font-semibold">Variante {index + 1}</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Color *</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
-                                                <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
-                                            </Select><FormMessage />
-                                        </FormItem>
-                                    )}/>
-                                    <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
-                                        <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                                    )}/>
-                                </div>
-                                <FormItem>
-                                    <FormLabel>Imagen *</FormLabel>
-                                    <div className="flex items-center gap-4">
-                                    <FormControl>
-                                        <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                                            Elegir archivo
-                                            <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
-                                        </label>
-                                    </FormControl>
-                                    {fields[index].imagenUrl ? (
-                                        <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                            <img src={fields[index].imagenUrl} alt="Vista previa" className="object-contain w-full h-full" />
-                                        </div>
-                                    ) : (
-                                        <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
-                                    )}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
-                                <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => remove(index)}>
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
+              <TabsContent value="variantes" className="flex-grow flex flex-col overflow-hidden p-1">
+                <ScrollArea className="flex-grow p-3 -m-3">
+                  <div className="space-y-4">
+                    {fields.map((field, index) => (
+                        <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
+                            <h4 className="font-semibold">Variante {index + 1}</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Color *</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
+                                            <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
+                                        </Select><FormMessage />
+                                    </FormItem>
+                                )}/>
+                                <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
+                                    <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                                )}/>
                             </div>
-                        ))}
-                        <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
-                      </div>
-                    </ScrollArea>
-                    <div className="pt-4 mt-auto">
-                      <Button type="button" variant="outline" onClick={addVariant} className="w-full">
-                          <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
-                      </Button>
-                    </div>
-                  </TabsContent>
-              </div>
+                            <FormItem>
+                                <FormLabel>Imagen *</FormLabel>
+                                <div className="flex items-center gap-4">
+                                <FormControl>
+                                    <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                        Elegir archivo
+                                        <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
+                                    </label>
+                                </FormControl>
+                                {fields[index].imagenUrl ? (
+                                    <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                        <img src={fields[index].imagenUrl} alt="Vista previa" className="object-contain w-full h-full" />
+                                    </div>
+                                ) : (
+                                    <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
+                                )}
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                            <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => remove(index)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    ))}
+                    <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
+                  </div>
+                </ScrollArea>
+                <div className="pt-4 mt-auto">
+                  <Button type="button" variant="outline" onClick={addVariant} className="w-full">
+                      <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
+                  </Button>
+                </div>
+              </TabsContent>
             </Tabs>
             
             <DialogFooter className="pt-4 mt-auto border-t">
@@ -321,7 +316,6 @@ export default function FormularioAuto({
                 </Button>
               </div>
             </DialogFooter>
-
           </form>
         </Form>
       </DialogContent>
