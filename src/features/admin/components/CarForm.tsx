@@ -38,7 +38,7 @@ import Swal from 'sweetalert2';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(1, 'El precio es requerido.'),
+  precio: z.coerce.number().min(200000, 'El precio mínimo debe ser de $200,000.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
