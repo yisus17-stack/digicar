@@ -1,15 +1,18 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import PaginaComparacion from "@/features/comparison/components/ComparisonPage";
-import { GitCompareArrows } from "lucide-react";
+import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { GitCompareArrows, Car as CarIcon, PlusCircle } from 'lucide-react';
 
 const EsqueletoComparacion = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -26,32 +29,135 @@ const EsqueletoComparacion = () => (
     </div>
 );
 
+const CarSelector = ({
+  selectedCar,
+  allCars,
+  onSelect,
+  otherCarId,
+}: {
+  selectedCar?: Car;
+  allCars: Car[];
+  onSelect: (carId: string) => void;
+  otherCarId?: string;
+}) => {
+  const availableCars = allCars.filter(c => c.id !== otherCarId);
+  const displayVariant = selectedCar?.variantes?.[0];
+  const imageUrl = displayVariant?.imagenUrl ?? selectedCar?.imagenUrl;
+  const price = displayVariant?.precio ?? selectedCar?.precio ?? 0;
+
+  if (selectedCar) {
+    return (
+      <Card className="overflow-hidden md:col-span-1 w-full">
+        <div className="aspect-video relative bg-muted">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={`${selectedCar.marca} ${selectedCar.modelo}`}
+              fill
+              className="object-contain"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <CarIcon className="w-12 h-12 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+        <CardHeader>
+          <CardTitle>
+            <Link href={`/catalogo/auto/${selectedCar.id}`} className="hover:underline">
+              {selectedCar.marca} {selectedCar.modelo}
+            </Link>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-bold">${price > 0 ? price.toLocaleString('es-MX') : 'N/A'}</p>
+          <p className="text-sm text-muted-foreground">{selectedCar.anio}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="w-full h-full min-h-[300px] flex flex-col items-center justify-center border-dashed p-4">
+      <PlusCircle className="h-10 w-10 text-muted-foreground mb-4" />
+      <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
+      <Select onValueChange={onSelect}>
+        <SelectTrigger className="w-full max-w-xs">
+          <SelectValue placeholder="Seleccionar un auto" />
+        </SelectTrigger>
+        <SelectContent>
+          {availableCars.map(car => (
+            <SelectItem key={car.id} value={car.id}>
+              {car.marca} {car.modelo}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Button variant="link" asChild className="mt-2">
+        <Link href="/catalogo">O buscar en catálogo</Link>
+      </Button>
+    </Card>
+  );
+};
+
+
 function ContenidoComparacion() {
   const firestore = useFirestore();
-  const [ids, setIds] = useState<string[]>([]);
+  const [car1, setCar1] = useState<Car | undefined>(undefined);
+  const [car2, setCar2] = useState<Car | undefined>(undefined);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
   useEffect(() => {
-    const storedIds = sessionStorage.getItem('comparisonIds');
-    if (storedIds) {
-      setIds(JSON.parse(storedIds));
-      // Limpia para que no se reutilice en futuras visitas a la página
-      // sessionStorage.removeItem('comparisonIds'); 
+    if (todosLosAutos) {
+      const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
+      if (storedIds.length > 0) {
+        setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
+        if (storedIds.length > 1) {
+          setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
+        }
+      }
     }
+  }, [todosLosAutos]);
 
-    // Limpiar al desmontar el componente (cuando el usuario navega fuera)
-    return () => {
-      sessionStorage.removeItem('comparisonIds');
-    };
-  }, []);
-  
   if (isLoading || !todosLosAutos) {
-      return <EsqueletoComparacion />;
+    return <EsqueletoComparacion />;
   }
 
-  const autosAComparar = todosLosAutos.filter(auto => ids.includes(auto.id)).slice(0, 2);
+  const handleSelectCar1 = (carId: string) => {
+    setCar1(todosLosAutos.find(c => c.id === carId));
+  };
+
+  const handleSelectCar2 = (carId: string) => {
+    setCar2(todosLosAutos.find(c => c.id === carId));
+  };
+  
+  const autosAComparar = [car1, car2].filter((c): c is Car => !!c);
+
+  const features = [
+    { label: "Precio", key: 'precio' },
+    { label: "Año", key: 'anio' },
+    { label: "Tipo", key: 'tipo' },
+    { label: "Combustible", key: 'tipoCombustible' },
+    { label: "Transmisión", key: 'transmision' },
+    { label: "Cilindros", key: 'cilindrosMotor' },
+    { label: "Pasajeros", key: 'pasajeros' },
+    { label: "Color", key: 'color' },
+  ];
+
+  const formatValue = (key: string, car?: Car) => {
+    if (!car) return '-';
+    if (key === 'precio') {
+        const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
+        return price > 0 ? `$${price.toLocaleString('es-MX')}` : '-';
+    }
+    if (key === 'color') {
+        return car.variantes?.[0]?.color ?? car.color ?? '-';
+    }
+    const value = car[key as keyof Car] as string | number;
+    return value || '-';
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -61,24 +167,61 @@ function ContenidoComparacion() {
                 Comparación de Modelos
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                Así es como se comparan los vehículos que seleccionaste.
+                Analiza las diferencias clave entre tus opciones seleccionadas.
             </p>
         </div>
-         {autosAComparar.length < 1 ? (
-            <div className="text-center">
-                <GitCompareArrows className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h2 className="mt-4 text-2xl font-bold tracking-tight">Selecciona Autos para Comparar</h2>
-                <p className="mt-2 text-lg text-muted-foreground">Por favor, selecciona al menos un auto del catálogo para ver la comparación.</p>
-                <Button asChild className="mt-6">
-                <Link href="/catalogo">Ir al Catálogo</Link>
-                </Button>
+        
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <CarSelector selectedCar={car1} allCars={todosLosAutos} onSelect={handleSelectCar1} otherCarId={car2?.id} />
+                <CarSelector selectedCar={car2} allCars={todosLosAutos} onSelect={handleSelectCar2} otherCarId={car1?.id} />
             </div>
-        ) : (
-            <PaginaComparacion 
-              autos={autosAComparar as [Car] | [Car, Car]} 
-              todosLosAutos={todosLosAutos}
-            />
-        )}
+
+            {autosAComparar.length > 0 ? (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Especificaciones</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {features.map(feature => (
+                            <div key={feature.key}>
+                                <div className="grid grid-cols-3 items-center gap-4">
+                                    <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
+                                    <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car1)}</div>
+                                    <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car2)}</div>
+                                </div>
+                                <Separator className="mt-4"/>
+                            </div>
+                        ))}
+                        <div>
+                            <div className="grid grid-cols-3 items-start gap-4">
+                                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
+                                <div className="text-center col-span-1">
+                                    <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                                        {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
+                                    </ul>
+                                </div>
+                                <div className="text-center col-span-1">
+                                    <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                                        {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
+                                    </ul>
+                                </div>
+                            </div>
+                            <Separator className="mt-4"/>
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : (
+                <div className="text-center py-16">
+                    <GitCompareArrows className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h2 className="mt-4 text-2xl font-bold tracking-tight">Comienza a Comparar</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">Selecciona hasta dos vehículos para ver sus diferencias lado a lado.</p>
+                    <Button asChild className="mt-6">
+                        <Link href="/catalogo">Ir al Catálogo</Link>
+                    </Button>
+                </div>
+            )}
+        </div>
     </div>
   );
 }
