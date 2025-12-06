@@ -220,7 +220,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[900px]">
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -380,7 +380,7 @@ export default function FormularioAuto({
                         ))}
                     </div>
                     
-                    <div className="flex-shrink-0 pt-4">
+                    <div className="flex-shrink-0 pt-4 mt-2">
                       <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                           <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nueva Variante
                       </Button>
@@ -392,7 +392,7 @@ export default function FormularioAuto({
                 </Tabs>
             </form>
         </Form>
-        <DialogFooter className="pt-4 mt-2 border-t">
+        <DialogFooter>
             <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
             <Button type="submit" form="auto-form" disabled={isSaving}>
                 {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
