@@ -133,8 +133,6 @@ function ContenidoComparacion() {
     setCar2(todosLosAutos.find(c => c.id === carId));
   };
   
-  const autosAComparar = [car1, car2].filter((c): c is Car => !!c);
-
   const features = [
     { label: "Precio", key: 'precio' },
     { label: "Año", key: 'anio' },
@@ -177,50 +175,39 @@ function ContenidoComparacion() {
                 <CarSelector selectedCar={car2} allCars={todosLosAutos} onSelect={handleSelectCar2} otherCarId={car1?.id} />
             </div>
 
-            {autosAComparar.length > 0 ? (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Especificaciones</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {features.map(feature => (
-                            <div key={feature.key}>
-                                <div className="grid grid-cols-3 items-center gap-4">
-                                    <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
-                                    <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car1)}</div>
-                                    <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car2)}</div>
-                                </div>
-                                <Separator className="mt-4"/>
-                            </div>
-                        ))}
-                        <div>
-                            <div className="grid grid-cols-3 items-start gap-4">
-                                <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
-                                <div className="text-center col-span-1">
-                                    <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                                        {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
-                                    </ul>
-                                </div>
-                                <div className="text-center col-span-1">
-                                    <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                                        {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
-                                    </ul>
-                                </div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Especificaciones</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {features.map(feature => (
+                        <div key={feature.key}>
+                            <div className="grid grid-cols-3 items-center gap-4">
+                                <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
+                                <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car1)}</div>
+                                <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car2)}</div>
                             </div>
                             <Separator className="mt-4"/>
                         </div>
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="text-center py-16">
-                    <GitCompareArrows className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <h2 className="mt-4 text-2xl font-bold tracking-tight">Comienza a Comparar</h2>
-                    <p className="mt-2 text-lg text-muted-foreground">Selecciona hasta dos vehículos para ver sus diferencias lado a lado.</p>
-                    <Button asChild className="mt-6">
-                        <Link href="/catalogo">Ir al Catálogo</Link>
-                    </Button>
-                </div>
-            )}
+                    ))}
+                    <div>
+                        <div className="grid grid-cols-3 items-start gap-4">
+                            <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
+                            <div className="text-center col-span-1">
+                                <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                                    {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
+                                </ul>
+                            </div>
+                            <div className="text-center col-span-1">
+                                <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                                    {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
+                                </ul>
+                            </div>
+                        </div>
+                        <Separator className="mt-4"/>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     </div>
   );
