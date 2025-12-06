@@ -38,7 +38,9 @@ import Swal from 'sweetalert2';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(200000, 'El precio mínimo debe ser de $200,000.'),
+  precio: z.coerce.number({
+    invalid_type_error: 'El precio es requerido.',
+  }).min(200000, 'El precio mínimo debe ser de $200,000.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -203,10 +205,10 @@ export default function FormularioAuto({
     const newVariant = {
         id: `new_${Date.now()}_${Math.random()}`,
         color: '',
-        precio: '' as any,
+        precio: undefined,
         imagenUrl: '',
     };
-    append(newVariant);
+    append(newVariant as any);
     setActiveVariantIndex(fields.length); // Switch to the new variant
   }
 
@@ -422,14 +424,14 @@ export default function FormularioAuto({
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                               <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
                             </Select>
-                            {fieldState.isDirty && <FormMessage className="h-5" />}
+                            {fieldState.isTouched && <FormMessage />}
                           </FormItem>
                         )}/>
                         <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field, fieldState }) => (
                           <FormItem>
                             <FormLabel>Precio *</FormLabel>
                             <FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl>
-                            {fieldState.isDirty && <FormMessage className="h-5" />}
+                            {fieldState.isTouched && <FormMessage />}
                           </FormItem>
                         )}/>
                       </div>
@@ -454,7 +456,7 @@ export default function FormularioAuto({
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                               )}
                             </div>
-                            {fieldState.isDirty && <FormMessage className="h-5"/>}
+                            {fieldState.isTouched && <FormMessage />}
                           </FormItem>
                         )}
                       />
