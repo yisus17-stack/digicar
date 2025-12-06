@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Repeat, CreditCard, User as UserIcon, Shield, List, Loader2, ShieldCheck, Trash2 } from 'lucide-react';
+import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
@@ -20,9 +20,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Swal from 'sweetalert2';
-import { doc, collection, updateDoc, arrayRemove } from 'firebase/firestore';
-import type { Favorite, Car } from '@/core/types';
+import { doc, collection, updateDoc, arrayRemove, query, where, deleteDoc } from 'firebase/firestore';
+import type { Favorite, Car, Comparison } from '@/core/types';
 import CarCard from '@/features/catalog/components/CarCard';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const profileSchema = z.object({
   displayName: z.string(),
@@ -101,11 +103,55 @@ function EsqueletoPerfil() {
   );
 }
 
+const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Comparison, allCars: Car[], onRemove: (id: string) => void }) => {
+    const car1 = allCars.find(c => c.id === comparison.carId1);
+    const car2 = allCars.find(c => c.id === comparison.carId2);
+    const router = useRouter();
+
+    if (!car1 || !car2) return null;
+
+    const car1Image = car1.variantes?.[0]?.imagenUrl ?? car1.imagenUrl;
+    const car2Image = car2.variantes?.[0]?.imagenUrl ?? car2.imagenUrl;
+
+    const handleView = () => {
+        sessionStorage.setItem('comparisonIds', JSON.stringify([car1.id, car2.id]));
+        router.push('/comparacion');
+    }
+
+    return (
+        <Card className="overflow-hidden">
+            <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                    <div className="flex-1 flex flex-col items-center text-center">
+                        {car1Image && <Image src={car1Image} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        <p className="font-semibold text-sm">{car1.marca} {car1.modelo}</p>
+                    </div>
+                    <GitCompareArrows className="h-6 w-6 text-muted-foreground flex-shrink-0" />
+                    <div className="flex-1 flex flex-col items-center text-center">
+                        {car2Image && <Image src={car2Image} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        <p className="font-semibold text-sm">{car2.marca} {car2.modelo}</p>
+                    </div>
+                </div>
+                 <div className="mt-4 pt-4 border-t flex justify-between items-center">
+                    <p className="text-xs text-muted-foreground">
+                        Guardado el {new Date(comparison.createdAt.seconds * 1000).toLocaleDateString()}
+                    </p>
+                    <div>
+                        <Button variant="ghost" size="sm" onClick={handleView}>Ver</Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(comparison.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('favorites');
   const [isSaving, setIsSaving] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
@@ -124,6 +170,13 @@ export default function PaginaPerfil() {
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading: cargandoTodosLosAutos } = useCollection<Car>(coleccionAutos);
 
+  const queryComparaciones = useMemoFirebase(() => {
+    if (!user) return null;
+    return query(collection(firestore, 'comparaciones'), where('userId', '==', user.uid));
+  }, [user, firestore]);
+  const { data: comparaciones, isLoading: cargandoComparaciones } = useCollection<Comparison>(queryComparaciones);
+
+
   const autosFavoritos = useMemo(() => {
     if (!favoritos || !todosLosAutos) return [];
     return todosLosAutos.filter(auto => favoritos.carIds.includes(auto.id));
@@ -140,7 +193,7 @@ export default function PaginaPerfil() {
   }, [user, loading, router, form, adminUid]);
 
 
-  if (loading || !user || cargandoFavoritos || cargandoTodosLosAutos) {
+  if (loading || !user || cargandoFavoritos || cargandoTodosLosAutos || cargandoComparaciones) {
     return <EsqueletoPerfil />;
   }
   
@@ -150,6 +203,26 @@ export default function PaginaPerfil() {
       carIds: arrayRemove(carId)
     });
   };
+
+    const handleRemoveComparison = async (comparisonId: string) => {
+        if (!user) return;
+        const result = await Swal.fire({
+            title: '¿Eliminar comparación?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#595c97',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            await deleteDoc(doc(firestore, 'comparaciones', comparisonId));
+            Swal.fire('Eliminada', 'Tu comparación ha sido eliminada.', 'success');
+        }
+    };
+
 
   const handleProfileUpdate = async (data: ProfileFormData) => {
     if (!user) return;
@@ -175,21 +248,10 @@ export default function PaginaPerfil() {
   };
 
   const menuItems = [
-    { id: 'overview', label: 'Resumen', icon: List },
-    { id: 'favorites', label: 'Favoritos', icon: Heart },
+    { id: 'favorites', label: 'Mis Favoritos', icon: Heart },
+    { id: 'comparisons', label: 'Mis Comparaciones', icon: Repeat },
     { id: 'settings', label: 'Configuración', icon: UserIcon },
     { id: 'security', label: 'Seguridad', icon: Shield },
-  ];
-
-  const actividadReciente = [
-    { icon: Heart, text: 'Agregaste un Toyota Camry a favoritos.', time: 'hace 5 minutos' },
-    { icon: Repeat, text: 'Comparaste un Honda CR-V y un Ford F-150.', time: 'hace 1 hora' },
-    { icon: CreditCard, text: 'Guardaste una simulación de financiamiento.', time: 'hace 3 horas' },
-  ];
-
-  const simulacionesGuardadas = [
-    { name: "Plan Camry XSE", date: "Guardado el 2023-11-15", payment: "$8,500 MXN/mes" },
-    { name: "Plan Model 3 LR", date: "Guardado el 2023-11-10", payment: "$12,300 MXN/mes" },
   ];
 
   return (
@@ -238,54 +300,11 @@ export default function PaginaPerfil() {
             </aside>
 
             <main className="lg:col-span-3">
-            {activeTab === 'overview' && (
-                <div className="space-y-8">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-xl">Actividad Reciente</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            {actividadReciente.map((item, index) => (
-                                <div key={index} className="flex items-center gap-4">
-                                    <div className="bg-muted p-3 rounded-full">
-                                        <item.icon className="h-5 w-5 text-muted-foreground" />
-                                    </div>
-                                    <div>
-                                        <p>{item.text}</p>
-                                        <p className="text-sm text-muted-foreground">{item.time}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                    <Card>
-                         <CardHeader>
-                            <CardTitle className="text-xl">Simulaciones Guardadas</CardTitle>
-                        </CardHeader>
-                         <CardContent className="space-y-4">
-                            {simulacionesGuardadas.map((item, index) => (
-                                <div key={index} className="flex items-center justify-between border-b pb-4 last:border-b-0">
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-muted p-3 rounded-full">
-                                            <CreditCard className="h-5 w-5 text-muted-foreground" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">{item.name}</p>
-                                            <p className="text-sm text-muted-foreground">{item.date}</p>
-                                        </div>
-                                    </div>
-                                    <p className="font-semibold text-muted-foreground">{item.payment}</p>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
             {activeTab === 'favorites' && (
               <Card>
                 <CardHeader>
                   <CardTitle>Mis Favoritos</CardTitle>
-                  <CardDescription>Los vehículos que has guardado.</CardDescription>
+                  <CardDescription>Los vehículos que has guardado para ver más tarde.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {autosFavoritos.length > 0 ? (
@@ -312,12 +331,40 @@ export default function PaginaPerfil() {
                         Explora nuestro catálogo y guarda los autos que te interesen.
                       </p>
                       <Button asChild className="mt-4">
-                        <a href="/catalogo">Ir al Catálogo</a>
+                        <Link href="/catalogo">Ir al Catálogo</Link>
                       </Button>
                     </div>
                   )}
                 </CardContent>
               </Card>
+            )}
+            {activeTab === 'comparisons' && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Mis Comparaciones</CardTitle>
+                        <CardDescription>Revisa las comparaciones que has guardado.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {comparaciones && comparaciones.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6">
+                                {comparaciones.map(comp => (
+                                    <ComparisonItem key={comp.id} comparison={comp} allCars={todosLosAutos} onRemove={handleRemoveComparison}/>
+                                ))}
+                            </div>
+                        ) : (
+                             <div className="text-center py-16">
+                                <Repeat className="mx-auto h-12 w-12 text-muted-foreground" />
+                                <h3 className="mt-4 text-lg font-semibold">No tienes comparaciones guardadas</h3>
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Ve al comparador para analizar dos vehículos.
+                                </p>
+                                <Button asChild className="mt-4">
+                                    <Link href="/comparacion">Ir a Comparar</Link>
+                                </Button>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             )}
             {activeTab === 'settings' && (
               <Card>
