@@ -38,9 +38,11 @@ import Swal from 'sweetalert2';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number({
-    invalid_type_error: 'El precio es requerido.',
-  }).min(200000, 'El precio mínimo debe ser de $200,000.'),
+  precio: z.coerce
+    .number({
+      invalid_type_error: 'El precio es requerido.',
+    })
+    .min(200000, 'El precio mínimo debe ser de $200,000.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -87,7 +89,8 @@ export default function FormularioAuto({
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
-    mode: 'onChange',
+    mode: 'onSubmit', // Validate on submit to avoid premature errors
+    reValidateMode: 'onChange',
     defaultValues: {
       marca: '',
       modelo: '',
@@ -289,7 +292,7 @@ export default function FormularioAuto({
                   <FormField name="anio" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>Año *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValuechange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Seleccionar año" />
@@ -423,28 +426,38 @@ export default function FormularioAuto({
                         )}
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name={`variantes.${index}.color`} render={({ field, fieldState }) => (
+                        <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
                           <FormItem>
                             <FormLabel>Color *</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                               <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
                             </Select>
-                            {fieldState.isTouched && <FormMessage />}
+                            <FormMessage />
                           </FormItem>
                         )}/>
-                        <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field, fieldState }) => (
+                        <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
                           <FormItem>
                             <FormLabel>Precio *</FormLabel>
-                            <FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl>
-                            {fieldState.isTouched && <FormMessage />}
+                            <FormControl>
+                                <Input 
+                                    type="number" 
+                                    {...field} 
+                                    value={field.value ?? ''}
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        trigger(`variantes.${index}.precio`);
+                                    }}
+                                />
+                            </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}/>
                       </div>
                       <FormField
                         control={form.control}
                         name={`variantes.${index}.imagenUrl`}
-                        render={({ field: imageField, fieldState }) => (
+                        render={({ field: imageField }) => (
                           <FormItem>
                             <FormLabel>Imagen *</FormLabel>
                             <div className="flex items-center gap-4">
@@ -462,7 +475,7 @@ export default function FormularioAuto({
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                               )}
                             </div>
-                            {fieldState.isTouched && <FormMessage />}
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
