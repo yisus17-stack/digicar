@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(1, 'El precio es requerido y debe ser mayor a 0.'),
+  precio: z.coerce.number().min(0, 'El precio es requerido.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -261,10 +261,10 @@ export default function FormularioAuto({
               </TabsContent>
 
               <TabsContent value="variantes" className="flex flex-col flex-grow p-1 overflow-hidden">
-                <ScrollArea className="flex-1 p-3 -m-3">
+                <ScrollArea className="flex-1 overflow-auto p-3 -m-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
+                        <div key={field.id} className="border p-4 rounded-lg space-y-4">
                             <h4 className="font-semibold">Variante {index + 1}</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
@@ -277,7 +277,7 @@ export default function FormularioAuto({
                                     </FormItem>
                                 )}/>
                                 <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
-                                    <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem>
                                 )}/>
                             </div>
                             <FormItem>
@@ -299,9 +299,12 @@ export default function FormularioAuto({
                                 </div>
                                 <FormMessage />
                             </FormItem>
-                            <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => remove(index)}>
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <div className="flex justify-end">
+                                <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Eliminar Variante
+                                </Button>
+                            </div>
                         </div>
                     ))}
                     <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
