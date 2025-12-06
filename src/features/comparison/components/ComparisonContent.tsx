@@ -200,8 +200,8 @@ export default function ComparisonContent() {
                         <div key={feature.key}>
                             <div className="grid grid-cols-3 items-center gap-4">
                                 <div className="font-semibold text-left text-muted-foreground col-span-1">{feature.label}</div>
-                                <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car1)}</div>
-                                <div className="text-center col-span-1 font-medium">{formatValue(feature.key, car2)}</div>
+                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car1)}</div>
+                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car2)}</div>
                             </div>
                             <Separator className="mt-4"/>
                         </div>
