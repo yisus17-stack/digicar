@@ -14,6 +14,7 @@ import { Car } from '@/core/types';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { traducciones } from '@/lib/translations';
+import type { SortOrder } from '@/app/catalogo/page';
 
 interface CarFiltersProps {
   filters: any;
@@ -21,14 +22,16 @@ interface CarFiltersProps {
   onReset: () => void;
   cars: Car[];
   maxPrice: number;
-  sortComponent?: React.ReactNode;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
+  showSort?: boolean;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
 }
 
 const FilterSkeleton = () => <Skeleton className="h-10 w-full" />;
 
-export default function CarFilters({ filters, onFilterChange, onReset, cars, maxPrice, sortComponent, searchTerm, setSearchTerm }: CarFiltersProps) {
+export default function CarFilters({ filters, onFilterChange, onReset, cars, maxPrice, sortOrder, setSortOrder, showSort, searchTerm, setSearchTerm }: CarFiltersProps) {
   const handleSelectChange = (name: string, value: string) => {
     onFilterChange({ ...filters, [name]: value });
   };
@@ -43,14 +46,28 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
   const uniqueTransmissions = [...new Set(cars.map(car => car.transmision))];
   const uniqueTypes = [...new Set(cars.map(car => car.tipo))];
   const uniqueCylinders = [...new Set(cars.map(car => car.cilindrosMotor.toString()))].filter(c => c !== '0').sort((a, b) => Number(a) - Number(b));
-  const uniqueColors = [...new Set(cars.map(car => car.color))];
+  const uniqueColors = [...new Set(cars.flatMap(car => car.variantes?.map(v => v.color) ?? (car.color ? [car.color] : [])))].filter(Boolean) as string[];
   const uniquePassengers = [...new Set(cars.map(car => car.pasajeros.toString()))].sort((a, b) => Number(a) - Number(b));
+
+  const sortComponent = (
+    <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
+      <SelectTrigger className="w-full md:w-[220px] focus-visible:ring-0 focus-visible:ring-offset-0">
+        <SelectValue placeholder="Ordenar por" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="relevance">Relevancia</SelectItem>
+        <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
+        <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
+        <SelectItem value="year-desc">Año: Más reciente primero</SelectItem>
+      </SelectContent>
+    </Select>
+  );
 
 
   return (
     <div className="p-6 md:border md:rounded-lg md:bg-card h-full flex flex-col">
       <div className="flex-grow space-y-6">
-        {sortComponent && (
+        {showSort && (
             <>
               <div>
                   <Label>Ordenar por</Label>

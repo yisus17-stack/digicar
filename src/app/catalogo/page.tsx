@@ -88,7 +88,7 @@ export function ComparisonBar({ selectedIds, onRemove, onClear, onCompare, allCa
                  <Button variant="outline" size="sm" onClick={onClear} className="flex-grow sm:flex-grow-0">
                     <Trash2 className="mr-2 h-4 w-4" /> Limpiar
                  </Button>
-                 <Button onClick={onCompare} disabled={selectedIds.length < 1} className="flex-grow sm:flex-grow-0">
+                 <Button onClick={onCompare} disabled={selectedIds.length < 2} className="flex-grow sm:flex-grow-0">
                     <GitCompareArrows className="mr-2 h-4 w-4" /> Comparar
                  </Button>
               </div>
@@ -150,6 +150,7 @@ function CatalogPageContent() {
             } else if (prevIds.length < 2) {
                 newIds = [...prevIds, carId];
             } else {
+                // Optionally show a toast or message that max is 2
                 return prevIds;
             }
             sessionStorage.setItem('comparisonIds', JSON.stringify(newIds));
@@ -181,7 +182,7 @@ function CatalogPageContent() {
             if (year !== 'all' && car.anio !== parseInt(year)) return false;
             if (type !== 'all' && car.tipo !== type) return false;
             if (engineCylinders !== 'all' && car.cilindrosMotor !== parseInt(engineCylinders)) return false;
-            if (color !== 'all' && car.variantes?.some(v => v.color === color)) return false;
+            if (color !== 'all' && !(car.variantes?.some(v => v.color === color) || car.color === color)) return false;
             if (passengers !== 'all' && car.pasajeros !== parseInt(passengers)) return false;
             return true;
         });
@@ -231,7 +232,7 @@ function CatalogPageContent() {
         return <CatalogSkeleton />;
     }
     
-    const sortOptions = (
+    const sortComponent = (
         <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
           <SelectTrigger className="w-full md:w-[220px] focus-visible:ring-0 focus-visible:ring-offset-0">
             <SelectValue placeholder="Ordenar por" />
@@ -252,7 +253,9 @@ function CatalogPageContent() {
           onReset={handleResetFilters}
           cars={datosTodosLosAutos}
           maxPrice={MAX_PRICE}
-          sortComponent={isMobile ? sortOptions : undefined}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          showSort={isMobile}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />
@@ -295,7 +298,7 @@ function CatalogPageContent() {
                                 <Button variant="ghost" size="sm" onClick={() => setShowFilters(prev => !prev)}>
                                     <SlidersHorizontal className='mr-2 h-4 w-4' />{showFilters ? "Ocultar filtros" : "Mostrar filtros"}
                                 </Button>
-                                {sortOptions}
+                                {sortComponent}
                             </div>
                         </div>
                     </div>
@@ -303,7 +306,7 @@ function CatalogPageContent() {
                     {paginatedCars.length > 0 ? (
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                             {paginatedCars.map(car => (
-                                <CarCard key={`car-${car.id}`} car={car} />
+                                <CarCard key={`car-${car.id}`} car={car} onToggleCompare={handleToggleCompare} isComparing={comparisonIds.includes(car.id)}/>
                             ))}
                         </div>
                     ) : (
@@ -327,7 +330,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </motion.main>
+                </main>
             </div>
              <ComparisonBar 
                 selectedIds={comparisonIds}

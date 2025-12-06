@@ -38,17 +38,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser, useAuth } from '@/firebase';
-import { signOut } from 'firebase/auth';
+import { useAuth } from '@/firebase';
+import { signOut, type User as FirebaseUser } from 'firebase/auth';
 import Swal from 'sweetalert2';
 
-const SiteHeader = () => {
+interface SiteHeaderProps {
+    user: FirebaseUser | null;
+}
+
+const SiteHeader = ({ user }: SiteHeaderProps) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useUser();
   const auth = useAuth();
   const isAdmin = user?.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
 

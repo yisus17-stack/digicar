@@ -9,7 +9,7 @@ import SiteFooter from '@/components/layout/SiteFooter';
 import { cn } from '@/lib/utils';
 import { Poppins } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
+import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
@@ -20,27 +20,20 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 //   description: 'Explora, compara y simula tu próximo auto con DigiCar.',
 // };
 
-function LayoutContent({ children }: { children: React.ReactNode }) {
+function AppContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, loading } = useUser();
   const isAuthPage = pathname === '/login' || pathname === '/register';
+  const isAdminPage = pathname.startsWith('/admin');
   const isLegalPage = pathname.startsWith('/legal');
-  const showHeaderAndFooter = !isAuthPage && !isLegalPage;
-
+  const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
-        <FirebaseClientProvider>
-          <div className="relative flex min-h-screen flex-col">
-            {showHeaderAndFooter && <SiteHeader />}
-            <div className="flex-1">{children}</div>
-            {showHeaderAndFooter && <SiteFooter />}
-            <AccessibilityWidget />
-          </div>
-          <Toaster />
-        </FirebaseClientProvider>
-      </body>
-    </html>
+    <div className="relative flex min-h-screen flex-col">
+      {showHeaderAndFooter && <SiteHeader user={user} />}
+      <main className="flex-1">{children}</main>
+      {showHeaderAndFooter && <SiteFooter />}
+    </div>
   );
 }
 
@@ -50,5 +43,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <LayoutContent>{children}</LayoutContent>;
+  return (
+    <html lang="es" suppressHydrationWarning>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
+        <FirebaseClientProvider>
+          <AppContent>{children}</AppContent>
+          <Toaster />
+        </FirebaseClientProvider>
+      </body>
+    </html>
+  );
 }
