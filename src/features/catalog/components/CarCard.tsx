@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Car } from '@/core/types';
 import { Car as CarIcon } from 'lucide-react';
-import { traducciones } from '@/lib/translations';
 
 interface CarCardProps {
   car: Car;
@@ -15,7 +14,6 @@ export default function CarCard({ car }: CarCardProps) {
   if (!car) {
     return null;
   }
-  const tipoAuto = car.tipo as keyof (typeof traducciones.tipo);
   
   // Use the first variant for display, or fallback to deprecated fields
   const displayVariant = car.variantes && car.variantes.length > 0 ? car.variantes[0] : null;
@@ -47,7 +45,7 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="flex-grow">
           <h3 className="text-base font-semibold min-h-[48px]">{car.marca} {car.modelo}</h3>
           <p className="text-sm text-muted-foreground">
-            {traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}
+            {car.tipo} • {car.anio}
           </p>
         </div>
         <p className="mt-2 pt-2 text-base font-bold">

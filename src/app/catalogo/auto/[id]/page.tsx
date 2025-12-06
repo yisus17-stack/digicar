@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Zap, Droplets, Gauge, Users, Palette, GitMerge, Settings, Car as IconoAuto } from 'lucide-react';
 import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { traducciones, colorHexMap } from '@/lib/translations';
+import { colorHexMap } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { Car, CarVariant } from '@/core/types';
@@ -125,12 +125,10 @@ export default function PaginaDetalleAuto() {
     notFound();
   }
 
-  const tipoAuto = auto.tipo as keyof (typeof traducciones.tipo);
-
   const detallesAuto = [
-      { icon: Droplets, label: 'Combustible', value: traducciones.tipoCombustible[auto.tipoCombustible as keyof typeof traducciones.tipoCombustible] },
+      { icon: Droplets, label: 'Combustible', value: auto.tipoCombustible },
       { icon: Users, label: 'Pasajeros', value: auto.pasajeros },
-      { icon: GitMerge, label: 'Transmisión', value: traducciones.transmision[auto.transmision as keyof typeof traducciones.transmision] },
+      { icon: GitMerge, label: 'Transmisión', value: auto.transmision },
       { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
   ];
   
@@ -160,12 +158,12 @@ export default function PaginaDetalleAuto() {
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-                <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || auto.tipo} • {auto.anio}</p>
+                <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
                 <h1 className="text-3xl lg:text-4xl font-bold">{auto.marca} {auto.modelo}</h1>
                 <p className="text-3xl font-bold text-primary">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
             </CardHeader>
              <CardContent>
-                <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{traducciones.color[selectedVariant?.color as keyof typeof traducciones.color] || selectedVariant?.color}</span></p>
+                <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
                 <div className="flex flex-wrap gap-2">
                     {auto.variantes?.map(variant => (
                         <button 
@@ -175,10 +173,10 @@ export default function PaginaDetalleAuto() {
                                 "h-8 w-8 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary",
                                 selectedVariant?.id === variant.id ? 'border-primary scale-110' : 'border-transparent'
                             )}
-                            style={{ backgroundColor: colorHexMap[variant.color as keyof typeof colorHexMap] || '#E5E7EB' }}
-                            title={traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}
+                            style={{ backgroundColor: colorHexMap[variant.color] || '#E5E7EB' }}
+                            title={variant.color}
                         >
-                           <span className="sr-only">{traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}</span>
+                           <span className="sr-only">{variant.color}</span>
                         </button>
                     ))}
                 </div>

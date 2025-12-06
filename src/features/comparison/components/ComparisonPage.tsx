@@ -11,7 +11,6 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
-import { traducciones } from '@/lib/translations';
 
 interface PaginaComparacionProps {
   autos: ([Car] | [Car, Car]) & Car[];
@@ -50,35 +49,28 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
 
   const formatValue = (key: string, car?: Car) => {
     if (!car) return '-';
-    const value = car[key as keyof Car] as string | number;
-    
-    switch (key) {
-      case 'precio': return `$${Number(value).toLocaleString('es-MX')}`;
-      case 'tipo': 
-      case 'tipoCombustible': 
-      case 'transmision': 
-      case 'color':
-        const translationKey = key as keyof typeof traducciones;
-        if (translationKey in traducciones) {
-            const valueKey = value as keyof typeof traducciones[typeof translationKey];
-            if (valueKey in traducciones[translationKey]) {
-                return traducciones[translationKey][valueKey];
-            }
-        }
-        return value;
-      default: return value;
+    if (key === 'precio') {
+        const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
+        return `$${price.toLocaleString('es-MX')}`;
     }
+    if (key === 'color') {
+        return car.variantes?.[0]?.color ?? car.color ?? '-';
+    }
+    const value = car[key as keyof Car] as string | number;
+    return value;
   }
   
   const CarSelector = ({ selectedCar, onSelect, position, otherCarId }: { selectedCar?: Car, onSelect: (pos: 'car1' | 'car2', carId: string) => void, position: 'car1' | 'car2', otherCarId?: string }) => {
     const availableCars = todosLosAutos.filter(c => c.id !== otherCarId);
+    const displayVariant = selectedCar?.variantes?.[0];
+    const imageUrl = displayVariant?.imagenUrl ?? selectedCar?.imagenUrl;
     
     if (selectedCar) {
       return (
         <Card className="overflow-hidden md:col-span-1 w-full">
             <div className="aspect-video relative">
-                {selectedCar.imagenUrl ? (
-                    <Image src={selectedCar.imagenUrl} alt={`${selectedCar.marca} ${selectedCar.modelo}`} fill className="object-cover" />
+                {imageUrl ? (
+                    <Image src={imageUrl} alt={`${selectedCar.marca} ${selectedCar.modelo}`} fill className="object-cover" />
                 ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
                         <CarIcon className="w-12 h-12 text-muted-foreground" />

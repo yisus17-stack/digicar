@@ -1,3 +1,4 @@
+'use client';
 
 import { Timestamp } from "firebase/firestore";
 
@@ -13,10 +14,10 @@ export type Car = {
   marca: string;
   modelo: string;
   anio: number;
-  tipoCombustible: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
+  tipoCombustible: 'Gasolina' | 'Diésel' | 'Eléctrico' | 'Híbrido';
   transmision: 'Automática' | 'Manual';
   caracteristicas: string[];
-  tipo: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
+  tipo: 'Sedán' | 'SUV' | 'Deportivo' | 'Camioneta' | 'Hatchback';
   cilindrosMotor: number;
   pasajeros: number;
   variantes: CarVariant[];
