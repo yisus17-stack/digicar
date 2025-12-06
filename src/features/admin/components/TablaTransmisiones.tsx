@@ -7,7 +7,7 @@ import { Edit, Trash2, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Transmision } from '@/core/types';
 import FormularioTransmision from './TransmissionForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs, limit } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
@@ -34,7 +34,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = (transmisionId: string) => {
+  const confirmarEliminar = (transmision: Transmision) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el tipo de transmisión de la base de datos.",
@@ -46,14 +46,28 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        manejarEliminar(transmisionId);
+        manejarEliminar(transmision);
       }
     });
   };
 
-  const manejarEliminar = async (transmisionId: string) => {
-    if (!transmisionId) return;
-    const transmisionRef = doc(firestore, 'transmisiones', transmisionId);
+  const manejarEliminar = async (transmision: Transmision) => {
+    const autosRef = collection(firestore, 'autos');
+    const q = query(autosRef, where('transmision', '==', transmision.nombre), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+        Swal.fire({
+            title: 'No se puede eliminar',
+            text: `El tipo de transmisión "${transmision.nombre}" está siendo utilizada por al menos un auto y no puede ser eliminada.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        return;
+    }
+    
+    if (!transmision.id) return;
+    const transmisionRef = doc(firestore, 'transmisiones', transmision.id);
     try {
         await deleteDoc(transmisionRef);
         Swal.fire({
@@ -155,7 +169,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             <Button variant="outline" size="sm" onClick={() => manejarEditar(transmision)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => transmision.id && confirmarEliminar(transmision.id)}>
+            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(transmision)}>
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>

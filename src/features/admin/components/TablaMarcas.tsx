@@ -7,7 +7,7 @@ import { Edit, Trash2, Tag, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import { useFirestore } from '@/firebase';
-import { collection, doc, updateDoc, deleteDoc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, deleteDoc, setDoc, serverTimestamp, getDoc, query, where, getDocs, limit } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,7 +36,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = async (marcaId: string) => {
+  const confirmarEliminar = async (marca: Marca) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer. Se eliminará la marca y su logo.",
@@ -49,42 +49,58 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     });
 
     if (result.isConfirmed) {
-      try {
-        const marcaRef = doc(firestore, 'marcas', marcaId);
-        const marcaDoc = await getDoc(marcaRef);
-
-        if (marcaDoc.exists()) {
-          const marcaData = marcaDoc.data() as Marca;
-          // Delete logo from storage if it exists
-          if (marcaData.logoUrl) {
-            await deleteImage(marcaData.logoUrl);
-          }
-          // Delete Firestore document
-          await deleteDoc(marcaRef);
-        }
-
-        Swal.fire({
-          title: '¡Eliminada!',
-          text: 'La marca y su logo han sido eliminados con éxito.',
-          icon: 'success',
-          confirmButtonColor: '#595c97',
-        });
-      } catch (error) {
-        console.error("Error deleting brand:", error);
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudo eliminar la marca. Verifica los permisos.',
-          icon: 'error',
-          confirmButtonColor: '#595c97',
-        });
-        const contextualError = new FirestorePermissionError({
-          operation: 'delete',
-          path: `marcas/${marcaId}`,
-        });
-        errorEmitter.emit('permission-error', contextualError);
-      }
+        manejarEliminar(marca);
     }
   };
+
+  const manejarEliminar = async (marca: Marca) => {
+    // Verificar si la marca está siendo usada por algún auto
+    const autosRef = collection(firestore, 'autos');
+    const q = query(autosRef, where('marca', '==', marca.nombre), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+        Swal.fire({
+            title: 'No se puede eliminar',
+            text: `La marca "${marca.nombre}" está siendo utilizada por al menos un auto y no puede ser eliminada.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        return;
+    }
+
+    // Si no está relacionada, proceder a eliminar
+    try {
+        const marcaRef = doc(firestore, 'marcas', marca.id);
+        
+        // Delete logo from storage if it exists
+        if (marca.logoUrl) {
+            await deleteImage(marca.logoUrl);
+        }
+        // Delete Firestore document
+        await deleteDoc(marcaRef);
+
+        Swal.fire({
+            title: '¡Eliminada!',
+            text: 'La marca y su logo han sido eliminados con éxito.',
+            icon: 'success',
+            confirmButtonColor: '#595c97',
+        });
+    } catch (error) {
+        console.error("Error deleting brand:", error);
+        Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar la marca. Verifica los permisos.',
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        const contextualError = new FirestorePermissionError({
+            operation: 'delete',
+            path: `marcas/${marca.id}`,
+        });
+        errorEmitter.emit('permission-error', contextualError);
+    }
+};
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     setIsSaving(true);
@@ -205,7 +221,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => marca.id && confirmarEliminar(marca.id)}>
+            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(marca)}>
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>

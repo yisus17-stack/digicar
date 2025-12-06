@@ -7,7 +7,7 @@ import { Edit, Trash2, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Color } from '@/core/types';
 import FormularioColor from './ColorForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs, limit } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
@@ -35,7 +35,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = (colorId: string) => {
+  const confirmarEliminar = (color: Color) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el color de la base de datos.",
@@ -47,14 +47,40 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        manejarEliminar(colorId);
+        manejarEliminar(color);
       }
     });
   };
 
-  const manejarEliminar = async (colorId: string) => {
-    if (!colorId) return;
-    const colorRef = doc(firestore, 'colores', colorId);
+  const manejarEliminar = async (color: Color) => {
+    const autosRef = collection(firestore, 'autos');
+    const q = query(autosRef, where('variantes', 'array-contains-any', [{color: color.nombre}]), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+        let isUsed = false;
+        querySnapshot.forEach(doc => {
+            const carData = doc.data();
+            if (carData.variantes && Array.isArray(carData.variantes)) {
+                if (carData.variantes.some(v => v.color === color.nombre)) {
+                    isUsed = true;
+                }
+            }
+        });
+
+        if (isUsed) {
+            Swal.fire({
+                title: 'No se puede eliminar',
+                text: `El color "${color.nombre}" está siendo utilizado por al menos un auto y no puede ser eliminado.`,
+                icon: 'error',
+                confirmButtonColor: '#595c97',
+            });
+            return;
+        }
+    }
+    
+    if (!color.id) return;
+    const colorRef = doc(firestore, 'colores', color.id);
     try {
         await deleteDoc(colorRef);
         Swal.fire({
@@ -156,7 +182,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             <Button variant="outline" size="sm" onClick={() => manejarEditar(color)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => color.id && confirmarEliminar(color.id)}>
+            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(color)}>
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>
