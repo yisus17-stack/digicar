@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -7,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 
 const BrandLogosSkeleton = () => (
-    <div className="py-12 bg-muted/50">
+    <div className="py-12 bg-muted">
         <div className="container mx-auto">
             <div className="flex justify-around items-center">
                 {[...Array(5)].map((_, i) => (
@@ -38,7 +39,7 @@ export default function BrandLogos() {
     }
 
     return (
-        <div className="relative w-full overflow-hidden bg-muted/50 py-12">
+        <div className="relative w-full overflow-hidden bg-muted py-12">
             <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
             <div className="flex animate-marquee">
                 {logosToDisplay.map((marca, index) => (
