@@ -12,9 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows } from 'lucide-react';
+import { Car as CarIcon, PlusCircle, Save, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 
 const EsqueletoComparacion = () => (
@@ -161,26 +163,36 @@ export default function ComparisonContent() {
 
     setIsSaving(true);
     
-    try {
-      const comparacionesRef = collection(firestore, 'comparaciones');
-      await addDoc(comparacionesRef, {
+    const comparisonData = {
         userId: user.uid,
         carId1: car1.id,
         carId2: car2.id,
         createdAt: serverTimestamp(),
-      });
+    };
 
-      Swal.fire({
-          title: '¡Comparación Guardada!',
-          text: 'Puedes ver tus comparaciones en tu perfil.',
-          icon: 'success',
-          confirmButtonColor: '#595c97',
-      });
+    try {
+        const comparacionesRef = collection(firestore, 'comparaciones');
+        await addDoc(comparacionesRef, comparisonData);
+
+        Swal.fire({
+            title: '¡Comparación Guardada!',
+            text: 'Puedes ver tus comparaciones en tu perfil.',
+            icon: 'success',
+            confirmButtonColor: '#595c97',
+        });
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
-       Swal.fire({
+        
+        const contextualError = new FirestorePermissionError({
+            operation: 'create',
+            path: 'comparaciones',
+            requestResourceData: comparisonData,
+        });
+        errorEmitter.emit('permission-error', contextualError);
+
+        Swal.fire({
             title: 'Error',
-            text: 'No se pudo guardar la comparación. Inténtalo de nuevo.',
+            text: 'No se pudo guardar la comparación. Verifica los permisos o inténtalo de nuevo.',
             icon: 'error',
             confirmButtonColor: '#595c97',
         });
@@ -258,7 +270,7 @@ export default function ComparisonContent() {
                     <div>
                         <div className="grid grid-cols-3 items-start gap-4">
                             <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
-                            <div className="col-span-1 px-4 text-left">
+                             <div className="col-span-1 px-4 text-left">
                                 <ul className="list-disc list-inside space-y-1 text-sm">
                                     {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>) ?? (car1 && <li>-</li>)}
                                 </ul>
