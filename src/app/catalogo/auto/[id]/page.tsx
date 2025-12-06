@@ -41,15 +41,10 @@ export default function PaginaDetalleAuto() {
   const id = params?.id as string;
   const firestore = useFirestore();
 
-  console.log('Params:', params);
-  console.log('ID:', id);
-
   const refAuto = useMemoFirebase(() => {
     if (!id) return null;
     return doc(firestore, 'autos', id);
   }, [firestore, id]);
-
-  console.log('Ref Auto:', refAuto);
 
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
@@ -118,12 +113,18 @@ export default function PaginaDetalleAuto() {
                     key={v.id}
                     onClick={() => handleVariantSelect(v)}
                     className={cn(
-                      'h-8 w-8 rounded-full border-2 transition-all duration-200',
-                      selectedVariant?.id === v.id ? 'border-primary scale-110' : 'border-transparent'
+                      'h-16 w-16 rounded-md p-1 transition-all duration-200 overflow-hidden',
+                      selectedVariant?.id === v.id ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-border'
                     )}
-                    style={{ backgroundColor: colorHexMap[v.color] || '#E5E7EB' }}
                     title={v.color}
                   >
+                    <Image 
+                      src={v.imagenUrl} 
+                      alt={v.color} 
+                      width={64} 
+                      height={64} 
+                      className="h-full w-full object-cover rounded-sm"
+                    />
                     <span className="sr-only">{v.color}</span>
                   </button>
                 ))}
