@@ -39,11 +39,13 @@ const CarSelector = ({
   allCars,
   onSelect,
   otherCarId,
+  onClear,
 }: {
   selectedCar?: Car;
   allCars: Car[];
   onSelect: (carId: string) => void;
   otherCarId?: string;
+  onClear: () => void;
 }) => {
   const availableCars = allCars.filter(c => c.id !== otherCarId);
   const displayVariant = selectedCar?.variantes?.[0];
@@ -71,6 +73,9 @@ const CarSelector = ({
                 {selectedCar.marca} {selectedCar.modelo}
             </p>
         </Link>
+         <Button variant="link" onClick={onClear} className="text-sm mt-2">
+          Cambiar
+        </Button>
       </div>
     );
   }
@@ -241,10 +246,24 @@ export default function ComparisonContent() {
         </div>
         
         <div className="space-y-8">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center justify-center gap-8">
-                <CarSelector selectedCar={car1} allCars={todosLosAutos} onSelect={handleSelectCar1} otherCarId={car2?.id} />
-                <GitCompareArrows className="h-8 w-8 text-muted-foreground" />
-                <CarSelector selectedCar={car2} allCars={todosLosAutos} onSelect={handleSelectCar2} otherCarId={car1?.id} />
+            <div className="grid grid-cols-[1fr_auto_1fr] items-start justify-center gap-8">
+                <CarSelector 
+                    selectedCar={car1} 
+                    allCars={todosLosAutos} 
+                    onSelect={handleSelectCar1} 
+                    otherCarId={car2?.id} 
+                    onClear={() => setCar1(undefined)}
+                />
+                <div className="flex items-center h-full pt-16">
+                    <GitCompareArrows className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <CarSelector 
+                    selectedCar={car2} 
+                    allCars={todosLosAutos} 
+                    onSelect={handleSelectCar2} 
+                    otherCarId={car1?.id}
+                    onClear={() => setCar2(undefined)}
+                />
             </div>
 
             <Card>
