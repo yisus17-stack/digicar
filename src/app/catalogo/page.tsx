@@ -337,7 +337,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </main>
+                </motion.main>
             </div>
              <ComparisonBar 
                 selectedIds={comparisonIds}
