@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { Car as CarIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const INTEREST_RATE = 0.12; // Tasa de interés anual fija del 12%
 
@@ -18,6 +19,8 @@ interface FinancingCalculatorProps {
 }
 
 export default function FinancingCalculator({ allCars }: FinancingCalculatorProps) {
+  const [step, setStep] = useState(1);
+  const [monthlyBudget, setMonthlyBudget] = useState(5000);
   const [selectedCarId, setSelectedCarId] = useState<string | undefined>(undefined);
   const [downPayment, setDownPayment] = useState(200000);
   const [term, setTerm] = useState(24);
@@ -35,16 +38,10 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
 
   const monthlyPayment = useMemo(() => {
     if (carPrice <= 0 || downPayment >= carPrice) return 0;
-
     const amountToFinance = carPrice - downPayment;
     const monthlyRate = INTEREST_RATE / 12;
-
     if (term === 0) return 0;
-    
-    const payment =
-      (amountToFinance * monthlyRate) /
-      (1 - Math.pow(1 + monthlyRate, -term));
-
+    const payment = (amountToFinance * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
     return payment;
   }, [carPrice, downPayment, term]);
 
@@ -52,14 +49,43 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     setSelectedCarId(id);
     const car = allCars.find(c => c.id === id);
     const price = car?.variantes?.[0]?.precio ?? car?.precio ?? 0;
-    setDownPayment(price * 0.2); // Establecer un enganche inicial del 20%
+    setDownPayment(price * 0.2);
   };
 
   const carImage = selectedCar?.variantes?.[0]?.imagenUrl ?? selectedCar?.imagenUrl;
 
+  if (step === 1) {
+    return (
+        <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-8 space-y-8 text-center">
+                <h2 className="text-2xl font-semibold">¿Cuál es tu presupuesto mensual?</h2>
+                <p className="text-muted-foreground">
+                    Indícanos cuánto te gustaría pagar al mes para poder mostrarte opciones que se ajusten a tu bolsillo.
+                </p>
+                <div className="space-y-4 text-left">
+                    <div className="flex justify-between items-baseline">
+                        <Label htmlFor="monthly-budget">Presupuesto mensual</Label>
+                        <span className="font-bold text-2xl text-primary">$ {monthlyBudget.toLocaleString('es-MX')}</span>
+                    </div>
+                    <Slider
+                        id="monthly-budget"
+                        min={1000}
+                        max={30000}
+                        step={500}
+                        value={[monthlyBudget]}
+                        onValueChange={(vals) => setMonthlyBudget(vals[0])}
+                    />
+                </div>
+                <Button onClick={() => setStep(2)} size="lg">
+                    Siguiente
+                </Button>
+            </CardContent>
+        </Card>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
-      {/* Columna Izquierda: Imagen del Auto y Selector */}
       <div className="lg:col-span-2 space-y-6 sticky top-24">
         <Select onValueChange={handleCarChange} value={selectedCarId}>
           <SelectTrigger className="w-full h-12 text-base">
@@ -110,11 +136,9 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
         </Card>
       </div>
 
-      {/* Columna Derecha: Calculadora */}
       <div className="lg:col-span-3">
         <Card>
           <CardContent className="p-8 space-y-8">
-            {/* Precio del Auto */}
             <div>
               <Label htmlFor="car-price" className="text-muted-foreground">Precio del vehículo</Label>
               <Input
@@ -125,7 +149,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
               />
             </div>
 
-            {/* Slider de Enganche */}
             <div className="space-y-4">
               <div className="flex justify-between items-baseline">
                 <Label htmlFor="down-payment">Enganche</Label>
@@ -142,7 +165,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
               />
             </div>
             
-            {/* Slider de Plazo */}
             <div className="space-y-4">
               <div className="flex justify-between items-baseline">
                 <Label htmlFor="term">Plazo</Label>
@@ -159,7 +181,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
               />
             </div>
 
-            {/* Resultado */}
             <div className="border-t pt-8 text-center">
               <p className="text-muted-foreground">Tu pago mensual estimado es:</p>
               <p className="text-5xl font-bold text-primary tracking-tight mt-2">

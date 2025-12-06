@@ -15,14 +15,7 @@ const EsqueletoFinanciamiento = () => (
             <Skeleton className="h-12 w-1/2 mx-auto" />
             <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-                <Skeleton className="h-96 w-full" />
-            </div>
-            <div className="lg:col-span-3 space-y-8">
-                <Skeleton className="h-96 w-full" />
-            </div>
-        </div>
+        <Skeleton className="h-96 w-full" />
     </div>
 );
 
@@ -43,7 +36,7 @@ export default function PaginaFinanciamiento() {
             Estrena el auto de tus sueños
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Utiliza nuestra calculadora para encontrar el plan de financiamiento perfecto para ti.
+            Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
             </p>
         </div>
         <FinancingCalculator allCars={autos} />
