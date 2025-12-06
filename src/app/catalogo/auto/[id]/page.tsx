@@ -13,7 +13,6 @@ import { Separator } from '@/components/ui/separator';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Droplets, GitMerge, Settings, Users, Car as IconoAuto } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { colorHexMap } from '@/lib/translations';
 import type { Car, CarVariant } from '@/core/types';
 
 function SkeletonDetalle() {
@@ -25,11 +24,6 @@ function SkeletonDetalle() {
            <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg">
               <Skeleton className="w-full h-full" />
           </AspectRatio>
-           <div className="grid grid-cols-5 gap-4">
-            {[...Array(4)].map((_, i) => (
-                <AspectRatio key={i} ratio={1/1}><Skeleton className="w-full h-full" /></AspectRatio>
-            ))}
-           </div>
         </div>
         <div className="space-y-6">
             <Skeleton className="h-6 w-1/4" />
@@ -111,28 +105,6 @@ export default function PaginaDetalleAuto() {
               </div>
             )}
           </AspectRatio>
-          {auto.variantes && auto.variantes.length > 1 && (
-            <div className="grid grid-cols-5 gap-4">
-              {auto.variantes.map(v => (
-                 <AspectRatio 
-                    key={`thumb-${v.id}`} 
-                    ratio={1/1} 
-                    className={cn(
-                        "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
-                        selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
-                    )}
-                    onClick={() => setSelectedVariant(v)}
-                    >
-                    <Image
-                        src={v.imagenUrl}
-                        alt={v.color}
-                        fill
-                        className="object-contain"
-                    />
-                 </AspectRatio>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Columna Derecha: Información y Compra */}
@@ -148,22 +120,28 @@ export default function PaginaDetalleAuto() {
             
             <div>
               <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
-              <div className="flex flex-wrap gap-2">
-                {auto.variantes?.map(v => (
-                  <button
-                    key={`swatch-${v.id}`}
-                    onClick={() => setSelectedVariant(v)}
-                    className={cn(
-                      'h-8 w-8 rounded-full border-2 transition-all duration-200 ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                      selectedVariant?.id === v.id ? 'ring-2 ring-primary' : 'border-border'
-                    )}
-                    style={{ backgroundColor: colorHexMap[v.color] || '#E5E7EB' }}
-                    title={v.color}
-                  >
-                    <span className="sr-only">{v.color}</span>
-                  </button>
-                ))}
-              </div>
+                {auto.variantes && auto.variantes.length > 1 && (
+                <div className="grid grid-cols-5 gap-2">
+                    {auto.variantes.map(v => (
+                    <AspectRatio 
+                        key={`thumb-${v.id}`} 
+                        ratio={1/1} 
+                        className={cn(
+                            "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
+                            selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
+                        )}
+                        onClick={() => setSelectedVariant(v)}
+                        >
+                        <Image
+                            src={v.imagenUrl}
+                            alt={v.color}
+                            fill
+                            className="object-contain"
+                        />
+                    </AspectRatio>
+                    ))}
+                </div>
+                )}
             </div>
           </div>
         </div>
