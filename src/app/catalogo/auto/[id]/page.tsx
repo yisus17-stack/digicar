@@ -98,20 +98,26 @@ function EsqueletoDetalleAuto() {
 export default function PaginaDetalleAuto() {
   const firestore = useFirestore();
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
 
-  const refAuto = useMemoFirebase(() => doc(firestore, 'autos', id), [firestore, id]);
+  const refAuto = useMemoFirebase(() => {
+    if (!id) return null;
+    return doc(firestore, 'autos', id);
+  }, [firestore, id]);
+
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
 
   useEffect(() => {
     if (auto && auto.variantes && auto.variantes.length > 0) {
-      setSelectedVariant(auto.variantes[0]);
+      if (!selectedVariant || !auto.variantes.some(v => v.id === selectedVariant.id)) {
+        setSelectedVariant(auto.variantes[0]);
+      }
     }
-  }, [auto]);
+  }, [auto, selectedVariant]);
 
-  if (isLoading) {
+  if (isLoading || !id) {
     return <EsqueletoDetalleAuto />;
   }
 
@@ -169,7 +175,7 @@ export default function PaginaDetalleAuto() {
                                 "h-8 w-8 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary",
                                 selectedVariant?.id === variant.id ? 'border-primary scale-110' : 'border-transparent'
                             )}
-                            style={{ backgroundColor: colorHexMap[variant.color] || '#E5E7EB' }}
+                            style={{ backgroundColor: colorHexMap[variant.color as keyof typeof colorHexMap] || '#E5E7EB' }}
                             title={traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}
                         >
                            <span className="sr-only">{traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}</span>
@@ -233,3 +239,5 @@ export default function PaginaDetalleAuto() {
     </div>
   );
 }
+
+    
