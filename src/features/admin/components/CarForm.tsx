@@ -174,7 +174,7 @@ export default function FormularioAuto({
       ...data,
       anio: Number(data.anio),
       tipo: data.tipo as any,
-      tipoCombustible: data.tipoCombustible as 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid',
+      tipoCombustible: data.tipoCombustible as 'Gasolina' | 'Diésel' | 'Eléctrico' | 'Híbrido',
       caracteristicas: data.caracteristicas
         ? data.caracteristicas
             .split(',')
@@ -315,8 +315,10 @@ export default function FormularioAuto({
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Selecciona tipo" /></SelectTrigger></FormControl>
                         <SelectContent>
-                          <SelectItem value="Sedan">Sedán</SelectItem><SelectItem value="SUV">SUV</SelectItem>
-                          <SelectItem value="Sports">Deportivo</SelectItem><SelectItem value="Truck">Camioneta</SelectItem>
+                          <SelectItem value="Sedán">Sedán</SelectItem>
+                          <SelectItem value="SUV">SUV</SelectItem>
+                          <SelectItem value="Deportivo">Deportivo</SelectItem>
+                          <SelectItem value="Camioneta">Camioneta</SelectItem>
                           <SelectItem value="Hatchback">Hatchback</SelectItem>
                         </SelectContent>
                       </Select><FormMessage />
@@ -355,8 +357,10 @@ export default function FormularioAuto({
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Selecciona combustible" /></SelectTrigger></FormControl>
                         <SelectContent>
-                          <SelectItem value="Gasoline">Gasolina</SelectItem><SelectItem value="Diesel">Diésel</SelectItem>
-                          <SelectItem value="Electric">Eléctrico</SelectItem><SelectItem value="Hybrid">Híbrido</SelectItem>
+                          <SelectItem value="Gasolina">Gasolina</SelectItem>
+                          <SelectItem value="Diésel">Diésel</SelectItem>
+                          <SelectItem value="Eléctrico">Eléctrico</SelectItem>
+                          <SelectItem value="Híbrido">Híbrido</SelectItem>
                         </SelectContent>
                       </Select><FormMessage />
                     </FormItem>
