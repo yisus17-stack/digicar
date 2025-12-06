@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(1, 'El precio debe ser mayor a 0.'),
+  precio: z.coerce.number().min(0, 'El precio es requerido.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -167,14 +167,15 @@ export default function FormularioAuto({
     append({
         id: `new_${Date.now()}_${Math.random()}`,
         color: colores[0]?.nombre || 'Blanco',
-        precio: 0,
+        precio: undefined,
         imagenUrl: '',
-    });
+    } as any);
   }
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
+      {/* dialog como flex-column y con alto para permitir scroll interno */}
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[80vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -252,9 +253,9 @@ export default function FormularioAuto({
                 />
               </TabsContent>
 
-              <TabsContent value="variantes" className="flex-grow flex flex-col p-1 overflow-hidden">
-                 <div className="flex-grow overflow-y-auto p-3 -m-3">
-                  <div className="space-y-4">
+              {/* Variante: contenedor flex-column, ScrollArea flex-1 para scroll interno */}
+              <TabsContent value="variantes" className="h-[400px] overflow-y-auto p-1">
+                <div className="p-3 space-y-4">
                     {fields.map((field, index) => (
                         <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
                             <h4 className="font-semibold">Variante {index + 1}</h4>
@@ -296,11 +297,9 @@ export default function FormularioAuto({
                             </Button>
                         </div>
                     ))}
-                    <FormMessage>{form.formState.errors.variantes?.message || (form.formState.errors.variantes as any)?.root?.message}</FormMessage>
+                    <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
                   </div>
-                </div>
-
-                <div className="pt-4 mt-auto">
+                <div className="pt-4 mt-auto sticky bottom-0 bg-background px-3">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                       <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
                   </Button>
