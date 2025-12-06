@@ -79,5 +79,3 @@ export default function CarCard({ car, onToggleCompare, isComparing }: CarCardPr
     </Card>
   );
 }
-
-    

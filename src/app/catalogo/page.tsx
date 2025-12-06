@@ -351,9 +351,3 @@ export default function Catalog() {
         </Suspense>
     )
 }
-
-    
-
-    
-
-    
