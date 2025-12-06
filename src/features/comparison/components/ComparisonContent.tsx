@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows } from 'lucide-react';
+import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -74,7 +74,8 @@ const CarSelector = ({
             </p>
         </Link>
          <Button variant="link" onClick={onClear} className="text-sm mt-2">
-          Cambiar
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Cambiar
         </Button>
       </div>
     );
