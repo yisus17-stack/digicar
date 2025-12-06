@@ -71,7 +71,8 @@ export function ComparisonBar({ selectedIds, onRemove, onClear, onCompare, allCa
                 <h3 className="font-semibold text-sm sm:text-base whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
                 <div className="flex items-center gap-2">
                   {selectedCars.map(car => {
-                    const imageUrl = car.variantes?.[0]?.imagenUrl ?? car.imagenUrl;
+                    const variant = car.variantes?.[0];
+                    const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
                     return (
                         <div key={car.id} className="relative flex items-center gap-2 bg-muted p-1.5 rounded-md text-xs">
                         {imageUrl && <Image src={imageUrl} alt={car.modelo} width={24} height={24} className="rounded-sm object-cover" />}
@@ -350,6 +351,8 @@ export default function Catalog() {
         </Suspense>
     )
 }
+
+    
 
     
 

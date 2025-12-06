@@ -7,7 +7,7 @@ import { Car as CarIcon, GitCompareArrows } from 'lucide-react';
 import { traducciones } from '@/lib/translations';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
 interface CarCardProps {
   car: Car;
@@ -79,3 +79,5 @@ export default function CarCard({ car, onToggleCompare, isComparing }: CarCardPr
     </Card>
   );
 }
+
+    
