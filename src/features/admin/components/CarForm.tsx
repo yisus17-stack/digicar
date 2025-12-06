@@ -262,8 +262,8 @@ export default function FormularioAuto({
                 />
               </TabsContent>
               
-              <TabsContent value="variantes" className="flex-grow flex flex-col p-1 overflow-hidden">
-                <ScrollArea className="flex-1 overflow-auto p-3 -m-3">
+              <TabsContent value="variantes" className="p-1 -m-1">
+                <ScrollArea className="h-full overflow-auto p-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
                         <div key={field.id} className="border p-4 rounded-lg space-y-4">
@@ -310,14 +310,11 @@ export default function FormularioAuto({
                         </div>
                     ))}
                     <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
+                    <Button type="button" variant="outline" onClick={addVariant} className="w-full">
+                        <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
+                    </Button>
                   </div>
                 </ScrollArea>
-
-                <div className="pt-4 mt-auto sticky bottom-0 bg-background">
-                  <Button type="button" variant="outline" onClick={addVariant} className="w-full">
-                      <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
-                  </Button>
-                </div>
               </TabsContent>
             </Tabs>
             
