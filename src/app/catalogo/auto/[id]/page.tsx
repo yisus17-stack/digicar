@@ -91,7 +91,7 @@ export default function PaginaDetalleAuto() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
         {/* Columna Izquierda: Galería de Imágenes */}
         <div className="space-y-4">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
