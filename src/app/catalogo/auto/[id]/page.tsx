@@ -3,15 +3,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useParams, notFound } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase'; // tu instancia de Firestore
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import { Droplets, GitMerge, Settings, Users, Car as IconoAuto } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { colorHexMap } from '@/lib/translations';
@@ -51,7 +49,6 @@ function SkeletonDetalle() {
         </div>
         <div className="lg:col-span-1 space-y-6">
             <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-48 w-full" />
         </div>
       </div>
     </div>
@@ -189,16 +186,6 @@ export default function PaginaDetalleAuto() {
                     </button>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>¿Interesado?</CardTitle>
-                <CardDescription>Déjanos tus datos y un asesor se pondrá en contacto contigo.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <LeadCaptureForm />
               </CardContent>
             </Card>
           </div>

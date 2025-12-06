@@ -6,7 +6,6 @@ import type { Car } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Car as CarIcon } from 'lucide-react';
-import LeadCaptureForm from '@/features/leads/components/LeadCaptureForm';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -152,19 +151,6 @@ export default function PaginaComparacion({ autos, todosLosAutos }: PaginaCompar
           </div>
         </CardContent>
       </Card>
-      
-      {(auto1 || auto2) && (
-        <Card>
-          <CardHeader>
-              <CardTitle>¿Interesado?</CardTitle>
-          </CardHeader>
-          <CardContent>
-              <p className="text-muted-foreground mb-4">Obtén una cotización personalizada o programa una prueba de manejo para uno de estos modelos.</p>
-              <LeadCaptureForm interestedCar={[auto1, auto2].filter(Boolean).map(c => `${c?.marca} ${c?.modelo}`).join(', ')} />
-          </CardContent>
-        </Card>
-      )}
-
     </div>
   );
 }
