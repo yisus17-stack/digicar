@@ -14,33 +14,14 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Droplets, GitMerge, Settings, Users, Car as IconoAuto } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { colorHexMap } from '@/lib/translations';
-
-type CarVariant = {
-  id: string;
-  color: string;
-  imagenUrl: string;
-  precio: number;
-};
-
-type Car = {
-  id: string;
-  marca: string;
-  modelo: string;
-  anio: number;
-  tipo: string;
-  tipoCombustible: string;
-  transmision: string;
-  cilindrosMotor: number;
-  pasajeros: number;
-  caracteristicas?: string[];
-  variantes?: CarVariant[];
-};
+import type { Car, CarVariant } from '@/core/types';
 
 function SkeletonDetalle() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
+        {/* Izquierda: Imagen y especificaciones */}
         <div className="lg:col-span-2 space-y-8">
            <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
               <Skeleton className="w-full h-full" />
