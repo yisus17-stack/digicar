@@ -44,12 +44,12 @@ export default function CarCard({ car }: CarCardProps) {
       {/* TEXTO */}
       <div className="flex flex-col px-4 py-4 flex-grow">
         <div className="flex-grow">
-          <h3 className="text-base font-semibold">{car.marca} {car.modelo}</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-lg font-semibold">{car.marca} {car.modelo}</h3>
+          <p className="text-base text-muted-foreground">
             {car.tipo} • {car.anio}
           </p>
         </div>
-        <p className="mt-4 pt-2 text-base font-bold">
+        <p className="mt-4 pt-2 text-lg font-bold">
           ${price.toLocaleString('es-MX')}
         </p>
       </div>
