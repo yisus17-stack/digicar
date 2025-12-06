@@ -36,7 +36,7 @@ export default function PopularCarsSection() {
 
     return (
         <>
-            <div id="popular" className="container mx-auto px-4 py-8">
+            <div id="popular" className="container mx-auto px-4 pt-16 pb-8">
                 <div className="text-center mb-6">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                         Los autos más populares
