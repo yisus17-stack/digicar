@@ -99,7 +99,7 @@ export default function Home() {
              <Suspense fallback={<div>Cargando marcas...</div>}>
               <BrandLogos />
             </Suspense>
-            <div className="py-12">
+            <div className="py-24">
                 <Suspense fallback={<div>Cargando...</div>}>
                   <PopularCarsSection />
                 </Suspense>
