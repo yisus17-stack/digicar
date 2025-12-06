@@ -110,47 +110,51 @@ export default function PaginaDetalleAuto() {
 
         {/* Columna Derecha: Información y Compra */}
         <div className="relative">
-          <div className="lg:sticky top-24 space-y-6">
-            <div>
-                <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
-                <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
-                <p className="text-3xl font-bold text-primary pt-2">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
-            </div>
-            
-            <Separator />
-            
-            <div>
-              <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
-                {auto.variantes && auto.variantes.length > 1 && (
-                <div className="grid grid-cols-5 gap-2">
-                    {auto.variantes.map(v => (
-                    <AspectRatio 
-                        key={`thumb-${v.id}`} 
-                        ratio={1/1} 
-                        className={cn(
-                            "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
-                            selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
-                        )}
-                        onClick={() => setSelectedVariant(v)}
-                        >
-                        <Image
-                            src={v.imagenUrl}
-                            alt={v.color}
-                            fill
-                            className="object-contain"
-                        />
-                    </AspectRatio>
-                    ))}
+          <div className="lg:sticky top-24">
+            <Card>
+              <CardContent className="p-6 space-y-6">
+                <div>
+                    <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
+                    <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
+                    <p className="text-3xl font-bold text-primary pt-2">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
                 </div>
-                )}
-            </div>
+                
+                <Separator />
+                
+                <div>
+                  <p className="text-sm font-medium mb-2">Color: <span className="font-semibold">{selectedVariant?.color}</span></p>
+                    {auto.variantes && auto.variantes.length > 1 && (
+                    <div className="grid grid-cols-5 gap-2">
+                        {auto.variantes.map(v => (
+                        <AspectRatio 
+                            key={`thumb-${v.id}`} 
+                            ratio={1/1} 
+                            className={cn(
+                                "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
+                                selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
+                            )}
+                            onClick={() => setSelectedVariant(v)}
+                            >
+                            <Image
+                                src={v.imagenUrl}
+                                alt={v.color}
+                                fill
+                                className="object-contain"
+                            />
+                        </AspectRatio>
+                        ))}
+                    </div>
+                    )}
+                </div>
 
-            <div className="pt-4">
-                <Button variant="outline" className="w-full">
-                    <Heart className="mr-2 h-4 w-4" />
-                    Añadir a Favoritos
-                </Button>
-            </div>
+                <div className="pt-4">
+                    <Button variant="outline" className="w-full">
+                        <Heart className="mr-2 h-4 w-4" />
+                        Añadir a Favoritos
+                    </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
