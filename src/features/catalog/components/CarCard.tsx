@@ -23,7 +23,7 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Link
-      href={`/car/${car.id}`}
+      href={`/catalogo/auto/${car.id}`}
       className="group flex h-full flex-col overflow-hidden rounded-lg bg-card transition-all duration-300 hover:shadow-md"
     >
       {/* IMAGEN */}
