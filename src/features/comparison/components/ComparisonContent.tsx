@@ -209,14 +209,14 @@ function ContenidoComparacion() {
                     <div>
                         <div className="grid grid-cols-3 items-start gap-4">
                             <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
-                            <div className="text-center col-span-1">
+                            <div className="col-span-1 px-4">
                                 <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                                    {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>)}
+                                    {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>) ?? (car1 && <li>-</li>)}
                                 </ul>
                             </div>
-                            <div className="text-center col-span-1">
+                            <div className="col-span-1 px-4">
                                 <ul className="list-disc list-inside text-left space-y-1 text-sm">
-                                    {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>)}
+                                    {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>) ?? (car2 && <li>-</li>)}
                                 </ul>
                             </div>
                         </div>
