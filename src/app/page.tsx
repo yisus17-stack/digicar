@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense } from 'react';
@@ -98,9 +99,11 @@ export default function Home() {
              <Suspense fallback={<div>Cargando marcas...</div>}>
               <BrandLogos />
             </Suspense>
-            <Suspense fallback={<div>Cargando...</div>}>
-              <PopularCarsSection />
-            </Suspense>
+            <div className="py-12">
+                <Suspense fallback={<div>Cargando...</div>}>
+                  <PopularCarsSection />
+                </Suspense>
+            </div>
         </>
     );
 }
