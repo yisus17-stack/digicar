@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(0, 'El precio es requerido.'),
+  precio: z.coerce.number().min(1, 'El precio es requerido y debe ser mayor a 0.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -300,7 +300,7 @@ export default function FormularioAuto({
                                 <FormMessage />
                             </FormItem>
                             <div className="flex justify-end">
-                                <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
+                                <Button type="button" variant="outline" size="sm" onClick={() => remove(index)}>
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Eliminar Variante
                                 </Button>
