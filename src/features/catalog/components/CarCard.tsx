@@ -22,14 +22,14 @@ export default function CarCard({ car }: CarCardProps) {
       className="group flex h-full flex-col overflow-hidden rounded-lg bg-card transition-all duration-300 hover:shadow-md"
     >
       {/* IMAGEN */}
-      <div className="h-56 w-full flex items-center justify-center p-6 bg-muted">
+      <div className="h-60 w-full bg-muted rounded-xl flex items-center justify-center p-6">
         {car.imagenUrl ? (
           <Image
             src={car.imagenUrl}
             alt={`${car.marca} ${car.modelo}`}
-            width={300}
-            height={300}
-            className="h-40 w-auto object-contain"
+            className="max-h-40 max-w-full object-contain"
+            width={280}
+            height={280}
           />
         ) : (
           <CarIcon className="h-12 w-12 text-muted-foreground" />
@@ -37,9 +37,11 @@ export default function CarCard({ car }: CarCardProps) {
       </div>
 
       {/* TEXTO */}
-      <div className="flex flex-col px-4 py-4 flex-grow">
+      <div className="flex flex-grow flex-col px-4 pb-4">
         <div className="flex-grow">
-          <h3 className="text-base font-semibold min-h-[48px]">{car.marca} {car.modelo}</h3>
+          <h3 className="min-h-[48px] text-base font-semibold">
+            {car.marca} {car.modelo}
+          </h3>
           <p className="text-sm text-muted-foreground">
             {traducciones.tipo[tipoAuto] || car.tipo} • {car.anio}
           </p>
