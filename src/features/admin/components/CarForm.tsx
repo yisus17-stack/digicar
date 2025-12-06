@@ -394,14 +394,14 @@ export default function FormularioAuto({
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                               <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
                             </Select>
-                            <FormMessage className="h-5" />
+                             {form.formState.isSubmitted && <FormMessage className="h-5" />}
                           </FormItem>
                         )}/>
                         <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
                           <FormItem>
                             <FormLabel>Precio *</FormLabel>
                             <FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl>
-                            <FormMessage className="h-5" />
+                            {form.formState.isSubmitted && <FormMessage className="h-5" />}
                           </FormItem>
                         )}/>
                       </div>
@@ -426,7 +426,7 @@ export default function FormularioAuto({
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                               )}
                             </div>
-                            <FormMessage className="h-5"/>
+                            {form.formState.isSubmitted && <FormMessage className="h-5"/>}
                           </FormItem>
                         )}
                       />
