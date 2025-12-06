@@ -93,7 +93,7 @@ export default function FormularioAuto({
       cilindrosMotor: 0,
       transmision: '',
       tipoCombustible: 'Gasoline',
-      pasajeros: 5,
+      pasajeros: 0,
       caracteristicas: '',
       variantes: [],
     },
@@ -131,7 +131,7 @@ export default function FormularioAuto({
           cilindrosMotor: 0,
           transmision: '',
           tipoCombustible: 'Gasoline',
-          pasajeros: 5,
+          pasajeros: 0,
           caracteristicas: '',
           variantes: [],
         });
@@ -323,7 +323,24 @@ export default function FormularioAuto({
                       </Select><FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="pasajeros" control={form.control} render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField name="pasajeros" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pasajeros *</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value === 0 ? '' : field.value)}>
+                          <FormControl>
+                              <SelectTrigger>
+                                  <SelectValue placeholder="Seleccionar pasajeros" />
+                              </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                              {[2, 4, 5, 7, 8].map(p => (
+                                  <SelectItem key={p} value={String(p)}>{p}</SelectItem>
+                              ))}
+                          </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                 </div>
                 <FormField
                   control={form.control}
