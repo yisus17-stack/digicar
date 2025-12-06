@@ -45,8 +45,6 @@ export default function PaginaDetalleAuto() {
   const [auto, setAuto] = useState<Car | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
-  const [showMagnifier, setShowMagnifier] = useState(false);
-  const [[x, y], setXY] = useState([0, 0]);
 
   
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
@@ -86,13 +84,6 @@ export default function PaginaDetalleAuto() {
     return brand?.logoUrl || null;
   }, [auto, marcas]);
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - left;
-    const y = e.clientY - top;
-    setXY([x, y]);
-  };
-
   if (isLoading || cargandoMarcas) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
@@ -102,9 +93,6 @@ export default function PaginaDetalleAuto() {
     { icon: GitMerge, label: 'Transmisión', value: auto.transmision },
     { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
   ];
-
-  const magnifierSize = 200;
-  const zoomLevel = 2.5;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -116,9 +104,6 @@ export default function PaginaDetalleAuto() {
           <AspectRatio 
             ratio={16/10} 
             className="overflow-hidden rounded-lg bg-white dark:bg-background relative"
-            onMouseEnter={() => setShowMagnifier(true)}
-            onMouseLeave={() => setShowMagnifier(false)}
-            onMouseMove={handleMouseMove}
           >
             {selectedVariant ? (
               <Image
@@ -132,27 +117,6 @@ export default function PaginaDetalleAuto() {
               <div className="w-full h-full flex items-center justify-center">
                 <IconoAuto className="w-24 h-24 text-muted-foreground" />
               </div>
-            )}
-            {selectedVariant && (
-              <div
-                style={{
-                  display: showMagnifier ? 'block' : 'none',
-                  position: 'absolute',
-                  left: `${x - magnifierSize / 2}px`,
-                  top: `${y - magnifierSize / 2}px`,
-                  pointerEvents: 'none',
-                  height: `${magnifierSize}px`,
-                  width: `${magnifierSize}px`,
-                  border: '2px solid hsl(var(--primary))',
-                  borderRadius: '50%',
-                  backgroundImage: `url('${selectedVariant.imagenUrl}')`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: `${100 * zoomLevel}% ${100 * zoomLevel}%`,
-                  backgroundPosition: `-${x * zoomLevel - magnifierSize / 2}px -${y * zoomLevel - magnifierSize / 2}px`,
-                  zIndex: 10,
-                  boxShadow: '0 0 10px rgba(0,0,0,0.2)'
-                }}
-              />
             )}
           </AspectRatio>
         </div>
