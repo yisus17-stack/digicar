@@ -36,8 +36,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const variantSchema = z.object({
   id: z.string().optional(),
-  color: z.enum(['Rojo', 'Azul', 'Blanco', 'Gris', 'Negro', 'Amarillo', 'Plata', 'Verde']),
-  precio: z.coerce.number().min(0, 'El precio es requerido.'),
+  color: z.enum(['Rojo', 'Azul', 'Blanco', 'Gris', 'Negro', 'Amarillo', 'Plata', 'Verde'], { required_error: 'El color es requerido.'}),
+  precio: z.coerce.number().min(1, 'El precio debe ser mayor a 0.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -127,6 +127,7 @@ export default function FormularioAuto({
           tipoCombustible: 'Gasoline',
           pasajeros: 5,
           caracteristicas: '',
+          variantes: [],
         });
         replace([]);
       }
@@ -166,7 +167,7 @@ export default function FormularioAuto({
   const addVariant = () => {
     append({
         id: `new_${Date.now()}_${Math.random()}`,
-        color: 'Blanco',
+        color: colores[0]?.nombre || 'Blanco',
         precio: 0,
         imagenUrl: '',
     });
@@ -174,8 +175,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      {/* dialog como flex-column y con alto para permitir scroll interno */}
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[80vh] max-h-[800px]">
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -253,8 +253,7 @@ export default function FormularioAuto({
                 />
               </TabsContent>
 
-              {/* Variante: contenedor flex-column, ScrollArea flex-1 para scroll interno */}
-              <TabsContent value="variantes" className="flex flex-col flex-grow p-1 overflow-hidden">
+              <TabsContent value="variantes" className="flex-grow flex flex-col p-1 overflow-hidden">
                 <ScrollArea className="flex-grow p-3 -m-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
@@ -298,11 +297,10 @@ export default function FormularioAuto({
                             </Button>
                         </div>
                     ))}
-                    <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
+                    <FormMessage>{form.formState.errors.variantes?.message || (form.formState.errors.variantes as any)?.root?.message}</FormMessage>
                   </div>
                 </ScrollArea>
 
-                {/* botón fijo abajo */}
                 <div className="pt-4 mt-auto">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                       <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
