@@ -96,7 +96,7 @@ export default function FormularioAuto({
     },
   });
 
-  const { fields, append, remove, update } = useFieldArray({
+  const { fields, append, remove, update, replace } = useFieldArray({
     control: form.control,
     name: "variantes"
   });
@@ -104,6 +104,7 @@ export default function FormularioAuto({
   useEffect(() => {
     if (estaAbierto) {
       if (auto) {
+        // Reset main form fields
         form.reset({
           marca: auto.marca,
           modelo: auto.modelo,
@@ -114,8 +115,9 @@ export default function FormularioAuto({
           tipoCombustible: auto.tipoCombustible,
           pasajeros: auto.pasajeros,
           caracteristicas: auto.caracteristicas.join(', '),
-          variantes: auto.variantes || [],
         });
+        // Use `replace` for the field array
+        replace(auto.variantes || []);
       } else {
         form.reset({
           marca: '',
@@ -129,9 +131,10 @@ export default function FormularioAuto({
           caracteristicas: '',
           variantes: [],
         });
+        replace([]); // Also clear variants for a new car
       }
     }
-  }, [auto, estaAbierto, form]);
+  }, [auto, estaAbierto, form, replace]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     if (e.target.files && e.target.files[0]) {
@@ -155,12 +158,9 @@ export default function FormularioAuto({
             .map((f) => f.trim())
             .filter((f) => f !== '')
         : [],
-      variantes: data.variantes.map(v => ({
-        id: v.id || `new_${Date.now()}_${Math.random()}`,
-        color: v.color,
-        precio: v.precio,
-        imagenUrl: v.imagenUrl,
-        // No incluir 'file' en el objeto final
+      variantes: data.variantes.map(({ file, ...rest }) => ({ // Exclude 'file' from the final object
+        ...rest,
+        id: rest.id || `new_${Date.now()}_${Math.random()}`,
       })),
     };
     alGuardar(datosAuto, files);
