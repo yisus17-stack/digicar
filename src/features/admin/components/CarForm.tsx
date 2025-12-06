@@ -196,7 +196,13 @@ export default function FormularioAuto({
           return;
       }
       
-      if (errors.variantes) {
+      if (errors.variantes && Array.isArray(errors.variantes)) {
+          setActiveTab('variantes');
+          const firstVariantErrorIndex = errors.variantes.findIndex(v => v);
+          if (firstVariantErrorIndex !== -1) {
+            setActiveVariantIndex(firstVariantErrorIndex);
+          }
+      } else if (errors.variantes) {
           setActiveTab('variantes');
       }
   }
