@@ -33,31 +33,6 @@ import {
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-
-function renderHeader<TData, TValue>(header: Header<TData, TValue>) {
-    const isPlaceholder = header.isPlaceholder;
-    const content = flexRender(
-        header.column.columnDef.header,
-        header.getContext()
-    );
-
-    if (isPlaceholder) {
-        return null;
-    }
-    
-    // Check if the header content is a button (our convention for sortable headers)
-    if (React.isValidElement(content) && content.type === Button) {
-        return (
-            <div className="flex items-center">
-                {content}
-            </div>
-        );
-    }
-    
-    return content;
-}
-
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -106,8 +81,13 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {renderHeader(header)}
+                    <TableHead key={header.id} colSpan={header.colSpan} className="align-middle">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
