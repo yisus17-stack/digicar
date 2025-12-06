@@ -3,17 +3,17 @@
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
-import { useParams, notFound } from 'next/navigation';
-import { doc, getDoc, collection } from 'firebase/firestore';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'; 
+import { useParams, notFound, useRouter } from 'next/navigation';
+import { doc, getDoc, collection, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase, useUser, useDoc } from '@/firebase'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { Droplets, GitMerge, Settings, Users, Car as IconoAuto, Heart } from 'lucide-react';
+import { Droplets, GitMerge, Settings, Users, Car as IconoAuto, Heart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Car, CarVariant, Marca } from '@/core/types';
+import type { Car, CarVariant, Marca, Favorite } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import CarCard from '@/features/catalog/components/CarCard';
 
@@ -42,9 +42,13 @@ export default function PaginaDetalleAuto() {
   const params = useParams();
   const id = params?.id as string;
   const firestore = useFirestore();
+  const { user, loading: loadingUser } = useUser();
+  const router = useRouter();
 
   const [auto, setAuto] = useState<Car | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
   
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
@@ -52,6 +56,17 @@ export default function PaginaDetalleAuto() {
   
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading: cargandoTodosLosAutos } = useCollection<Car>(coleccionAutos);
+
+  const refFavoritos = useMemoFirebase(() => user ? doc(firestore, 'favoritos', user.uid) : null, [user, firestore]);
+  const { data: favoritos, isLoading: cargandoFavoritos } = useDoc<Favorite>(refFavoritos);
+
+  useEffect(() => {
+    if (favoritos && favoritos.carIds) {
+      setIsFavorite(favoritos.carIds.includes(id));
+    } else {
+      setIsFavorite(false);
+    }
+  }, [favoritos, id]);
 
   useEffect(() => {
     if (!id) return;
@@ -94,8 +109,33 @@ export default function PaginaDetalleAuto() {
       .slice(0, 3);
   }, [auto, todosLosAutos]);
 
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    if (!refFavoritos) return;
 
-  if (isLoading || cargandoMarcas || cargandoTodosLosAutos) return <SkeletonDetalle />;
+    setIsUpdatingFavorite(true);
+    try {
+      if (isFavorite) {
+        await updateDoc(refFavoritos, { carIds: arrayRemove(id) });
+      } else {
+        if (favoritos) {
+           await updateDoc(refFavoritos, { carIds: arrayUnion(id) });
+        } else {
+           await setDoc(refFavoritos, { carIds: [id] });
+        }
+      }
+    } catch (error) {
+      console.error("Error al actualizar favoritos:", error);
+    } finally {
+      setIsUpdatingFavorite(false);
+    }
+  };
+
+
+  if (isLoading || cargandoMarcas || cargandoTodosLosAutos || loadingUser || cargandoFavoritos) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
   const detallesAuto = [
@@ -188,9 +228,13 @@ export default function PaginaDetalleAuto() {
                 </div>
 
                 <div className="pt-4">
-                    <Button variant="outline" className="w-full">
-                        <Heart className="mr-2 h-4 w-4" />
-                        Añadir a Favoritos
+                    <Button variant={isFavorite ? 'default' : 'outline'} className="w-full" onClick={handleToggleFavorite} disabled={isUpdatingFavorite}>
+                        {isUpdatingFavorite ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Heart className={cn("mr-2 h-4 w-4", isFavorite && "fill-current")} />
+                        )}
+                        {isFavorite ? 'Quitar de Favoritos' : 'Añadir a Favoritos'}
                     </Button>
                 </div>
               </CardContent>

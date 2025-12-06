@@ -167,6 +167,20 @@
       },
       "required": ["uid", "email", "createdAt"]
     },
+    "Favorite": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Favorite",
+      "type": "object",
+      "description": "Represents a user's list of favorite cars.",
+      "properties": {
+        "carIds": {
+          "type": "array",
+          "description": "An array of car IDs that the user has favorited.",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["carIds"]
+    },
     "Counter": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Counter",
@@ -249,6 +263,15 @@
           "schema": { "$ref": "#/backend/entities/UserProfile" },
           "description": "Stores public user profile information. Users can create their own profile, and admins can read the list to get user counts.",
           "params": [{ "name": "usuarioId", "description": "The user's unique ID, same as their Auth UID." }]
+        }
+      },
+      {
+        "path": "/favoritos/{usuarioId}",
+        "definition": {
+          "entityName": "Favorite",
+          "schema": { "$ref": "#/backend/entities/Favorite" },
+          "description": "Stores the list of favorite cars for a user. Each user can only access their own list.",
+          "params": [{ "name": "usuarioId", "description": "The user's unique ID." }]
         }
       },
       {

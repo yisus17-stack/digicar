@@ -47,6 +47,10 @@ service cloud.firestore {
         allow get, update, delete: if false;
     }
     
+    match /favoritos/{usuarioId} {
+      allow read, write: if isSignedIn() && request.auth.uid == usuarioId;
+    }
+
     match /fuelTypes/{fuelTypeId} {
       allow get, list: if true;
       allow create, update, delete: if true;

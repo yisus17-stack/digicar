@@ -53,3 +53,7 @@ export type UserProfile = {
   displayName: string;
   createdAt: Timestamp;
 }
+
+export type Favorite = {
+    carIds: string[];
+}
