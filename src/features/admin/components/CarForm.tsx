@@ -137,11 +137,13 @@ export default function FormularioAuto({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
+      const currentValues = form.getValues();
+      const currentVariant = currentValues.variantes[index];
+
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
-        const currentValues = form.getValues();
         const updatedVariant = {
-          ...currentValues.variantes[index],
+          ...currentVariant,
           imagenUrl: imageUrl,
           file: file
         };
@@ -173,9 +175,9 @@ export default function FormularioAuto({
     append({
         id: `new_${Date.now()}_${Math.random()}`,
         color: colores[0]?.nombre || 'Blanco',
-        precio: undefined,
+        precio: '' as any,
         imagenUrl: '',
-    } as any);
+    });
   }
 
   return (
