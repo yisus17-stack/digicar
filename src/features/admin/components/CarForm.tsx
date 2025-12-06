@@ -220,7 +220,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[80vh] max-h-[800px]">
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[900px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
