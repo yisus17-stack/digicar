@@ -48,10 +48,10 @@ const esquemaFormulario = z.object({
   modelo: z.string().min(2, 'El modelo es requerido.'),
   anio: z.string({ required_error: 'El año es requerido.' }).min(4, 'El año es requerido.'),
   tipo: z.string({ required_error: 'El tipo es requerido.' }).min(1, 'El tipo es requerido.'),
-  cilindrosMotor: z.coerce.number().min(0),
-  transmision: z.string().min(1),
-  tipoCombustible: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid']),
-  pasajeros: z.coerce.number().min(1),
+  cilindrosMotor: z.coerce.number().min(2, 'Debes seleccionar los cilindros.'),
+  transmision: z.string().min(1, 'La transmisión es requerida.'),
+  tipoCombustible: z.enum(['Gasoline', 'Diesel', 'Electric', 'Hybrid'], { required_error: 'El tipo de combustible es requerido.' }),
+  pasajeros: z.coerce.number().min(1, 'El número de pasajeros es requerido.'),
   caracteristicas: z.string().optional(),
   variantes: z.array(variantSchema).min(1, "Debes añadir al menos una variante de color."),
 });
@@ -90,7 +90,7 @@ export default function FormularioAuto({
       modelo: '',
       anio: '',
       tipo: '',
-      cilindrosMotor: 4,
+      cilindrosMotor: 0,
       transmision: '',
       tipoCombustible: 'Gasoline',
       pasajeros: 5,
@@ -128,7 +128,7 @@ export default function FormularioAuto({
           modelo: '',
           anio: '',
           tipo: '',
-          cilindrosMotor: 4,
+          cilindrosMotor: 0,
           transmision: '',
           tipoCombustible: 'Gasoline',
           pasajeros: 5,
@@ -284,7 +284,24 @@ export default function FormularioAuto({
                       </Select><FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="cilindrosMotor" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cilindros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField name="cilindrosMotor" control={form.control} render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Cilindros *</FormLabel>
+                        <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value === 0 ? '' : field.value)}>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Seleccionar cilindros" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {[2, 3, 4, 6, 8, 12].map(c => (
+                                    <SelectItem key={c} value={String(c)}>{c}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                  )} />
                   <FormField name="transmision" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>Transmisión *</FormLabel>
