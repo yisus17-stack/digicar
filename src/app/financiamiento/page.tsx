@@ -1,3 +1,4 @@
+
 'use client';
 
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
