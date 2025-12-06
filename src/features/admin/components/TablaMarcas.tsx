@@ -15,6 +15,17 @@ import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -34,23 +45,6 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const manejarEditar = (marca: Marca) => {
     setMarcaSeleccionada(marca);
     setEstaFormularioAbierto(true);
-  };
-  
-  const confirmarEliminar = async (marca: Marca) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: "Esta acción no se puede deshacer. Se eliminará la marca y su logo.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#595c97',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (result.isConfirmed) {
-        manejarEliminar(marca);
-    }
   };
 
   const manejarEliminar = async (marca: Marca) => {
@@ -222,9 +216,27 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(marca)}>
-              <Trash2 className="mr-2 h-4 w-4" /> Eliminar
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta acción no se puede deshacer. Se eliminará la marca y su logo.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => manejarEliminar(marca)} className="bg-destructive hover:bg-destructive/90">
+                    Sí, eliminar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         );
       },

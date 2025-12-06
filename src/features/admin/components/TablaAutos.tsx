@@ -15,6 +15,17 @@ import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface TablaAutosProps {
   autos: Car[];
@@ -39,59 +50,46 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = async (autoId: string) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto y todas sus imágenes de la base de datos.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#595c97',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
+  const manejarEliminar = async (autoId: string) => {
+    try {
+        const autoRef = doc(firestore, 'autos', autoId);
+        const autoDoc = await getDoc(autoRef);
 
-    if (result.isConfirmed) {
-        try {
-            const autoRef = doc(firestore, 'autos', autoId);
-            const autoDoc = await getDoc(autoRef);
-
-            if (autoDoc.exists()) {
-                const autoData = autoDoc.data() as Car;
-                if (autoData.variantes && autoData.variantes.length > 0) {
-                    // Delete all variant images from storage
-                    const deletePromises = autoData.variantes
-                        .map(variant => variant.imagenUrl)
-                        .filter(Boolean) // Filter out any empty URLs
-                        .map(url => deleteImage(url));
-                    await Promise.all(deletePromises);
-                }
+        if (autoDoc.exists()) {
+            const autoData = autoDoc.data() as Car;
+            if (autoData.variantes && autoData.variantes.length > 0) {
+                // Delete all variant images from storage
+                const deletePromises = autoData.variantes
+                    .map(variant => variant.imagenUrl)
+                    .filter(Boolean) // Filter out any empty URLs
+                    .map(url => deleteImage(url));
+                await Promise.all(deletePromises);
             }
-            
-            // Delete the Firestore document
-            await deleteDoc(autoRef);
-
-            Swal.fire({
-              title: '¡Eliminado!',
-              text: 'El auto y sus imágenes han sido eliminados con éxito.',
-              icon: 'success',
-              confirmButtonColor: '#595c97',
-            });
-
-        } catch (error) {
-            console.error("Error deleting car and its assets:", error);
-            Swal.fire({
-              title: 'Error',
-              text: 'No se pudo eliminar el auto. Verifica los permisos.',
-              icon: 'error',
-              confirmButtonColor: '#595c97',
-            });
-            const contextualError = new FirestorePermissionError({
-                operation: 'delete',
-                path: `autos/${autoId}`,
-            });
-            errorEmitter.emit('permission-error', contextualError);
         }
+        
+        // Delete the Firestore document
+        await deleteDoc(autoRef);
+
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El auto y sus imágenes han sido eliminados con éxito.',
+          icon: 'success',
+          confirmButtonColor: '#595c97',
+        });
+
+    } catch (error) {
+        console.error("Error deleting car and its assets:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el auto. Verifica los permisos.',
+          icon: 'error',
+          confirmButtonColor: '#595c97',
+        });
+        const contextualError = new FirestorePermissionError({
+            operation: 'delete',
+            path: `autos/${autoId}`,
+        });
+        errorEmitter.emit('permission-error', contextualError);
     }
   };
 
@@ -268,9 +266,27 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => confirmarEliminar(auto.id)}>
-              <Trash2 className="mr-2 h-4 w-4" /> Eliminar
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta acción no se puede deshacer. Esto eliminará permanentemente el auto y todas sus imágenes de la base de datos.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => manejarEliminar(auto.id)} className="bg-destructive hover:bg-destructive/90">
+                    Sí, eliminar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         );
       },

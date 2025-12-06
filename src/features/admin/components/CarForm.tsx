@@ -13,6 +13,17 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
   Form,
   FormControl,
   FormField,
@@ -191,26 +202,13 @@ export default function FormularioAuto({
     setActiveVariantIndex(fields.length); // Switch to the new variant
   }
 
-  const removeVariant = (index: number) => {
-    Swal.fire({
-      title: '¿Eliminar variante?',
-      text: "Esta acción no se puede deshacer.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#595c97',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        remove(index);
-        if (activeVariantIndex >= index && activeVariantIndex > 0) {
-          setActiveVariantIndex(activeVariantIndex - 1);
-        } else if (fields.length === 1) {
-            setActiveVariantIndex(0);
-        }
-      }
-    });
+  const removeVariantAction = (index: number) => {
+    remove(index);
+    if (activeVariantIndex >= index && activeVariantIndex > 0) {
+      setActiveVariantIndex(activeVariantIndex - 1);
+    } else if (fields.length === 1) { // after removing, there will be 0 items
+        setActiveVariantIndex(0);
+    }
   }
 
   const navigateVariant = (direction: 'next' | 'prev') => {
@@ -380,10 +378,28 @@ export default function FormularioAuto({
                       <div className='flex justify-between items-center'>
                         <h4 className="font-semibold">Variante {index + 1}</h4>
                         {fields.length > 0 && (
-                          <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(index)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Eliminar Variante
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button type="button" variant="destructive" size="sm">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Eliminar Variante
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>¿Eliminar variante?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Esta acción no se puede deshacer.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => removeVariantAction(index)} className="bg-destructive hover:bg-destructive/90">
+                                  Sí, eliminar
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         )}
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
