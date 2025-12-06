@@ -133,54 +133,55 @@ export default function ComparisonContent() {
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
-  useEffect(() => {
+ useEffect(() => {
     if (todosLosAutos && todosLosAutos.length > 0) {
       try {
         const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
         if (Array.isArray(storedIds) && storedIds.length > 0) {
-          if (storedIds[0]) {
-            setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
-          }
-          if (storedIds[1]) {
-            setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
-          }
+          if (storedIds[0]) setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
+          if (storedIds[1]) setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
         }
-      } catch (error) {
-        console.error("Could not parse comparison IDs from sessionStorage:", error);
+      } catch (e) {
+        console.error("Error reading comparison IDs from sessionStorage", e);
         sessionStorage.removeItem('comparisonIds');
       }
     }
   }, [todosLosAutos]);
 
+
   useEffect(() => {
     // This effect ensures that if the user logs out while on the page, the state is cleared.
-    if (!user && !loadingUser) {
+    if (!loadingUser && !user) {
       setCar1(undefined);
       setCar2(undefined);
+      // sessionStorage is cleared in handleSignOut, but this is a fallback.
     }
   }, [user, loadingUser]);
 
+  const updateSessionStorage = (newCar1Id?: string, newCar2Id?: string) => {
+    sessionStorage.setItem('comparisonIds', JSON.stringify([newCar1Id, newCar2Id]));
+  }
 
   const handleSelectCar1 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar1(selected);
-    sessionStorage.setItem('comparisonIds', JSON.stringify([carId, car2?.id]));
+    updateSessionStorage(carId, car2?.id);
   };
 
   const handleSelectCar2 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar2(selected);
-    sessionStorage.setItem('comparisonIds', JSON.stringify([car1?.id, carId]));
+    updateSessionStorage(car1?.id, carId);
   };
 
   const clearCar1 = () => {
     setCar1(undefined);
-    sessionStorage.setItem('comparisonIds', JSON.stringify([undefined, car2?.id]));
+    updateSessionStorage(undefined, car2?.id);
   }
   
   const clearCar2 = () => {
     setCar2(undefined);
-    sessionStorage.setItem('comparisonIds', JSON.stringify([car1?.id, undefined]));
+    updateSessionStorage(car1?.id, undefined);
   }
 
 
