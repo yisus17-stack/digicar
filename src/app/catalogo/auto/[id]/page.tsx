@@ -11,9 +11,10 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import { Droplets, GitMerge, Settings, Users, Car as IconoAuto } from 'lucide-react';
+import { Droplets, GitMerge, Settings, Users, Car as IconoAuto, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Car, CarVariant } from '@/core/types';
+import { Button } from '@/components/ui/button';
 
 function SkeletonDetalle() {
   return (
@@ -142,6 +143,13 @@ export default function PaginaDetalleAuto() {
                     ))}
                 </div>
                 )}
+            </div>
+
+            <div className="pt-4">
+                <Button variant="outline" className="w-full">
+                    <Heart className="mr-2 h-4 w-4" />
+                    Añadir a Favoritos
+                </Button>
             </div>
           </div>
         </div>
