@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -33,12 +34,6 @@ export default function PopularCarsSection() {
         return null;
     }
 
-    const handleToggleCompare = (carId: string) => {
-        // En esta sección, no implementaremos la lógica de comparación.
-        // Se puede añadir un toast o simplemente no hacer nada.
-        console.log(`Comparar toggle para: ${carId} (no activo en esta sección)`);
-    };
-
     return (
         <>
             <div id="popular" className="container mx-auto px-4 py-8">
@@ -53,8 +48,6 @@ export default function PopularCarsSection() {
                         <CarCard 
                             key={`popular-${car.id}`} 
                             car={car}
-                            onToggleCompare={() => {}}
-                            isComparing={false}
                         />
                     ))}
                 </div>

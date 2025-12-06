@@ -15,6 +15,7 @@ import { Droplets, GitMerge, Settings, Users, Car as IconoAuto, Heart } from 'lu
 import { cn } from '@/lib/utils';
 import type { Car, CarVariant, Marca } from '@/core/types';
 import { Button } from '@/components/ui/button';
+import CarCard from '@/features/catalog/components/CarCard';
 
 function SkeletonDetalle() {
   return (
@@ -45,10 +46,12 @@ export default function PaginaDetalleAuto() {
   const [auto, setAuto] = useState<Car | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
-
   
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
   const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);
+  
+  const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
+  const { data: todosLosAutos, isLoading: cargandoTodosLosAutos } = useCollection<Car>(coleccionAutos);
 
   useEffect(() => {
     if (!id) return;
@@ -84,7 +87,15 @@ export default function PaginaDetalleAuto() {
     return brand?.logoUrl || null;
   }, [auto, marcas]);
 
-  if (isLoading || cargandoMarcas) return <SkeletonDetalle />;
+  const autosRelacionados = useMemo(() => {
+    if (!auto || !todosLosAutos) return [];
+    return todosLosAutos
+      .filter(a => a.marca === auto.marca && a.id !== auto.id)
+      .slice(0, 3);
+  }, [auto, todosLosAutos]);
+
+
+  if (isLoading || cargandoMarcas || cargandoTodosLosAutos) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
   const detallesAuto = [
@@ -220,6 +231,17 @@ export default function PaginaDetalleAuto() {
                     </ul>
                 </CardContent>
                 </Card>
+            )}
+
+            {autosRelacionados.length > 0 && (
+                <div className="mt-16">
+                    <h2 className="text-3xl font-bold tracking-tight text-center mb-8">También te puede interesar</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {autosRelacionados.map(relatedCar => (
+                            <CarCard key={relatedCar.id} car={relatedCar} />
+                        ))}
+                    </div>
+                </div>
             )}
        </div>
     </div>
