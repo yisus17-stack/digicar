@@ -224,7 +224,8 @@ export default function FormularioAuto({
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
-        <form id="auto-form" onSubmit={form.handleSubmit(alEnviar)} className="flex-grow flex flex-col overflow-hidden">
+        <Form {...form}>
+            <form id="auto-form" onSubmit={form.handleSubmit(alEnviar)} className="flex-grow flex flex-col overflow-hidden">
                 <Tabs defaultValue="general" className="flex-grow flex flex-col overflow-hidden">
                 <TabsList className="w-full grid grid-cols-2">
                     <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>
@@ -387,7 +388,8 @@ export default function FormularioAuto({
                     </div>
                 </TabsContent>
                 </Tabs>
-        </form>
+            </form>
+        </Form>
         <DialogFooter className="pt-4 mt-2 border-t">
             <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
             <Button type="submit" form="auto-form" disabled={isSaving}>
