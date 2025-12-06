@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import { useParams, notFound } from 'next/navigation';
 import { doc, getDoc, collection } from 'firebase/firestore';
@@ -45,6 +45,9 @@ export default function PaginaDetalleAuto() {
   const [auto, setAuto] = useState<Car | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
+  const [showMagnifier, setShowMagnifier] = useState(false);
+  const [[x, y], setXY] = useState([0, 0]);
+
   
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
   const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);
@@ -83,6 +86,13 @@ export default function PaginaDetalleAuto() {
     return brand?.logoUrl || null;
   }, [auto, marcas]);
 
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+    setXY([x, y]);
+  };
+
   if (isLoading || cargandoMarcas) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
@@ -93,26 +103,55 @@ export default function PaginaDetalleAuto() {
     { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
   ];
 
+  const magnifierSize = 200;
+  const zoomLevel = 2.5;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
         {/* Columna Izquierda: Galería de Imágenes */}
-        <div className="space-y-4">
-           <AspectRatio ratio={16/10} className="group overflow-hidden rounded-lg bg-white dark:bg-background">
+        <div 
+          className="space-y-4"
+          onMouseEnter={() => setShowMagnifier(true)}
+          onMouseLeave={() => setShowMagnifier(false)}
+          onMouseMove={handleMouseMove}
+        >
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-white dark:bg-background relative">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
                 alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-110"
+                className="object-contain"
                 priority
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <IconoAuto className="w-24 h-24 text-muted-foreground" />
               </div>
+            )}
+            {selectedVariant && (
+              <div
+                style={{
+                  display: showMagnifier ? 'block' : 'none',
+                  position: 'absolute',
+                  left: `${x - magnifierSize / 2}px`,
+                  top: `${y - magnifierSize / 2}px`,
+                  pointerEvents: 'none',
+                  height: `${magnifierSize}px`,
+                  width: `${magnifierSize}px`,
+                  border: '2px solid hsl(var(--primary))',
+                  borderRadius: '50%',
+                  backgroundImage: `url('${selectedVariant.imagenUrl}')`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: `${100 * zoomLevel}% ${100 * zoomLevel}%`,
+                  backgroundPosition: `-${x * zoomLevel - magnifierSize / 2}px -${y * zoomLevel - magnifierSize / 2}px`,
+                  zIndex: 10,
+                  boxShadow: '0 0 10px rgba(0,0,0,0.2)'
+                }}
+              />
             )}
           </AspectRatio>
         </div>
