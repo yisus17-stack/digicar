@@ -7,6 +7,21 @@ import type { Car } from '@/core/types';
 import CarCard from './CarCard';
 import { Skeleton } from '@/components/ui/skeleton';
 
+const PopularCarsSkeleton = () => (
+    <div className="container mx-auto px-4">
+        <div className="text-center mb-6">
+            <Skeleton className="h-10 w-2/3 mx-auto" />
+            <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full" />
+        </div>
+    </div>
+);
+
+
 export default function PopularCarsSection() {
     const firestore = useFirestore();
 
@@ -15,19 +30,7 @@ export default function PopularCarsSection() {
 
 
     if (cargandoAutosPopulares) {
-        return (
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-6">
-                    <Skeleton className="h-10 w-2/3 mx-auto" />
-                    <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <Skeleton className="h-96 w-full" />
-                    <Skeleton className="h-96 w-full" />
-                    <Skeleton className="h-96 w-full" />
-                </div>
-            </div>
-        );
+        return <PopularCarsSkeleton />;
     }
 
     if (!autosPopulares || autosPopulares.length === 0) {

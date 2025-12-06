@@ -93,9 +93,7 @@ const SeccionHero = () => {
 export default function Home() {
     return (
         <>
-            <Suspense fallback={<EsqueletoSeccionHero />}>
-              <SeccionHero />
-            </Suspense>
+            <SeccionHero />
              <Suspense fallback={<div>Cargando marcas...</div>}>
               <BrandLogos />
             </Suspense>
