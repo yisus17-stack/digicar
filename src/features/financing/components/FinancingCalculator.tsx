@@ -56,7 +56,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
 
   if (step === 1) {
     return (
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl mx-auto animate-in fade-in-50 duration-500">
             <CardContent className="p-8 space-y-8 text-center">
                 <h2 className="text-2xl font-semibold">¿Cuál es tu presupuesto mensual?</h2>
                 <p className="text-muted-foreground">
