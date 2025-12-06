@@ -174,7 +174,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -252,9 +252,8 @@ export default function FormularioAuto({
                 />
               </TabsContent>
 
-              <TabsContent value="variantes" className="flex-grow flex flex-col overflow-hidden p-1">
-                <ScrollArea className="flex-grow p-3 -m-3">
-                  <div className="space-y-4">
+              <TabsContent value="variantes" className="h-[400px] overflow-y-auto p-1">
+                  <div className="space-y-4 p-3">
                     {fields.map((field, index) => (
                         <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
                             <h4 className="font-semibold">Variante {index + 1}</h4>
@@ -298,8 +297,7 @@ export default function FormularioAuto({
                     ))}
                     <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
                   </div>
-                </ScrollArea>
-                <div className="pt-4 mt-auto">
+                <div className="pt-4 mt-auto sticky bottom-0 bg-background">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                       <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
                   </Button>
