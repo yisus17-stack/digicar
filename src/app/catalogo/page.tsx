@@ -70,15 +70,18 @@ export function ComparisonBar({ selectedIds, onRemove, onClear, onCompare, allCa
               <div className="flex items-center gap-4 flex-wrap">
                 <h3 className="font-semibold text-sm sm:text-base whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
                 <div className="flex items-center gap-2">
-                  {selectedCars.map(car => (
-                    <div key={car.id} className="relative flex items-center gap-2 bg-muted p-1.5 rounded-md text-xs">
-                       <Image src={car.imagenUrl} alt={car.modelo} width={24} height={24} className="rounded-sm object-cover" />
-                       <span className="font-medium truncate max-w-[100px]">{car.marca} {car.modelo}</span>
-                       <button onClick={() => onRemove(car.id)} className="ml-1 text-muted-foreground hover:text-foreground">
-                         <X size={14} />
-                       </button>
-                    </div>
-                  ))}
+                  {selectedCars.map(car => {
+                    const imageUrl = car.variantes?.[0]?.imagenUrl ?? car.imagenUrl;
+                    return (
+                        <div key={car.id} className="relative flex items-center gap-2 bg-muted p-1.5 rounded-md text-xs">
+                        {imageUrl && <Image src={imageUrl} alt={car.modelo} width={24} height={24} className="rounded-sm object-cover" />}
+                        <span className="font-medium truncate max-w-[100px]">{car.marca} {car.modelo}</span>
+                        <button onClick={() => onRemove(car.id)} className="ml-1 text-muted-foreground hover:text-foreground">
+                            <X size={14} />
+                        </button>
+                        </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -169,14 +172,16 @@ function CatalogPageContent() {
         let filtered = datosTodosLosAutos.filter(car => {
             if (!car) return false;
             const { brand, fuelType, transmission, price, year, type, engineCylinders, color, passengers } = filters;
+            const carPrice = car.variantes?.[0]?.precio ?? car.precio ?? 0;
+
             if (brand !== 'all' && car.marca !== brand) return false;
             if (fuelType !== 'all' && car.tipoCombustible !== fuelType) return false;
             if (transmission !== 'all' && car.transmision !== transmission) return false;
-            if (car.precio > price) return false;
+            if (carPrice > price) return false;
             if (year !== 'all' && car.anio !== parseInt(year)) return false;
             if (type !== 'all' && car.tipo !== type) return false;
             if (engineCylinders !== 'all' && car.cilindrosMotor !== parseInt(engineCylinders)) return false;
-            if (color !== 'all' && car.color !== color) return false;
+            if (color !== 'all' && car.variantes?.some(v => v.color === color)) return false;
             if (passengers !== 'all' && car.pasajeros !== parseInt(passengers)) return false;
             return true;
         });
@@ -192,9 +197,9 @@ function CatalogPageContent() {
         }
 
         if (sortOrder === 'price-asc') {
-            filtered.sort((a, b) => a.precio - b.precio);
+            filtered.sort((a, b) => (a.variantes?.[0]?.precio ?? a.precio ?? 0) - (b.variantes?.[0]?.precio ?? b.precio ?? 0));
         } else if (sortOrder === 'price-desc') {
-            filtered.sort((a, b) => b.precio - a.precio);
+            filtered.sort((a, b) => (b.variantes?.[0]?.precio ?? b.precio ?? 0) - (a.variantes?.[0]?.precio ?? a.precio ?? 0));
         } else if (sortOrder === 'year-desc') {
             filtered.sort((a, b) => b.anio - a.anio);
         }
