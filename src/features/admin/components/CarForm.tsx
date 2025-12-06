@@ -129,7 +129,6 @@ export default function FormularioAuto({
           tipoCombustible: 'Gasoline',
           pasajeros: 5,
           caracteristicas: '',
-          variantes: [],
         });
         replace([]); // Also clear variants for a new car
       }
@@ -191,7 +190,7 @@ export default function FormularioAuto({
                 <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
               </TabsList>
 
-              <ScrollArea className="flex-grow mt-4">
+              <div className="flex-grow overflow-y-auto mt-4">
                   <TabsContent value="general" className="p-4 space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField name="marca" render={({ field }) => (
@@ -258,7 +257,7 @@ export default function FormularioAuto({
                   </TabsContent>
 
                   <TabsContent value="variantes" className="p-1 h-full flex flex-col">
-                    <ScrollArea className="flex-grow max-h-[500px] p-3 -m-3">
+                    <ScrollArea className="flex-grow p-3 -m-3">
                       <div className="space-y-4">
                         {fields.map((field, index) => (
                             <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
@@ -310,7 +309,7 @@ export default function FormularioAuto({
                       </Button>
                     </div>
                   </TabsContent>
-              </ScrollArea>
+              </div>
             </Tabs>
             
             <DialogFooter className="pt-4 mt-auto border-t">
