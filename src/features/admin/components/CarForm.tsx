@@ -38,7 +38,7 @@ import Swal from 'sweetalert2';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(0, 'El precio es requerido.'),
+  precio: z.coerce.number().min(1, 'El precio es requerido.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -84,7 +84,7 @@ export default function FormularioAuto({
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       marca: '',
       modelo: '',
