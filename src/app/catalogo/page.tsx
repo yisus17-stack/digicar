@@ -264,7 +264,7 @@ function CatalogPageContent() {
       );
 
     return (
-        <div className="container mx-auto px-4 py-8 pb-32">
+        <div className="container mx-auto px-4 py-8 mb-32">
             <Breadcrumbs items={[{ label: 'Catálogo' }]} />
             <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
                 <AnimatePresence>
@@ -337,7 +337,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </motion.main>
+                </main>
             </div>
              <ComparisonBar 
                 selectedIds={comparisonIds}
