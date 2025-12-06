@@ -96,7 +96,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
         <Card className="overflow-hidden">
           <CardContent className="p-4">
             <div className="aspect-[16/10] bg-white dark:bg-background rounded-lg flex items-center justify-center">
-              {carImage ? (
+              {carImage && (
                 <Image
                   src={carImage}
                   alt={selectedCar?.modelo ?? 'Auto seleccionado'}
@@ -104,8 +104,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                   height={400}
                   className="object-contain h-full w-full"
                 />
-              ) : (
-                <CarIcon className="h-24 w-24 text-muted-foreground" />
               )}
             </div>
           </CardContent>
