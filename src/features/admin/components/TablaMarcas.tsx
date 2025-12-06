@@ -204,6 +204,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nombre

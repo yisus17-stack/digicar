@@ -152,6 +152,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nombre

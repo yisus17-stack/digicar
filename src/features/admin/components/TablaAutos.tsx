@@ -205,6 +205,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Marca
@@ -217,6 +218,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Modelo
@@ -229,6 +231,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Año
@@ -241,6 +244,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       header: ({ column }) => (
         <Button
           variant="ghost"
+          className="px-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Precio Base
