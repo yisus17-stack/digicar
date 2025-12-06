@@ -38,21 +38,23 @@ export default function BrandLogos() {
         return null;
     }
     
+    // Duplicamos para el efecto de carrusel infinito
     const duplicatedLogos = [...logosToDisplay, ...logosToDisplay];
 
 
     return (
         <div className="relative w-full overflow-hidden bg-muted/50 py-12">
-             <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
+            <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
             <div className="flex animate-marquee">
                 {duplicatedLogos.map((marca, index) => (
-                    <div key={index} className="flex-shrink-0 mx-8 flex items-center justify-center w-36 h-12">
-                        <div className="relative w-full h-full">
+                    <div key={index} className="flex-shrink-0 mx-8 flex items-center justify-center" style={{ width: '10rem' }}>
+                        <div className="relative w-full h-12">
                             <Image
                                 src={marca.logoUrl!}
                                 alt={`${marca.nombre} logo`}
                                 fill
                                 className="object-contain"
+                                draggable="false"
                             />
                         </div>
                     </div>
