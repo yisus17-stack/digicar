@@ -259,11 +259,11 @@ function CatalogPageContent() {
             <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
                 <AnimatePresence>
                 {showFilters && (
-                    <motion.aside 
-                        className="hidden lg:block lg:w-1/4 sticky top-24"
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0, transition: { type: 'spring', stiffness: 200, damping: 25 } }}
-                        exit={{ opacity: 0, x: -50, transition: { type: 'spring', stiffness: 200, damping: 25 } }}
+                    <motion.aside
+                      className="hidden lg:block lg:w-1/4 sticky top-24"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                     >
                         {filterComponent}
                     </motion.aside>
