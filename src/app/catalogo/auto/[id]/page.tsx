@@ -112,6 +112,7 @@ export default function PaginaDetalleAuto() {
                 fill
                 className="object-contain"
                 priority
+                draggable="false"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -138,6 +139,7 @@ export default function PaginaDetalleAuto() {
                             alt={`${auto.marca} logo`}
                             fill
                             className="object-contain"
+                            draggable="false"
                             />
                         </div>
                     )}
@@ -166,6 +168,7 @@ export default function PaginaDetalleAuto() {
                                 alt={v.color}
                                 fill
                                 className="object-contain"
+                                draggable="false"
                             />
                         </AspectRatio>
                         ))}

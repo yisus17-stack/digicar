@@ -34,6 +34,7 @@ export default function CarCard({ car }: CarCardProps) {
             width={300}
             height={300}
             className="h-40 w-auto object-contain"
+            draggable="false"
           />
         ) : (
           <CarIcon className="h-12 w-12 text-muted-foreground" />
