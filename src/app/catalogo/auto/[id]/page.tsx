@@ -43,7 +43,7 @@ function SkeletonDetalle() {
       <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-6">
         <div className="lg:col-span-2 space-y-8">
-          <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg shadow-md">
               <Skeleton className="w-full h-full" />
           </AspectRatio>
           <Skeleton className="h-40 w-full" />
@@ -198,7 +198,7 @@ export default function PaginaDetalleAuto() {
                 <CardDescription>Déjanos tus datos y un asesor se pondrá en contacto contigo.</CardDescription>
               </CardHeader>
               <CardContent>
-                <LeadCaptureForm interestedCar={`${auto.marca} ${auto.modelo}`} />
+                <LeadCaptureForm />
               </CardContent>
             </Card>
           </div>

@@ -19,16 +19,12 @@ import { useEffect } from 'react';
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.'),
   email: z.string().email('Por favor, introduce un correo electrónico válido.'),
-  interestedCar: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-interface LeadCaptureFormProps {
-  interestedCar?: string;
-}
 
-export default function LeadCaptureForm({ interestedCar = '' }: LeadCaptureFormProps) {
+export default function LeadCaptureForm() {
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -36,13 +32,8 @@ export default function LeadCaptureForm({ interestedCar = '' }: LeadCaptureFormP
     defaultValues: {
       name: '',
       email: '',
-      interestedCar: interestedCar,
     },
   });
-
-  useEffect(() => {
-    form.setValue('interestedCar', interestedCar);
-  }, [interestedCar, form]);
 
   const onSubmit = (data: FormData) => {
     console.log('Cliente potencial capturado:', data);
@@ -50,7 +41,7 @@ export default function LeadCaptureForm({ interestedCar = '' }: LeadCaptureFormP
       title: '¡Consulta Enviada!',
       description: "Gracias por tu interés. Nos pondremos en contacto en breve.",
     });
-    form.reset({ name: '', email: '', interestedCar: interestedCar });
+    form.reset({ name: '', email: '' });
   };
 
   return (
@@ -84,19 +75,6 @@ export default function LeadCaptureForm({ interestedCar = '' }: LeadCaptureFormP
             )}
           />
         </div>
-        <FormField
-            control={form.control}
-            name="interestedCar"
-            render={({ field }) => (
-              <FormItem className="hidden">
-                <FormLabel>Auto de Interés</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         <Button type="submit" className="w-full">Enviar Consulta</Button>
       </form>
     </Form>
