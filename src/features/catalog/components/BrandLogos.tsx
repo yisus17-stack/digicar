@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -26,17 +27,13 @@ export default function BrandLogos() {
     if (isLoading) {
         return <BrandLogosSkeleton />;
     }
-
-    if (!marcas) {
-        return null;
-    }
     
-    const logosToDisplay = marcas.filter(marca => marca.logoUrl);
+    const logosToDisplay = marcas?.filter(marca => marca.logoUrl) ?? [];
 
     if (logosToDisplay.length === 0) {
         return null;
     }
-
+    
     const renderLogos = (keyPrefix: string) => logosToDisplay.map((marca, index) => (
         <div key={`${keyPrefix}-${marca.id}-${index}`} className="flex-shrink-0 mx-8 flex items-center justify-center w-52 h-20">
             <div className="relative w-full h-full">
@@ -51,6 +48,32 @@ export default function BrandLogos() {
         </div>
     ));
 
+    // Si hay pocos logos, los mostramos estáticos para evitar la repetición obvia.
+    if (logosToDisplay.length < 5) {
+        return (
+            <div className="bg-muted">
+                <div className="container mx-auto py-12">
+                    <div className="flex justify-center items-center gap-8 flex-wrap">
+                        {logosToDisplay.map((marca) => (
+                             <div key={`static-${marca.id}`} className="flex-shrink-0 mx-8 flex items-center justify-center w-52 h-20">
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={marca.logoUrl!}
+                                        alt={`${marca.nombre} logo`}
+                                        fill
+                                        className="object-contain"
+                                        draggable="false"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    // Si hay suficientes logos, usamos la animación de marquee.
     return (
         <div className="relative w-full overflow-hidden bg-muted py-12">
              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-muted to-transparent z-10"></div>
