@@ -123,7 +123,7 @@ export default function PaginaDetalleAuto() {
                       alt={v.color} 
                       width={48} 
                       height={48} 
-                      className="h-full w-full object-cover rounded-sm"
+                      className="h-full w-full object-contain rounded-sm"
                     />
                     <span className="sr-only">{v.color}</span>
                   </button>
