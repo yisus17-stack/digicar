@@ -139,7 +139,7 @@ export default function FormularioAuto({
     }
   }, [auto, estaAbierto, form, replace]);
 
- const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -295,24 +295,24 @@ export default function FormularioAuto({
                     )}
                 </TabsContent>
                 
-                <TabsContent value="variantes" className="flex-grow flex flex-col p-4">
-                    {fields.length > 0 && (
-                        <div className="flex items-center justify-center gap-4 mb-4">
-                            <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
-                                <ChevronLeft className="h-5 w-5" />
-                            </Button>
-                            <div className="flex items-center gap-2">
-                            {fields.map((_, index) => (
-                                <button key={`dot-${index}`} type="button" onClick={() => setActiveVariantIndex(index)} className={cn("h-2 w-2 rounded-full transition-colors", activeVariantIndex === index ? 'bg-primary' : 'bg-muted hover:bg-muted-foreground')}></button>
-                            ))}
+                <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
+                    <div className='flex-grow overflow-y-auto pr-4'>
+                        {fields.length > 0 && (
+                            <div className="flex items-center justify-center gap-4 mb-4">
+                                <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
+                                    <ChevronLeft className="h-5 w-5" />
+                                </Button>
+                                <div className="flex items-center gap-2">
+                                {fields.map((_, index) => (
+                                    <button key={`dot-${index}`} type="button" onClick={() => setActiveVariantIndex(index)} className={cn("h-2 w-2 rounded-full transition-colors", activeVariantIndex === index ? 'bg-primary' : 'bg-muted hover:bg-muted-foreground')}></button>
+                                ))}
+                                </div>
+                                <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('next')} disabled={activeVariantIndex === fields.length - 1}>
+                                    <ChevronRight className="h-5 w-5" />
+                                </Button>
                             </div>
-                            <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('next')} disabled={activeVariantIndex === fields.length - 1}>
-                                <ChevronRight className="h-5 w-5" />
-                            </Button>
-                        </div>
-                    )}
-                    
-                    <div className="flex-grow">
+                        )}
+                        
                         {fields.map((field, index) => (
                         <div key={field.id} className={cn("border p-4 rounded-lg space-y-4", activeVariantIndex === index ? 'block' : 'hidden')}>
                             <div className='flex justify-between items-center'>
