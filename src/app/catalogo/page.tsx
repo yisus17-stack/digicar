@@ -134,14 +134,10 @@ function CatalogPageContent() {
 
     useEffect(() => {
         setSearchTerm(initialSearchTerm);
+        // Clear comparison on catalog load to avoid stale data
+        setComparisonIds([]);
+        sessionStorage.removeItem('comparisonIds');
     }, [initialSearchTerm]);
-
-    useEffect(() => {
-        const storedIds = sessionStorage.getItem('comparisonIds');
-        if (storedIds) {
-            setComparisonIds(JSON.parse(storedIds));
-        }
-    }, []);
 
     const handleToggleCompare = (carId: string) => {
         setComparisonIds(prevIds => {
@@ -312,7 +308,12 @@ function CatalogPageContent() {
                     {paginatedCars.length > 0 ? (
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                             {paginatedCars.map(car => (
-                                <CarCard key={`car-${car.id}`} car={car}/>
+                                <CarCard 
+                                    key={`car-${car.id}`} 
+                                    car={car}
+                                    onToggleCompare={handleToggleCompare}
+                                    isComparing={comparisonIds.includes(car.id)}
+                                />
                             ))}
                         </div>
                     ) : (

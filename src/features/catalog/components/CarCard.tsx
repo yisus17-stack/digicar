@@ -8,15 +8,17 @@ import { useRouter } from 'next/navigation';
 import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
 import type { Car, Favorite } from '@/core/types';
-import { Car as CarIcon, Heart, Loader2 } from 'lucide-react';
+import { Car as CarIcon, Heart, Loader2, GitCompareArrows } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 interface CarCardProps {
   car: Car;
+  onToggleCompare?: (carId: string) => void;
+  isComparing?: boolean;
 }
 
-export default function CarCard({ car }: CarCardProps) {
+export default function CarCard({ car, onToggleCompare, isComparing }: CarCardProps) {
   const { user, loading: loadingUser } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -71,6 +73,12 @@ export default function CarCard({ car }: CarCardProps) {
     }
   };
 
+  const handleCompareClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleCompare?.(car.id);
+  };
+
   return (
     <div className="group relative">
       <Link
@@ -104,6 +112,22 @@ export default function CarCard({ car }: CarCardProps) {
           </p>
         </div>
       </Link>
+
+      {onToggleCompare && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleCompareClick}
+          className={cn(
+            "absolute top-3 left-3 z-10 rounded-full bg-background/60 p-2 text-foreground/80 opacity-0 transition-all group-hover:opacity-100 hover:text-primary hover:bg-background h-9 w-9",
+            isComparing && 'opacity-100'
+          )}
+        >
+          <GitCompareArrows className={cn("h-5 w-5", isComparing && "text-primary")} />
+          <span className="sr-only">Añadir a comparación</span>
+        </Button>
+      )}
+
       <Button
         variant="ghost"
         size="icon"
