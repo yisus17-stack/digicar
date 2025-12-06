@@ -8,11 +8,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 
 const BrandLogosSkeleton = () => (
-    <div className="py-12 bg-muted">
-        <div className="container mx-auto">
+    <div className="bg-muted">
+        <div className="container mx-auto py-12">
             <div className="flex justify-around items-center">
                 {[...Array(5)].map((_, i) => (
-                    <Skeleton key={i} className="h-10 w-24" />
+                    <Skeleton key={i} className="h-20 w-52" />
                 ))}
             </div>
         </div>
@@ -32,7 +32,7 @@ export default function BrandLogos() {
         return null;
     }
 
-    const logosToDisplay = marcas.filter(marca => marca.logoUrl);
+    const logosToDisplay = [...marcas, ...marcas].filter(marca => marca.logoUrl);
 
     if (logosToDisplay.length === 0) {
         return null;
@@ -40,11 +40,12 @@ export default function BrandLogos() {
 
     return (
         <div className="relative w-full overflow-hidden bg-muted py-12">
-            <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
-            <div className="flex animate-marquee">
+            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-muted to-transparent z-10"></div>
+            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-muted to-transparent z-10"></div>
+            <div className="flex animate-marquee whitespace-nowrap">
                 {logosToDisplay.map((marca, index) => (
-                    <div key={index} className="flex-shrink-0 mx-8 flex items-center justify-center w-48">
-                        <div className="relative w-full h-16">
+                    <div key={index} className="flex-shrink-0 mx-8 flex items-center justify-center w-52 h-20">
+                        <div className="relative w-full h-full">
                             <Image
                                 src={marca.logoUrl!}
                                 alt={`${marca.nombre} logo`}
