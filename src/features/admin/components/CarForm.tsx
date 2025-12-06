@@ -29,7 +29,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, Loader2, PlusCircle, Trash2 } from 'lucide-react';
 import type { Car, Marca, Color, Transmision, CarVariant } from '@/core/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -262,7 +261,7 @@ export default function FormularioAuto({
                 />
               </TabsContent>
               
-               <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
+              <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
                 <div className="flex-grow space-y-4 overflow-y-auto pr-4">
                   {fields.map((field, index) => (
                     <div key={field.id} className="border p-4 rounded-lg space-y-4">
