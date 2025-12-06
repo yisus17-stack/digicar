@@ -64,7 +64,7 @@ export default function CarFilters({ filters, onFilterChange, onReset, cars, max
           <Label>Búsqueda por palabra clave</Label>
           <Input
             type="text"
-            placeholder="Ej: Camry, SUV, familiar..."
+            placeholder="Busca por marca, modelo, tipo o característica..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="w-full text-base focus-visible:ring-0 focus-visible:ring-offset-0"
