@@ -134,24 +134,30 @@ export default function ComparisonContent() {
   const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
 
   useEffect(() => {
-    if (todosLosAutos) {
-      const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
-      if (storedIds.length > 0) {
-        setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
-        if (storedIds.length > 1) {
-          setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
+    if (todosLosAutos && !loadingUser) {
+      try {
+        const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
+        if (storedIds.length > 0) {
+          setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
+          if (storedIds.length > 1) {
+            setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
+          }
         }
+      } catch (error) {
+        console.error("Could not parse comparison IDs from sessionStorage:", error);
+        sessionStorage.removeItem('comparisonIds');
       }
     }
-  }, [todosLosAutos]);
+  }, [todosLosAutos, loadingUser]);
 
   useEffect(() => {
-    if (!user) {
-        setCar1(undefined);
-        setCar2(undefined);
-        sessionStorage.removeItem('comparisonIds');
+    // This effect ensures that if the user logs out while on the page, the state is cleared.
+    if (!user && !loadingUser) {
+      setCar1(undefined);
+      setCar2(undefined);
     }
-  }, [user]);
+  }, [user, loadingUser]);
+
 
   const handleSelectCar1 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
