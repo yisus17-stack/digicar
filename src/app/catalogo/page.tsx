@@ -262,16 +262,15 @@ function CatalogPageContent() {
                     <motion.aside 
                         className="hidden lg:block lg:w-1/4 sticky top-24"
                         initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50, transition: { duration: 0.3 } }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                        animate={{ opacity: 1, x: 0, transition: { type: 'spring', stiffness: 200, damping: 25 } }}
+                        exit={{ opacity: 0, x: -50, transition: { type: 'spring', stiffness: 200, damping: 25 } }}
                     >
                         {filterComponent}
                     </motion.aside>
                 )}
                 </AnimatePresence>
                 
-                <main className="flex-1">
+                <motion.main layout className="flex-1">
                     <div className='flex justify-between items-center mb-6'>
                         <p className="text-sm text-muted-foreground">{filteredCars.length} resultados</p>
                         <div className='flex items-center gap-4'>
@@ -323,7 +322,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </main>
+                </motion.main>
             </div>
              <ComparisonBar 
                 selectedIds={comparisonIds}
