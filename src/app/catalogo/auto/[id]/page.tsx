@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useParams, notFound } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
-import { useFirestore } from '@/firebase'; // tu instancia de Firestore
+import { doc, getDoc, collection } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Droplets, GitMerge, Settings, Users, Car as IconoAuto, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Car, CarVariant } from '@/core/types';
+import type { Car, CarVariant, Marca } from '@/core/types';
 import { Button } from '@/components/ui/button';
 
 function SkeletonDetalle() {
@@ -22,7 +22,7 @@ function SkeletonDetalle() {
       <Skeleton className="h-6 w-1/3 mb-4" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-6">
         <div className="space-y-4">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-muted">
               <Skeleton className="w-full h-full" />
           </AspectRatio>
         </div>
@@ -45,6 +45,9 @@ export default function PaginaDetalleAuto() {
   const [auto, setAuto] = useState<Car | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
+  
+  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
+  const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);
 
   useEffect(() => {
     if (!id) return;
@@ -73,8 +76,14 @@ export default function PaginaDetalleAuto() {
 
     fetchAuto();
   }, [id, firestore]);
+  
+  const brandLogoUrl = useMemo(() => {
+    if (!auto || !marcas) return null;
+    const brand = marcas.find(b => b.nombre === auto.marca);
+    return brand?.logoUrl || null;
+  }, [auto, marcas]);
 
-  if (isLoading) return <SkeletonDetalle />;
+  if (isLoading || cargandoMarcas) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
   const detallesAuto = [
@@ -91,7 +100,7 @@ export default function PaginaDetalleAuto() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
         {/* Columna Izquierda: Galería de Imágenes */}
         <div className="space-y-4">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg">
+           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-muted">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
@@ -113,6 +122,16 @@ export default function PaginaDetalleAuto() {
           <div className="lg:sticky top-24 h-full">
             <Card className="h-full">
               <CardContent className="p-6 space-y-6">
+                {brandLogoUrl && (
+                  <div className="absolute top-4 right-4 h-12 w-20">
+                    <Image 
+                      src={brandLogoUrl}
+                      alt={`${auto.marca} logo`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                )}
                 <div>
                     <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
                     <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
