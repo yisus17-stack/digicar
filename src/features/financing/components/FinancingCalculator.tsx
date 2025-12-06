@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -60,6 +61,38 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
       {/* Columna Izquierda: Imagen del Auto y Selector */}
       <div className="lg:col-span-2 space-y-6 sticky top-24">
+        <Select onValueChange={handleCarChange} value={selectedCarId}>
+          <SelectTrigger className="w-full h-12 text-base">
+            <SelectValue placeholder="Selecciona un auto para comenzar" />
+          </SelectTrigger>
+          <SelectContent>
+            {allCars.map(car => {
+              const variant = car.variantes?.[0];
+              const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
+              return (
+                <SelectItem key={car.id} value={car.id}>
+                  <div className="flex items-center gap-3">
+                    {imageUrl ? (
+                      <div className="relative h-10 w-10 flex-shrink-0">
+                        <Image
+                          src={imageUrl}
+                          alt={car.modelo}
+                          fill
+                          className="rounded-md object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
+                        <CarIcon className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                    )}
+                    <span>{car.marca} {car.modelo}</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
         <Card className="overflow-hidden">
           <CardContent className="p-4">
             <div className="aspect-[16/10] bg-muted rounded-lg flex items-center justify-center">
@@ -77,18 +110,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
             </div>
           </CardContent>
         </Card>
-        <Select onValueChange={handleCarChange} value={selectedCarId}>
-          <SelectTrigger className="w-full h-12 text-base">
-            <SelectValue placeholder="Selecciona un auto para comenzar" />
-          </SelectTrigger>
-          <SelectContent>
-            {allCars.map(car => (
-              <SelectItem key={car.id} value={car.id}>
-                {car.marca} {car.modelo}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Columna Derecha: Calculadora */}
@@ -156,3 +177,4 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     </div>
   );
 }
+
