@@ -160,22 +160,24 @@ function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!loading) {
             if (!user) {
-                // No user logged in, redirect to login
                 router.replace('/login');
             } else if (user.uid !== adminUid) {
-                // User is not admin, redirect to home
-                router.replace('/');
+                 Swal.fire({
+                    title: 'Acceso Denegado',
+                    text: 'No tienes permisos para acceder a esta página.',
+                    icon: 'error',
+                    confirmButtonColor: '#595c97',
+                }).then(() => {
+                    router.replace('/');
+                });
             }
         }
     }, [user, loading, router, adminUid]);
 
-    // While loading, or if the user is not the admin yet, show a loading skeleton.
-    // This prevents a flash of the admin content before redirection.
     if (loading || user?.uid !== adminUid) {
         return <EsqueletoLayoutAdmin />;
     }
 
-    // If checks pass, render the admin layout
     return <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>;
 }
 
