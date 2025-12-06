@@ -77,7 +77,7 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
+      router.push(`/catalogo?search=${encodeURIComponent(searchTerm.trim())}`);
       closeSearch();
       setSearchTerm('');
     }
@@ -98,6 +98,7 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      sessionStorage.removeItem('comparisonIds');
       await Swal.fire({
         title: 'Sesión Cerrada',
         text: 'Has cerrado sesión correctamente.',

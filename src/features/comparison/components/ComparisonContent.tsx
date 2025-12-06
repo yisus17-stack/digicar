@@ -145,13 +145,28 @@ export default function ComparisonContent() {
     }
   }, [todosLosAutos]);
 
+  useEffect(() => {
+    if (!user) {
+        setCar1(undefined);
+        setCar2(undefined);
+        sessionStorage.removeItem('comparisonIds');
+    }
+  }, [user]);
+
   const handleSelectCar1 = (carId: string) => {
-    setCar1(todosLosAutos?.find(c => c.id === carId));
+    const selected = todosLosAutos?.find(c => c.id === carId);
+    setCar1(selected);
+    const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
+    sessionStorage.setItem('comparisonIds', JSON.stringify([carId, storedIds[1]]));
   };
 
   const handleSelectCar2 = (carId: string) => {
-    setCar2(todosLosAutos?.find(c => c.id === carId));
+    const selected = todosLosAutos?.find(c => c.id === carId);
+    setCar2(selected);
+    const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
+    sessionStorage.setItem('comparisonIds', JSON.stringify([storedIds[0], carId]));
   };
+
 
   const handleSaveComparison = async () => {
     if (!user) {
