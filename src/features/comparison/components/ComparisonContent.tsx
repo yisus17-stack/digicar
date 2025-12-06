@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle, Save, Loader2 } from 'lucide-react';
+import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -48,42 +48,35 @@ const CarSelector = ({
   const availableCars = allCars.filter(c => c.id !== otherCarId);
   const displayVariant = selectedCar?.variantes?.[0];
   const imageUrl = displayVariant?.imagenUrl ?? selectedCar?.imagenUrl;
-  const price = displayVariant?.precio ?? selectedCar?.precio ?? 0;
-
+  
   if (selectedCar) {
     return (
-      <Card className="overflow-hidden md:col-span-1 w-full">
-        <div className="aspect-video relative bg-muted">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={`${selectedCar.marca} ${selectedCar.modelo}`}
-              fill
-              className="object-contain"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <CarIcon className="w-12 h-12 text-muted-foreground" />
+      <div className="flex flex-col items-center justify-start text-center">
+        <Link href={`/catalogo/auto/${selectedCar.id}`} className="block">
+            <div className="relative w-64 h-48 mb-4">
+            {imageUrl ? (
+                <Image
+                src={imageUrl}
+                alt={`${selectedCar.marca} ${selectedCar.modelo}`}
+                fill
+                className="object-contain"
+                />
+            ) : (
+                <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
+                <CarIcon className="w-16 h-16 text-muted-foreground" />
+                </div>
+            )}
             </div>
-          )}
-        </div>
-        <CardHeader>
-          <CardTitle>
-            <Link href={`/catalogo/auto/${selectedCar.id}`} className="hover:underline">
-              {selectedCar.marca} {selectedCar.modelo}
-            </Link>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold">${price > 0 ? price.toLocaleString('es-MX') : 'N/A'}</p>
-          <p className="text-sm text-muted-foreground">{selectedCar.anio}</p>
-        </CardContent>
-      </Card>
+            <p className="text-lg font-semibold hover:underline">
+                {selectedCar.marca} {selectedCar.modelo}
+            </p>
+        </Link>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full h-full min-h-[300px] flex flex-col items-center justify-center border-dashed p-4">
+    <Card className="w-full h-full min-h-[280px] flex flex-col items-center justify-center border-dashed p-4">
       <PlusCircle className="h-10 w-10 text-muted-foreground mb-4" />
       <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
       <Select onValueChange={onSelect}>
@@ -238,7 +231,7 @@ export default function ComparisonContent() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
         <Breadcrumbs items={[{ label: 'Comparar' }]} />
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                 Comparación de Modelos
             </h1>
@@ -248,8 +241,9 @@ export default function ComparisonContent() {
         </div>
         
         <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center justify-center gap-8">
                 <CarSelector selectedCar={car1} allCars={todosLosAutos} onSelect={handleSelectCar1} otherCarId={car2?.id} />
+                <GitCompareArrows className="h-8 w-8 text-muted-foreground" />
                 <CarSelector selectedCar={car2} allCars={todosLosAutos} onSelect={handleSelectCar2} otherCarId={car1?.id} />
             </div>
 
