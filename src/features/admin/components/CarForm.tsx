@@ -46,8 +46,8 @@ const variantSchema = z.object({
 const esquemaFormulario = z.object({
   marca: z.string().min(1, 'La marca es requerida.'),
   modelo: z.string().min(2, 'El modelo es requerido.'),
-  anio: z.string({ required_error: 'El año es requerido.' }).min(4, 'El año es requerido.'),
-  tipo: z.string({ required_error: 'El tipo es requerido.' }).min(1, 'El tipo es requerido.'),
+  anio: z.string().min(4, 'El año es requerido.'),
+  tipo: z.string().min(1, 'El tipo es requerido.'),
   cilindrosMotor: z.coerce.number().min(1, 'Debes seleccionar los cilindros.'),
   transmision: z.string().min(1, 'La transmisión es requerida.'),
   tipoCombustible: z.string().refine(val => val !== '', { message: "Debes seleccionar el tipo de combustible." }),
@@ -81,6 +81,7 @@ export default function FormularioAuto({
 }: PropsFormularioAuto) {
   
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('general');
 
   const form = useForm<DatosFormulario>({
     resolver: zodResolver(esquemaFormulario),
@@ -91,14 +92,14 @@ export default function FormularioAuto({
       tipo: '',
       cilindrosMotor: 0,
       transmision: '',
-      tipoCombustible: '' as any,
+      tipoCombustible: '',
       pasajeros: 0,
       caracteristicas: '',
       variantes: [],
     },
   });
 
-  const { control, getValues, setValue } = form;
+  const { control, getValues, setValue, trigger } = form;
 
   const { fields, append, remove, update, replace } = useFieldArray({
     control: control,
@@ -107,6 +108,7 @@ export default function FormularioAuto({
 
   useEffect(() => {
     if (estaAbierto) {
+      setActiveTab('general');
       if (auto) {
         form.reset({
           marca: auto.marca,
@@ -129,7 +131,7 @@ export default function FormularioAuto({
           tipo: '',
           cilindrosMotor: 0,
           transmision: '',
-          tipoCombustible: '' as any,
+          tipoCombustible: '',
           pasajeros: 0,
           caracteristicas: '',
           variantes: [],
@@ -180,6 +182,21 @@ export default function FormularioAuto({
     };
     alGuardar(datosAuto, files);
   };
+
+  const handleFormErrors = () => {
+      const errors = form.formState.errors;
+      const generalErrors = ['marca', 'modelo', 'anio', 'tipo', 'cilindrosMotor', 'transmision', 'tipoCombustible', 'pasajeros'];
+      const hasGeneralError = generalErrors.some(field => field in errors);
+
+      if (hasGeneralError) {
+          setActiveTab('general');
+          return;
+      }
+      
+      if (errors.variantes) {
+          setActiveTab('variantes');
+      }
+  }
   
   const addVariant = () => {
     const newVariant = {
@@ -223,6 +240,14 @@ export default function FormularioAuto({
     }
   }
 
+  const handleNext = async () => {
+      const generalFields: (keyof DatosFormulario)[] = ['marca', 'modelo', 'anio', 'tipo', 'cilindrosMotor', 'transmision', 'tipoCombustible', 'pasajeros'];
+      const result = await trigger(generalFields);
+      if (result) {
+          setActiveTab('variantes');
+      }
+  }
+
   const years = Array.from({ length: new Date().getFullYear() - 1969 }, (_, i) => new Date().getFullYear() + 1 - i);
 
   return (
@@ -232,8 +257,8 @@ export default function FormularioAuto({
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form id="auto-form" onSubmit={form.handleSubmit(alEnviar)} className="flex-grow flex flex-col overflow-hidden">
-            <Tabs defaultValue="general" className="flex-grow flex flex-col overflow-hidden">
+          <form id="auto-form" onSubmit={form.handleSubmit(alEnviar, handleFormErrors)} className="flex-grow flex flex-col overflow-hidden">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col overflow-hidden">
               <TabsList className="w-full grid grid-cols-2">
                 <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>
                 <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
@@ -450,10 +475,14 @@ export default function FormularioAuto({
         </Form>
         <DialogFooter>
           <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
-          <Button type="submit" form="auto-form" disabled={isSaving}>
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {auto ? 'Actualizar Auto' : 'Crear Auto'}
-          </Button>
+          {activeTab === 'general' ? (
+              <Button type="button" onClick={handleNext}>Siguiente</Button>
+          ) : (
+              <Button type="submit" form="auto-form" disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {auto ? 'Actualizar Auto' : 'Crear Auto'}
+              </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
