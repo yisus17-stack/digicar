@@ -99,8 +99,10 @@ export default function FormularioAuto({
     },
   });
 
+  const { control, getValues, setValue } = form;
+
   const { fields, append, remove, update, replace } = useFieldArray({
-    control: form.control,
+    control: control,
     name: "variantes"
   });
 
@@ -143,7 +145,7 @@ export default function FormularioAuto({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
-      const currentValues = form.getValues();
+      const currentValues = getValues();
       const currentVariant = currentValues.variantes[index];
 
       reader.onloadend = () => {
@@ -232,8 +234,8 @@ export default function FormularioAuto({
                     <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="general" className="flex-grow overflow-y-auto p-4 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TabsContent value="general" className="flex-grow overflow-y-auto p-4 space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <FormField name="marca" control={form.control} render={({ field }) => (
                         <FormItem>
                             <FormLabel>Marca *</FormLabel>
