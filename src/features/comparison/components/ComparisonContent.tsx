@@ -117,7 +117,7 @@ const CarSelector = ({
 };
 
 
-function ContenidoComparacion() {
+export default function ComparisonContent() {
   const firestore = useFirestore();
   const [car1, setCar1] = useState<Car | undefined>(undefined);
   const [car2, setCar2] = useState<Car | undefined>(undefined);
@@ -209,13 +209,13 @@ function ContenidoComparacion() {
                     <div>
                         <div className="grid grid-cols-3 items-start gap-4">
                             <div className="font-semibold text-left text-muted-foreground pt-1 col-span-1">Características</div>
-                            <div className="col-span-1 px-4">
-                                <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                            <div className="col-span-1 px-4 text-left">
+                                <ul className="list-disc list-inside space-y-1 text-sm">
                                     {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>) ?? (car1 && <li>-</li>)}
                                 </ul>
                             </div>
-                            <div className="col-span-1 px-4">
-                                <ul className="list-disc list-inside text-left space-y-1 text-sm">
+                            <div className="col-span-1 px-4 text-left">
+                                <ul className="list-disc list-inside space-y-1 text-sm">
                                     {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>) ?? (car2 && <li>-</li>)}
                                 </ul>
                             </div>
@@ -226,13 +226,5 @@ function ContenidoComparacion() {
             </Card>
         </div>
     </div>
-  );
-}
-
-export default function ComparisonContent() {
-  return (
-    <Suspense fallback={<EsqueletoComparacion />}>
-      <ContenidoComparacion />
-    </Suspense>
   );
 }
