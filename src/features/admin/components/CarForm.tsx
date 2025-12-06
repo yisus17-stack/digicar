@@ -174,7 +174,8 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl">
+      {/* dialog como flex-column y con alto para permitir scroll interno */}
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[80vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -252,8 +253,10 @@ export default function FormularioAuto({
                 />
               </TabsContent>
 
-              <TabsContent value="variantes" className="h-[400px] overflow-y-auto p-1">
-                  <div className="space-y-4 p-3">
+              {/* Variante: contenedor flex-column, ScrollArea flex-1 para scroll interno */}
+              <TabsContent value="variantes" className="flex flex-col flex-grow p-1 overflow-hidden">
+                <ScrollArea className="flex-grow p-3 -m-3">
+                  <div className="space-y-4">
                     {fields.map((field, index) => (
                         <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
                             <h4 className="font-semibold">Variante {index + 1}</h4>
@@ -297,7 +300,10 @@ export default function FormularioAuto({
                     ))}
                     <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
                   </div>
-                <div className="pt-4 mt-auto sticky bottom-0 bg-background">
+                </ScrollArea>
+
+                {/* botón fijo abajo */}
+                <div className="pt-4 mt-auto">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                       <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
                   </Button>
