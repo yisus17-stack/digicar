@@ -37,17 +37,16 @@ export default function BrandLogos() {
     if (logosToDisplay.length === 0) {
         return null;
     }
-
-    // Duplicamos los logos para el efecto de marquee
+    
     const duplicatedLogos = [...logosToDisplay, ...logosToDisplay];
 
 
     return (
-        <div className="relative py-12 bg-muted/50 overflow-hidden">
-            <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
-            <div className="animate-marquee whitespace-nowrap flex">
+        <div className="relative w-full overflow-hidden bg-muted/50 py-12">
+             <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, hsl(var(--background)) 0%, transparent 10%, transparent 90%, hsl(var(--background)) 100%)' }}></div>
+            <div className="flex animate-marquee">
                 {duplicatedLogos.map((marca, index) => (
-                    <div key={index} className="flex-shrink-0 mx-8 w-36 h-12 flex items-center justify-center">
+                    <div key={index} className="flex-shrink-0 mx-8 flex items-center justify-center w-36 h-12">
                         <div className="relative w-full h-full">
                             <Image
                                 src={marca.logoUrl!}
