@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -191,9 +190,6 @@ export default function PaginaDetalleAuto() {
                   ))}
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button className="w-full text-base py-6">Solicitar Información</Button>
-              </CardFooter>
             </Card>
 
             <Card>
