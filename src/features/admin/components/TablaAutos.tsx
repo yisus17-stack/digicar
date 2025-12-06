@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Car as IconoAuto, PlusCircle, Save } from 'lucide-react';
+import { Edit, Trash2, Car as IconoAuto, PlusCircle } from 'lucide-react';
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
@@ -87,26 +87,30 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     }
   };
 
-  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, file?: File) => {
+  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]) => {
     setIsSaving(true);
     
     try {
         let finalCarData: any = { ...datosAuto };
         
-        if (file) {
-            Swal.fire({
-              title: 'Subiendo imagen...',
-              text: 'Por favor, espera.',
-              icon: 'info',
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-              confirmButtonColor: '#595c97',
-            });
-            const imageUrl = await uploadImage(file);
-            finalCarData.imagenUrl = imageUrl;
-        }
+        const uploadPromises = finalCarData.variantes.map(async (variante: any, index: number) => {
+            const file = files[index];
+            if (file) {
+                 Swal.fire({
+                    title: 'Subiendo imágenes...',
+                    text: `Por favor, espera. Subiendo variante ${index + 1}`,
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); },
+                    confirmButtonColor: '#595c97',
+                });
+                const imageUrl = await uploadImage(file);
+                return { ...variante, imagenUrl: imageUrl };
+            }
+            return variante;
+        });
+
+        finalCarData.variantes = await Promise.all(uploadPromises);
 
         if (autoSeleccionado) {
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
@@ -159,50 +163,56 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                         <TableHead>Marca</TableHead>
                         <TableHead>Modelo</TableHead>
                         <TableHead>Año</TableHead>
-                        <TableHead>Precio</TableHead>
+                        <TableHead>Precio Base</TableHead>
                         <TableHead>Acciones</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {autosIniciales
-                        .filter(auto => auto) // evita autos null o undefined
-                        .map(auto => (
-                        <TableRow key={auto.id ?? Math.random()}>
-                            <TableCell>
-                                {auto.imagenUrl ? (
-                                    <Image
-                                        src={auto.imagenUrl}
-                                        alt={`${auto.marca ?? ''} ${auto.modelo ?? ''}`}
-                                        width={64}
-                                        height={48}
-                                        className="rounded-md object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
-                                        <IconoAuto className="h-6 w-6 text-muted-foreground" />
-                                    </div>
-                                )}
-                            </TableCell>
-                            <TableCell className="font-medium">{auto.marca ?? '-'}</TableCell>
-                            <TableCell>{auto.modelo ?? '-'}</TableCell>
-                            <TableCell>{auto.anio ?? '-'}</TableCell>
-                            <TableCell>
-                                {auto.precio != null ? `$${auto.precio.toLocaleString('es-MX')}` : '-'}
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex gap-2">
-                                    <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
-                                        <Edit className="mr-2 h-4 w-4" />
-                                        Editar
-                                    </Button>
-                                    <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
-                                        <Trash2 className="mr-2 h-4 w-4" />
-                                        Eliminar
-                                    </Button>
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                        .filter(auto => auto)
+                        .map(auto => {
+                            const displayVariant = auto.variantes && auto.variantes.length > 0 ? auto.variantes[0] : null;
+                            const imageUrl = displayVariant?.imagenUrl ?? auto.imagenUrl;
+                            const price = displayVariant?.precio ?? auto.precio ?? 0;
+
+                            return (
+                                <TableRow key={auto.id ?? Math.random()}>
+                                    <TableCell>
+                                        {imageUrl ? (
+                                            <Image
+                                                src={imageUrl}
+                                                alt={`${auto.marca ?? ''} ${auto.modelo ?? ''}`}
+                                                width={64}
+                                                height={48}
+                                                className="rounded-md object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-16 h-12 flex items-center justify-center bg-muted rounded-md">
+                                                <IconoAuto className="h-6 w-6 text-muted-foreground" />
+                                            </div>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="font-medium">{auto.marca ?? '-'}</TableCell>
+                                    <TableCell>{auto.modelo ?? '-'}</TableCell>
+                                    <TableCell>{auto.anio ?? '-'}</TableCell>
+                                    <TableCell>
+                                        {price != null ? `$${price.toLocaleString('es-MX')}` : '-'}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-2">
+                                            <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
+                                                <Edit className="mr-2 h-4 w-4" />
+                                                Editar
+                                            </Button>
+                                            <Button variant="destructive" size="sm" onClick={() => auto.id && confirmarEliminar(auto.id)}>
+                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                Eliminar
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                 </TableBody>
             </Table>
         </div>

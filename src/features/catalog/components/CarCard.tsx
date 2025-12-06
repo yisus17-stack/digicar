@@ -15,6 +15,11 @@ export default function CarCard({ car }: CarCardProps) {
     return null;
   }
   const tipoAuto = car.tipo as keyof (typeof traducciones.tipo);
+  
+  // Use the first variant for display, or fallback to deprecated fields
+  const displayVariant = car.variantes && car.variantes.length > 0 ? car.variantes[0] : null;
+  const imageUrl = displayVariant?.imagenUrl ?? car.imagenUrl;
+  const price = displayVariant?.precio ?? car.precio ?? 0;
 
   return (
     <Link
@@ -23,9 +28,9 @@ export default function CarCard({ car }: CarCardProps) {
     >
       {/* IMAGEN */}
       <div className="h-56 w-full flex items-center justify-center p-6 bg-muted">
-        {car.imagenUrl ? (
+        {imageUrl ? (
           <Image
-            src={car.imagenUrl}
+            src={imageUrl}
             alt={`${car.marca} ${car.modelo}`}
             width={300}
             height={300}
@@ -45,7 +50,7 @@ export default function CarCard({ car }: CarCardProps) {
           </p>
         </div>
         <p className="mt-2 pt-2 text-base font-bold">
-          ${car.precio.toLocaleString('es-MX')}
+          ${price.toLocaleString('es-MX')}
         </p>
       </div>
     </Link>

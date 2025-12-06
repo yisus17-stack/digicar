@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Car": {
@@ -6,62 +7,22 @@
       "type": "object",
       "description": "Represents a car model in the catalog.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the car."
-        },
-        "marca": {
-          "type": "string",
-          "description": "The manufacturer of the car (e.g., Toyota, Ford)."
-        },
-        "modelo": {
-          "type": "string",
-          "description": "The model name of the car (e.g., Camry, F-150)."
-        },
-        "anio": {
-          "type": "number",
-          "description": "The manufacturing year of the car."
-        },
-        "version": {
-          "type": "string",
-          "description": "The trim level of the car (e.g., LE, XLE, Limited)."
-        },
-        "precio": {
-          "type": "number",
-          "description": "The price of the car."
-        },
-        "imagenUrl": {
-          "type": "string",
-          "description": "URL of the car's image.",
-          "format": "uri"
-        },
-        "descripcion": {
-          "type": "string",
-          "description": "Detailed description of the car."
-        },
-        "tipoCombustible": {
-          "type": "string"
-        },
-        "transmision": {
-          "type": "string"
-        },
-        "caracteristicas": {
+        "id": { "type": "string", "description": "Unique identifier for the car." },
+        "marca": { "type": "string", "description": "The manufacturer of the car (e.g., Toyota, Ford)." },
+        "modelo": { "type": "string", "description": "The model name of the car (e.g., Camry, F-150)." },
+        "anio": { "type": "number", "description": "The manufacturing year of the car." },
+        "version": { "type": "string", "description": "The trim level of the car (e.g., LE, XLE, Limited)." },
+        "descripcion": { "type": "string", "description": "Detailed description of the car." },
+        "tipoCombustible": { "type": "string" },
+        "transmision": { "type": "string" },
+        "caracteristicas": { "type": "array", "items": { "type": "string" } },
+        "tipo": { "type": "string" },
+        "cilindrosMotor": { "type": "number" },
+        "pasajeros": { "type": "number" },
+        "variantes": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "tipo": {
-          "type": "string"
-        },
-        "cilindrosMotor": {
-          "type": "number"
-        },
-        "color": {
-          "type": "string"
-        },
-        "pasajeros": {
-          "type": "number"
+          "description": "List of color, image, and price variants for this car model.",
+          "items": { "$ref": "#/backend/entities/CarVariant" }
         }
       },
       "required": [
@@ -69,16 +30,27 @@
         "marca",
         "modelo",
         "anio",
-        "precio",
-        "imagenUrl",
         "tipoCombustible",
         "transmision",
         "caracteristicas",
         "tipo",
         "cilindrosMotor",
-        "color",
-        "pasajeros"
+        "pasajeros",
+        "variantes"
       ]
+    },
+    "CarVariant": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Car Variant",
+      "type": "object",
+      "description": "Represents a specific variant of a car model, such as color and price.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the variant." },
+        "color": { "type": "string" },
+        "imagenUrl": { "type": "string", "format": "uri" },
+        "precio": { "type": "number" }
+      },
+      "required": ["id", "color", "imagenUrl", "precio"]
     },
     "Lead": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -86,51 +58,16 @@
       "type": "object",
       "description": "Represents a potential customer lead.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the lead."
-        },
-        "firstName": {
-          "type": "string",
-          "description": "The first name of the lead."
-        },
-        "lastName": {
-          "type": "string",
-          "description": "The last name of the lead."
-        },
-        "email": {
-          "type": "string",
-          "description": "The email address of the lead.",
-          "format": "email"
-        },
-        "phone": {
-          "type": "string",
-          "description": "The phone number of the lead."
-        },
-        "carOfInterestId": {
-          "type": "string",
-          "description": "Reference to the Car the lead is interested in. (Relationship: Lead N:1 Car)"
-        },
-        "notes": {
-          "type": "string",
-          "description": "Any notes about the lead."
-        },
-        "dateCreated": {
-          "type": "string",
-          "description": "Date and time the lead was created.",
-          "format": "date-time"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the lead." },
+        "firstName": { "type": "string", "description": "The first name of the lead." },
+        "lastName": { "type": "string", "description": "The last name of the lead." },
+        "email": { "type": "string", "description": "The email address of the lead.", "format": "email" },
+        "phone": { "type": "string", "description": "The phone number of the lead." },
+        "carOfInterestId": { "type": "string", "description": "Reference to the Car the lead is interested in. (Relationship: Lead N:1 Car)" },
+        "notes": { "type": "string", "description": "Any notes about the lead." },
+        "dateCreated": { "type": "string", "description": "Date and time the lead was created.", "format": "date-time" }
       },
-      "required": [
-        "id",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "carOfInterestId",
-        "notes",
-        "dateCreated"
-      ]
+      "required": [ "id", "firstName", "lastName", "email", "phone", "carOfInterestId", "notes", "dateCreated" ]
     },
     "Scenario": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -138,29 +75,12 @@
       "type": "object",
       "description": "Represents a driving scenario in the car simulator.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the scenario."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the scenario (e.g., 'City Driving', 'Highway Commute')."
-        },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the scenario."
-        },
-        "parameters": {
-          "type": "string",
-          "description": "JSON string containing the parameters for the car simulator."
-        }
+        "id": { "type": "string", "description": "Unique identifier for the scenario." },
+        "name": { "type": "string", "description": "The name of the scenario (e.g., 'City Driving', 'Highway Commute')." },
+        "description": { "type": "string", "description": "Detailed description of the scenario." },
+        "parameters": { "type": "string", "description": "JSON string containing the parameters for the car simulator." }
       },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "parameters"
-      ]
+      "required": ["id", "name", "description", "parameters"]
     },
     "Recommendation": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -168,34 +88,13 @@
       "type": "object",
       "description": "Represents a car recommendation based on a scenario.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the recommendation."
-        },
-        "carId": {
-          "type": "string",
-          "description": "Reference to the recommended Car. (Relationship: Recommendation N:1 Car)"
-        },
-        "scenarioId": {
-          "type": "string",
-          "description": "Reference to the Scenario used for the recommendation. (Relationship: Recommendation N:1 Scenario)"
-        },
-        "score": {
-          "type": "number",
-          "description": "A score indicating the suitability of the car for the scenario."
-        },
-        "justification": {
-          "type": "string",
-          "description": "Explanation of why the car is recommended for the scenario."
-        }
+        "id": { "type": "string", "description": "Unique identifier for the recommendation." },
+        "carId": { "type": "string", "description": "Reference to the recommended Car. (Relationship: Recommendation N:1 Car)" },
+        "scenarioId": { "type": "string", "description": "Reference to the Scenario used for the recommendation. (Relationship: Recommendation N:1 Scenario)" },
+        "score": { "type": "number", "description": "A score indicating the suitability of the car for the scenario." },
+        "justification": { "type": "string", "description": "Explanation of why the car is recommended for the scenario." }
       },
-      "required": [
-        "id",
-        "carId",
-        "scenarioId",
-        "score",
-        "justification"
-      ]
+      "required": ["id", "carId", "scenarioId", "score", "justification"]
     },
     "Brand": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -203,24 +102,11 @@
       "type": "object",
       "description": "Represents a car brand or manufacturer.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the brand."
-        },
-        "nombre": {
-          "type": "string",
-          "description": "The name of the brand (e.g., Toyota, Ford)."
-        },
-        "logoUrl": {
-          "type": "string",
-          "description": "URL of the brand's logo.",
-          "format": "uri"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the brand." },
+        "nombre": { "type": "string", "description": "The name of the brand (e.g., Toyota, Ford)." },
+        "logoUrl": { "type": "string", "description": "URL of the brand's logo.", "format": "uri" }
       },
-      "required": [
-        "id",
-        "nombre"
-      ]
+      "required": ["id", "nombre"]
     },
     "Color": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -228,19 +114,10 @@
       "type": "object",
       "description": "Represents a car color.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the color."
-        },
-        "nombre": {
-          "type": "string",
-          "description": "The name of the color (e.g., Rojo, Azul)."
-        }
+        "id": { "type": "string", "description": "Unique identifier for the color." },
+        "nombre": { "type": "string", "description": "The name of the color (e.g., Rojo, Azul)." }
       },
-      "required": [
-        "id",
-        "nombre"
-      ]
+      "required": ["id", "nombre"]
     },
     "Transmission": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -248,19 +125,10 @@
       "type": "object",
       "description": "Represents a car transmission type.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the transmission type."
-        },
-        "nombre": {
-          "type": "string",
-          "description": "The name of the transmission type (e.g., Automática, Manual)."
-        }
+        "id": { "type": "string", "description": "Unique identifier for the transmission type." },
+        "nombre": { "type": "string", "description": "The name of the transmission type (e.g., Automática, Manual)." }
       },
-      "required": [
-        "id",
-        "nombre"
-      ]
+      "required": ["id", "nombre"]
     },
     "Message": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -268,15 +136,8 @@
       "type": "object",
       "description": "Represents a single message in a chat conversation.",
       "properties": {
-        "role": {
-          "type": "string",
-          "enum": ["user", "model"],
-          "description": "The role of the entity sending the message."
-        },
-        "content": {
-          "type": "string",
-          "description": "The text content of the message."
-        }
+        "role": { "type": "string", "enum": ["user", "model"], "description": "The role of the entity sending the message." },
+        "content": { "type": "string", "description": "The text content of the message." }
       },
       "required": ["role", "content"]
     },
@@ -286,25 +147,10 @@
       "type": "object",
       "description": "Represents a complete chat conversation history.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the chat session."
-        },
-        "userId": {
-          "type": "string",
-          "description": "The ID of the user who initiated the chat."
-        },
-        "messages": {
-          "type": "array",
-          "items": {
-            "$ref": "#/backend/entities/Message"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Timestamp of when the chat was created."
-        }
+        "id": { "type": "string", "description": "Unique identifier for the chat session." },
+        "userId": { "type": "string", "description": "The ID of the user who initiated the chat." },
+        "messages": { "type": "array", "items": { "$ref": "#/backend/entities/Message" } },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the chat was created." }
       },
       "required": ["id", "userId", "messages", "createdAt"]
     },
@@ -314,184 +160,104 @@
       "type": "object",
       "description": "Represents a user's public profile information.",
       "properties": {
-        "uid": {
-          "type": "string",
-          "description": "The user's unique ID."
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "description": "The user's email address."
-        },
-        "displayName": {
-          "type": "string",
-          "description": "The user's display name."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Timestamp of when the user account was created."
-        }
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the user account was created." }
       },
-      "required": [ "uid", "email", "createdAt" ]
+      "required": ["uid", "email", "createdAt"]
     },
     "Counter": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Counter",
       "description": "A generic counter document.",
       "type": "object",
-      "properties": {
-        "total": {
-          "type": "number",
-          "description": "The current total count."
-        }
-      },
+      "properties": { "total": { "type": "number", "description": "The current total count." } },
       "required": ["total"]
     }
   },
-  "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
-  },
+  "auth": { "providers": ["password", "anonymous"] },
   "firestore": {
     "structure": [
       {
         "path": "/autos/{autoId}",
         "definition": {
           "entityName": "Car",
-          "schema": {
-            "$ref": "#/backend/entities/Car"
-          },
+          "schema": { "$ref": "#/backend/entities/Car" },
           "description": "Stores car data. Publicly accessible for reads, admin-only for writes.",
-          "params": [
-            {
-              "name": "autoId",
-              "description": "Unique identifier for the car."
-            }
-          ]
+          "params": [{ "name": "autoId", "description": "Unique identifier for the car." }]
         }
       },
       {
         "path": "/marcas/{marcaId}",
         "definition": {
           "entityName": "Brand",
-          "schema": {
-            "$ref": "#/backend/entities/Brand"
-          },
+          "schema": { "$ref": "#/backend/entities/Brand" },
           "description": "Stores car brand data. Publicly accessible for reads, admin-only for writes.",
-          "params": [
-            {
-              "name": "marcaId",
-              "description": "Unique identifier for the brand."
-            }
-          ]
+          "params": [{ "name": "marcaId", "description": "Unique identifier for the brand." }]
         }
       },
       {
         "path": "/colores/{colorId}",
         "definition": {
           "entityName": "Color",
-          "schema": {
-            "$ref": "#/backend/entities/Color"
-          },
+          "schema": { "$ref": "#/backend/entities/Color" },
           "description": "Stores car color data. Publicly accessible for reads, admin-only for writes.",
-          "params": [
-            {
-              "name": "colorId",
-              "description": "Unique identifier for the color."
-            }
-          ]
+          "params": [{ "name": "colorId", "description": "Unique identifier for the color." }]
         }
       },
       {
         "path": "/transmisiones/{transmisionId}",
         "definition": {
           "entityName": "Transmission",
-          "schema": {
-            "$ref": "#/backend/entities/Transmission"
-          },
+          "schema": { "$ref": "#/backend/entities/Transmission" },
           "description": "Stores car transmission types. Publicly accessible for reads, admin-only for writes.",
-          "params": [
-            {
-              "name": "transmisionId",
-              "description": "Unique identifier for the transmission type."
-            }
-          ]
+          "params": [{ "name": "transmisionId", "description": "Unique identifier for the transmission type." }]
         }
       },
       {
         "path": "/escenarios/{escenarioId}",
         "definition": {
           "entityName": "Scenario",
-          "schema": {
-            "$ref": "#/backend/entities/Scenario"
-          },
+          "schema": { "$ref": "#/backend/entities/Scenario" },
           "description": "Stores car simulator scenarios. Publicly accessible.",
-          "params": [
-            {
-              "name": "escenarioId",
-              "description": "Unique identifier for the car simulator scenario."
-            }
-          ]
+          "params": [{ "name": "escenarioId", "description": "Unique identifier for the car simulator scenario." }]
         }
       },
       {
         "path": "/recomendaciones/{recomendacionId}",
         "definition": {
           "entityName": "Recommendation",
-          "schema": {
-            "$ref": "#/backend/entities/Recommendation"
-          },
+          "schema": { "$ref": "#/backend/entities/Recommendation" },
           "description": "Stores car recommendations based on scenarios. Publicly accessible.",
-          "params": [
-            {
-              "name": "recomendacionId",
-              "description": "Unique identifier for the car recommendation."
-            }
-          ]
+          "params": [{ "name": "recomendacionId", "description": "Unique identifier for the car recommendation." }]
         }
       },
       {
         "path": "/clientes_potenciales/{clientePotencialId}",
         "definition": {
           "entityName": "Lead",
-          "schema": {
-            "$ref": "#/backend/entities/Lead"
-          },
+          "schema": { "$ref": "#/backend/entities/Lead" },
           "description": "Stores potential customer leads.  Requires authentication to read and write. No public listing allowed.",
-          "params": [
-            {
-              "name": "clientePotencialId",
-              "description": "Unique identifier for the customer lead."
-            }
-          ]
+          "params": [{ "name": "clientePotencialId", "description": "Unique identifier for the customer lead." }]
         }
       },
       {
         "path": "/usuarios/{usuarioId}",
         "definition": {
           "entityName": "UserProfile",
-          "schema": {
-            "$ref": "#/backend/entities/UserProfile"
-          },
+          "schema": { "$ref": "#/backend/entities/UserProfile" },
           "description": "Stores public user profile information. Users can create their own profile, and admins can read the list to get user counts.",
-          "params": [
-            {
-              "name": "usuarioId",
-              "description": "The user's unique ID, same as their Auth UID."
-            }
-          ]
+          "params": [{ "name": "usuarioId", "description": "The user's unique ID, same as their Auth UID." }]
         }
       },
       {
         "path": "/contadores/usuarios",
         "definition": {
-            "entityName": "Counter",
-            "schema": { "$ref": "#/backend/entities/Counter" },
-            "description": "Stores the total count of registered users. Admins can read, authenticated users can update (increment) during registration.",
-            "params": []
+          "entityName": "Counter",
+          "schema": { "$ref": "#/backend/entities/Counter" },
+          "description": "Stores the total count of registered users. Admins can read, authenticated users can update (increment) during registration.",
+          "params": []
         }
       }
     ],

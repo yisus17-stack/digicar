@@ -9,9 +9,12 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { traducciones } from '@/lib/translations';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import type { Car } from '@/core/types';
+import type { Car, CarVariant } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 function EsqueletoDetalleAuto() {
   return (
@@ -87,6 +90,14 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
   const refAuto = useMemoFirebase(() => doc(firestore, 'autos', params.id), [firestore, params.id]);
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
+  const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
+
+  useEffect(() => {
+    if (auto && auto.variantes && auto.variantes.length > 0) {
+      setSelectedVariant(auto.variantes[0]);
+    }
+  }, [auto]);
+
   if (isLoading) {
     return <EsqueletoDetalleAuto />;
   }
@@ -102,19 +113,18 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
       { icon: Users, label: 'Pasajeros', value: auto.pasajeros },
       { icon: GitMerge, label: 'Transmisión', value: traducciones.transmision[auto.transmision as keyof typeof traducciones.transmision] },
       { icon: Settings, label: 'Cilindros', value: auto.cilindrosMotor },
-      { icon: Palette, label: 'Color', value: traducciones.color[auto.color as keyof typeof traducciones.color] },
-  ]
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalog' }, { label: `${auto.marca} ${auto.modelo}` }]} />
+       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-6">
           <Card className="overflow-hidden">
              <AspectRatio ratio={4/3}>
-              {auto.imagenUrl ? (
-                <Image src={auto.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} fill className="object-cover" />
+              {selectedVariant ? (
+                <Image src={selectedVariant.imagenUrl} alt={`${auto.marca} ${auto.modelo}`} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
                   <IconoAuto className="w-24 h-24 text-muted-foreground" />
@@ -137,8 +147,23 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
             <CardHeader>
                 <p className="text-sm text-muted-foreground">{traducciones.tipo[tipoAuto] || auto.tipo} • {auto.anio}</p>
                 <h1 className="text-3xl lg:text-4xl font-bold">{auto.marca} {auto.modelo}</h1>
-                <p className="text-3xl font-bold text-primary">${auto.precio.toLocaleString('es-MX')}</p>
+                <p className="text-3xl font-bold text-primary">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
             </CardHeader>
+             <CardContent>
+                <p className="text-sm font-medium mb-2">Colores Disponibles</p>
+                <div className="flex flex-wrap gap-2">
+                    {auto.variantes?.map(variant => (
+                        <Button 
+                            key={variant.id}
+                            variant={selectedVariant?.id === variant.id ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setSelectedVariant(variant)}
+                        >
+                            {traducciones.color[variant.color as keyof typeof traducciones.color] || variant.color}
+                        </Button>
+                    ))}
+                </div>
+            </CardContent>
           </Card>
           
           <Card>
@@ -155,6 +180,13 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
                   </div>
                 </div>
               ))}
+               <div className="flex items-center gap-3">
+                  <Palette className="h-6 w-6 text-primary" strokeWidth={1.5} />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Color</p>
+                    <p className="font-semibold">{traducciones.color[selectedVariant?.color as keyof typeof traducciones.color] || selectedVariant?.color}</p>
+                  </div>
+                </div>
             </CardContent>
           </Card>
 

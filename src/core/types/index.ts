@@ -1,21 +1,30 @@
 
 import { Timestamp } from "firebase/firestore";
 
+export type CarVariant = {
+  id: string;
+  color: 'Rojo' | 'Azul' | 'Blanco' | 'Gris' | 'Negro' | 'Amarillo' | 'Plata' | 'Verde';
+  imagenUrl: string;
+  precio: number;
+};
+
 export type Car = {
   id: string;
   marca: string;
   modelo: string;
   anio: number;
-  precio: number;
   tipoCombustible: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
   transmision: 'Automática' | 'Manual';
   caracteristicas: string[];
-  imagenUrl: string;
   tipo: 'Sedan' | 'SUV' | 'Sports' | 'Truck' | 'Hatchback';
   cilindrosMotor: number;
-  color: 'Rojo' | 'Azul' | 'Blanco' | 'Gris' | 'Negro' | 'Amarillo' | 'Plata' | 'Verde';
   pasajeros: number;
+  variantes: CarVariant[];
   createdAt?: Date;
+  // Deprecated properties, kept for potential data migration
+  precio?: number;
+  imagenUrl?: string;
+  color?: string;
 };
 
 export type Marca = {
