@@ -224,8 +224,7 @@ export default function FormularioAuto({
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col flex-grow overflow-hidden">
+        <form onSubmit={form.handleSubmit(alEnviar)} className="flex flex-col flex-grow overflow-hidden">
             <Tabs defaultValue="general" className="flex-grow flex flex-col overflow-hidden">
               <TabsList className="w-full grid grid-cols-2">
                 <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>
@@ -305,7 +304,7 @@ export default function FormularioAuto({
                         </Button>
                         <div className="flex items-center gap-2">
                            {fields.map((_, index) => (
-                             <button key={`dot-${index}`} type="button" onClick={() => setActiveVariantIndex(index)} className={cn("h-2 w-2 rounded-full transition-colors", activeVariantIndex === index ? 'bg-primary' : 'bg-muted-foreground/50 hover:bg-muted-foreground')}></button>
+                             <button key={`dot-${index}`} type="button" onClick={() => setActiveVariantIndex(index)} className={cn("h-2 w-2 rounded-full transition-colors", activeVariantIndex === index ? 'bg-primary' : 'bg-muted hover:bg-muted-foreground')}></button>
                            ))}
                         </div>
                         <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('next')} disabled={activeVariantIndex === fields.length - 1}>
@@ -314,15 +313,17 @@ export default function FormularioAuto({
                     </div>
                 )}
                 
-                <div className="flex-grow space-y-4 overflow-y-auto pr-2">
+                <div className="flex-grow overflow-y-auto pr-2">
                   {fields.map((field, index) => (
                     <div key={field.id} className={cn("border p-4 rounded-lg space-y-4", activeVariantIndex === index ? 'block' : 'hidden')}>
                       <div className='flex justify-between items-center'>
-                        <h4 className="font-semibold">Variante {index + 1} de {fields.length}</h4>
-                        <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(index)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Eliminar Variante
-                        </Button>
+                        <h4 className="font-semibold">Variante {index + 1}</h4>
+                        {fields.length > 1 && (
+                            <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(index)}>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Eliminar Variante
+                            </Button>
+                        )}
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
@@ -331,11 +332,16 @@ export default function FormularioAuto({
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
                                     <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
-                                </Select><FormMessage />
+                                </Select>
+                                <FormMessage className="h-5" />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
-                            <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem>
+                            <FormItem>
+                                <FormLabel>Precio *</FormLabel>
+                                <FormControl><Input type="number" {...field} value={field.value ?? ''}/></FormControl>
+                                <FormMessage className="h-5" />
+                            </FormItem>
                         )}/>
                       </div>
                       <FormItem>
@@ -349,17 +355,17 @@ export default function FormularioAuto({
                             </FormControl>
                             {fields[index].imagenUrl ? (
                                 <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                    <img src={fields[index].imagenUrl} alt="Vista previa" className="object-contain w-full h-full" />
+                                    <img src={fields[index].imagenUrl} alt="Vista previa" className="object-cover w-full h-full" />
                                 </div>
                             ) : (
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                             )}
                           </div>
-                           <FormField control={form.control} name={`variantes.${index}.imagenUrl`} render={() => <FormMessage />} />
+                           <FormField control={form.control} name={`variantes.${index}.imagenUrl`} render={() => <FormMessage className="h-5" />} />
                       </FormItem>
                     </div>
                   ))}
-                  <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
+                  <FormMessage className="h-5">{form.formState.errors.variantes?.root?.message}</FormMessage>
                 </div>
                  <div className="pt-4 mt-auto">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
@@ -368,18 +374,16 @@ export default function FormularioAuto({
                 </div>
               </TabsContent>
             </Tabs>
-            
-            <DialogFooter className="pt-4 border-t">
-              <div className="flex justify-end w-full items-center gap-2">
-                <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
-                <Button type="submit" disabled={isSaving}>
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {auto ? 'Actualizar Auto' : 'Crear Auto'}
-                </Button>
-              </div>
-            </DialogFooter>
-          </form>
-        </Form>
+        </form>
+        <DialogFooter className="pt-4 border-t">
+          <div className="flex justify-end w-full items-center gap-2">
+            <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
+            <Button type="submit" form="auto-form" disabled={isSaving} onClick={form.handleSubmit(alEnviar)}>
+              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {auto ? 'Actualizar Auto' : 'Crear Auto'}
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
