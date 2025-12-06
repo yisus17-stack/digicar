@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -96,7 +97,8 @@ function EsqueletoDetalleAuto() {
 
 export default function PaginaDetalleAuto({ params }: { params: { id: string } }) {
   const firestore = useFirestore();
-  const refAuto = useMemoFirebase(() => doc(firestore, 'autos', params.id), [firestore, params.id]);
+  const id = params.id;
+  const refAuto = useMemoFirebase(() => doc(firestore, 'autos', id), [firestore, id]);
   const { data: auto, isLoading } = useDoc<Car>(refAuto);
 
   const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
@@ -229,5 +231,3 @@ export default function PaginaDetalleAuto({ params }: { params: { id: string } }
     </div>
   );
 }
-
-    
