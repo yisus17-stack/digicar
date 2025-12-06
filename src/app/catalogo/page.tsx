@@ -8,7 +8,7 @@ import type { Car } from '@/core/types';
 import { useDebounce } from 'use-debounce';
 import CarFilters from '@/features/catalog/components/CarFilters';
 import CarCard from '@/features/catalog/components/CarCard';
-import { SlidersHorizontal, GitCompareArrows, Car as CarIcon, X, Trash2 } from 'lucide-react';
+import { SlidersHorizontal, Car as CarIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,7 +19,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
 
 const ITEMS_PER_PAGE = 9;
 const MAX_PRICE = 2000000;
@@ -52,55 +51,6 @@ const CatalogSkeleton = () => (
     </div>
 );
 
-export function ComparisonBar({ selectedIds, onRemove, onClear, onCompare, allCars }: { selectedIds: string[], onRemove: (id: string) => void, onClear: () => void, onCompare: () => void, allCars: Car[] }) {
-  const selectedCars = selectedIds.map(id => allCars.find(car => car.id === id)).filter((c): c is Car => !!c);
-
-  return (
-    <AnimatePresence>
-      {selectedIds.length > 0 && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl z-50"
-        >
-          <div className="bg-card border rounded-lg shadow-2xl p-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-4 flex-wrap">
-                <h3 className="font-semibold text-sm sm:text-base whitespace-nowrap">Comparar ({selectedIds.length}/2)</h3>
-                <div className="flex items-center gap-2">
-                  {selectedCars.map(car => {
-                    const variant = car.variantes?.[0];
-                    const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
-                    return (
-                        <div key={car.id} className="relative flex items-center gap-2 bg-muted p-1.5 rounded-md text-xs">
-                        {imageUrl && <Image src={imageUrl} alt={car.modelo} width={24} height={24} className="rounded-sm object-cover" />}
-                        <span className="font-medium truncate max-w-[100px]">{car.marca} {car.modelo}</span>
-                        <button onClick={() => onRemove(car.id)} className="ml-1 text-muted-foreground hover:text-foreground">
-                            <X size={14} />
-                        </button>
-                        </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                 <Button variant="outline" size="sm" onClick={onClear} className="flex-grow sm:flex-grow-0">
-                    <Trash2 className="mr-2 h-4 w-4" /> Limpiar
-                 </Button>
-                 <Button onClick={onCompare} disabled={selectedIds.length < 2} className="flex-grow sm:flex-grow-0">
-                    <GitCompareArrows className="mr-2 h-4 w-4" /> Comparar
-                 </Button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
 
 function CatalogPageContent() {
     const firestore = useFirestore();
@@ -130,39 +80,10 @@ function CatalogPageContent() {
     const [showFilters, setShowFilters] = useState(true);
     const isMobile = useIsMobile();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [comparisonIds, setComparisonIds] = useState<string[]>([]);
 
     useEffect(() => {
         setSearchTerm(initialSearchTerm);
-        // Clear comparison on catalog load to avoid stale data
-        setComparisonIds([]);
-        sessionStorage.removeItem('comparisonIds');
     }, [initialSearchTerm]);
-
-    const handleToggleCompare = (carId: string) => {
-        setComparisonIds(prevIds => {
-            let newIds;
-            if (prevIds.includes(carId)) {
-                newIds = prevIds.filter(id => id !== carId);
-            } else if (prevIds.length < 2) {
-                newIds = [...prevIds, carId];
-            } else {
-                // Optionally show a toast or message that max is 2
-                return prevIds;
-            }
-            sessionStorage.setItem('comparisonIds', JSON.stringify(newIds));
-            return newIds;
-        });
-    };
-
-    const handleClearCompare = () => {
-        setComparisonIds([]);
-        sessionStorage.removeItem('comparisonIds');
-    };
-
-    const handleCompare = () => {
-        router.push('/comparacion');
-    };
 
     const filteredCars = useMemo(() => {
         if (!datosTodosLosAutos) return [];
@@ -264,7 +185,7 @@ function CatalogPageContent() {
       );
 
     return (
-        <div className="container mx-auto px-4 py-8 mb-32">
+        <div className="container mx-auto px-4 py-8">
             <Breadcrumbs items={[{ label: 'Catálogo' }]} />
             <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
                 <AnimatePresence>
@@ -311,8 +232,6 @@ function CatalogPageContent() {
                                 <CarCard 
                                     key={`car-${car.id}`} 
                                     car={car}
-                                    onToggleCompare={handleToggleCompare}
-                                    isComparing={comparisonIds.includes(car.id)}
                                 />
                             ))}
                         </div>
@@ -339,13 +258,6 @@ function CatalogPageContent() {
                     </div>
                 </motion.main>
             </div>
-             <ComparisonBar 
-                selectedIds={comparisonIds}
-                onRemove={handleToggleCompare}
-                onClear={handleClearCompare}
-                onCompare={handleCompare}
-                allCars={datosTodosLosAutos}
-            />
         </div>
     );
 }
@@ -357,5 +269,3 @@ export default function Catalog() {
         </Suspense>
     )
 }
-
-    
