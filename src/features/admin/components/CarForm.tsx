@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(0, 'El precio no puede ser negativo.'),
+  precio: z.coerce.number().min(0, 'El precio es requerido.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -115,7 +115,8 @@ export default function FormularioAuto({
           pasajeros: auto.pasajeros,
           caracteristicas: auto.caracteristicas.join(', '),
         });
-        replace(auto.variantes || []);
+        const mappedVariants = auto.variantes?.map(v => ({ ...v, precio: v.precio ?? 0 })) || [];
+        replace(mappedVariants);
       } else {
         form.reset({
           marca: '',
@@ -127,13 +128,14 @@ export default function FormularioAuto({
           tipoCombustible: 'Gasoline',
           pasajeros: 5,
           caracteristicas: '',
+          variantes: [],
         });
         replace([]);
       }
     }
   }, [auto, estaAbierto, form, replace]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -175,7 +177,7 @@ export default function FormularioAuto({
     append({
         id: `new_${Date.now()}_${Math.random()}`,
         color: '',
-        precio: '' as any,
+        precio: '' as any, // Iniciar como string vacío
         imagenUrl: '',
     });
   }
@@ -259,8 +261,8 @@ export default function FormularioAuto({
                   )}
                 />
               </TabsContent>
-
-              <TabsContent value="variantes" className="flex flex-col flex-grow p-1 overflow-hidden">
+              
+              <TabsContent value="variantes" className="flex flex-col p-1 overflow-hidden">
                 <ScrollArea className="flex-1 overflow-auto p-3 -m-3">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
