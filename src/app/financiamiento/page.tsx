@@ -1,6 +1,5 @@
 'use client';
 
-import PaginaSimuladorFinanciamiento from "@/features/financing/components/FinancingSimulatorPage";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -40,13 +39,12 @@ export default function PaginaFinanciamiento() {
         <Breadcrumbs items={[{ label: "Financiamiento" }]} />
         <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-            Simulador de Pagos
+            Planes de Financiamiento
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Calcula y visualiza las opciones de financiamiento para el auto de tus sueños.
+            Descubre la mejor manera de estrenar el auto de tus sueños.
             </p>
         </div>
-        <PaginaSimuladorFinanciamiento autos={autos} />
         </div>
     );
 }
