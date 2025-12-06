@@ -11,6 +11,7 @@ import {
   SortingState,
   useReactTable,
   Header,
+  RowData,
 } from '@tanstack/react-table';
 
 import {
@@ -32,6 +33,12 @@ import {
 } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+declare module '@tanstack/react-table' {
+    interface ColumnMeta<TData extends RowData, TValue> {
+      filterVariant?: 'text' | 'range' | 'select',
+    }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

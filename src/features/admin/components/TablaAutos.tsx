@@ -294,7 +294,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             columns={columns}
             data={autosIniciales}
             filterColumnId="modelo"
-            filterPlaceholder="Buscar por modelo..."
+            filterPlaceholder="Buscar por modelo, marca, año..."
         />
 
         <FormularioAuto 
