@@ -220,6 +220,8 @@ export default function FormularioAuto({
     }
   }
 
+  const years = Array.from({ length: new Date().getFullYear() - 1969 }, (_, i) => new Date().getFullYear() + 1 - i);
+
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
       <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
@@ -248,7 +250,26 @@ export default function FormularioAuto({
                         )}
                     />
                     <FormField name="modelo" control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo *</FormLabel><FormControl><Input placeholder="Ej: Civic, Corolla" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name="anio" control={form.control} render={({ field }) => (<FormItem><FormLabel>Año *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    <FormField name="anio" control={form.control} render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Año *</FormLabel>
+                            <Select onValueChange={field.onChange} value={String(field.value)}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona un año" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {years.map(year => (
+                                        <SelectItem key={year} value={String(year)}>
+                                            {year}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                     <FormField name="tipo" control={form.control} render={({ field }) => (
                         <FormItem>
                             <FormLabel>Tipo de Auto *</FormLabel>
