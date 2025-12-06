@@ -286,17 +286,24 @@ export default function FormularioAuto({
                     />
                     <FormField name="pasajeros" control={form.control} render={({ field }) => (<FormItem><FormLabel>Pasajeros *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                     </div>
-                    <FormField name="caracteristicas" control={form.control} render={({ field }) => (
-                        <FormItem><FormLabel>Características</FormLabel>
-                        <FormControl><Textarea placeholder="Ej: Aire acondicionado, GPS..." {...field} /></FormControl>
-                        <p className="text-sm text-muted-foreground">Separa cada característica con una coma</p>
-                        <FormMessage />
+                    <FormField
+                      control={form.control}
+                      name="caracteristicas"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Características</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Ej: Aire acondicionado, GPS..." {...field} />
+                          </FormControl>
+                          <p className="text-sm text-muted-foreground">Separa cada característica con una coma</p>
+                          <FormMessage />
                         </FormItem>
-                    )}
+                      )}
+                    />
                 </TabsContent>
                 
                 <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
-                    <div className="flex-grow overflow-y-auto pr-4">
+                    <div className='flex-grow overflow-y-auto pr-4'>
                         {fields.length > 0 && (
                             <div className="flex items-center justify-center gap-4 mb-4">
                                 <Button type="button" variant="ghost" size="icon" onClick={() => navigateVariant('prev')} disabled={activeVariantIndex === 0}>
@@ -370,9 +377,10 @@ export default function FormularioAuto({
                             />
                         </div>
                         ))}
-                         <FormMessage className="h-5 pt-2">{form.formState.errors.variantes?.root?.message}</FormMessage>
                     </div>
-                    <div className="pt-4 mt-2">
+                    <FormMessage className="h-5 pt-2">{form.formState.errors.variantes?.root?.message}</FormMessage>
+
+                    <div className="pt-4 mt-auto">
                         <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                         <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nueva Variante
                         </Button>
