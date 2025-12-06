@@ -27,7 +27,7 @@ export default function BrandLogos() {
         return <BrandLogosSkeleton />;
     }
 
-    if (!marcas || logosToDisplay.length === 0) {
+    if (!marcas) {
         return null;
     }
     
