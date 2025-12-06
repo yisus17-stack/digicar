@@ -5,35 +5,13 @@ import { collection, limit, query } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import CarCard from './CarCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ComparisonBar } from '@/app/catalogo/page';
 
 export default function PopularCarsSection() {
     const firestore = useFirestore();
-    const router = useRouter();
-    const [comparisonIds, setComparisonIds] = useState<string[]>([]);
 
     const consultaAutosPopulares = useMemoFirebase(() => query(collection(firestore, 'autos'), limit(3)), [firestore]);
     const { data: autosPopulares, isLoading: cargandoAutosPopulares } = useCollection<Car>(consultaAutosPopulares);
 
-    const { data: todosLosAutos } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
-
-    const handleToggleCompare = (carId: string) => {
-        setComparisonIds(prevIds => {
-            if (prevIds.includes(carId)) {
-                return prevIds.filter(id => id !== carId);
-            }
-            if (prevIds.length < 2) {
-                return [...prevIds, carId];
-            }
-            return prevIds;
-        });
-    };
-
-    const handleCompare = () => {
-        router.push(`/compare?ids=${comparisonIds.join(',')}`);
-    };
 
     if (cargandoAutosPopulares) {
         return (
@@ -69,19 +47,10 @@ export default function PopularCarsSection() {
                         <CarCard 
                             key={`popular-${car.id}`} 
                             car={car}
-                            isSelected={comparisonIds.includes(car.id)}
-                            onToggleCompare={handleToggleCompare}
                         />
                     ))}
                 </div>
             </div>
-            <ComparisonBar 
-                selectedIds={comparisonIds}
-                onRemove={handleToggleCompare}
-                onClear={() => setComparisonIds([])}
-                onCompare={handleCompare}
-                allCars={todosLosAutos ?? []}
-            />
         </>
     );
 }
