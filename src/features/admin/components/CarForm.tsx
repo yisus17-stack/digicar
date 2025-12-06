@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const variantSchema = z.object({
   id: z.string().optional(),
   color: z.string().min(1, 'El color es requerido.'),
-  precio: z.coerce.number().min(1, 'El precio es requerido y debe ser mayor a 0.'),
+  precio: z.coerce.number().min(0, 'El precio es requerido.'),
   imagenUrl: z.string().min(1, 'La imagen es requerida.'),
   file: z.instanceof(File).optional(),
 });
@@ -139,7 +139,13 @@ export default function FormularioAuto({
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
-        update(index, { ...fields[index], imagenUrl: imageUrl, file: file });
+        const currentValues = form.getValues();
+        const updatedVariant = {
+          ...currentValues.variantes[index],
+          imagenUrl: imageUrl,
+          file: file
+        };
+        update(index, updatedVariant);
       };
       reader.readAsDataURL(file);
     }
@@ -174,8 +180,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      {/* dialog como flex-column y con alto para permitir scroll interno */}
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[80vh] max-h-[800px]">
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -252,58 +257,50 @@ export default function FormularioAuto({
                   )}
                 />
               </TabsContent>
-
-              {/* Variante: contenedor flex-column, ScrollArea flex-1 para scroll interno */}
-              <TabsContent value="variantes" className="flex flex-col p-1 overflow-hidden">
-                <ScrollArea className="flex-1 overflow-auto p-3 -m-3">
-                  <div className="space-y-4">
-                    {fields.map((field, index) => (
-                        <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
-                            <h4 className="font-semibold">Variante {index + 1}</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Color *</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
-                                            <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
-                                        </Select><FormMessage />
-                                    </FormItem>
-                                )}/>
-                                <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
-                                    <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                                )}/>
-                            </div>
-                            <FormItem>
-                                <FormLabel>Imagen *</FormLabel>
-                                <div className="flex items-center gap-4">
-                                <FormControl>
-                                    <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                                        Elegir archivo
-                                        <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
-                                    </label>
-                                </FormControl>
-                                {fields[index].imagenUrl ? (
-                                    <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                        <img src={fields[index].imagenUrl} alt="Vista previa" className="object-contain w-full h-full" />
-                                    </div>
-                                ) : (
-                                    <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
-                                )}
-                                </div>
-                                <FormMessage />
-                            </FormItem>
-                            <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => remove(index)}>
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    ))}
-                    <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
-                  </div>
-                </ScrollArea>
-
-                {/* botón fijo abajo */}
-                <div className="pt-4 mt-auto sticky bottom-0 bg-background">
+              <TabsContent value="variantes" className="h-[400px] overflow-y-auto p-4 space-y-4">
+                  {fields.map((field, index) => (
+                      <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
+                          <h4 className="font-semibold">Variante {index + 1}</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Color *</FormLabel>
+                                      <Select onValueChange={field.onChange} value={field.value}>
+                                          <FormControl><SelectTrigger><SelectValue placeholder="Selecciona color" /></SelectTrigger></FormControl>
+                                          <SelectContent>{colores.map((c) => (<SelectItem key={`color-var-${index}-${c.id ?? c.nombre}`} value={c.nombre}>{c.nombre}</SelectItem>))}</SelectContent>
+                                      </Select><FormMessage />
+                                  </FormItem>
+                              )}/>
+                              <FormField control={form.control} name={`variantes.${index}.precio`} render={({ field }) => (
+                                  <FormItem><FormLabel>Precio *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                              )}/>
+                          </div>
+                          <FormItem>
+                              <FormLabel>Imagen *</FormLabel>
+                              <div className="flex items-center gap-4">
+                              <FormControl>
+                                  <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                      Elegir archivo
+                                      <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
+                                  </label>
+                              </FormControl>
+                              {fields[index].imagenUrl ? (
+                                  <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                      <img src={fields[index].imagenUrl} alt="Vista previa" className="object-contain w-full h-full" />
+                                  </div>
+                              ) : (
+                                  <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
+                              )}
+                              </div>
+                              <FormMessage />
+                          </FormItem>
+                          <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => remove(index)}>
+                              <Trash2 className="h-4 w-4" />
+                          </Button>
+                      </div>
+                  ))}
+                  <FormMessage>{form.formState.errors.variantes?.message}</FormMessage>
+                <div className="pt-4 mt-auto sticky bottom-0 bg-background/50 backdrop-blur-sm -mx-4 px-4">
                   <Button type="button" variant="outline" onClick={addVariant} className="w-full">
                       <PlusCircle className="mr-2 h-4 w-4" /> Añadir Variante
                   </Button>
@@ -326,5 +323,3 @@ export default function FormularioAuto({
     </Dialog>
   );
 }
-
-    
