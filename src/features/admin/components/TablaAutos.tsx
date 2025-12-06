@@ -7,11 +7,11 @@ import { Edit, Trash2, Car as IconoAuto, PlusCircle, ArrowUpDown } from 'lucide-
 import type { Car, Marca, Color, Transmision } from '@/core/types';
 import FormularioAuto from './CarForm';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import Image from 'next/image';
-import { uploadImage } from '@/core/services/storageService';
+import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -39,46 +39,59 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = (autoId: string) => {
-    Swal.fire({
+  const confirmarEliminar = async (autoId: string) => {
+    const result = await Swal.fire({
       title: '¿Estás seguro?',
-      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto de la base de datos.",
+      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto y todas sus imágenes de la base de datos.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        manejarEliminar(autoId);
-      }
-    })
-  };
+    });
 
-  const manejarEliminar = async (autoId: string) => {
-    if (!autoId) return;
-    const autoRef = doc(firestore, 'autos', autoId);
-    try {
-        await deleteDoc(autoRef);
-        Swal.fire({
-          title: '¡Eliminado!',
-          text: 'El auto ha sido eliminado con éxito.',
-          icon: 'success',
-          confirmButtonColor: '#595c97',
-        });
-    } catch (error) {
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudo eliminar el auto. Verifica los permisos.',
-          icon: 'error',
-          confirmButtonColor: '#595c97',
-        });
-        const contextualError = new FirestorePermissionError({
-            operation: 'delete',
-            path: autoRef.path,
-        });
-        errorEmitter.emit('permission-error', contextualError);
+    if (result.isConfirmed) {
+        try {
+            const autoRef = doc(firestore, 'autos', autoId);
+            const autoDoc = await getDoc(autoRef);
+
+            if (autoDoc.exists()) {
+                const autoData = autoDoc.data() as Car;
+                if (autoData.variantes && autoData.variantes.length > 0) {
+                    // Delete all variant images from storage
+                    const deletePromises = autoData.variantes
+                        .map(variant => variant.imagenUrl)
+                        .filter(Boolean) // Filter out any empty URLs
+                        .map(url => deleteImage(url));
+                    await Promise.all(deletePromises);
+                }
+            }
+            
+            // Delete the Firestore document
+            await deleteDoc(autoRef);
+
+            Swal.fire({
+              title: '¡Eliminado!',
+              text: 'El auto y sus imágenes han sido eliminados con éxito.',
+              icon: 'success',
+              confirmButtonColor: '#595c97',
+            });
+
+        } catch (error) {
+            console.error("Error deleting car and its assets:", error);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo eliminar el auto. Verifica los permisos.',
+              icon: 'error',
+              confirmButtonColor: '#595c97',
+            });
+            const contextualError = new FirestorePermissionError({
+                operation: 'delete',
+                path: `autos/${autoId}`,
+            });
+            errorEmitter.emit('permission-error', contextualError);
+        }
     }
   };
 
@@ -111,7 +124,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             const autoRef = doc(firestore, 'autos', autoSeleccionado.id);
             await updateDoc(autoRef, {
                 ...finalCarData,
-                variantes: finalCarData.variantes, // Explicitly pass the updated variants array
+                variantes: finalCarData.variantes,
             });
             Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
         } else {

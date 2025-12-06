@@ -7,11 +7,11 @@ import { Edit, Trash2, Tag, PlusCircle, ArrowUpDown } from 'lucide-react';
 import type { Marca } from '@/core/types';
 import FormularioMarca from './BrandForm';
 import { useFirestore } from '@/firebase';
-import { collection, doc, updateDoc, deleteDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, updateDoc, deleteDoc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { uploadImage } from '@/core/services/storageService';
+import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -36,35 +36,41 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     setEstaFormularioAbierto(true);
   };
   
-  const confirmarEliminar = (marcaId: string) => {
-    Swal.fire({
+  const confirmarEliminar = async (marcaId: string) => {
+    const result = await Swal.fire({
       title: '¿Estás seguro?',
-      text: "Esta acción no se puede deshacer. Esto eliminará permanentemente la marca de la base de datos.",
+      text: "Esta acción no se puede deshacer. Se eliminará la marca y su logo.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        manejarEliminar(marcaId);
-      }
     });
-  };
 
-  const manejarEliminar = async (marcaId: string) => {
-    if (!marcaId) return;
-    const marcaRef = doc(firestore, 'marcas', marcaId);
-    try {
-        await deleteDoc(marcaRef);
+    if (result.isConfirmed) {
+      try {
+        const marcaRef = doc(firestore, 'marcas', marcaId);
+        const marcaDoc = await getDoc(marcaRef);
+
+        if (marcaDoc.exists()) {
+          const marcaData = marcaDoc.data() as Marca;
+          // Delete logo from storage if it exists
+          if (marcaData.logoUrl) {
+            await deleteImage(marcaData.logoUrl);
+          }
+          // Delete Firestore document
+          await deleteDoc(marcaRef);
+        }
+
         Swal.fire({
           title: '¡Eliminada!',
-          text: 'La marca ha sido eliminada con éxito.',
+          text: 'La marca y su logo han sido eliminados con éxito.',
           icon: 'success',
           confirmButtonColor: '#595c97',
         });
-    } catch (error) {
+      } catch (error) {
+        console.error("Error deleting brand:", error);
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar la marca. Verifica los permisos.',
@@ -72,10 +78,11 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
           confirmButtonColor: '#595c97',
         });
         const contextualError = new FirestorePermissionError({
-            operation: 'delete',
-            path: marcaRef.path,
+          operation: 'delete',
+          path: `marcas/${marcaId}`,
         });
         errorEmitter.emit('permission-error', contextualError);
+      }
     }
   };
 
