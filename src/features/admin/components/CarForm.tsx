@@ -46,7 +46,7 @@ const variantSchema = z.object({
 const esquemaFormulario = z.object({
   marca: z.string().min(1, 'La marca es requerida.'),
   modelo: z.string().min(2, 'El modelo es requerido.'),
-  anio: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
+  anio: z.string().min(4, 'El año es requerido.'),
   tipo: z.enum(['Sedan', 'SUV', 'Sports', 'Truck', 'Hatchback']),
   cilindrosMotor: z.coerce.number().min(0),
   transmision: z.string().min(1),
@@ -88,7 +88,7 @@ export default function FormularioAuto({
     defaultValues: {
       marca: '',
       modelo: '',
-      anio: new Date().getFullYear(),
+      anio: '',
       tipo: 'Sedan',
       cilindrosMotor: 4,
       transmision: '',
@@ -112,7 +112,7 @@ export default function FormularioAuto({
         form.reset({
           marca: auto.marca,
           modelo: auto.modelo,
-          anio: auto.anio,
+          anio: String(auto.anio),
           tipo: auto.tipo,
           cilindrosMotor: auto.cilindrosMotor,
           transmision: auto.transmision,
@@ -126,7 +126,7 @@ export default function FormularioAuto({
         form.reset({
           marca: '',
           modelo: '',
-          anio: new Date().getFullYear(),
+          anio: '',
           tipo: 'Sedan',
           cilindrosMotor: 4,
           transmision: '',
@@ -165,6 +165,7 @@ export default function FormularioAuto({
     const files = data.variantes.map(v => v.file);
     const datosAuto: Omit<Car, 'id'> = {
       ...data,
+      anio: Number(data.anio),
       caracteristicas: data.caracteristicas
         ? data.caracteristicas
             .split(',')
@@ -253,10 +254,10 @@ export default function FormularioAuto({
                     <FormField name="anio" control={form.control} render={({ field }) => (
                         <FormItem>
                             <FormLabel>Año *</FormLabel>
-                            <Select onValueChange={field.onChange} value={String(field.value)}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecciona un año" />
+                                        <SelectValue placeholder="Seleccionar año" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
