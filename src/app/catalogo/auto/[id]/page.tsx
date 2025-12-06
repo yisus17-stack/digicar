@@ -100,13 +100,13 @@ export default function PaginaDetalleAuto() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
         {/* Columna Izquierda: Galería de Imágenes */}
         <div className="space-y-4">
-           <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-white dark:bg-background">
+           <AspectRatio ratio={16/10} className="group overflow-hidden rounded-lg bg-white dark:bg-background">
             {selectedVariant ? (
               <Image
                 src={selectedVariant.imagenUrl}
                 alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
                 fill
-                className="object-contain"
+                className="object-contain transition-transform duration-300 group-hover:scale-110"
                 priority
               />
             ) : (
