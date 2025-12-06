@@ -52,6 +52,7 @@ export type UserProfile = {
   email: string;
   displayName: string;
   createdAt: Timestamp;
+  currentComparison?: string[];
 }
 
 export type Favorite = {

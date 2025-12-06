@@ -44,7 +44,8 @@ service cloud.firestore {
     match /usuarios/{usuarioId} {
         allow create: if request.auth.uid == usuarioId;
         allow list: if false;
-        allow get, update, delete: if false;
+        allow get, update: if request.auth.uid == usuarioId;
+        allow delete: if false;
     }
     
     match /favoritos/{usuarioId} {
@@ -54,7 +55,7 @@ service cloud.firestore {
     match /comparaciones/{comparacionId} {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow list: if false;
+      allow list: if isSignedIn();
     }
 
     match /fuelTypes/{fuelTypeId} {

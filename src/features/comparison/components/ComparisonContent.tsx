@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import type { Car } from '@/core/types';
+import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
+import type { Car, UserProfile } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
@@ -126,64 +126,60 @@ export default function ComparisonContent() {
   const firestore = useFirestore();
   const { user, loading: loadingUser } = useUser();
   const router = useRouter();
+  
   const [car1, setCar1] = useState<Car | undefined>(undefined);
   const [car2, setCar2] = useState<Car | undefined>(undefined);
   const [isSaving, setIsSaving] = useState(false);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
-  const { data: todosLosAutos, isLoading } = useCollection<Car>(coleccionAutos);
+  const { data: todosLosAutos, isLoading: loadingCars } = useCollection<Car>(coleccionAutos);
 
- useEffect(() => {
-    if (todosLosAutos && todosLosAutos.length > 0) {
-      try {
-        const storedIds = JSON.parse(sessionStorage.getItem('comparisonIds') || '[]');
-        if (Array.isArray(storedIds) && storedIds.length > 0) {
-          if (storedIds[0]) setCar1(todosLosAutos.find(c => c.id === storedIds[0]));
-          if (storedIds[1]) setCar2(todosLosAutos.find(c => c.id === storedIds[1]));
-        }
-      } catch (e) {
-        console.error("Error reading comparison IDs from sessionStorage", e);
-        sessionStorage.removeItem('comparisonIds');
-      }
-    }
-  }, [todosLosAutos]);
-
+  const userProfileRef = useMemoFirebase(() => user ? doc(firestore, 'usuarios', user.uid) : null, [user, firestore]);
+  const { data: userProfile, isLoading: loadingProfile } = useDoc<UserProfile>(userProfileRef);
 
   useEffect(() => {
-    // This effect ensures that if the user logs out while on the page, the state is cleared.
+    if (userProfile && todosLosAutos) {
+      const [carId1, carId2] = userProfile.currentComparison || [];
+      setCar1(todosLosAutos.find(c => c.id === carId1));
+      setCar2(todosLosAutos.find(c => c.id === carId2));
+    }
+  }, [userProfile, todosLosAutos]);
+  
+  useEffect(() => {
     if (!loadingUser && !user) {
       setCar1(undefined);
       setCar2(undefined);
-      // sessionStorage is cleared in handleSignOut, but this is a fallback.
     }
   }, [user, loadingUser]);
 
-  const updateSessionStorage = (newCar1Id?: string, newCar2Id?: string) => {
-    sessionStorage.setItem('comparisonIds', JSON.stringify([newCar1Id, newCar2Id]));
-  }
+  const updateCurrentComparison = async (carId1?: string, carId2?: string) => {
+    if (userProfileRef) {
+      const comparison = [carId1, carId2].filter(Boolean) as string[];
+      await updateDoc(userProfileRef, { currentComparison: comparison });
+    }
+  };
 
   const handleSelectCar1 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar1(selected);
-    updateSessionStorage(carId, car2?.id);
+    updateCurrentComparison(carId, car2?.id);
   };
 
   const handleSelectCar2 = (carId: string) => {
     const selected = todosLosAutos?.find(c => c.id === carId);
     setCar2(selected);
-    updateSessionStorage(car1?.id, carId);
+    updateCurrentComparison(car1?.id, carId);
   };
 
   const clearCar1 = () => {
     setCar1(undefined);
-    updateSessionStorage(undefined, car2?.id);
+    updateCurrentComparison(undefined, car2?.id);
   }
   
   const clearCar2 = () => {
     setCar2(undefined);
-    updateSessionStorage(car1?.id, undefined);
+    updateCurrentComparison(car1?.id, undefined);
   }
-
 
   const handleSaveComparison = async () => {
     if (!user) {
@@ -212,10 +208,8 @@ export default function ComparisonContent() {
             confirmButtonColor: '#595c97',
         });
         
-        // Reset state after saving
-        setCar1(undefined);
-        setCar2(undefined);
-        sessionStorage.removeItem('comparisonIds');
+        clearCar1();
+        clearCar2();
 
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
@@ -262,7 +256,7 @@ export default function ComparisonContent() {
     return value || '-';
   }
   
-  if (isLoading || !todosLosAutos || loadingUser) {
+  if (loadingCars || !todosLosAutos || loadingUser || loadingProfile) {
     return <EsqueletoComparacion />;
   }
 
