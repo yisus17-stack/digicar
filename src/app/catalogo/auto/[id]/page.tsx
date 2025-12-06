@@ -113,7 +113,7 @@ export default function PaginaDetalleAuto() {
                     key={v.id}
                     onClick={() => handleVariantSelect(v)}
                     className={cn(
-                      'h-16 w-16 rounded-md p-1 transition-all duration-200 overflow-hidden',
+                      'h-12 w-12 rounded-md p-1 transition-all duration-200 overflow-hidden',
                       selectedVariant?.id === v.id ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-border'
                     )}
                     title={v.color}
@@ -121,8 +121,8 @@ export default function PaginaDetalleAuto() {
                     <Image 
                       src={v.imagenUrl} 
                       alt={v.color} 
-                      width={64} 
-                      height={64} 
+                      width={48} 
+                      height={48} 
                       className="h-full w-full object-cover rounded-sm"
                     />
                     <span className="sr-only">{v.color}</span>
