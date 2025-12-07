@@ -98,7 +98,9 @@ export default function RootLayout({
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
-              <AppContent fontClassName={poppins.className}>{children}</AppContent>
+              <div id="main-content-wrapper">
+                <AppContent fontClassName={poppins.className}>{children}</AppContent>
+              </div>
               <AccessibilityToolbar fontClassName={poppins.className} />
             </AccessibilityProvider>
             <Toaster />

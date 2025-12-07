@@ -67,12 +67,12 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
-    body.dataset.textSpacing = String(textSpacing);
     
     if (mainContentWrapper) {
-        mainContentWrapper.dataset.grayscale = String(grayscale);
+      mainContentWrapper.dataset.textSpacing = String(textSpacing);
+      mainContentWrapper.dataset.grayscale = String(grayscale);
     }
-
+    
     html.dataset.fontSizeStep = String(fontSizeStep);
     
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
