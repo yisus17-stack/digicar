@@ -11,7 +11,8 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/app/theme-provider';
-import Script from 'next/script';
+import { AccessibilityProvider } from '@/providers/AccessibilityProvider';
+import AccessibilityToolbar from '@/components/AccessibilityToolbar';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -50,29 +51,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <AppContent>{children}</AppContent>
+            <AccessibilityProvider>
+              <AppContent>{children}</AppContent>
+              <AccessibilityToolbar />
+            </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>
         </ThemeProvider>
-        <Script
-          id="accessibe-script"
-          src="https://acsbapp.com/apps/app/dist/js/app.js"
-          strategy="lazyOnload"
-          onLoad={() => {
-            if (window.acsbJS) {
-              window.acsbJS.init();
-            }
-          }}
-        />
+        <div id="accessibility-portal"></div>
       </body>
     </html>
   );
-}
-
-declare global {
-  interface Window {
-    acsbJS: {
-      init: () => void;
-    };
-  }
 }
