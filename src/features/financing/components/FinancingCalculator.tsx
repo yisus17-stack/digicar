@@ -185,8 +185,8 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
             ['Plazo', `${term} meses`],
             ['Tasa de Interés Anual Fija', `${(INTEREST_RATE * 100).toFixed(0)}%`],
         ],
-        theme: 'striped',
-        headStyles: { fillColor: [89, 92, 151], textColor: [255, 255, 255] },
+        theme: 'grid',
+        headStyles: { fillColor: [244, 244, 245], textColor: [20, 20, 20] },
     });
     
     finalY = (doc as any).lastAutoTable.finalY + 10;
@@ -199,15 +199,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.setTextColor(0);
 
     finalY += 25;
-
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Contacto DigiCar', 15, finalY);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Av. Principal No. 173, Maravatío, Michoacán', 15, finalY + 5);
-    doc.text('contacto@digicar.com.mx', 15, finalY + 10);
-
-    finalY += 20;
 
     const disclaimer = '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.';
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
