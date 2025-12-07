@@ -77,10 +77,9 @@ export function useAccessibilityState(): AccessibilityState {
   
   useEffect(() => {
     const htmlElement = document.documentElement;
-    const body = document.body;
-    
     htmlElement.dataset.fontSizeStep = String(fontSizeStep);
     
+    const body = document.body;
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
@@ -120,7 +119,7 @@ export function useAccessibilityState(): AccessibilityState {
   useEffect(() => {
     const speak = (text: string) => {
         if (!text) return;
-        speechSynthesis.cancel();
+        speechSynthesis.cancel(); // Cancel any previous speech
         const utterance = new SpeechSynthesisUtterance(text);
         if (selectedVoice) {
             utterance.voice = selectedVoice;
@@ -128,13 +127,11 @@ export function useAccessibilityState(): AccessibilityState {
         speechSynthesis.speak(utterance);
     };
 
-    const handleClick = (event: MouseEvent) => {
-        if (speechSynthesis.speaking) {
-            speechSynthesis.cancel();
-            return;
-        }
-        
+    const handleEvent = (event: MouseEvent | FocusEvent) => {
         const target = event.target as HTMLElement;
+        const isInteractive = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+        if (isInteractive) return;
+
         const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'SPAN', 'LI', 'A', 'BUTTON'];
 
         if (readableTags.includes(target.tagName)) {
@@ -146,17 +143,20 @@ export function useAccessibilityState(): AccessibilityState {
     };
 
     if (textToSpeech) {
-      document.body.addEventListener('click', handleClick);
+        document.body.addEventListener('mouseover', handleEvent);
+        document.body.addEventListener('focusin', handleEvent);
     } else {
-      speechSynthesis.cancel();
-      document.body.removeEventListener('click', handleClick);
+        speechSynthesis.cancel();
+        document.body.removeEventListener('mouseover', handleEvent);
+        document.body.removeEventListener('focusin', handleEvent);
     }
 
     return () => {
-      speechSynthesis.cancel();
-      document.body.removeEventListener('click', handleClick);
+        speechSynthesis.cancel();
+        document.body.removeEventListener('mouseover', handleEvent);
+        document.body.removeEventListener('focusin', handleEvent);
     };
-  }, [textToSpeech, selectedVoice]);
+}, [textToSpeech, selectedVoice]);
 
 
   return {
