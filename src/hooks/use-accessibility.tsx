@@ -121,20 +121,33 @@ export function useAccessibilityState(): AccessibilityState {
   }, []);
 
   useEffect(() => {
+    const speak = (text: string) => {
+        if (!text) return;
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+        speechSynthesis.speak(utterance);
+    };
+
     const handleMouseOver = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const validTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI'];
       if (validTags.includes(target.tagName) && target.textContent) {
-        const textToSpeak = target.textContent.trim();
-        if (textToSpeak) {
-          speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(textToSpeak);
-          if (selectedVoice) {
-            utterance.voice = selectedVoice;
-          }
-          speechSynthesis.speak(utterance);
-        }
+        speak(target.textContent.trim());
       }
+    };
+
+    const handleFocus = (event: FocusEvent) => {
+        const target = event.target as HTMLElement;
+        const validTags = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'];
+        if (validTags.includes(target.tagName)) {
+            const textToSpeak = target.getAttribute('aria-label') || target.textContent;
+            if (textToSpeak) {
+                speak(textToSpeak.trim());
+            }
+        }
     };
 
     const handleMouseOut = () => {
@@ -144,16 +157,19 @@ export function useAccessibilityState(): AccessibilityState {
     if (textToSpeech) {
       document.body.addEventListener('mouseover', handleMouseOver);
       document.body.addEventListener('mouseout', handleMouseOut);
+      document.body.addEventListener('focusin', handleFocus);
     } else {
       speechSynthesis.cancel();
       document.body.removeEventListener('mouseover', handleMouseOver);
       document.body.removeEventListener('mouseout', handleMouseOut);
+      document.body.removeEventListener('focusin', handleFocus);
     }
 
     return () => {
       speechSynthesis.cancel();
       document.body.removeEventListener('mouseover', handleMouseOver);
       document.body.removeEventListener('mouseout', handleMouseOut);
+      document.body.removeEventListener('focusin', handleFocus);
     };
   }, [textToSpeech, selectedVoice]);
 
