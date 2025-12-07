@@ -90,14 +90,13 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     return estimatedPayment <= monthlyBudget;
   };
   
-    const generatePDF = async () => {
+  const generatePDF = async () => {
     if (!selectedCar) return;
     setIsGeneratingPdf(true);
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Función para obtener la imagen como Base64
     const getImageBase64 = async (url: string) => {
       try {
         const response = await fetch(url);
@@ -114,30 +113,35 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
       }
     };
     
+    const digicarLogoUrl = '/icono-digicar.png';
+    const digicarLogoB64 = await getImageBase64(digicarLogoUrl);
+    if(digicarLogoB64) {
+      doc.addImage(digicarLogoB64, 'PNG', 15, 15, 20, 20);
+    }
+    
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cotización de Financiamiento', pageWidth / 2, 20, { align: 'center' });
+    doc.text('Cotización de Financiamiento', 40, 28);
 
     if(carImage) {
         const imageBase64 = await getImageBase64(carImage);
         if (imageBase64) {
-            doc.addImage(imageBase64, 'PNG', 15, 30, 80, 50, '', 'FAST');
+            doc.addImage(imageBase64, 'PNG', 15, 45, 80, 50, '', 'FAST');
         }
     }
     
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, 45);
+    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, 60);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, 53);
+    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, 68);
 
-    // Tabla de Especificaciones
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('Especificaciones del Vehículo', 15, 95);
+    doc.text('Especificaciones del Vehículo', 15, 110);
     doc.autoTable({
-        startY: 100,
+        startY: 115,
         head: [['Especificación', 'Valor']],
         body: [
             ['Combustible', selectedCar.tipoCombustible],
@@ -152,7 +156,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
 
     let finalY = (doc as any).lastAutoTable.finalY + 15;
 
-    // Tabla de Financiamiento
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.text('Resumen de Financiamiento', 15, finalY);
@@ -176,13 +179,12 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.setFont('helvetica', 'bold');
     doc.text('Pago Mensual Estimado:', 15, finalY);
     doc.setFontSize(18);
-    doc.setTextColor(89, 92, 151); // Primary color
+    doc.setTextColor(89, 92, 151);
     doc.text(`$ ${monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
     doc.setTextColor(0);
 
     const pageHeight = doc.internal.pageSize.getHeight();
     
-    // Contact Info
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('Contacto DigiCar', 15, pageHeight - 35);
@@ -190,17 +192,12 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.text('Av. Principal No. 173, Maravatío, Michoacán', 15, pageHeight - 30);
     doc.text('contacto@digicar.com.mx', 15, pageHeight - 25);
 
-
     const disclaimer = '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.';
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
     
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text(
-      splitDisclaimer,
-      15,
-      doc.internal.pageSize.getHeight() - 15
-    );
+    doc.text(splitDisclaimer, 15, pageHeight - 15);
 
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
