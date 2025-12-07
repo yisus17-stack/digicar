@@ -41,9 +41,9 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   return (
       <Link
         href={`/catalogo/auto/${car.id}`}
-        className="group relative flex h-full flex-col overflow-hidden rounded-lg"
+        className="group"
       >
-        <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted">
+        <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted p-4">
             {imageUrl ? (
               <Image
                 src={imageUrl}
