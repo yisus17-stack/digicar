@@ -1,3 +1,4 @@
+
 'use client';
 
 import './globals.css';
@@ -49,20 +50,22 @@ function AccessibilityProvider({ children }: { children: ReactNode }) {
     underlineLinks,
     hideImages,
     textSpacing,
+    grayscale,
   } = accessibilityState;
 
   useEffect(() => {
     const body = document.body;
     body.dataset.highContrast = String(highContrast);
-    body.dataset.fontSizeStep = String(fontSizeStep);
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
+    body.dataset.grayscale = String(grayscale);
     
-    // Grayscale se maneja en AppContent para aislar el panel.
-    // El tema (dark/light) se maneja con ThemeProvider.
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing]);
+    const html = document.documentElement;
+    html.dataset.fontSizeStep = String(fontSizeStep);
+
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
   return (
     <AccessibilityContext.Provider value={accessibilityState}>
@@ -90,6 +93,8 @@ export default function RootLayout({
             light: 'light',
             dark: 'dark',
           }}
+          storageKey="digicar-theme"
+          forcedTheme="light"
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
