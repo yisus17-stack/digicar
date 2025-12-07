@@ -11,12 +11,22 @@ import { Suspense } from "react";
 
 const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
-        <Skeleton className="h-8 w-1/4 mb-12" />
+        <Skeleton className="h-6 w-1/3 mb-12" />
         <div className="text-center mb-12">
             <Skeleton className="h-12 w-1/2 mx-auto" />
             <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
         </div>
-        <Skeleton className="h-96 w-full" />
+        <Card>
+            <CardHeader className="items-center">
+                 <Skeleton className="h-8 w-full max-w-lg" />
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+                <Skeleton className="h-40 w-full" />
+                <div className="flex justify-end">
+                    <Skeleton className="h-12 w-32" />
+                </div>
+            </CardContent>
+        </Card>
     </div>
 );
 
