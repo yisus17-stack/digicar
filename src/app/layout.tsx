@@ -12,6 +12,8 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/app/theme-provider';
+import { AccessibilityProvider } from '@/hooks/use-accessibility.tsx';
+import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -34,6 +36,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
+      {!isAdminPage && <AccessibilityToolbar />}
     </div>
   );
 }
@@ -53,10 +56,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <FirebaseClientProvider>
-            <AppContent>{children}</AppContent>
-            <Toaster />
-          </FirebaseClientProvider>
+          <AccessibilityProvider>
+            <FirebaseClientProvider>
+              <AppContent>{children}</AppContent>
+              <Toaster />
+            </FirebaseClientProvider>
+          </AccessibilityProvider>
         </ThemeProvider>
       </body>
     </html>
