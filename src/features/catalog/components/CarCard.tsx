@@ -138,7 +138,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         </div>
         
         {/* Pie de tarjeta azul */}
-        <div className="rounded-b-lg bg-accent p-4 text-accent-foreground">
+        <div className="rounded-b-lg bg-primary p-4 text-primary-foreground">
             <div className="flex w-full justify-around items-center text-sm mb-3">
               {specs.map((spec, index) => (
                 <div key={index} className="flex items-center gap-1.5">
