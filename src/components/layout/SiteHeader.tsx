@@ -42,6 +42,8 @@ import { useAuth, useUser } from '@/firebase';
 import { signOut, type User as FirebaseUser } from 'firebase/auth';
 import Swal from 'sweetalert2';
 import { ThemeToggle } from '../ThemeToggle';
+import { useMounted } from '@/hooks/use-mounted';
+import { Skeleton } from '../ui/skeleton';
 
 interface SiteHeaderProps {
     user: FirebaseUser | null;
@@ -56,6 +58,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
   const router = useRouter();
   const auth = useAuth();
   const isAdmin = user?.uid === "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
+  const isMounted = useMounted();
 
   const openSearch = () => setIsSearchVisible(true);
   const closeSearch = () => setIsSearchVisible(false);
@@ -174,90 +177,98 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
               <span className="sr-only">Buscar</span>
             </Button>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {user ? (
-                    <>
-                        <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/perfil">
-                            <User className="mr-2 h-4 w-4" /> Mi Perfil
-                          </Link>
-                        </DropdownMenuItem>
-                         {isAdmin && (
+            {isMounted ? (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-9 w-9">
+                        <User className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        {user ? (
                             <>
+                                <DropdownMenuLabel>Hola, {user.displayName || user.email ||'Usuario'}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Administración</DropdownMenuLabel>
                                 <DropdownMenuItem asChild>
-                                  <Link href="/admin">
-                                    <ShieldCheck className="mr-2 h-4 w-4" /> Panel de Admin
-                                  </Link>
+                                <Link href="/perfil">
+                                    <User className="mr-2 h-4 w-4" /> Mi Perfil
+                                </Link>
+                                </DropdownMenuItem>
+                                {isAdmin && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuLabel>Administración</DropdownMenuLabel>
+                                        <DropdownMenuItem asChild>
+                                        <Link href="/admin">
+                                            <ShieldCheck className="mr-2 h-4 w-4" /> Panel de Admin
+                                        </Link>
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                                    <LogOut className="mr-2 h-4 w-4" /> Cerrar Sesión
+                                </DropdownMenuItem>
+                            </>
+                        ) : (
+                            <>
+                                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                <Link href="/login">
+                                    <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
+                                </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                <Link href="/register">
+                                    <UserPlus className="mr-2 h-4 w-4" /> Registrarse
+                                </Link>
                                 </DropdownMenuItem>
                             </>
                         )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                            <LogOut className="mr-2 h-4 w-4" /> Cerrar Sesión
-                        </DropdownMenuItem>
-                    </>
-                ) : (
-                    <>
-                        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/login">
-                            <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href="/register">
-                            <UserPlus className="mr-2 h-4 w-4" /> Registrarse
-                          </Link>
-                        </DropdownMenuItem>
-                    </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ) : (
+                <Skeleton className="h-9 w-9 rounded-full" />
+            )}
             
             <div className="lg:hidden">
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Abrir menú</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-4/5">
-                  <SheetHeader>
-                    <SheetTitle>
-                        <Link href="/" className="flex items-center gap-2">
-                            <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50} draggable="false"/>
-                        </Link>
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-6">
-                    <nav className="flex flex-col space-y-4">
-                      {navLinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
-                          className="flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted"
-                        >
-                          <link.icon className="h-5 w-5" />
-                          <span>{link.label}</span>
-                        </Link>
-                      ))}
-                    </nav>
-                  </div>
-                </SheetContent>
-              </Sheet>
+              {isMounted ? (
+                  <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                      <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                          <Menu className="h-5 w-5" />
+                          <span className="sr-only">Abrir menú</span>
+                      </Button>
+                      </SheetTrigger>
+                      <SheetContent side="right" className="w-4/5">
+                      <SheetHeader>
+                          <SheetTitle>
+                              <Link href="/" className="flex items-center gap-2">
+                                  <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50} draggable="false"/>
+                              </Link>
+                          </SheetTitle>
+                      </SheetHeader>
+                      <div className="mt-6">
+                          <nav className="flex flex-col space-y-4">
+                          {navLinks.map((link) => (
+                              <Link
+                              key={link.href}
+                              href={link.href}
+                              onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
+                              className="flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted"
+                              >
+                              <link.icon className="h-5 w-5" />
+                              <span>{link.label}</span>
+                              </Link>
+                          ))}
+                          </nav>
+                      </div>
+                      </SheetContent>
+                  </Sheet>
+              ) : (
+                <Skeleton className="h-9 w-9 rounded-md" />
+              )}
             </div>
           </div>
         </div>
