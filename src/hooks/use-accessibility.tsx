@@ -51,6 +51,7 @@ export function useAccessibilityState(): AccessibilityState {
   const [highlightOnHover, setHighlightOnHover] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
 
   const increaseFontSize = () => {
     setFontSizeStep(prev => (prev < 2 ? prev + 1 : 2) as 0 | 1 | 2);
@@ -97,6 +98,27 @@ export function useAccessibilityState(): AccessibilityState {
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask, highlightOnHover]);
 
   useEffect(() => {
+    const loadVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const spanishVoice = 
+          voices.find(v => v.lang.startsWith('es') && v.name.includes('Google')) ||
+          voices.find(v => v.lang.startsWith('es') && v.name.includes('Microsoft')) ||
+          voices.find(v => v.lang.startsWith('es') && v.localService === false) ||
+          voices.find(v => v.lang.startsWith('es'));
+        setSelectedVoice(spanishVoice || voices[0]);
+      }
+    };
+    
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+
+    return () => {
+      speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
+  useEffect(() => {
     const handleMouseOver = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const validTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI'];
@@ -105,6 +127,9 @@ export function useAccessibilityState(): AccessibilityState {
         if (textToSpeak) {
           speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(textToSpeak);
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+          }
           speechSynthesis.speak(utterance);
         }
       }
@@ -128,7 +153,7 @@ export function useAccessibilityState(): AccessibilityState {
       document.body.removeEventListener('mouseover', handleMouseOver);
       document.body.removeEventListener('mouseout', handleMouseOut);
     };
-  }, [textToSpeech]);
+  }, [textToSpeech, selectedVoice]);
 
 
   return {
