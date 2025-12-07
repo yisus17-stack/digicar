@@ -58,6 +58,12 @@ service cloud.firestore {
       allow list: if isSignedIn();
     }
 
+    match /financiamientos/{financiamientoId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn();
+    }
+
     match /fuelTypes/{fuelTypeId} {
       allow get, list: if true;
       allow create, update, delete: if true;
@@ -78,3 +84,5 @@ service cloud.firestore {
     }
   }
 }
+
+    

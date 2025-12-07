@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Timestamp } from "firebase/firestore";
@@ -66,3 +67,17 @@ export type Comparison = {
     carId2: string;
     createdAt: Timestamp;
 }
+
+export type Financing = {
+    id: string;
+    userId: string;
+    carId: string;
+    variantId: string;
+    carPrice: number;
+    downPayment: number;
+    term: number;
+    monthlyPayment: number;
+    createdAt: Timestamp;
+}
+
+    

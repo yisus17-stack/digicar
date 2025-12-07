@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity } from 'lucide-react';
+import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity, Landmark } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
@@ -21,7 +21,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Swal from 'sweetalert2';
 import { doc, collection, updateDoc, arrayRemove, query, where, deleteDoc } from 'firebase/firestore';
-import type { Favorite, Car, Comparison } from '@/core/types';
+import type { Favorite, Car, Comparison, Financing } from '@/core/types';
 import CarCard from '@/features/catalog/components/CarCard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -146,6 +146,52 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
     );
 };
 
+const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing, allCars: Car[], onRemove: (id: string) => void }) => {
+    const car = allCars.find(c => c.id === financing.carId);
+    if (!car) return null;
+
+    const variant = car.variantes.find(v => v.id === financing.variantId);
+    const carImage = variant?.imagenUrl ?? car.imagenUrl;
+
+    return (
+        <Card>
+            <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
+                <div className="relative w-full sm:w-48 h-32 sm:h-auto flex-shrink-0">
+                    {carImage && <Image src={carImage} alt={car.modelo} fill className="object-contain rounded-md" />}
+                </div>
+                <div className="flex-grow">
+                    <h4 className="font-bold">{car.marca} {car.modelo}</h4>
+                    <p className="text-sm text-muted-foreground">{variant?.color}</p>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
+                        <div>
+                            <p className="text-muted-foreground">Pago Mensual</p>
+                            <p className="font-semibold">${financing.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                            <p className="text-muted-foreground">Enganche</p>
+                            <p className="font-semibold">${financing.downPayment.toLocaleString('es-MX')}</p>
+                        </div>
+                        <div>
+                            <p className="text-muted-foreground">Plazo</p>
+                            <p className="font-semibold">{financing.term} meses</p>
+                        </div>
+                        <div>
+                            <p className="text-muted-foreground">Precio del Auto</p>
+                            <p className="font-semibold">${financing.carPrice.toLocaleString('es-MX')}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex sm:flex-col justify-end items-center gap-2 pt-4 sm:pt-0 sm:border-l sm:pl-4">
+                     <p className="text-xs text-muted-foreground sm:absolute sm:top-4 sm:right-4">
+                        {new Date(financing.createdAt.seconds * 1000).toLocaleDateString()}
+                    </p>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(financing.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
 
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
@@ -176,6 +222,12 @@ export default function PaginaPerfil() {
   }, [user, firestore]);
   const { data: comparaciones, isLoading: cargandoComparaciones } = useCollection<Comparison>(queryComparaciones);
 
+  const queryFinanciamientos = useMemoFirebase(() => {
+    if (!user) return null;
+    return query(collection(firestore, 'financiamientos'), where('userId', '==', user.uid));
+  }, [user, firestore]);
+  const { data: financiamientos, isLoading: cargandoFinanciamientos } = useCollection<Financing>(queryFinanciamientos);
+
 
   const autosFavoritos = useMemo(() => {
     if (!favoritos || !todosLosAutos) return [];
@@ -193,7 +245,7 @@ export default function PaginaPerfil() {
   }, [user, loading, router, form, adminUid]);
 
 
-  if (loading || !user || cargandoFavoritos || cargandoTodosLosAutos || cargandoComparaciones) {
+  if (loading || !user || cargandoFavoritos || cargandoTodosLosAutos || cargandoComparaciones || cargandoFinanciamientos) {
     return <EsqueletoPerfil />;
   }
   
@@ -220,6 +272,25 @@ export default function PaginaPerfil() {
         if (result.isConfirmed) {
             await deleteDoc(doc(firestore, 'comparaciones', comparisonId));
             Swal.fire('Eliminada', 'Tu comparación ha sido eliminada.', 'success');
+        }
+    };
+    
+    const handleRemoveFinancing = async (financingId: string) => {
+        if (!user) return;
+        const result = await Swal.fire({
+            title: '¿Eliminar plan de financiamiento?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#595c97',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            await deleteDoc(doc(firestore, 'financiamientos', financingId));
+            Swal.fire('Eliminado', 'Tu plan de financiamiento ha sido eliminado.', 'success');
         }
     };
 
@@ -250,6 +321,7 @@ export default function PaginaPerfil() {
   const menuItems = [
     { id: 'favorites', label: 'Mis Favoritos', icon: Heart },
     { id: 'comparisons', label: 'Mis Comparaciones', icon: Repeat },
+    { id: 'financings', label: 'Mis Financiamientos', icon: Landmark },
     { id: 'settings', label: 'Configuración', icon: UserIcon },
     { id: 'security', label: 'Seguridad', icon: Shield },
   ];
@@ -366,6 +438,34 @@ export default function PaginaPerfil() {
                     </CardContent>
                 </Card>
             )}
+             {activeTab === 'financings' && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Mis Financiamientos</CardTitle>
+                        <CardDescription>Revisa los planes de financiamiento que has guardado.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {financiamientos && financiamientos.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6">
+                                {financiamientos.map(fin => (
+                                    <FinancingItem key={fin.id} financing={fin} allCars={todosLosAutos} onRemove={handleRemoveFinancing}/>
+                                ))}
+                            </div>
+                        ) : (
+                             <div className="text-center py-16">
+                                <Landmark className="mx-auto h-12 w-12 text-muted-foreground" />
+                                <h3 className="mt-4 text-lg font-semibold">No tienes financiamientos guardados</h3>
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Usa la calculadora para cotizar un plan y guárdalo.
+                                </p>
+                                <Button asChild className="mt-4">
+                                    <Link href="/financiamiento">Ir a la Calculadora</Link>
+                                </Button>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            )}
             {activeTab === 'settings' && (
               <Card>
                 <CardHeader>
@@ -423,3 +523,5 @@ export default function PaginaPerfil() {
     </div>
   );
 }
+
+    

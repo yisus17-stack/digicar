@@ -13,8 +13,11 @@ import { Button } from '@/components/ui/button';
 import WizardSteps from '@/components/layout/WizardSteps';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { Loader2, Download } from 'lucide-react';
-import { useUser } from '@/firebase';
+import { Loader2, Download, Save } from 'lucide-react';
+import { useUser, useFirestore } from '@/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 const INTEREST_RATE = 0.12;
 
@@ -36,7 +39,11 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   const [downPayment, setDownPayment] = useState(200000);
   const [term, setTerm] = useState(24);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { user } = useUser();
+  const firestore = useFirestore();
+  const router = useRouter();
+
 
   const wizardSteps = [
     { number: 1, title: 'Presupuesto' },
@@ -114,6 +121,47 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     return estimatedPayment <= monthlyBudget;
   };
   
+  const handleSaveFinancing = async () => {
+    if (!user) {
+        router.push('/login?redirect=/financiamiento');
+        return;
+    }
+    if (!selectedCar || !selectedVariant) return;
+
+    setIsSaving(true);
+    try {
+        const financingData = {
+            userId: user.uid,
+            carId: selectedCar.id,
+            variantId: selectedVariant.id,
+            carPrice: carPrice,
+            downPayment: downPayment,
+            term: term,
+            monthlyPayment: monthlyPayment,
+            createdAt: serverTimestamp(),
+        };
+
+        await addDoc(collection(firestore, 'financiamientos'), financingData);
+        
+        Swal.fire({
+            title: '¡Guardado!',
+            text: 'Tu plan de financiamiento ha sido guardado en tu perfil.',
+            icon: 'success',
+            confirmButtonColor: '#595c97',
+        });
+    } catch (error) {
+        console.error("Error guardando financiamiento:", error);
+        Swal.fire({
+            title: 'Error',
+            text: 'No se pudo guardar el financiamiento. Inténtalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+    } finally {
+        setIsSaving(false);
+    }
+  };
+
   const generatePDF = async () => {
     if (!selectedCar) return;
     setIsGeneratingPdf(true);
@@ -220,7 +268,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.text(`$ ${monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
     doc.setTextColor(0);
 
-    finalY = (doc as any).lastAutoTable.finalY + 25;
+    finalY += 25;
 
     const disclaimer = `*Este documento es una cotización preliminar de DigiCar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del ${(INTEREST_RATE * 100).toFixed(0)}%.`;
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
@@ -414,13 +462,13 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                     </p>
                     <div className="pt-8 flex justify-center gap-4">
                         <Button variant="outline" onClick={handlePrevStep}>Ajustar Plan</Button>
+                        <Button size="lg" onClick={handleSaveFinancing} disabled={isSaving || !user}>
+                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                            Guardar Financiamiento
+                        </Button>
                         <Button size="lg" onClick={generatePDF} disabled={isGeneratingPdf}>
-                            {isGeneratingPdf ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <Download className="mr-2 h-4 w-4" />
-                            )}
-                            Descargar Cotización (PDF)
+                            {isGeneratingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                            Descargar Cotización
                         </Button>
                     </div>
                 </CardContent>
@@ -429,3 +477,5 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     </div>
   );
 }
+
+    
