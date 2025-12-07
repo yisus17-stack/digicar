@@ -45,11 +45,11 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      <body className={poppins.variable}>
+      <body className={cn("font-sans", poppins.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
         >
           <AccessibilityProvider>
