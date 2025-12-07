@@ -92,7 +92,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
     if (user) {
       router.push(href);
     } else {
-      router.push('/login?redirect=' + href);
+      router.push('/login');
     }
   }
   
