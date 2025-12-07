@@ -56,9 +56,14 @@ export type UserProfile = {
   currentComparison?: string[];
 }
 
+export type FavoriteItem = {
+  autoId: string;
+  varianteId: string;
+};
+
 export type Favorite = {
-    carIds: string[];
-}
+  items: FavoriteItem[];
+};
 
 export type Comparison = {
     id: string;
@@ -81,5 +86,6 @@ export type Financing = {
     pagoMensual: number;
     fechaCreacion: Timestamp;
 }
+    
     
     

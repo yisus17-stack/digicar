@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useUser, useDoc, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -21,7 +22,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Swal from 'sweetalert2';
 import { doc, collection, updateDoc, arrayRemove, query, where, deleteDoc } from 'firebase/firestore';
-import type { Favorite, Car, Comparison, Financing, CarVariant } from '@/core/types';
+import type { Favorite, Car, Comparison, Financing, CarVariant, FavoriteItem } from '@/core/types';
 import CarCard from '@/features/catalog/components/CarCard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -261,8 +262,18 @@ export default function PaginaPerfil() {
 
 
   const autosFavoritos = useMemo(() => {
-    if (!favoritos || !todosLosAutos) return [];
-    return todosLosAutos.filter(auto => favoritos.carIds.includes(auto.id));
+    if (!favoritos || !favoritos.items || !todosLosAutos) return [];
+    
+    return favoritos.items.map(favItem => {
+        const car = todosLosAutos.find(auto => auto.id === favItem.autoId);
+        if (!car) return null;
+        return {
+            ...car,
+            // Sobrescribe la imagen/precio con la de la variante específica
+            variantes: car.variantes.filter(v => v.id === favItem.varianteId),
+            preselectedVariantId: favItem.varianteId, // Pasamos el ID de la variante para la CarCard
+        };
+    }).filter((car): car is Car & { preselectedVariantId: string } => car !== null);
   }, [favoritos, todosLosAutos]);
 
   useEffect(() => {
@@ -280,10 +291,10 @@ export default function PaginaPerfil() {
     return <EsqueletoPerfil />;
   }
   
-  const handleRemoveFavorite = async (carId: string) => {
+  const handleRemoveFavorite = async (favItem: FavoriteItem) => {
     if (!refFavoritos) return;
     await updateDoc(refFavoritos, {
-      carIds: arrayRemove(carId)
+      items: arrayRemove(favItem)
     });
   };
 
@@ -412,14 +423,18 @@ export default function PaginaPerfil() {
                 <CardContent>
                   {autosFavoritos.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {autosFavoritos.map(car => (
-                        <div key={car.id} className="relative group">
-                           <CarCard car={car} showFavoriteButton={false} />
+                      {autosFavoritos.map((car, index) => (
+                        <div key={`${car.id}-${index}`} className="relative group">
+                           <CarCard 
+                              car={car} 
+                              showFavoriteButton={false}
+                              preselectedVariantId={car.preselectedVariantId}
+                           />
                            <Button 
                              variant="destructive" 
                              size="icon" 
                              className="absolute top-2 left-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                             onClick={() => handleRemoveFavorite(car.id)}
+                             onClick={() => handleRemoveFavorite({ autoId: car.id, varianteId: car.preselectedVariantId })}
                            >
                              <Trash2 className="h-4 w-4" />
                            </Button>
@@ -554,5 +569,6 @@ export default function PaginaPerfil() {
     </div>
   );
 }
+    
     
     

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
-import type { Car, Favorite } from '@/core/types';
+import type { Car, Favorite, FavoriteItem } from '@/core/types';
 import { Car as CarIcon, Heart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -15,9 +15,10 @@ import { Button } from '@/components/ui/button';
 interface CarCardProps {
   car: Car;
   showFavoriteButton?: boolean;
+  preselectedVariantId?: string;
 }
 
-export default function CarCard({ car, showFavoriteButton = true }: CarCardProps) {
+export default function CarCard({ car, showFavoriteButton = true, preselectedVariantId }: CarCardProps) {
   const { user, loading: loadingUser } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -28,22 +29,28 @@ export default function CarCard({ car, showFavoriteButton = true }: CarCardProps
   const refFavoritos = useMemoFirebase(() => user ? doc(firestore, 'favoritos', user.uid) : null, [user, firestore]);
   const { data: favoritos, isLoading: loadingFavorites } = useDoc<Favorite>(refFavoritos);
 
-  useEffect(() => {
-    if (favoritos?.carIds?.includes(car.id)) {
-      setIsFavorite(true);
-    } else {
-      setIsFavorite(false);
+  const displayVariant = useMemo(() => {
+    if (preselectedVariantId) {
+      return car.variantes?.find(v => v.id === preselectedVariantId) ?? car.variantes?.[0];
     }
-  }, [favoritos, car.id]);
+    return car.variantes?.[0];
+  }, [car, preselectedVariantId]);
+  
+  useEffect(() => {
+    if (!favoritos?.items || !displayVariant) {
+      setIsFavorite(false);
+      return;
+    }
+    const isFav = favoritos.items.some(item => item.autoId === car.id && item.varianteId === displayVariant.id);
+    setIsFavorite(isFav);
+  }, [favoritos, car.id, displayVariant]);
 
   if (!car) {
     return null;
   }
   
-  const displayVariant = car.variantes && car.variantes.length > 0 ? car.variantes[0] : null;
   const imageUrl = displayVariant?.imagenUrl ?? car.imagenUrl;
   const price = displayVariant?.precio ?? car.precio ?? 0;
-  const color = displayVariant?.color ?? car.color;
 
   const handleToggleFavorite = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -53,17 +60,19 @@ export default function CarCard({ car, showFavoriteButton = true }: CarCardProps
       router.push('/login');
       return;
     }
-    if (!refFavoritos) return;
+    if (!refFavoritos || !displayVariant) return;
 
     setIsUpdating(true);
+    const favoriteItem: FavoriteItem = { autoId: car.id, varianteId: displayVariant.id };
+    
     try {
       if (isFavorite) {
-        await updateDoc(refFavoritos, { carIds: arrayRemove(car.id) });
+        await updateDoc(refFavoritos, { items: arrayRemove(favoriteItem) });
       } else {
         if (favoritos) {
-           await updateDoc(refFavoritos, { carIds: arrayUnion(car.id) });
+           await updateDoc(refFavoritos, { items: arrayUnion(favoriteItem) });
         } else {
-           await setDoc(refFavoritos, { carIds: [car.id] });
+           await setDoc(refFavoritos, { items: [favoriteItem] });
         }
       }
     } catch (error) {
@@ -98,7 +107,7 @@ export default function CarCard({ car, showFavoriteButton = true }: CarCardProps
           <div className="flex-grow">
             <h3 className="text-lg font-semibold">{car.marca} {car.modelo}</h3>
             <p className="text-base text-muted-foreground">
-              {car.tipo} • {car.anio}
+              {car.anio} • {car.tipo}
             </p>
           </div>
           <p className="mt-4 pt-2 text-lg font-bold">
@@ -126,3 +135,5 @@ export default function CarCard({ car, showFavoriteButton = true }: CarCardProps
     </div>
   );
 }
+
+    

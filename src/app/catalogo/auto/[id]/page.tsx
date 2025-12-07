@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
@@ -61,12 +62,15 @@ export default function PaginaDetalleAuto() {
   const { data: favoritos, isLoading: cargandoFavoritos } = useDoc<Favorite>(refFavoritos);
 
   useEffect(() => {
-    if (favoritos && favoritos.carIds) {
-      setIsFavorite(favoritos.carIds.includes(id));
-    } else {
+    if (!favoritos || !favoritos.items || !selectedVariant) {
       setIsFavorite(false);
+      return;
     }
-  }, [favoritos, id]);
+    const isFav = favoritos.items.some(
+      item => item.autoId === id && item.varianteId === selectedVariant.id
+    );
+    setIsFavorite(isFav);
+  }, [favoritos, id, selectedVariant]);
 
   useEffect(() => {
     if (!id) return;
@@ -114,17 +118,23 @@ export default function PaginaDetalleAuto() {
       router.push('/login');
       return;
     }
-    if (!refFavoritos) return;
-
+    if (!refFavoritos || !selectedVariant) return;
+  
+    const favoriteItem = { autoId: id, varianteId: selectedVariant.id };
     setIsUpdatingFavorite(true);
+  
     try {
       if (isFavorite) {
-        await updateDoc(refFavoritos, { carIds: arrayRemove(id) });
+        // Remover de favoritos
+        await updateDoc(refFavoritos, { items: arrayRemove(favoriteItem) });
       } else {
+        // Añadir a favoritos
         if (favoritos) {
-           await updateDoc(refFavoritos, { carIds: arrayUnion(id) });
+          // El documento existe, solo se actualiza el array
+          await updateDoc(refFavoritos, { items: arrayUnion(favoriteItem) });
         } else {
-           await setDoc(refFavoritos, { carIds: [id] });
+          // El documento no existe, se crea con el item inicial
+          await setDoc(refFavoritos, { items: [favoriteItem] });
         }
       }
     } catch (error) {
@@ -291,3 +301,5 @@ export default function PaginaDetalleAuto() {
     </div>
   );
 }
+
+    
