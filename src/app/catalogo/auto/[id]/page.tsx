@@ -162,7 +162,7 @@ export default function PaginaDetalleAuto() {
       <Card className="mt-6 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
             {/* Columna Izquierda: Imagen */}
-            <div className="p-4 md:p-8 bg-white dark:bg-card">
+            <div className="p-4 md:p-8 lg:border-r">
                  <AspectRatio 
                     ratio={16/10} 
                     className="overflow-hidden rounded-lg bg-white dark:bg-card relative"
