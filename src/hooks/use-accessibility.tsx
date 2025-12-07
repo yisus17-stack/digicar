@@ -128,40 +128,33 @@ export function useAccessibilityState(): AccessibilityState {
         speechSynthesis.speak(utterance);
     };
 
-    const handleEvent = (event: MouseEvent | FocusEvent) => {
-      const target = event.target as HTMLElement;
-      
-      const isInteractiveElement = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName);
-      const isReadableContent = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'SPAN', 'LI'].includes(target.tagName);
-      
-      if (isInteractiveElement && event.type === 'focusin') {
-        // No leer el contenido de los inputs para no interferir con la escritura
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
-
-        const textToSpeak = target.getAttribute('aria-label') || target.textContent;
-        if (textToSpeak) {
-            speak(textToSpeak.trim());
+    const handleClick = (event: MouseEvent) => {
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+            return;
         }
-      } else if (isReadableContent && event.type === 'mouseover') {
-         if (target.textContent) {
-            speak(target.textContent.trim());
-         }
-      }
+        
+        const target = event.target as HTMLElement;
+        const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'SPAN', 'LI', 'A', 'BUTTON'];
+
+        if (readableTags.includes(target.tagName)) {
+            const textToSpeak = target.textContent?.trim();
+            if (textToSpeak) {
+                speak(textToSpeak);
+            }
+        }
     };
 
     if (textToSpeech) {
-      document.body.addEventListener('mouseover', handleEvent);
-      document.body.addEventListener('focusin', handleEvent);
+      document.body.addEventListener('click', handleClick);
     } else {
       speechSynthesis.cancel();
-      document.body.removeEventListener('mouseover', handleEvent);
-      document.body.removeEventListener('focusin', handleEvent);
+      document.body.removeEventListener('click', handleClick);
     }
 
     return () => {
       speechSynthesis.cancel();
-      document.body.removeEventListener('mouseover', handleEvent);
-      document.body.removeEventListener('focusin', handleEvent);
+      document.body.removeEventListener('click', handleClick);
     };
   }, [textToSpeech, selectedVoice]);
 
