@@ -109,10 +109,32 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
     const car1 = allCars.find(c => c.id === comparison.autoId1);
     const car2 = allCars.find(c => c.id === comparison.autoId2);
 
-    const variant1 = car1?.variantes.find(v => v.id === comparison.varianteId1);
-    const variant2 = car2?.variantes.find(v => v.id === comparison.varianteId2);
+    const findVariant = (car: Car | undefined, variantId: string): CarVariant | undefined => {
+        if (!car) return undefined;
+        let variant = car.variantes.find(v => v.id === variantId);
+        // Fallback for potentially temporary IDs saved before DB insertion
+        if (!variant && variantId.startsWith('new_')) {
+            const tempIdParts = variantId.split('_');
+            const tempColor = comparison.varianteId1 === variantId ? car1?.variantes.find(v => v.id.includes('new_'))?.color : car2?.variantes.find(v => v.id.includes('new_'))?.color;
+            variant = car.variantes.find(v => v.color === tempColor);
+        }
+        if (!variant) {
+            console.log('Variant not found for car:', car.modelo, 'with variantId:', variantId);
+        }
+        return variant;
+    };
 
-    if (!car1 || !car2 || !variant1 || !variant2) return null;
+    const variant1 = findVariant(car1, comparison.varianteId1);
+    const variant2 = findVariant(car2, comparison.varianteId2);
+
+    if (!car1 || !car2 || !variant1 || !variant2) {
+      if (!car1) console.log("Car 1 not found for ID:", comparison.autoId1);
+      if (!car2) console.log("Car 2 not found for ID:", comparison.autoId2);
+      if (car1 && !variant1) console.log("Variant 1 not found for ID:", comparison.varianteId1, "in car", car1.modelo);
+      if (car2 && !variant2) console.log("Variant 2 not found for ID:", comparison.varianteId2, "in car", car2.modelo);
+      return null;
+    }
+
 
     const handleView = () => {
         const comparisonData = {
