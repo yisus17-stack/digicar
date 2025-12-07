@@ -6,7 +6,7 @@ import { useUser, useDoc, useCollection, useFirestore, useMemoFirebase } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity, Landmark } from 'lucide-react';
@@ -228,8 +228,10 @@ const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing,
 export default function PaginaPerfil() {
   const { user, loading } = useUser();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const firestore = useFirestore();
-  const [activeTab, setActiveTab] = useState('favorites');
+  const tabFromUrl = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabFromUrl || 'favorites');
   const [isSaving, setIsSaving] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
@@ -267,10 +269,13 @@ export default function PaginaPerfil() {
     return favoritos.items.map(favItem => {
         const car = todosLosAutos.find(auto => auto.id === favItem.autoId);
         if (!car) return null;
+        
+        const variant = car.variantes?.find(v => v.id === favItem.varianteId);
+        
         return {
             ...car,
             // Sobrescribe la imagen/precio con la de la variante específica
-            variantes: car.variantes.filter(v => v.id === favItem.varianteId),
+            variantes: variant ? [variant] : car.variantes,
             preselectedVariantId: favItem.varianteId, // Pasamos el ID de la variante para la CarCard
         };
     }).filter((car): car is Car & { preselectedVariantId: string } => car !== null);
@@ -285,6 +290,12 @@ export default function PaginaPerfil() {
       setIsUserAdmin(user.uid === adminUid);
     }
   }, [user, loading, router, form, adminUid]);
+  
+  useEffect(() => {
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
 
 
   if (loading || !user || cargandoFavoritos || cargandoTodosLosAutos || cargandoComparaciones || cargandoFinanciamientos) {
@@ -423,8 +434,8 @@ export default function PaginaPerfil() {
                 <CardContent>
                   {autosFavoritos.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {autosFavoritos.map((car, index) => (
-                        <div key={`${car.id}-${index}`} className="relative group">
+                      {autosFavoritos.map((car) => (
+                        <div key={`${car.id}-${car.preselectedVariantId}`} className="relative group">
                            <CarCard 
                               car={car} 
                               showFavoriteButton={false}
@@ -433,7 +444,7 @@ export default function PaginaPerfil() {
                            <Button 
                              variant="destructive" 
                              size="icon" 
-                             className="absolute top-2 left-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                             className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                              onClick={() => handleRemoveFavorite({ autoId: car.id, varianteId: car.preselectedVariantId })}
                            >
                              <Trash2 className="h-4 w-4" />

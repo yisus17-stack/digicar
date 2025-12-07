@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -50,6 +51,16 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     { number: 2, title: 'Vehículo' },
     { number: 3, title: 'Resultado' },
   ];
+  
+  const resetCalculator = () => {
+    setStep(1);
+    setMonthlyBudget(5000);
+    setSelectedCarId(undefined);
+    setSelectedVariantId(undefined);
+    setDownPayment(200000);
+    setTerm(24);
+  };
+
 
   const selectedCar = useMemo(() => {
     return allCars.find(c => c.id === selectedCarId);
@@ -143,12 +154,16 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
 
         await addDoc(collection(firestore, 'financiamientos'), financingData);
         
-        Swal.fire({
+        await Swal.fire({
             title: '¡Guardado!',
             text: 'Tu plan de financiamiento ha sido guardado en tu perfil.',
             icon: 'success',
             confirmButtonColor: '#595c97',
         });
+        
+        resetCalculator();
+        router.push('/perfil?tab=financings');
+
     } catch (error) {
         console.error("Error guardando financiamiento:", error);
         Swal.fire({
@@ -275,7 +290,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text(splitDisclaimer, 15, finalY);
+    doc.text(splitDisclaimer, 15, finalY, {align: 'left'});
 
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
