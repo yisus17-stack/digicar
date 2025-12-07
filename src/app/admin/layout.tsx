@@ -126,30 +126,6 @@ function BarraLateralAdmin() {
   );
 }
 
-const EsqueletoLayoutAdmin = () => {
-    return (
-        <div className="flex min-h-screen w-full bg-background">
-            <div className="flex flex-col sm:gap-4 sm:py-4 w-full">
-                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                     <div className="ml-auto flex items-center gap-4">
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                        <Skeleton className="h-9 w-9 rounded-full" />
-                     </div>
-                </header>
-                <main className="flex-1 p-4 sm:px-6 sm:py-0">
-                    <div className="flex items-center justify-center h-[80vh] text-center">
-                        <div className="space-y-4">
-                            <Skeleton className="h-8 w-64 mx-auto" />
-                            <Skeleton className="h-6 w-48 mx-auto" />
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </div>
-    );
-};
-
-
 function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
     const { user, loading } = useUser();
     const router = useRouter();
@@ -172,8 +148,8 @@ function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
         }
     }, [user, loading, router, adminUid]);
 
-    if (loading || user?.uid !== adminUid) {
-        return <EsqueletoLayoutAdmin />;
+    if (loading || !user || user.uid !== adminUid) {
+        return null;
     }
 
     return (
