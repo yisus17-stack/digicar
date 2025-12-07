@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
@@ -173,7 +172,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setHideImages(false);
     setHighlightTitles(false);
     setTextSpacing(0);
-    setTheme('system');
+    setTheme('light');
   };
 
   const value = {

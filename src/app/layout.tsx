@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Metadata } from 'next';
@@ -21,7 +20,6 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 function AppContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
-  const { textToSpeech, speak } = useAccessibility();
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const isAdminPage = pathname.startsWith('/admin');
@@ -49,7 +47,7 @@ export default function RootLayout({
       <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
