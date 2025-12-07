@@ -198,37 +198,36 @@ export default function PaginaDetalleAuto() {
 
             {/* Columna Derecha: Información */}
             <div className="p-8 space-y-6">
-                <div>
-                    <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
-                    <div className="flex justify-between items-center mt-1">
-                        <div>
-                            <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
-                            <AnimatePresence mode="wait">
-                            <motion.p
-                                key={selectedVariant?.precio}
-                                className="text-3xl font-bold text-primary mt-2"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                ${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}
-                            </motion.p>
-                            </AnimatePresence>
-                        </div>
-                        {brandLogoUrl && (
-                            <div className="relative h-16 w-28 flex-shrink-0">
-                                <Image 
-                                src={brandLogoUrl}
-                                alt={`${auto.marca} logo`}
-                                fill
-                                className="object-contain"
-                                draggable="false"
-                                />
-                            </div>
-                        )}
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
+                        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
                     </div>
+                     {brandLogoUrl && (
+                        <div className="relative h-16 w-28 flex-shrink-0">
+                            <Image 
+                            src={brandLogoUrl}
+                            alt={`${auto.marca} logo`}
+                            fill
+                            className="object-contain"
+                            draggable="false"
+                            />
+                        </div>
+                    )}
                 </div>
+                
+                 <AnimatePresence mode="wait">
+                    <motion.p
+                        key={selectedVariant?.precio}
+                        className="text-3xl font-bold text-primary"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        ${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}
+                    </motion.p>
+                </AnimatePresence>
                 
                 <Separator />
                 
