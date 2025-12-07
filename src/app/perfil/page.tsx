@@ -90,10 +90,9 @@ function EsqueletoPerfil() {
               <Skeleton className="h-4 w-40" />
             </div>
           </div>
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
         </div>
         <div className="md:col-span-3 space-y-6">
           <Card>
