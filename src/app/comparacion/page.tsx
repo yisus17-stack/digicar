@@ -1,5 +1,26 @@
+
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/firebase';
 import ComparisonContent from "@/features/comparison/components/ComparisonContent";
+import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
+
 
 export default function Comparar() {
-  return <ComparisonContent />;
+    const { user, loading: loadingUser } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loadingUser && !user) {
+            router.push('/login?redirect=/comparacion');
+        }
+    }, [user, loadingUser, router]);
+
+    if (loadingUser || !user) {
+        return <EsqueletoComparacion />;
+    }
+    
+    return <ComparisonContent />;
 }

@@ -35,11 +35,7 @@ export default function PaginaFinanciamiento() {
         }
     }, [user, loadingUser, router]);
 
-    if (loadingUser || !user) {
-        return <EsqueletoFinanciamiento />;
-    }
-
-    if (isLoading || !autos) {
+    if (isLoading || loadingUser || !user) {
         return <EsqueletoFinanciamiento />;
     }
 
@@ -54,7 +50,7 @@ export default function PaginaFinanciamiento() {
             Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
             </p>
         </div>
-        <FinancingCalculator allCars={autos} />
+        <FinancingCalculator allCars={autos ?? []} />
         </div>
     );
 }

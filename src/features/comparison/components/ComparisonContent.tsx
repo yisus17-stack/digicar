@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, serverTimestamp, doc } from 'firebase/firestore';
 import type { Car, CarVariant, Comparison } from '@/core/types';
-import { Skeleton } from '@/components/ui/skeleton';
+import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,20 +19,6 @@ import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
-const EsqueletoComparacion = () => (
-    <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
-        <Skeleton className="h-8 w-1/4" />
-        <div className="text-center">
-            <Skeleton className="h-12 w-1/2 mx-auto" />
-            <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-        </div>
-        <Skeleton className="h-96 w-full" />
-    </div>
-);
 
 const CarSelector = ({
   selectedCar,
@@ -139,7 +125,7 @@ const CarSelector = ({
 
 export default function ComparisonContent() {
   const firestore = useFirestore();
-  const { user, loading: loadingUser } = useUser();
+  const { user } = useUser();
   const router = useRouter();
   
   const [carId1, setCarId1] = useState<string | undefined>();
@@ -157,12 +143,6 @@ export default function ComparisonContent() {
   
   const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
-
-  useEffect(() => {
-    if (!loadingUser && !user) {
-      router.push('/login?redirect=/comparacion');
-    }
-  }, [user, loadingUser, router]);
 
   useEffect(() => {
     const storedData = sessionStorage.getItem('comparisonData');
@@ -272,10 +252,6 @@ export default function ComparisonContent() {
     }
     const value = car[key as keyof Car] as string | number;
     return value || '-';
-  }
-  
-  if (loadingUser || !user) {
-    return null;
   }
 
   if (loadingCars || !todosLosAutos) {
