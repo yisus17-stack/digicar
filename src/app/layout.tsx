@@ -28,15 +28,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const isLegalPage = pathname.startsWith('/legal');
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
-  useEffect(() => {
-    if (textToSpeech && speak) {
-      // Announce route changes
-      const pageName = pathname.split('/').filter(Boolean).pop() || 'inicio';
-      const friendlyPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1).replace('-', ' ');
-      speak(`Redirigiendo a ${friendlyPageName}`);
-    }
-  }, [pathname, textToSpeech, speak]);
-
   return (
     <div className="relative flex min-h-screen flex-col">
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
