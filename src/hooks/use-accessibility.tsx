@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 export interface AccessibilityState {
   highContrast: boolean;
@@ -57,6 +57,21 @@ export function useAccessibilityState(): AccessibilityState {
     setFontSizeStep(0);
     setTextSpacing(0);
   };
+  
+    useEffect(() => {
+    const body = document.body;
+    body.dataset.highContrast = String(highContrast);
+    body.dataset.highlightTitles = String(highlightTitles);
+    body.dataset.underlineLinks = String(underlineLinks);
+    body.dataset.hideImages = String(hideImages);
+    body.dataset.textSpacing = String(textSpacing);
+    body.dataset.grayscale = String(grayscale);
+    
+    const html = document.documentElement;
+    html.dataset.fontSizeStep = String(fontSizeStep);
+
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
+
 
   return {
     highContrast, setHighContrast,
