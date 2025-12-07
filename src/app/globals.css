@@ -93,9 +93,9 @@
     --ring: 60 100% 50%;
   }
   
-  body[data-font-size-step='0'] { font-size: 16px; }
-  body[data-font-size-step='1'] { font-size: 18px; }
-  body[data-font-size-step='2'] { font-size: 20px; }
+  body[data-font-size-step='0'] #main-content-wrapper { font-size: 16px; }
+  body[data-font-size-step='1'] #main-content-wrapper { font-size: 18px; }
+  body[data-font-size-step='2'] #main-content-wrapper { font-size: 20px; }
 
   #main-content-wrapper[data-grayscale='true'] { 
     filter: grayscale(100%); 
