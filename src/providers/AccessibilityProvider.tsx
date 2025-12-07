@@ -31,13 +31,13 @@ export const AccessibilityProvider = ({ children }: { children: ReactNode }) => 
   const { setTheme } = useTheme();
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute('data-grayscale', String(grayscale));
-    root.setAttribute('data-contrast', String(contrast));
-    root.setAttribute('data-font-size-step', String(fontSizeStep));
-    root.setAttribute('data-highlight-titles', String(highlightTitles));
-    root.setAttribute('data-underline-links', String(underlineLinks));
-    root.setAttribute('data-hide-images', String(hideImages));
+    const body = document.body;
+    body.dataset.grayscale = String(grayscale);
+    body.dataset.contrast = String(contrast);
+    body.dataset.fontSizeStep = String(fontSizeStep);
+    body.dataset.highlightTitles = String(highlightTitles);
+    body.dataset.underlineLinks = String(underlineLinks);
+    body.dataset.hideImages = String(hideImages);
   }, [grayscale, contrast, fontSizeStep, highlightTitles, underlineLinks, hideImages]);
 
   const toggleGrayscale = () => setGrayscale(prev => !prev);
