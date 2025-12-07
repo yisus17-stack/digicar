@@ -473,7 +473,7 @@ export default function FormularioAuto({
                               </FormControl>
                               {imageField.value ? (
                                 <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
-                                  <img src={imageField.value} alt="Vista previa" className="object-cover w-full h-full" />
+                                  <img src={imageField.value} alt="Vista previa" className="object-cover w-full h-full" draggable="false" />
                                 </div>
                               ) : (
                                 <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>

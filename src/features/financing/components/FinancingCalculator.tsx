@@ -135,7 +135,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   
   const handleSaveFinancing = async () => {
     if (!user) {
-        router.push('/login?redirect=/financiamiento');
+        router.push('/login');
         return;
     }
     if (!selectedCar || !selectedVariant) return;
@@ -354,6 +354,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                                                             alt={car.modelo}
                                                             fill
                                                             className="rounded-md object-contain"
+                                                            draggable="false"
                                                         />
                                                     </div>
                                                 )}
@@ -398,6 +399,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                                         width={600}
                                         height={400}
                                         className="object-contain h-full w-full"
+                                        draggable="false"
                                     />
                                 ) : (
                                    <div className="w-full h-full min-h-[170px]" />

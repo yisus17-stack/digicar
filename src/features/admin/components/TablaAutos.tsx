@@ -189,6 +189,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             width={80}
             height={60}
             className="rounded-md object-cover"
+            draggable="false"
           />
         ) : (
           <div className="w-20 h-12 flex items-center justify-center bg-muted rounded-md">

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -51,6 +52,7 @@ const CarSelector = ({
                 alt={`${selectedCar.marca} ${selectedCar.modelo}`}
                 fill
                 className="object-contain"
+                draggable="false"
                 />
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
@@ -104,6 +106,7 @@ const CarSelector = ({
                         alt={car.modelo}
                         fill
                         className="rounded-md object-contain"
+                        draggable="false"
                       />
                     </div>
                   ) : (
@@ -125,7 +128,7 @@ const CarSelector = ({
 
 export default function ComparisonContent() {
   const firestore = useFirestore();
-  const { user } = useUser();
+  const { user, loading: loadingUser } = useUser();
   const router = useRouter();
   
   const [carId1, setCarId1] = useState<string | undefined>();
@@ -143,6 +146,12 @@ export default function ComparisonContent() {
   
   const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
+  
+  useEffect(() => {
+    if (!loadingUser && !user) {
+        router.push('/login');
+    }
+  }, [user, loadingUser, router]);
 
   useEffect(() => {
     const storedData = sessionStorage.getItem('comparisonData');
@@ -185,7 +194,7 @@ export default function ComparisonContent() {
 
   const handleSaveComparison = async () => {
     if (!user) {
-      router.push('/login?redirect=/comparacion');
+      router.push('/login');
       return;
     }
     if (!car1 || !car2 || !variant1 || !variant2) return;
@@ -254,8 +263,12 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  if (loadingCars || !todosLosAutos) {
+  if (loadingUser || loadingCars || !todosLosAutos) {
     return <EsqueletoComparacion />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

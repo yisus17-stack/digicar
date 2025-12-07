@@ -159,13 +159,13 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
             <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                     <div className="flex-1 flex flex-col items-center text-center">
-                        {variant1.imagenUrl && <Image src={variant1.imagenUrl} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        {variant1.imagenUrl && <Image src={variant1.imagenUrl} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" draggable="false" />}
                         <p className="font-semibold text-sm">{car1.marca} {car1.modelo}</p>
                         <p className="text-xs text-muted-foreground">{variant1.color}</p>
                     </div>
                     <GitCompareArrows className="h-6 w-6 text-muted-foreground flex-shrink-0" />
                     <div className="flex-1 flex flex-col items-center text-center">
-                        {variant2.imagenUrl && <Image src={variant2.imagenUrl} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        {variant2.imagenUrl && <Image src={variant2.imagenUrl} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" draggable="false" />}
                         <p className="font-semibold text-sm">{car2.marca} {car2.modelo}</p>
                         <p className="text-xs text-muted-foreground">{variant2.color}</p>
                     </div>
@@ -315,7 +315,7 @@ const FinancingItem = ({ financing, allCars, onRemove, user }: { financing: Fina
         <Card>
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
                 <div className="relative w-full sm:w-48 h-32 sm:h-auto flex-shrink-0">
-                    {carImage && <Image src={carImage} alt={car.modelo} fill className="object-contain rounded-md" />}
+                    {carImage && <Image src={carImage} alt={car.modelo} fill className="object-contain rounded-md" draggable="false" />}
                 </div>
                 <div className="flex-grow">
                     <h4 className="font-bold">{car.marca} {car.modelo}</h4>
@@ -516,7 +516,7 @@ function PaginaPerfilContenido() {
               <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
                     {user.photoURL && !user.photoURL.includes('supabase') ? (
-                      <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} />
+                      <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} draggable="false" />
                     ) : (
                       <AvatarFallback className="text-2xl">
                           {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}

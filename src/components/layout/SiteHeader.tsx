@@ -84,7 +84,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
     }
   };
 
-  const handleProtectedLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleProtectedLinkClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
     e.preventDefault();
     if (loading) {
       return; 
@@ -141,6 +141,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 alt="DigiCar Logo"
                 width={150}
                 height={50}
+                draggable="false"
               />
             </Link>
           </div>
@@ -235,7 +236,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                   <SheetHeader>
                     <SheetTitle>
                         <Link href="/" className="flex items-center gap-2">
-                            <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50}/>
+                            <Image src="/logo.svg" alt="DigiCar Logo" width={150} height={50} draggable="false"/>
                         </Link>
                     </SheetTitle>
                   </SheetHeader>

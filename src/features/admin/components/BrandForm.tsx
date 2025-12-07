@@ -126,16 +126,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
 
                 {preview ? (
                   <div className="relative w-24 h-16 rounded-lg overflow-hidden border">
-                    <img src={preview} alt="Vista previa" className="object-contain w-full h-full" />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-1 right-1 h-5 w-5"
-                      onClick={removeImage}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+                    <img src={preview} alt="Vista previa" className="object-contain w-full h-full" draggable="false" />
                   </div>
                 ) : (
                   <div className="w-24 h-16 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">

@@ -84,7 +84,7 @@ function BarraLateralAdmin() {
     >
       <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20">
         <Link href="/" className={cn('relative h-10 w-10 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
-            <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" />
+            <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" draggable="false" />
         </Link>
         <div className={cn('flex flex-col', { 'hidden': estaCerrada })}>
             <span className="font-bold text-lg">DigiCar</span>
