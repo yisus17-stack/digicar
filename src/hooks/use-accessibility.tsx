@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
@@ -78,37 +77,70 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setLocalStorageItem('accessibility-textToSpeech', textToSpeech);
     const synth = window.speechSynthesis;
+    let currentlySpeaking: HTMLElement | null = null;
+    let speechTimeout: NodeJS.Timeout;
+
     if (!textToSpeech || !synth) {
-        synth?.cancel();
-        return;
+      synth?.cancel();
+      return;
     }
 
-    const handleMouseOver = (event: MouseEvent) => {
-        const target = event.target as HTMLElement;
-        const text = target.innerText || target.getAttribute('aria-label');
-        if (text) {
-            synth.cancel(); // Detiene cualquier lectura anterior
-            const utterance = new SpeechSynthesisUtterance(text);
+    const cleanText = (text: string | null) => {
+        return text?.replace(/\s\s+/g, ' ').trim() || '';
+    }
+
+    const speak = (target: HTMLElement | null) => {
+        if (!target || target === currentlySpeaking) return;
+
+        let textToRead = target.getAttribute('aria-label') || target.getAttribute('title');
+
+        if (!textToRead) {
+            const children = Array.from(target.childNodes);
+            const textNodes = children.filter(node => node.nodeType === Node.TEXT_NODE);
+            if (textNodes.length > 0 && children.every(node => node.nodeType === Node.TEXT_NODE || (node as HTMLElement).tagName !== 'DIV')) {
+                textToRead = target.textContent;
+            } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'].includes(target.tagName)) {
+                textToRead = target.textContent;
+            }
+        }
+        
+        const cleanedText = cleanText(textToRead);
+        
+        if (cleanedText) {
+            synth.cancel();
+            currentlySpeaking = target;
+            const utterance = new SpeechSynthesisUtterance(cleanedText);
             utterance.lang = 'es-MX';
+            utterance.onend = () => {
+                currentlySpeaking = null;
+            };
             synth.speak(utterance);
         }
+    }
+
+    const handleEvent = (event: Event) => {
+        clearTimeout(speechTimeout);
+        speechTimeout = setTimeout(() => {
+            speak(event.target as HTMLElement);
+        }, 150); // Pequeño delay para evitar lecturas accidentales al mover el mouse rápido
     };
-    
+
     const handleMouseOut = () => {
-        synth.cancel();
+      clearTimeout(speechTimeout);
+      synth.cancel();
+      currentlySpeaking = null;
     };
 
-    document.body.addEventListener('mouseover', handleMouseOver);
+    document.body.addEventListener('mouseover', handleEvent);
+    document.body.addEventListener('focusin', handleEvent); // Usar focusin para capturar el foco en elementos hijos
     document.body.addEventListener('mouseout', handleMouseOut);
-    document.body.addEventListener('focus', handleMouseOver as any, true); // Use focusin para burbujeo
-    document.body.addEventListener('blur', handleMouseOut, true);
-
+    document.body.addEventListener('focusout', handleMouseOut);
 
     return () => {
-        document.body.removeEventListener('mouseover', handleMouseOver);
+        document.body.removeEventListener('mouseover', handleEvent);
+        document.body.removeEventListener('focusin', handleEvent);
         document.body.removeEventListener('mouseout', handleMouseOut);
-        document.body.removeEventListener('focus', handleMouseOver as any, true);
-        document.body.removeEventListener('blur', handleMouseOut, true);
+        document.body.removeEventListener('focusout', handleMouseOut);
         synth.cancel();
     };
   }, [textToSpeech]);
