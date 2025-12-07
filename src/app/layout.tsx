@@ -18,7 +18,7 @@ import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
-function AppContent({ children, fontClassName }: { children: React.ReactNode, fontClassName: string }) {
+function AppContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
 
@@ -28,11 +28,11 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div id="main-content-wrapper" className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
+    <>
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
-    </div>
+    </>
   );
 }
 
@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      <body>
+      <body className={cn(poppins.variable, 'font-sans')}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -70,8 +70,8 @@ export default function RootLayout({
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
-              <div id="main-content-wrapper">
-                <AppContent fontClassName={poppins.className}>{children}</AppContent>
+              <div id="main-content-wrapper" className="relative flex min-h-screen flex-col">
+                <AppContent>{children}</AppContent>
               </div>
               <AccessibilityToolbar fontClassName={poppins.className} />
             </AccessibilityProvider>
