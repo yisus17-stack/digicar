@@ -227,7 +227,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text(splitDisclaimer, 15, finalY, {align: 'justify'});
+    doc.text(splitDisclaimer, 15, finalY);
 
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
