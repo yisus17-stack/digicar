@@ -76,7 +76,6 @@ export function useAccessibilityState(): AccessibilityState {
   };
   
   useEffect(() => {
-    const mainContentWrapper = document.getElementById('main-content-wrapper');
     const htmlElement = document.documentElement;
     const body = document.body;
     
@@ -87,15 +86,13 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
-    body.dataset.textMagnifier = String(textMagnifier);
-    body.dataset.readingMask = String(readingMask);
-    body.dataset.highlightOnHover = String(highlightOnHover);
     
+    const mainContentWrapper = document.getElementById('main-content-wrapper');
     if (mainContentWrapper) {
       mainContentWrapper.dataset.grayscale = String(grayscale);
     }
     
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask, highlightOnHover]);
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -131,45 +128,40 @@ export function useAccessibilityState(): AccessibilityState {
         speechSynthesis.speak(utterance);
     };
 
-    const handleMouseOver = (event: MouseEvent) => {
+    const handleEvent = (event: MouseEvent | FocusEvent) => {
       const target = event.target as HTMLElement;
-      const validTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI'];
-      if (validTags.includes(target.tagName) && target.textContent) {
-        speak(target.textContent.trim());
+      
+      const isInteractiveElement = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName);
+      const isReadableContent = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'SPAN', 'LI'].includes(target.tagName);
+      
+      if (isInteractiveElement && event.type === 'focusin') {
+        // No leer el contenido de los inputs para no interferir con la escritura
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+
+        const textToSpeak = target.getAttribute('aria-label') || target.textContent;
+        if (textToSpeak) {
+            speak(textToSpeak.trim());
+        }
+      } else if (isReadableContent && event.type === 'mouseover') {
+         if (target.textContent) {
+            speak(target.textContent.trim());
+         }
       }
     };
 
-    const handleFocus = (event: FocusEvent) => {
-        const target = event.target as HTMLElement;
-        const validTags = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'];
-        if (validTags.includes(target.tagName)) {
-            const textToSpeak = target.getAttribute('aria-label') || target.textContent;
-            if (textToSpeak) {
-                speak(textToSpeak.trim());
-            }
-        }
-    };
-
-    const handleMouseOut = () => {
-      speechSynthesis.cancel();
-    };
-
     if (textToSpeech) {
-      document.body.addEventListener('mouseover', handleMouseOver);
-      document.body.addEventListener('mouseout', handleMouseOut);
-      document.body.addEventListener('focusin', handleFocus);
+      document.body.addEventListener('mouseover', handleEvent);
+      document.body.addEventListener('focusin', handleEvent);
     } else {
       speechSynthesis.cancel();
-      document.body.removeEventListener('mouseover', handleMouseOver);
-      document.body.removeEventListener('mouseout', handleMouseOut);
-      document.body.removeEventListener('focusin', handleFocus);
+      document.body.removeEventListener('mouseover', handleEvent);
+      document.body.removeEventListener('focusin', handleEvent);
     }
 
     return () => {
       speechSynthesis.cancel();
-      document.body.removeEventListener('mouseover', handleMouseOver);
-      document.body.removeEventListener('mouseout', handleMouseOut);
-      document.body.removeEventListener('focusin', handleFocus);
+      document.body.removeEventListener('mouseover', handleEvent);
+      document.body.removeEventListener('focusin', handleEvent);
     };
   }, [textToSpeech, selectedVoice]);
 
