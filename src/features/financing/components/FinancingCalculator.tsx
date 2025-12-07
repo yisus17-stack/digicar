@@ -16,7 +16,7 @@ import 'jspdf-autotable';
 import { Loader2, Download } from 'lucide-react';
 import { useUser } from '@/firebase';
 
-const INTEREST_RATE = 0.12; // Tasa de interés anual fija del 12%
+const INTEREST_RATE = 0.12;
 
 interface FinancingCalculatorProps {
   allCars: Car[];
@@ -117,7 +117,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cotización de Financiamiento', 15, 20);
+    doc.text('Cotización de Financiamiento de Digicar', 15, 20);
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
@@ -139,7 +139,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     if(carImage) {
         const imageBase64 = await getImageBase64(carImage);
         if (imageBase64) {
-            doc.addImage(imageBase64, 'PNG', 15, currentY, 80, 50, '', 'FAST');
+            doc.addImage(imageBase64, 'PNG', 15, currentY, 80, 0, '', 'FAST');
         }
     }
     
