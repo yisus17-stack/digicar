@@ -411,7 +411,7 @@ export default function PaginaPerfil() {
                 </CardHeader>
                 <CardContent>
                   {autosFavoritos.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {autosFavoritos.map(car => (
                         <div key={car.id} className="relative group">
                            <CarCard car={car} showFavoriteButton={false} />
