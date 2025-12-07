@@ -77,11 +77,10 @@ export function useAccessibilityState(): AccessibilityState {
   
   useEffect(() => {
     const mainContentWrapper = document.getElementById('main-content-wrapper');
+    const htmlElement = document.documentElement;
     const body = document.body;
-
-    if (mainContentWrapper) {
-      mainContentWrapper.dataset.fontSizeStep = String(fontSizeStep);
-    }
+    
+    htmlElement.dataset.fontSizeStep = String(fontSizeStep);
     
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
