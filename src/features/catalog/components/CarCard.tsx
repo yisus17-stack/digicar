@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
-import type { Car, Favorite } from '@/core/types';
+import type { Car, Favorite, Marca } from '@/core/types';
 import { Car as CarIcon, Heart, Loader2, Droplets, GitMerge, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -93,72 +93,65 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         href={`/catalogo/auto/${car.id}`}
         className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg"
       >
-        {/* Encabezado */}
-        <div className="flex justify-between items-start p-4">
-            <div className='flex-1'>
-                <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
-                 <p className="text-sm text-muted-foreground">
-                    {car.anio} • {car.tipo}
-                </p>
-            </div>
-          {showFavoriteButton && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleToggleFavorite}
-              disabled={isUpdating || loadingUser || loadingFavorites}
-              className="h-8 w-8 rounded-full flex-shrink-0 text-muted-foreground hover:text-primary z-20 transition-colors group-hover:text-primary"
-            >
-              {isUpdating ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
-              )}
-              <span className="sr-only">Añadir a favoritos</span>
-            </Button>
-          )}
-        </div>
-        
-        {/* Contenedor de Imagen */}
-        <div className="my-auto flex h-48 w-full items-center justify-center py-4 px-4">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={`${car.marca} ${car.modelo}`}
-              width={300}
-              height={300}
-              className="h-auto max-h-full w-auto object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
-              draggable="false"
-            />
-          ) : (
-            <CarIcon className="h-12 w-12 text-muted-foreground" />
-          )}
-        </div>
-        
-        {/* Superposición Azul Interactiva */}
-        <div className="absolute bottom-0 left-0 right-0 h-2/5 translate-y-full rounded-b-lg bg-gradient-to-t from-primary/90 to-primary/80 backdrop-blur-sm transition-all duration-500 ease-in-out group-hover:translate-y-0">
-          <div className="flex h-full flex-col justify-center items-center p-4 text-primary-foreground">
-              <div className="flex w-full justify-around items-center text-sm">
-                {specs.map((spec, index) => (
-                  <div key={index} className="flex items-center gap-1.5 opacity-0 transition-opacity duration-300 delay-200 group-hover:opacity-100">
-                    <spec.icon className="h-4 w-4" />
-                    <span className="font-medium">{spec.value}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 text-center opacity-0 transition-opacity duration-300 delay-300 group-hover:opacity-100">
-                  <p className="text-2xl font-bold tracking-tight">
-                      ${price.toLocaleString('es-MX')}
+        <div className="flex flex-col flex-grow p-4">
+          {/* Encabezado */}
+          <div className="flex justify-between items-start">
+              <div className='flex-1'>
+                  <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
+                  <p className="text-sm text-muted-foreground">
+                      {car.anio} • {car.tipo}
                   </p>
               </div>
+            {showFavoriteButton && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleToggleFavorite}
+                disabled={isUpdating || loadingUser || loadingFavorites}
+                className="h-8 w-8 rounded-full flex-shrink-0 text-muted-foreground hover:text-primary z-20 transition-colors"
+              >
+                {isUpdating ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
+                )}
+                <span className="sr-only">Añadir a favoritos</span>
+              </Button>
+            )}
+          </div>
+          
+          {/* Contenedor de Imagen */}
+          <div className="my-auto flex flex-grow items-center justify-center py-4">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={`${car.marca} ${car.modelo}`}
+                width={300}
+                height={200}
+                className="h-auto max-h-48 w-auto object-contain transition-transform duration-500 ease-in-out group-hover:scale-105"
+                draggable="false"
+              />
+            ) : (
+              <CarIcon className="h-12 w-12 text-muted-foreground" />
+            )}
           </div>
         </div>
-
-        {/* Precio visible por defecto (oculto en hover) */}
-        <div className="p-4 mt-auto transition-opacity duration-300 group-hover:opacity-0">
-          <p className="text-xl font-bold text-foreground">
-            ${price.toLocaleString('es-MX')}
-          </p>
+        
+        {/* Pie de tarjeta azul */}
+        <div className="rounded-b-lg bg-primary p-4 text-primary-foreground">
+            <div className="flex w-full justify-around items-center text-sm mb-3">
+              {specs.map((spec, index) => (
+                <div key={index} className="flex items-center gap-1.5">
+                  <spec.icon className="h-4 w-4" />
+                  <span className="font-medium">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+                <p className="text-2xl font-bold tracking-tight">
+                    ${price.toLocaleString('es-MX')}
+                </p>
+            </div>
         </div>
       </Link>
   );
