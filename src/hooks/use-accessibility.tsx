@@ -102,6 +102,8 @@ export function useAccessibilityState(): AccessibilityState {
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
         const spanishVoice = 
+          voices.find(v => v.lang === 'es-MX' && v.name.includes('Natural')) ||
+          voices.find(v => v.lang === 'es-MX') ||
           voices.find(v => v.lang.startsWith('es') && v.name.includes('Microsoft') && v.name.includes('(Natural)')) ||
           voices.find(v => v.lang.startsWith('es') && v.name.includes('Google')) ||
           voices.find(v => v.lang.startsWith('es') && v.localService === false) ||
