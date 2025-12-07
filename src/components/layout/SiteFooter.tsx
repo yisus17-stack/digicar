@@ -17,12 +17,21 @@ const SiteFooter = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex-shrink-0">
             <Link href="/">
-              <Image 
-                src="/logo.svg" 
-                alt="DigiCar Logo" 
-                width={120} 
-                height={40} 
-                draggable="false" 
+              <Image
+                src="/logo.svg"
+                alt="DigiCar Logo"
+                width={120}
+                height={40}
+                draggable="false"
+                className="dark:hidden"
+              />
+              <Image
+                src="/logo-white.svg"
+                alt="DigiCar Logo"
+                width={120}
+                height={40}
+                draggable="false"
+                className="hidden dark:block"
               />
             </Link>
           </div>
