@@ -23,7 +23,8 @@ export interface AccessibilityState {
   highlightOnHover: boolean;
   setHighlightOnHover: (value: boolean) => void;
   fontSizeStep: 0 | 1 | 2;
-  cycleFontSize: () => void;
+  increaseFontSize: () => void;
+  decreaseFontSize: () => void;
   textSpacing: 0 | 1 | 2;
   setTextSpacing: (value: 0 | 1 | 2) => void;
   resetAccessibility: () => void;
@@ -52,8 +53,12 @@ export function useAccessibilityState(): AccessibilityState {
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
 
-  const cycleFontSize = () => {
-    setFontSizeStep(prev => (prev + 1) % 3 as 0 | 1 | 2);
+  const increaseFontSize = () => {
+    setFontSizeStep(prev => (prev < 2 ? prev + 1 : 2) as 0 | 1 | 2);
+  };
+
+  const decreaseFontSize = () => {
+    setFontSizeStep(prev => (prev > 0 ? prev - 1 : 0) as 0 | 1 | 2);
   };
 
   const resetAccessibility = () => {
@@ -104,7 +109,9 @@ export function useAccessibilityState(): AccessibilityState {
     textMagnifier, setTextMagnifier,
     readingMask, setReadingMask,
     highlightOnHover, setHighlightOnHover,
-    fontSizeStep, cycleFontSize,
+    fontSizeStep,
+    increaseFontSize,
+    decreaseFontSize,
     textSpacing, setTextSpacing,
     resetAccessibility,
   };

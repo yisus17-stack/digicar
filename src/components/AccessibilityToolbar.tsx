@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -35,18 +34,21 @@ const ToolButton = ({
   isActive,
   children,
   className,
+  disabled,
 }: {
   label: string;
   onClick: () => void;
   isActive: boolean;
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }) => (
   <button
     onClick={onClick}
     aria-pressed={isActive}
+    disabled={disabled}
     className={cn(
-      'flex flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors text-center w-full aspect-square',
+      'flex flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors text-center w-full aspect-square disabled:opacity-50 disabled:cursor-not-allowed',
       isActive
         ? 'bg-primary text-primary-foreground border-primary'
         : 'bg-card hover:bg-muted border-border',
@@ -75,7 +77,8 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     textMagnifier,
     readingMask,
     highlightOnHover,
-    cycleFontSize,
+    increaseFontSize,
+    decreaseFontSize,
     setHighContrast,
     setGrayscale,
     setUnderlineLinks,
@@ -112,13 +115,6 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     if (textSpacing === 0) return 'Espaciado de Texto';
     if (textSpacing === 1) return 'Espaciado x1.6';
     if (textSpacing === 2) return 'Espaciado x1.8';
-  }
-
-  const getFontSizeLabel = () => {
-    if (fontSizeStep === 0) return 'Tamaño de Texto';
-    if (fontSizeStep === 1) return 'Texto Mediano';
-    if (fontSizeStep === 2) return 'Texto Grande';
-    return 'Tamaño de Texto';
   }
 
   const handleReset = () => {
@@ -180,23 +176,12 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                     <div>
                         <SectionTitle>Ajustes de Contenido</SectionTitle>
                         <div className="grid grid-cols-3 gap-3">
-                             <button
-                                onClick={cycleFontSize}
-                                aria-pressed={fontSizeStep > 0}
-                                className={cn(
-                                'flex flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors text-center w-full aspect-square',
-                                fontSizeStep > 0
-                                    ? 'bg-primary text-primary-foreground border-primary'
-                                    : 'bg-card hover:bg-muted border-border'
-                                )}
-                            >
+                             <ToolButton label="Aumentar Texto" onClick={increaseFontSize} isActive={fontSizeStep > 0} disabled={fontSizeStep === 2}>
                                 <ZoomIn className="h-7 w-7" />
-                                <span className="text-xs font-medium">{getFontSizeLabel()}</span>
-                                <div className="flex items-end gap-1 pt-1 h-3">
-                                    <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? (fontSizeStep > 0 ? "bg-primary-foreground": "bg-gray-300") : "bg-gray-400")} />
-                                    <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? (fontSizeStep > 0 ? "bg-primary-foreground": "bg-gray-300") : "bg-gray-400")} />
-                                </div>
-                            </button>
+                             </ToolButton>
+                              <ToolButton label="Disminuir Texto" onClick={decreaseFontSize} isActive={false} disabled={fontSizeStep === 0}>
+                                <ZoomOut className="h-7 w-7" />
+                             </ToolButton>
                              <ToolButton label="Lupa de Texto" onClick={() => setTextMagnifier(!textMagnifier)} isActive={textMagnifier}>
                                 <ZoomIn className="h-7 w-7" />
                             </ToolButton>
