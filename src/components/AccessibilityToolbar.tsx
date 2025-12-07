@@ -15,6 +15,7 @@ import {
     ImageOff,
     Heading1,
     Baseline,
+    ZoomOut,
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
@@ -101,8 +102,8 @@ export function AccessibilityToolbar() {
 
   const getTextSpacingLabel = () => {
     if (textSpacing === 0) return 'Espaciado de Texto';
-    if (textSpacing === 1) return 'Espaciado x1.5';
-    if (textSpacing === 2) return 'Espaciado x2.0';
+    if (textSpacing === 1) return 'Espaciado x1.6';
+    if (textSpacing === 2) return 'Espaciado x1.8';
   }
 
   const getFontSizeLabel = () => {
@@ -117,7 +118,7 @@ export function AccessibilityToolbar() {
   }
 
   const toolbarContent = (
-    <>
+    <div className="accessibility-panel-wrapper">
       {!isOpen && (
         <div className="fixed bottom-4 left-4 z-50">
           <Button
@@ -152,13 +153,13 @@ export function AccessibilityToolbar() {
                     <div>
                         <SectionTitle>Ajustes de Contenido</SectionTitle>
                         <div className="grid grid-cols-3 gap-3">
-                            <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
-                                <div className="flex flex-col items-center justify-center h-full">
+                             <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
+                                <div className="flex flex-col items-center justify-center h-full gap-2">
                                    <ZoomIn className="h-7 w-7" />
-                                   <div className="flex items-center gap-1.5 mt-2">
-                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-500/50")} />
-                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
-                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 3 ? "bg-primary-foreground" : "bg-gray-500/50")} />
+                                   <div className="flex items-end gap-1">
+                                        <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-500/50")} />
+                                        <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
+                                        <div className={cn("w-2 h-4 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
                                    </div>
                                 </div>
                             </ToolButton>
@@ -214,7 +215,7 @@ export function AccessibilityToolbar() {
             </div>
         </div>
       )}
-    </>
+    </div>
   );
 
   const portalContainer = document.getElementById('accessibility-portal');
