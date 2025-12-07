@@ -111,6 +111,13 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     return 'Tamaño de Texto';
   }
 
+  const handleReset = () => {
+    resetAccessibility();
+    if (theme !== 'light') {
+      setTheme('light');
+    }
+  }
+
   if (!isMounted) {
     return null;
   }
@@ -208,12 +215,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                      <Button
                         variant="outline"
                         className="w-full"
-                        onClick={() => {
-                            resetAccessibility();
-                            if (theme !== 'light') {
-                                setTheme('light');
-                            }
-                        }}
+                        onClick={handleReset}
                       >
                         <CircleSlash className="mr-2 h-4 w-4" />
                         Restablecer todo
