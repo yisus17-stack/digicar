@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -96,6 +95,40 @@ export function useAccessibilityState(): AccessibilityState {
     }
     
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask, highlightOnHover]);
+
+  useEffect(() => {
+    const handleMouseOver = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const validTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI'];
+      if (validTags.includes(target.tagName) && target.textContent) {
+        const textToSpeak = target.textContent.trim();
+        if (textToSpeak) {
+          speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(textToSpeak);
+          speechSynthesis.speak(utterance);
+        }
+      }
+    };
+
+    const handleMouseOut = () => {
+      speechSynthesis.cancel();
+    };
+
+    if (textToSpeech) {
+      document.body.addEventListener('mouseover', handleMouseOver);
+      document.body.addEventListener('mouseout', handleMouseOut);
+    } else {
+      speechSynthesis.cancel();
+      document.body.removeEventListener('mouseover', handleMouseOver);
+      document.body.removeEventListener('mouseout', handleMouseOut);
+    }
+
+    return () => {
+      speechSynthesis.cancel();
+      document.body.removeEventListener('mouseover', handleMouseOver);
+      document.body.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, [textToSpeech]);
 
 
   return {
