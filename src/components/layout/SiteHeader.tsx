@@ -260,17 +260,34 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                       </SheetTrigger>
                       <SheetContent side="right" className="w-4/5">
                       <SheetHeader>
-                          <SheetTitle>
-                              <Link href="/" className="flex items-center gap-2">
-                                  <Image 
-                                    src="/digicar-logo-blanco.png" 
-                                    alt="DigiCar Logo" 
-                                    width={150} 
-                                    height={50} 
-                                    draggable="false"
-                                  />
-                              </Link>
-                          </SheetTitle>
+                        <SheetTitle>
+                          <Link href="/" className="flex items-center space-x-2">
+                            <Image
+                              src="/digicar-logo.png"
+                              alt="DigiCar Logo"
+                              width={150}
+                              height={50}
+                              draggable="false"
+                              className="block dark:hidden high-contrast-hidden"
+                            />
+                            <Image
+                              src="/digicar-logo-blanco.png"
+                              alt="DigiCar Logo"
+                              width={150}
+                              height={50}
+                              draggable="false"
+                              className="hidden dark:block high-contrast-hidden"
+                            />
+                            <Image
+                              src="/digicar-logo-contraste.png"
+                              alt="DigiCar Logo de Alto Contraste"
+                              width={150}
+                              height={50}
+                              draggable="false"
+                              className="hidden high-contrast-block"
+                            />
+                          </Link>
+                        </SheetTitle>
                       </SheetHeader>
                       <div className="mt-6">
                           <nav className="flex flex-col space-y-4">
