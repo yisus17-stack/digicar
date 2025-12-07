@@ -139,7 +139,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cotización de Financiamiento de Digicar', 15, 20);
+    doc.text('Cotización de Financiamiento', 15, 20);
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
@@ -220,7 +220,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.text(`$ ${monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
     doc.setTextColor(0);
 
-    finalY += 25;
+    finalY = (doc as any).lastAutoTable.finalY + 25;
 
     const disclaimer = `*Este documento es una cotización preliminar de DigiCar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del ${(INTEREST_RATE * 100).toFixed(0)}%.`;
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
