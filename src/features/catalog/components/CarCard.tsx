@@ -1,12 +1,13 @@
+
 'use client';
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useFirestore, useUser, useDoc, useMemoFirebase, useCollection } from '@/firebase';
-import { doc, updateDoc, arrayUnion, arrayRemove, setDoc, collection } from 'firebase/firestore';
-import type { Car, Favorite, FavoriteItem, Marca } from '@/core/types';
+import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
+import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
+import type { Car, Favorite, FavoriteItem } from '@/core/types';
 import { Car as CarIcon, Heart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,9 +29,6 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   const refFavoritos = useMemoFirebase(() => user ? doc(firestore, 'favoritos', user.uid) : null, [user, firestore]);
   const { data: favoritos, isLoading: loadingFavorites } = useDoc<Favorite>(refFavoritos);
 
-  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
-  const { data: marcas, isLoading: loadingMarcas } = useCollection<Marca>(coleccionMarcas);
-
   const displayVariant = useMemo(() => {
     if (preselectedVariantId) {
       return car.variantes?.find(v => v.id === preselectedVariantId) ?? car.variantes?.[0];
@@ -46,12 +44,6 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
     const isFav = favoritos.items.some(item => item.autoId === car.id && item.varianteId === displayVariant.id);
     setIsFavorite(isFav);
   }, [favoritos, car.id, displayVariant]);
-
-  const brandLogoUrl = useMemo(() => {
-    if (!marcas) return null;
-    const brand = marcas.find(b => b.nombre === car.marca);
-    return brand?.logoUrl || null;
-  }, [car.marca, marcas]);
 
   if (!car) {
     return null;
@@ -96,21 +88,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
       >
         <div className="flex justify-between items-start">
-            <div className="flex items-center gap-3">
-                <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
-                {brandLogoUrl && (
-                <div className="relative h-5 w-14 flex-shrink-0">
-                    <Image
-                        src={brandLogoUrl}
-                        alt={`${car.marca} logo`}
-                        fill
-                        className="object-contain"
-                        draggable="false"
-                    />
-                </div>
-            )}
-            </div>
-            
+            <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
           {showFavoriteButton && (
             <Button
               variant="ghost"
@@ -149,7 +127,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         </div>
 
         <div className="flex items-end justify-between mt-auto">
-          <p className="text-2xl font-bold">
+          <p className="text-2xl font-bold text-primary">
             ${price.toLocaleString('es-MX')}
           </p>
         </div>
