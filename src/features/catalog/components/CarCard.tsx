@@ -14,9 +14,10 @@ import { Button } from '@/components/ui/button';
 
 interface CarCardProps {
   car: Car;
+  showFavoriteButton?: boolean;
 }
 
-export default function CarCard({ car }: CarCardProps) {
+export default function CarCard({ car, showFavoriteButton = true }: CarCardProps) {
   const { user, loading: loadingUser } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -106,20 +107,22 @@ export default function CarCard({ car }: CarCardProps) {
         </div>
       </Link>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={handleToggleFavorite}
-        disabled={isUpdating || loadingUser || loadingFavorites}
-        className="absolute top-3 right-3 z-10 rounded-full bg-background/60 p-2 text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary hover:bg-background h-9 w-9"
-      >
-        {isUpdating ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
-        )}
-        <span className="sr-only">Añadir a favoritos</span>
-      </Button>
+      {showFavoriteButton && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleToggleFavorite}
+          disabled={isUpdating || loadingUser || loadingFavorites}
+          className="absolute top-3 right-3 z-10 rounded-full bg-background/60 p-2 text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary hover:bg-background h-9 w-9"
+        >
+          {isUpdating ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
+          )}
+          <span className="sr-only">Añadir a favoritos</span>
+        </Button>
+      )}
     </div>
   );
 }

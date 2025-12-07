@@ -414,7 +414,7 @@ export default function PaginaPerfil() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {autosFavoritos.map(car => (
                         <div key={car.id} className="relative group">
-                           <CarCard car={car} />
+                           <CarCard car={car} showFavoriteButton={false} />
                            <Button 
                              variant="destructive" 
                              size="icon" 
