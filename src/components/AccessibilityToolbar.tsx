@@ -139,10 +139,13 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
       )}
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in-50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" data-state={isOpen ? 'open' : 'closed'}>
             <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
             
-            <div className="absolute top-0 left-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-left duration-500">
+            <div 
+              className="absolute top-0 left-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-left-52 duration-300 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left-52"
+              data-state={isOpen ? 'open' : 'closed'}
+            >
                 <header className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-xl font-bold">Panel de Accesibilidad</h2>
                 <Button
