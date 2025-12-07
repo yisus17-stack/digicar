@@ -27,7 +27,7 @@
     --radius: 0.5rem;
   }
  
-  .dark {
+  .dark #main-content-wrapper {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -49,7 +49,7 @@
     --ring: 212.7 26.8% 83.9%;
   }
 
-  body[data-high-contrast='true'] {
+  body[data-high-contrast='true'] #main-content-wrapper {
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
     --card: 0 0% 100%;
@@ -71,7 +71,7 @@
     --ring: 240 100% 50%;
   }
 
-  body[data-high-contrast='true'].dark {
+  body[data-high-contrast='true'].dark #main-content-wrapper {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --card: 0 0% 0%;

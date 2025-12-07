@@ -20,6 +20,7 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 function AppContent({ children, fontClassName }: { children: React.ReactNode, fontClassName: string }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
+  const { grayscale } = useAccessibilityState();
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const isAdminPage = pathname.startsWith('/admin');
@@ -27,7 +28,11 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div id="main-content-wrapper" className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
+    <div 
+      id="main-content-wrapper" 
+      className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}
+      data-grayscale={grayscale}
+    >
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
@@ -38,7 +43,6 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
 function AccessibilityProvider({ children }: { children: ReactNode }) {
   const accessibilityState = useAccessibilityState();
   const {
-    grayscale,
     highContrast,
     fontSizeStep,
     highlightTitles,
@@ -56,13 +60,9 @@ function AccessibilityProvider({ children }: { children: ReactNode }) {
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
     
-    // Apply grayscale to the main content wrapper instead of body
-    const mainContent = document.getElementById('main-content-wrapper');
-    if (mainContent) {
-      mainContent.dataset.grayscale = String(grayscale);
-    }
-
-  }, [grayscale, highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing]);
+    // Grayscale se maneja en AppContent para aislar el panel.
+    // El tema (dark/light) se maneja con ThemeProvider.
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing]);
 
   return (
     <AccessibilityContext.Provider value={accessibilityState}>
@@ -86,6 +86,10 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
+          value={{
+            light: 'light',
+            dark: 'dark',
+          }}
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
