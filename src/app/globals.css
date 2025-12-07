@@ -100,6 +100,16 @@
     filter: grayscale(100%); 
   }
 
+  #main-content-wrapper[data-invert-colors='true'] {
+    filter: invert(100%);
+  }
+
+  #main-content-wrapper[data-invert-colors='true'] img,
+  #main-content-wrapper[data-invert-colors='true'] [class*="bg-"],
+  #main-content-wrapper[data-invert-colors='true'] [style*="background-image"] {
+    filter: invert(100%);
+  }
+
   body[data-underline-links='true'] #main-content-wrapper a {
     text-decoration: underline !important;
   }
