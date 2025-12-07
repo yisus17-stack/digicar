@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
-import type { Car } from '@/core/types';
+import { useState, useMemo, useEffect } from 'react';
+import type { Car, CarVariant } from '@/core/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -32,6 +32,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   const [step, setStep] = useState(1);
   const [monthlyBudget, setMonthlyBudget] = useState(5000);
   const [selectedCarId, setSelectedCarId] = useState<string | undefined>(undefined);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | undefined>(undefined);
   const [downPayment, setDownPayment] = useState(200000);
   const [term, setTerm] = useState(24);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -47,10 +48,29 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     return allCars.find(c => c.id === selectedCarId);
   }, [selectedCarId, allCars]);
 
+  const selectedVariant = useMemo(() => {
+    if (!selectedCar || !selectedCar.variantes || selectedCar.variantes.length === 0) return null;
+    if (selectedVariantId) {
+      return selectedCar.variantes.find(v => v.id === selectedVariantId);
+    }
+    // Si no hay variante seleccionada, por defecto la primera
+    return selectedCar.variantes[0];
+  }, [selectedCar, selectedVariantId]);
+
   const carPrice = useMemo(() => {
-    if (!selectedCar) return 0;
-    return selectedCar.variantes?.[0]?.precio ?? selectedCar.precio ?? 0;
+    if (selectedVariant) return selectedVariant.precio;
+    if (selectedCar) return selectedCar.variantes?.[0]?.precio ?? selectedCar.precio ?? 0;
+    return 0;
+  }, [selectedCar, selectedVariant]);
+  
+  useEffect(() => {
+    if (selectedCar && selectedCar.variantes && selectedCar.variantes.length > 0) {
+      setSelectedVariantId(selectedCar.variantes[0].id);
+    } else {
+      setSelectedVariantId(undefined);
+    }
   }, [selectedCar]);
+
 
   const maxDownPayment = useMemo(() => carPrice > 0 ? carPrice * 0.9 : 500000, [carPrice]);
 
@@ -71,12 +91,14 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     const car = allCars.find(c => c.id === id);
     const price = car?.variantes?.[0]?.precio ?? car?.precio ?? 0;
     setDownPayment(price * 0.2);
+    // Reset variant when car changes
+    setSelectedVariantId(car?.variantes?.[0]?.id);
   };
 
   const handleNextStep = () => setStep(prev => prev + 1);
   const handlePrevStep = () => setStep(prev => prev - 1);
 
-  const carImage = selectedCar?.variantes?.[0]?.imagenUrl ?? selectedCar?.imagenUrl;
+  const carImage = selectedVariant?.imagenUrl ?? selectedCar?.variantes?.[0]?.imagenUrl ?? selectedCar?.imagenUrl;
 
   const isWithinBudget = (car: Car) => {
     const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
@@ -163,7 +185,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
             ['Transmisión', selectedCar.transmision],
             ['Cilindros', `${selectedCar.cilindrosMotor}`],
             ['Pasajeros', `${selectedCar.pasajeros}`],
-            ['Color', selectedCar.variantes?.[0]?.color ?? '-'],
+            ['Color', selectedVariant?.color ?? selectedCar.variantes?.[0]?.color ?? '-'],
         ],
         theme: 'grid',
         headStyles: { fillColor: [244, 244, 245] , textColor: [20, 20, 20] },
@@ -200,12 +222,12 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
 
     finalY += 25;
 
-    const disclaimer = '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.';
+    const disclaimer = `*Este documento es una cotización preliminar de DigiCar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del ${(INTEREST_RATE * 100).toFixed(0)}%.`;
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
     
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text(splitDisclaimer, 15, finalY);
+    doc.text(splitDisclaimer, 15, finalY, {align: 'justify'});
 
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
@@ -248,38 +270,61 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
         {step === 2 && (
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start animate-in fade-in-50 duration-500">
                 <div className="lg:col-span-2 space-y-6 sticky top-24">
-                    <Select onValueChange={handleCarChange} value={selectedCarId}>
-                        <SelectTrigger className="w-full h-12 text-base">
-                            <SelectValue placeholder="Selecciona un auto" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {suggestedCars.map(car => {
-                                const variant = car.variantes?.[0];
-                                const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
-                                const inBudget = isWithinBudget(car);
-                                return (
-                                    <SelectItem key={car.id} value={car.id}>
-                                        <div className="flex items-center gap-3">
-                                            {imageUrl && (
-                                                <div className="relative h-10 w-10 flex-shrink-0">
-                                                    <Image
-                                                        src={imageUrl}
-                                                        alt={car.modelo}
-                                                        fill
-                                                        className="rounded-md object-contain"
-                                                    />
+                    <div className='space-y-2'>
+                        <Label>1. Selecciona un vehículo</Label>
+                        <Select onValueChange={handleCarChange} value={selectedCarId}>
+                            <SelectTrigger className="w-full h-12 text-base">
+                                <SelectValue placeholder="Selecciona un auto" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {suggestedCars.map(car => {
+                                    const variant = car.variantes?.[0];
+                                    const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
+                                    const inBudget = isWithinBudget(car);
+                                    return (
+                                        <SelectItem key={car.id} value={car.id}>
+                                            <div className="flex items-center gap-3">
+                                                {imageUrl && (
+                                                    <div className="relative h-10 w-10 flex-shrink-0">
+                                                        <Image
+                                                            src={imageUrl}
+                                                            alt={car.modelo}
+                                                            fill
+                                                            className="rounded-md object-contain"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="flex flex-col">
+                                                    <span>{car.marca} {car.modelo}</span>
+                                                    {inBudget && <span className="text-xs text-green-600 font-medium">Dentro de tu presupuesto</span>}
                                                 </div>
-                                            )}
-                                            <div className="flex flex-col">
-                                                <span>{car.marca} {car.modelo}</span>
-                                                {inBudget && <span className="text-xs text-green-600 font-medium">Dentro de tu presupuesto</span>}
                                             </div>
-                                        </div>
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectContent>
-                    </Select>
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {selectedCar && selectedCar.variantes && selectedCar.variantes.length > 1 && (
+                        <div className='space-y-2'>
+                             <Label>2. Selecciona un color</Label>
+                             <Select onValueChange={setSelectedVariantId} value={selectedVariantId}>
+                                <SelectTrigger className="w-full h-12 text-base">
+                                    <SelectValue placeholder="Selecciona un color" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {selectedCar.variantes.map(variant => (
+                                        <SelectItem key={variant.id} value={variant.id}>
+                                            {variant.color}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
+
+
                     <Card className="overflow-hidden">
                         <CardContent className="p-4">
                             <div className="aspect-[16/10] bg-white dark:bg-background rounded-lg flex items-center justify-center">
@@ -360,7 +405,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                     <CardTitle className="text-2xl">¡Este es tu plan!</CardTitle>
                 </CardHeader>
                 <CardContent className="p-8 space-y-8 text-center">
-                     <p className="text-muted-foreground">Tu pago mensual estimado para un {selectedCar?.marca} {selectedCar?.modelo} es:</p>
+                     <p className="text-muted-foreground">Tu pago mensual estimado para un {selectedCar?.marca} {selectedCar?.modelo} {selectedVariant?.color ? `color ${selectedVariant.color}` : ''} es:</p>
                     <p className="text-6xl font-bold text-primary tracking-tight mt-2">
                         $ {monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
