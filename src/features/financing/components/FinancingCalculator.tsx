@@ -113,15 +113,14 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
       }
     };
     
-    const digicarLogoUrl = '/icono-digicar.png';
-    const digicarLogoB64 = await getImageBase64(digicarLogoUrl);
-    if(digicarLogoB64) {
-      doc.addImage(digicarLogoB64, 'PNG', 15, 15, 20, 20);
-    }
-    
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cotización de Financiamiento', 40, 28);
+    doc.text('Cotización de Financiamiento', 15, 20);
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Aquí tienes un resumen detallado de tu plan de financiamiento personalizado.', 15, 28);
+
 
     if(carImage) {
         const imageBase64 = await getImageBase64(carImage);
