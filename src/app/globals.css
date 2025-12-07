@@ -129,11 +129,6 @@
     word-spacing: 0.2em;
     line-height: 1.8;
   }
-
-  .accessibility-panel-wrapper {
-    font-size: 16px !important;
-    line-height: normal !important;
-  }
 }
 
 @layer base {
@@ -148,4 +143,9 @@
     -webkit-appearance: none;
     appearance: none;
   }
+}
+
+.accessibility-panel-wrapper {
+  font-size: 16px !important;
+  line-height: normal !important;
 }
