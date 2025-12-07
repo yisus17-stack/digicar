@@ -8,9 +8,10 @@ import { Search, Award, GitCompareArrows } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import PopularCarsSection from '@/features/catalog/components/PopularCarsSection';
 import BrandLogos from '@/features/catalog/components/BrandLogos';
+import { useUser } from '@/firebase';
 
 
 const EsqueletoSeccionHero = () => {
@@ -36,6 +37,7 @@ const EsqueletoSeccionHero = () => {
 
 const SeccionHero = () => {
     const router = useRouter();
+    const { user, loading: loadingUser } = useUser();
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
     const manejarBusqueda = (e: React.FormEvent) => {
@@ -44,6 +46,19 @@ const SeccionHero = () => {
             router.push(`/catalogo?search=${encodeURIComponent(terminoBusqueda.trim())}`);
         }
     };
+    
+    const handleProtectedLinkClick = (e: MouseEvent<HTMLButtonElement>, href: string) => {
+        e.preventDefault();
+        if (loadingUser) {
+            return;
+        }
+        if (user) {
+            router.push(href);
+        } else {
+            router.push('/login');
+        }
+    }
+
 
     return (
         <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
@@ -78,10 +93,10 @@ const SeccionHero = () => {
                             <Award className="h-4 w-4" />
                             <span>Los más populares</span>
                         </Link>
-                         <Link href="/comparacion" className="flex items-center gap-2 hover:text-primary transition-colors">
+                         <button onClick={(e) => handleProtectedLinkClick(e, '/comparacion')} className="flex items-center gap-2 hover:text-primary transition-colors">
                             <GitCompareArrows className="h-4 w-4" />
                             <span>Comparar</span>
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
