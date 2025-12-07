@@ -85,7 +85,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   return (
       <Link
         href={`/catalogo/auto/${car.id}`}
-        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
+        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-muted/50 p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
       >
         <div className="flex justify-between items-start">
             <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
