@@ -61,7 +61,6 @@ export function useAccessibilityState(): AccessibilityState {
   useEffect(() => {
     const mainContentWrapper = document.getElementById('main-content-wrapper');
     const body = document.body;
-    const html = document.documentElement;
 
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
@@ -69,10 +68,9 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
     
-    html.dataset.fontSizeStep = String(fontSizeStep);
-
     if (mainContentWrapper) {
         mainContentWrapper.dataset.grayscale = String(grayscale);
+        mainContentWrapper.dataset.fontSizeStep = String(fontSizeStep);
     }
     
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
