@@ -12,24 +12,30 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/app/theme-provider';
-import { AccessibilityProvider } from '@/hooks/use-accessibility.tsx';
+import { AccessibilityProvider, useAccessibility } from '@/hooks/use-accessibility.tsx';
 import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
+import { useEffect } from 'react';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
-
-// Metadata no puede ser exportada desde un client component, pero la dejamos para referencia.
-// export const metadata: Metadata = {
-//   title: 'DigiCar',
-//   description: 'Explora, compara y simula tu próximo auto con DigiCar.',
-// };
 
 function AppContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
+  const { textToSpeech, speak } = useAccessibility();
+
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const isAdminPage = pathname.startsWith('/admin');
   const isLegalPage = pathname.startsWith('/legal');
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
+
+  useEffect(() => {
+    if (textToSpeech && speak) {
+      // Announce route changes
+      const pageName = pathname.split('/').filter(Boolean).pop() || 'inicio';
+      const friendlyPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1).replace('-', ' ');
+      speak(`Redirigiendo a ${friendlyPageName}`);
+    }
+  }, [pathname, textToSpeech, speak]);
 
   return (
     <div className="relative flex min-h-screen flex-col">

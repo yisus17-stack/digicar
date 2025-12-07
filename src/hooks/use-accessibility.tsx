@@ -1,6 +1,7 @@
+
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 type FontSizeStep = -2 | -1 | 0 | 1 | 2;
 
@@ -20,6 +21,7 @@ interface AccessibilityState {
   setReadableFont: (value: boolean) => void;
   setTextToSpeech: (value: boolean) => void;
   resetAccessibility: () => void;
+  speak: (text: string, lang?: string) => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityState | undefined>(undefined);
@@ -43,6 +45,15 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [underlineLinks, setUnderlineLinks] = useState<boolean>(() => getLocalStorageItem('accessibility-underlineLinks', false));
   const [readableFont, setReadableFont] = useState<boolean>(() => getLocalStorageItem('accessibility-readableFont', false));
   const [textToSpeech, setTextToSpeech] = useState<boolean>(() => getLocalStorageItem('accessibility-textToSpeech', false));
+
+  const speak = useCallback((text: string, lang = 'es-MX') => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    synth.speak(utterance);
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.contrast = highContrast ? 'true' : 'false';
@@ -77,9 +88,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setLocalStorageItem('accessibility-textToSpeech', textToSpeech);
     const synth = window.speechSynthesis;
-    let currentlySpeaking: HTMLElement | null = null;
-    let speechTimeout: NodeJS.Timeout;
-
+    
     if (!textToSpeech || !synth) {
       synth?.cancel();
       return;
@@ -89,50 +98,28 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         return text?.replace(/\s\s+/g, ' ').trim() || '';
     }
 
-    const speak = (target: HTMLElement | null) => {
-        if (!target || target === currentlySpeaking) return;
+    const readTarget = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return;
 
-        let textToRead = target.getAttribute('aria-label') || target.getAttribute('title');
+      let textToRead = target.getAttribute('aria-label') || target.getAttribute('title');
 
-        if (!textToRead) {
-            const children = Array.from(target.childNodes);
-            const textNodes = children.filter(node => node.nodeType === Node.TEXT_NODE);
-            if (textNodes.length > 0 && children.every(node => node.nodeType === Node.TEXT_NODE || (node as HTMLElement).tagName !== 'DIV')) {
-                textToRead = target.textContent;
-            } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'].includes(target.tagName)) {
-                textToRead = target.textContent;
-            }
-        }
-        
-        const cleanedText = cleanText(textToRead);
-        
-        if (cleanedText) {
-            synth.cancel();
-            currentlySpeaking = target;
-            const utterance = new SpeechSynthesisUtterance(cleanedText);
-            utterance.lang = 'es-MX';
-            utterance.onend = () => {
-                currentlySpeaking = null;
-            };
-            synth.speak(utterance);
-        }
-    }
-
-    const handleEvent = (event: Event) => {
-        clearTimeout(speechTimeout);
-        speechTimeout = setTimeout(() => {
-            speak(event.target as HTMLElement);
-        }, 150); // Pequeño delay para evitar lecturas accidentales al mover el mouse rápido
+      if (!textToRead) {
+          if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'].includes(target.tagName)) {
+              textToRead = target.textContent;
+          }
+      }
+      
+      const cleanedText = cleanText(textToRead);
+      if (cleanedText) {
+          speak(cleanedText);
+      }
     };
-
-    const handleMouseOut = () => {
-      clearTimeout(speechTimeout);
-      synth.cancel();
-      currentlySpeaking = null;
-    };
+    
+    const handleEvent = (event: Event) => readTarget(event.target);
+    const handleMouseOut = () => synth.cancel();
 
     document.body.addEventListener('mouseover', handleEvent);
-    document.body.addEventListener('focusin', handleEvent); // Usar focusin para capturar el foco en elementos hijos
+    document.body.addEventListener('focusin', handleEvent);
     document.body.addEventListener('mouseout', handleMouseOut);
     document.body.addEventListener('focusout', handleMouseOut);
 
@@ -143,7 +130,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         document.body.removeEventListener('focusout', handleMouseOut);
         synth.cancel();
     };
-  }, [textToSpeech]);
+  }, [textToSpeech, speak]);
 
   const resetAccessibility = () => {
     setHighContrast(false);
@@ -171,6 +158,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setReadableFont,
     setTextToSpeech,
     resetAccessibility,
+    speak,
   };
 
   return (
