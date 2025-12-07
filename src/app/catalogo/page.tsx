@@ -41,12 +41,13 @@ const CatalogSkeleton = () => (
                     <Skeleton className="h-6 w-24" />
                     <Skeleton className="h-10 w-48" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
-                       <div key={i} className="space-y-4">
-                            <Skeleton className="aspect-square w-full" />
+                       <div key={i} className="space-y-3">
+                            <Skeleton className="aspect-square w-full rounded-lg" />
                             <Skeleton className="h-5 w-2/3" />
                             <Skeleton className="h-4 w-1/2" />
+                            <Skeleton className="h-4 w-1/3" />
                             <Skeleton className="h-5 w-1/4" />
                        </div>
                     ))}
@@ -232,7 +233,7 @@ function CatalogPageContent() {
                     </div>
 
                     {paginatedCars.length > 0 ? (
-                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+                       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                             {paginatedCars.map(car => (
                                 <CarCard 
                                     key={`car-${car.id}`} 
