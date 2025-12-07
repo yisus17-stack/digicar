@@ -5,10 +5,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import ComparisonContent from "@/features/comparison/components/ComparisonContent";
-import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 
-
-export default function Comparar() {
+function ComparisonAuthWrapper({ children }: { children: React.ReactNode }) {
     const { user, loading: loadingUser } = useUser();
     const router = useRouter();
 
@@ -18,13 +16,18 @@ export default function Comparar() {
         }
     }, [user, loadingUser, router]);
 
-    if (loadingUser) {
+    if (loadingUser || !user) {
         return null;
     }
 
-    if (!user) {
-        return null;
-    }
-    
-    return <ComparisonContent />;
+    return <>{children}</>;
+}
+
+
+export default function Comparar() {
+    return (
+        <ComparisonAuthWrapper>
+            <ComparisonContent />
+        </ComparisonAuthWrapper>
+    );
 }

@@ -21,40 +21,42 @@ const EsqueletoFinanciamiento = () => (
     </div>
 );
 
-export default function PaginaFinanciamiento() {
-    const firestore = useFirestore();
+function FinancingAuthWrapper({ children }: { children: React.ReactNode }) {
     const { user, loading: loadingUser } = useUser();
     const router = useRouter();
-    
-    const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
-    const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
     useEffect(() => {
         if (!loadingUser && !user) {
             router.push('/login?redirect=/financiamiento');
         }
     }, [user, loadingUser, router]);
-
-    if (loadingUser || isLoading) {
+    
+    if (loadingUser || !user) {
         return <EsqueletoFinanciamiento />;
     }
 
-    if (!user) {
-        return null;
-    }
+    return <>{children}</>;
+}
+
+
+export default function PaginaFinanciamiento() {
+    const firestore = useFirestore();
+    const { data: autos, isLoading } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
 
     return (
-        <div className="container mx-auto px-4 py-8 md:py-12">
-        <Breadcrumbs items={[{ label: "Financiamiento" }]} />
-        <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-            Estrena el auto de tus sueños
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
-            </p>
-        </div>
-        <FinancingCalculator allCars={autos ?? []} />
-        </div>
+        <FinancingAuthWrapper>
+             <div className="container mx-auto px-4 py-8 md:py-12">
+                <Breadcrumbs items={[{ label: "Financiamiento" }]} />
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
+                    Estrena el auto de tus sueños
+                    </h1>
+                    <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                    Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
+                    </p>
+                </div>
+                {isLoading || !autos ? <EsqueletoFinanciamiento /> : <FinancingCalculator allCars={autos} />}
+            </div>
+        </FinancingAuthWrapper>
     );
 }
