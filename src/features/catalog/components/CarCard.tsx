@@ -88,14 +88,14 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         href={`/catalogo/auto/${car.id}`}
         className="flex h-full flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg"
       >
-        <div className="h-48 w-full flex items-center justify-center p-6 bg-muted">
+        <div className="h-40 w-full flex items-center justify-center p-6 bg-muted">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={`${car.marca} ${car.modelo}`}
               width={300}
               height={300}
-              className="h-40 w-auto object-contain"
+              className="h-32 w-auto object-contain"
               draggable="false"
             />
           ) : (
