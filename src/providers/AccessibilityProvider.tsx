@@ -31,13 +31,17 @@ export const AccessibilityProvider = ({ children }: { children: ReactNode }) => 
   const { setTheme } = useTheme();
 
   useEffect(() => {
+    // This effect runs on the client-side
     const body = document.body;
+
+    // Apply or remove attributes based on state
     body.dataset.grayscale = String(grayscale);
     body.dataset.contrast = String(contrast);
     body.dataset.fontSizeStep = String(fontSizeStep);
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
+    
   }, [grayscale, contrast, fontSizeStep, highlightTitles, underlineLinks, hideImages]);
 
   const toggleGrayscale = () => setGrayscale(prev => !prev);
