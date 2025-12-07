@@ -16,6 +16,8 @@ export interface AccessibilityState {
   setHighlightTitles: (value: boolean) => void;
   textToSpeech: boolean;
   setTextToSpeech: (value: boolean) => void;
+  textMagnifier: boolean;
+  setTextMagnifier: (value: boolean) => void;
   fontSizeStep: 0 | 1 | 2;
   cycleFontSize: () => void;
   textSpacing: 0 | 1 | 2;
@@ -40,6 +42,7 @@ export function useAccessibilityState(): AccessibilityState {
   const [hideImages, setHideImages] = useState(false);
   const [highlightTitles, setHighlightTitles] = useState(false);
   const [textToSpeech, setTextToSpeech] = useState(false);
+  const [textMagnifier, setTextMagnifier] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
 
@@ -54,6 +57,7 @@ export function useAccessibilityState(): AccessibilityState {
     setHideImages(false);
     setHighlightTitles(false);
     setTextToSpeech(false);
+    setTextMagnifier(false);
     setFontSizeStep(0);
     setTextSpacing(0);
   };
@@ -71,12 +75,13 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
+    body.dataset.textMagnifier = String(textMagnifier);
     
     if (mainContentWrapper) {
       mainContentWrapper.dataset.grayscale = String(grayscale);
     }
     
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier]);
 
 
   return {
@@ -86,6 +91,7 @@ export function useAccessibilityState(): AccessibilityState {
     hideImages, setHideImages,
     highlightTitles, setHighlightTitles,
     textToSpeech, setTextToSpeech,
+    textMagnifier, setTextMagnifier,
     fontSizeStep, cycleFontSize,
     textSpacing, setTextSpacing,
     resetAccessibility,

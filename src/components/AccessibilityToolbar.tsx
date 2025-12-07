@@ -70,6 +70,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     hideImages,
     highlightTitles,
     textSpacing,
+    textMagnifier,
     cycleFontSize,
     setHighContrast,
     setGrayscale,
@@ -78,6 +79,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     setHideImages,
     setHighlightTitles,
     setTextSpacing,
+    setTextMagnifier,
     resetAccessibility,
   } = useAccessibility();
 
@@ -190,6 +192,9 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                                     <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-400")} />
                                 </div>
                             </button>
+                             <ToolButton label="Lupa de Texto" onClick={() => setTextMagnifier(!textMagnifier)} isActive={textMagnifier}>
+                                <ZoomIn className="h-7 w-7" />
+                            </ToolButton>
                             <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
                                 <Heading1 className="h-7 w-7" />
                             </ToolButton>

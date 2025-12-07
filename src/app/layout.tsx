@@ -15,6 +15,7 @@ import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
 import { AccessibilityContext, useAccessibilityState } from '@/hooks/use-accessibility.tsx';
 import { useState, useEffect, ReactNode } from 'react';
 import Script from 'next/script';
+import { TextMagnifier } from '@/components/TextMagnifier';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -59,13 +60,8 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem={false}
+          enableSystem
           disableTransitionOnChange
-          value={{
-            light: 'light',
-            dark: 'dark',
-          }}
-          storageKey="digicar-theme"
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
@@ -73,6 +69,7 @@ export default function RootLayout({
                 <AppContent>{children}</AppContent>
               </div>
               <AccessibilityToolbar fontClassName={poppins.className} />
+              <TextMagnifier />
             </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>
