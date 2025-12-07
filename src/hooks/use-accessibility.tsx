@@ -58,18 +58,23 @@ export function useAccessibilityState(): AccessibilityState {
     setTextSpacing(0);
   };
   
-    useEffect(() => {
+  useEffect(() => {
+    const mainContentWrapper = document.getElementById('main-content-wrapper');
     const body = document.body;
+    const html = document.documentElement;
+
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
-    body.dataset.grayscale = String(grayscale);
     
-    const html = document.documentElement;
     html.dataset.fontSizeStep = String(fontSizeStep);
 
+    if (mainContentWrapper) {
+        mainContentWrapper.dataset.grayscale = String(grayscale);
+    }
+    
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
 
