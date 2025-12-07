@@ -14,9 +14,9 @@ const PopularCarsSkeleton = () => (
             <Skeleton className="h-6 w-1/3 mx-auto mt-2" />
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full" />
         </div>
     </div>
 );

@@ -95,13 +95,22 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         href={`/catalogo/auto/${car.id}`}
         className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
       >
-        <div className="flex justify-between">
-          <div>
-            <h3 className="text-base font-semibold">{car.marca} {car.modelo}</h3>
-            <p className="text-sm text-muted-foreground">
-              {car.anio} • {car.tipo}
-            </p>
-          </div>
+        <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+                <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
+                {brandLogoUrl && (
+                <div className="relative h-5 w-14 flex-shrink-0">
+                    <Image
+                        src={brandLogoUrl}
+                        alt={`${car.marca} logo`}
+                        fill
+                        className="object-contain"
+                        draggable="false"
+                    />
+                </div>
+            )}
+            </div>
+            
           {showFavoriteButton && (
             <Button
               variant="ghost"
@@ -119,6 +128,10 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
             </Button>
           )}
         </div>
+        
+        <p className="text-sm text-muted-foreground mb-4">
+            {car.anio} • {car.tipo}
+        </p>
 
         <div className="my-auto flex h-40 w-full items-center justify-center py-4">
           {imageUrl ? (
@@ -135,21 +148,10 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           )}
         </div>
 
-        <div className="flex items-end justify-between">
-          <p className="text-xl font-bold">
+        <div className="flex items-end justify-between mt-auto">
+          <p className="text-2xl font-bold">
             ${price.toLocaleString('es-MX')}
           </p>
-          {brandLogoUrl && (
-            <div className="relative h-8 w-20">
-                <Image
-                    src={brandLogoUrl}
-                    alt={`${car.marca} logo`}
-                    fill
-                    className="object-contain"
-                    draggable="false"
-                />
-            </div>
-          )}
         </div>
       </Link>
   );
