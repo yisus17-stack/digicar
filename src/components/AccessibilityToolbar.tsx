@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAccessibility } from '@/hooks/use-accessibility';
 import {
@@ -11,9 +11,12 @@ import {
   Underline,
   EyeOff,
   RefreshCw,
+  Accessibility as AccessibilityIcon,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMounted } from '@/hooks/use-mounted';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const AccessibilityToolbar = () => {
   const {
@@ -32,6 +35,7 @@ const AccessibilityToolbar = () => {
     resetAccessibility,
   } = useAccessibility();
 
+  const [isOpen, setIsOpen] = useState(false);
   const isMounted = useMounted();
 
   if (!isMounted) {
@@ -46,75 +50,54 @@ const AccessibilityToolbar = () => {
     </div>
   );
 
+  const toolbarOptions = [
+    { id: 'grayscale', label: 'Monocromático', icon: CircleSlash, active: grayscale, action: toggleGrayscale },
+    { id: 'contrast', label: 'Alto Contraste', icon: Contrast, active: contrast, action: toggleContrast },
+    { id: 'fontSize', label: 'Tamaño Texto', icon: ZoomIn, action: cycleFontSize, indicator: fontSizeIndicator },
+    { id: 'highlightTitles', label: 'Resaltar Títulos', icon: Sparkles, active: highlightTitles, action: toggleHighlightTitles },
+    { id: 'underlineLinks', label: 'Subrayar Enlaces', icon: Underline, active: underlineLinks, action: toggleUnderlineLinks },
+    { id: 'hideImages', label: 'Ocultar Imágenes', icon: EyeOff, active: hideImages, action: toggleHideImages },
+    { id: 'reset', label: 'Restablecer', icon: RefreshCw, action: resetAccessibility },
+  ];
+
   const toolbarContent = (
     <div className="fixed bottom-4 left-4 z-[100] accessibility-panel-wrapper">
-      <div className="flex flex-col items-center gap-2 rounded-lg border bg-card p-2 shadow-lg">
-        <button
-          onClick={toggleGrayscale}
-          className={cn(
-            'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
-            grayscale ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-          )}
-        >
-          <CircleSlash className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Monocromático</span>
-        </button>
-        <button
-          onClick={toggleContrast}
-          className={cn(
-            'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
-            contrast ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-          )}
-        >
-          <Contrast className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Alto Contraste</span>
-        </button>
-        <button
-          onClick={cycleFontSize}
-          className="flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center hover:bg-muted"
-        >
-          <ZoomIn className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Tamaño Texto</span>
-          {fontSizeIndicator}
-        </button>
-        <button
-          onClick={toggleHighlightTitles}
-          className={cn(
-            'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
-            highlightTitles ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-          )}
-        >
-          <Sparkles className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Resaltar Títulos</span>
-        </button>
-        <button
-          onClick={toggleUnderlineLinks}
-          className={cn(
-            'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
-            underlineLinks ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-          )}
-        >
-          <Underline className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Subrayar Enlaces</span>
-        </button>
-        <button
-          onClick={toggleHideImages}
-          className={cn(
-            'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
-            hideImages ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-          )}
-        >
-          <EyeOff className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Ocultar Imágenes</span>
-        </button>
-        <button
-          onClick={resetAccessibility}
-          className="flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center hover:bg-muted"
-        >
-          <RefreshCw className="h-6 w-6 mb-1" />
-          <span className="text-xs font-semibold">Restablecer</span>
-        </button>
-      </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="mb-2 flex flex-col items-center gap-2 rounded-lg border bg-card p-2 shadow-lg"
+          >
+            {toolbarOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={option.action}
+                className={cn(
+                  'flex flex-col items-center justify-center p-2 rounded-md transition-colors w-24 h-24 text-center',
+                  option.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
+                )}
+                aria-pressed={option.active}
+              >
+                <option.icon className="h-6 w-6 mb-1" />
+                <span className="text-xs font-semibold">{option.label}</span>
+                {option.indicator}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        aria-label={isOpen ? 'Cerrar menú de accesibilidad' : 'Abrir menú de accesibilidad'}
+        aria-expanded={isOpen}
+      >
+        {isOpen ? <X className="h-8 w-8" /> : <AccessibilityIcon className="h-8 w-8" />}
+      </button>
     </div>
   );
 
