@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -203,9 +204,6 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                             <ToolButton label="Ocultar Imágenes" onClick={() => setHideImages(!hideImages)} isActive={hideImages}>
                                 <ImageOff className="h-7 w-7" />
                             </ToolButton>
-                             <ToolButton label="Leer Texto" onClick={() => setTextToSpeech(!textToSpeech)} isActive={textToSpeech}>
-                                <Volume2 className="h-7 w-7" />
-                            </ToolButton>
                         </div>
                     </div>
                     <div>
@@ -222,6 +220,14 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                           </ToolButton>
                           <ToolButton label="Monocromático" onClick={() => setGrayscale(!grayscale)} isActive={grayscale}>
                               <Palette className="h-7 w-7" />
+                          </ToolButton>
+                      </div>
+                    </div>
+                    <div>
+                      <SectionTitle>Asistencia de Lectura</SectionTitle>
+                      <div className="grid grid-cols-3 gap-3">
+                          <ToolButton label="Leer Texto" onClick={() => setTextToSpeech(!textToSpeech)} isActive={textToSpeech}>
+                              <Volume2 className="h-7 w-7" />
                           </ToolButton>
                       </div>
                     </div>
