@@ -131,14 +131,14 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     setIsSaving(true);
     try {
         const financingData = {
-            userId: user.uid,
-            carId: selectedCar.id,
-            variantId: selectedVariant.id,
-            carPrice: carPrice,
-            downPayment: downPayment,
-            term: term,
-            monthlyPayment: monthlyPayment,
-            createdAt: serverTimestamp(),
+            usuarioId: user.uid,
+            autoId: selectedCar.id,
+            varianteId: selectedVariant.id,
+            precioAuto: carPrice,
+            enganche: downPayment,
+            plazo: term,
+            pagoMensual: monthlyPayment,
+            fechaCreacion: serverTimestamp(),
         };
 
         await addDoc(collection(firestore, 'financiamientos'), financingData);
@@ -269,7 +269,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.setTextColor(0);
 
     finalY += 25;
-
+    
     const disclaimer = `*Este documento es una cotización preliminar de DigiCar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del ${(INTEREST_RATE * 100).toFixed(0)}%.`;
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
     
@@ -477,5 +477,4 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     </div>
   );
 }
-
     

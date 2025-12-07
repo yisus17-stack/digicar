@@ -70,14 +70,13 @@ export type Comparison = {
 
 export type Financing = {
     id: string;
-    userId: string;
-    carId: string;
-    variantId: string;
-    carPrice: number;
-    downPayment: number;
-    term: number;
-    monthlyPayment: number;
-    createdAt: Timestamp;
+    usuarioId: string;
+    autoId: string;
+    varianteId: string;
+    precioAuto: number;
+    enganche: number;
+    plazo: number;
+    pagoMensual: number;
+    fechaCreacion: Timestamp;
 }
-
     

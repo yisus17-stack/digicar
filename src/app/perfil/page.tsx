@@ -147,10 +147,10 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
 };
 
 const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing, allCars: Car[], onRemove: (id: string) => void }) => {
-    const car = allCars.find(c => c.id === financing.carId);
+    const car = allCars.find(c => c.id === financing.autoId);
     if (!car) return null;
 
-    const variant = car.variantes.find(v => v.id === financing.variantId);
+    const variant = car.variantes.find(v => v.id === financing.varianteId);
     const carImage = variant?.imagenUrl ?? car.imagenUrl;
 
     return (
@@ -165,25 +165,25 @@ const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing,
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
                         <div>
                             <p className="text-muted-foreground">Pago Mensual</p>
-                            <p className="font-semibold">${financing.monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <p className="font-semibold">${financing.pagoMensual.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Enganche</p>
-                            <p className="font-semibold">${financing.downPayment.toLocaleString('es-MX')}</p>
+                            <p className="font-semibold">${financing.enganche.toLocaleString('es-MX')}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Plazo</p>
-                            <p className="font-semibold">{financing.term} meses</p>
+                            <p className="font-semibold">{financing.plazo} meses</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Precio del Auto</p>
-                            <p className="font-semibold">${financing.carPrice.toLocaleString('es-MX')}</p>
+                            <p className="font-semibold">${financing.precioAuto.toLocaleString('es-MX')}</p>
                         </div>
                     </div>
                 </div>
                 <div className="flex sm:flex-col justify-end items-center gap-2 pt-4 sm:pt-0 sm:border-l sm:pl-4">
                      <p className="text-xs text-muted-foreground sm:absolute sm:top-4 sm:right-4">
-                        {new Date(financing.createdAt.seconds * 1000).toLocaleDateString()}
+                        {new Date(financing.fechaCreacion.seconds * 1000).toLocaleDateString()}
                     </p>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(financing.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                 </div>
@@ -224,7 +224,7 @@ export default function PaginaPerfil() {
 
   const queryFinanciamientos = useMemoFirebase(() => {
     if (!user) return null;
-    return query(collection(firestore, 'financiamientos'), where('userId', '==', user.uid));
+    return query(collection(firestore, 'financiamientos'), where('usuarioId', '==', user.uid));
   }, [user, firestore]);
   const { data: financiamientos, isLoading: cargandoFinanciamientos } = useCollection<Financing>(queryFinanciamientos);
 
@@ -523,5 +523,4 @@ export default function PaginaPerfil() {
     </div>
   );
 }
-
     
