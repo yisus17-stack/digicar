@@ -142,7 +142,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
         <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in duration-300">
             <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
             
-            <div className="absolute top-0 right-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
+            <div className="absolute top-0 left-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-left duration-500">
                 <header className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-xl font-bold">Panel de Accesibilidad</h2>
                 <Button
