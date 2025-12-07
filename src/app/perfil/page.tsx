@@ -21,7 +21,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Swal from 'sweetalert2';
 import { doc, collection, updateDoc, arrayRemove, query, where, deleteDoc } from 'firebase/firestore';
-import type { Favorite, Car, Comparison, Financing } from '@/core/types';
+import type { Favorite, Car, Comparison, Financing, CarVariant } from '@/core/types';
 import CarCard from '@/features/catalog/components/CarCard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -104,17 +104,24 @@ function EsqueletoPerfil() {
 }
 
 const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Comparison, allCars: Car[], onRemove: (id: string) => void }) => {
-    const car1 = allCars.find(c => c.id === comparison.carId1);
-    const car2 = allCars.find(c => c.id === comparison.carId2);
     const router = useRouter();
 
-    if (!car1 || !car2) return null;
+    const car1 = allCars.find(c => c.id === comparison.autoId1);
+    const car2 = allCars.find(c => c.id === comparison.autoId2);
 
-    const car1Image = car1.variantes?.[0]?.imagenUrl ?? car1.imagenUrl;
-    const car2Image = car2.variantes?.[0]?.imagenUrl ?? car2.imagenUrl;
+    const variant1 = car1?.variantes.find(v => v.id === comparison.varianteId1);
+    const variant2 = car2?.variantes.find(v => v.id === comparison.varianteId2);
+
+    if (!car1 || !car2 || !variant1 || !variant2) return null;
 
     const handleView = () => {
-        sessionStorage.setItem('comparisonIds', JSON.stringify([car1.id, car2.id]));
+        const comparisonData = {
+            carId1: car1.id,
+            variantId1: variant1.id,
+            carId2: car2.id,
+            variantId2: variant2.id,
+        };
+        sessionStorage.setItem('comparisonData', JSON.stringify(comparisonData));
         router.push('/comparacion');
     }
 
@@ -123,18 +130,20 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
             <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                     <div className="flex-1 flex flex-col items-center text-center">
-                        {car1Image && <Image src={car1Image} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        {variant1.imagenUrl && <Image src={variant1.imagenUrl} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
                         <p className="font-semibold text-sm">{car1.marca} {car1.modelo}</p>
+                        <p className="text-xs text-muted-foreground">{variant1.color}</p>
                     </div>
                     <GitCompareArrows className="h-6 w-6 text-muted-foreground flex-shrink-0" />
                     <div className="flex-1 flex flex-col items-center text-center">
-                        {car2Image && <Image src={car2Image} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
+                        {variant2.imagenUrl && <Image src={variant2.imagenUrl} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" />}
                         <p className="font-semibold text-sm">{car2.marca} {car2.modelo}</p>
+                        <p className="text-xs text-muted-foreground">{variant2.color}</p>
                     </div>
                 </div>
                  <div className="mt-4 pt-4 border-t flex justify-between items-center">
                     <p className="text-xs text-muted-foreground">
-                        Guardado el {new Date(comparison.createdAt.seconds * 1000).toLocaleDateString()}
+                        Guardado el {new Date(comparison.fechaCreacion.seconds * 1000).toLocaleDateString()}
                     </p>
                     <div>
                         <Button variant="ghost" size="sm" onClick={handleView}>Ver</Button>
@@ -218,7 +227,7 @@ export default function PaginaPerfil() {
 
   const queryComparaciones = useMemoFirebase(() => {
     if (!user) return null;
-    return query(collection(firestore, 'comparaciones'), where('userId', '==', user.uid));
+    return query(collection(firestore, 'comparaciones'), where('usuarioId', '==', user.uid));
   }, [user, firestore]);
   const { data: comparaciones, isLoading: cargandoComparaciones } = useCollection<Comparison>(queryComparaciones);
 
@@ -417,7 +426,7 @@ export default function PaginaPerfil() {
                         <CardDescription>Revisa las comparaciones que has guardado.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {comparaciones && comparaciones.length > 0 ? (
+                        {comparaciones && todosLosAutos && comparaciones.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6">
                                 {comparaciones.map(comp => (
                                     <ComparisonItem key={comp.id} comparison={comp} allCars={todosLosAutos} onRemove={handleRemoveComparison}/>
@@ -523,4 +532,5 @@ export default function PaginaPerfil() {
     </div>
   );
 }
+    
     

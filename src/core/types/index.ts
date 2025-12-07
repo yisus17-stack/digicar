@@ -62,10 +62,12 @@ export type Favorite = {
 
 export type Comparison = {
     id: string;
-    userId: string;
-    carId1: string;
-    carId2: string;
-    createdAt: Timestamp;
+    usuarioId: string;
+    autoId1: string;
+    varianteId1: string;
+    autoId2: string;
+    varianteId2: string;
+    fechaCreacion: Timestamp;
 }
 
 export type Financing = {
@@ -79,4 +81,5 @@ export type Financing = {
     pagoMensual: number;
     fechaCreacion: Timestamp;
 }
+    
     

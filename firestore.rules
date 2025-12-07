@@ -53,8 +53,8 @@ service cloud.firestore {
     }
 
     match /comparaciones/{comparacionId} {
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.usuarioId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.usuarioId == request.auth.uid;
       allow list: if isSignedIn();
     }
 
@@ -84,4 +84,5 @@ service cloud.firestore {
     }
   }
 }
+    
     

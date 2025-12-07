@@ -1,11 +1,12 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
-import type { Car, UserProfile } from '@/core/types';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
+import { collection, addDoc, serverTimestamp, doc } from 'firebase/firestore';
+import type { Car, CarVariant, Comparison } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,6 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-
 
 const EsqueletoComparacion = () => (
     <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -36,26 +36,29 @@ const EsqueletoComparacion = () => (
 
 const CarSelector = ({
   selectedCar,
+  selectedVariant,
   allCars,
-  onSelect,
+  onCarSelect,
+  onVariantSelect,
   otherCarId,
   onClear,
 }: {
   selectedCar?: Car;
+  selectedVariant?: CarVariant;
   allCars: Car[];
-  onSelect: (carId: string) => void;
+  onCarSelect: (carId: string) => void;
+  onVariantSelect: (variantId: string) => void;
   otherCarId?: string;
   onClear: () => void;
 }) => {
   const availableCars = allCars.filter(c => c.id !== otherCarId);
-  const displayVariant = selectedCar?.variantes?.[0];
-  const imageUrl = displayVariant?.imagenUrl ?? selectedCar?.imagenUrl;
+  const imageUrl = selectedVariant?.imagenUrl;
   
   if (selectedCar) {
     return (
-      <div className="flex flex-col items-center justify-start text-center">
+      <div className="flex flex-col items-center justify-start text-center space-y-4">
         <Link href={`/catalogo/auto/${selectedCar.id}`} className="block">
-            <div className="relative w-64 h-48 mb-4">
+            <div className="relative w-64 h-48">
             {imageUrl ? (
                 <Image
                 src={imageUrl}
@@ -69,13 +72,25 @@ const CarSelector = ({
                 </div>
             )}
             </div>
-            <p className="text-lg font-semibold hover:underline">
+            <p className="text-lg font-semibold hover:underline mt-4">
                 {selectedCar.marca} {selectedCar.modelo}
             </p>
         </Link>
-         <Button variant="link" onClick={onClear} className="text-sm mt-2">
+        {selectedCar.variantes && selectedCar.variantes.length > 1 && (
+             <Select onValueChange={onVariantSelect} value={selectedVariant?.id}>
+                <SelectTrigger className="w-full max-w-xs">
+                    <SelectValue placeholder="Seleccionar un color" />
+                </SelectTrigger>
+                <SelectContent>
+                    {selectedCar.variantes.map(v => (
+                        <SelectItem key={v.id} value={v.id}>{v.color}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        )}
+        <Button variant="link" onClick={onClear} className="text-sm">
             <RefreshCw className="mr-2 h-4 w-4" />
-            Cambiar
+            Cambiar Auto
         </Button>
       </div>
     );
@@ -85,7 +100,7 @@ const CarSelector = ({
     <Card className="w-full h-full min-h-[280px] flex flex-col items-center justify-center border-dashed p-4">
       <PlusCircle className="h-10 w-10 text-muted-foreground mb-4" />
       <p className="text-muted-foreground mb-4 text-center">Añadir auto a la comparación</p>
-      <Select onValueChange={onSelect}>
+      <Select onValueChange={onCarSelect}>
         <SelectTrigger className="w-full max-w-xs">
           <SelectValue placeholder="Seleccionar un auto" />
         </SelectTrigger>
@@ -127,58 +142,59 @@ export default function ComparisonContent() {
   const { user, loading: loadingUser } = useUser();
   const router = useRouter();
   
-  const [car1, setCar1] = useState<Car | undefined>(undefined);
-  const [car2, setCar2] = useState<Car | undefined>(undefined);
+  const [carId1, setCarId1] = useState<string | undefined>();
+  const [variantId1, setVariantId1] = useState<string | undefined>();
+  const [carId2, setCarId2] = useState<string | undefined>();
+  const [variantId2, setVariantId2] = useState<string | undefined>();
+
   const [isSaving, setIsSaving] = useState(false);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading: loadingCars } = useCollection<Car>(coleccionAutos);
 
-  const userProfileRef = useMemoFirebase(() => user ? doc(firestore, 'usuarios', user.uid) : null, [user, firestore]);
-  const { data: userProfile, isLoading: loadingProfile } = useDoc<UserProfile>(userProfileRef);
-
-  useEffect(() => {
-    if (userProfile && todosLosAutos) {
-      const [carId1, carId2] = userProfile.currentComparison || [];
-      setCar1(todosLosAutos.find(c => c.id === carId1));
-      setCar2(todosLosAutos.find(c => c.id === carId2));
-    }
-  }, [userProfile, todosLosAutos]);
+  const car1 = useMemo(() => todosLosAutos?.find(c => c.id === carId1), [carId1, todosLosAutos]);
+  const car2 = useMemo(() => todosLosAutos?.find(c => c.id === carId2), [carId2, todosLosAutos]);
   
+  const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
+  const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
+
   useEffect(() => {
-    if (!loadingUser && !user) {
-      setCar1(undefined);
-      setCar2(undefined);
+    const storedData = sessionStorage.getItem('comparisonData');
+    if (storedData && todosLosAutos) {
+      try {
+        const data = JSON.parse(storedData);
+        setCarId1(data.carId1);
+        setVariantId1(data.variantId1);
+        setCarId2(data.carId2);
+        setVariantId2(data.variantId2);
+      } catch (e) {
+        console.error("Error parsing comparison data from session storage", e);
+      } finally {
+        sessionStorage.removeItem('comparisonData');
+      }
     }
-  }, [user, loadingUser]);
-
-  const updateCurrentComparison = async (carId1?: string, carId2?: string) => {
-    if (userProfileRef) {
-      const comparison = [carId1, carId2].filter(Boolean) as string[];
-      await updateDoc(userProfileRef, { currentComparison: comparison });
-    }
+  }, [todosLosAutos]);
+  
+  const handleSelectCar1 = (id: string) => {
+    setCarId1(id);
+    const selected = todosLosAutos?.find(c => c.id === id);
+    setVariantId1(selected?.variantes?.[0]?.id);
   };
 
-  const handleSelectCar1 = (carId: string) => {
-    const selected = todosLosAutos?.find(c => c.id === carId);
-    setCar1(selected);
-    updateCurrentComparison(carId, car2?.id);
-  };
-
-  const handleSelectCar2 = (carId: string) => {
-    const selected = todosLosAutos?.find(c => c.id === carId);
-    setCar2(selected);
-    updateCurrentComparison(car1?.id, carId);
+  const handleSelectCar2 = (id: string) => {
+    setCarId2(id);
+    const selected = todosLosAutos?.find(c => c.id === id);
+    setVariantId2(selected?.variantes?.[0]?.id);
   };
 
   const clearCar1 = () => {
-    setCar1(undefined);
-    updateCurrentComparison(undefined, car2?.id);
+    setCarId1(undefined);
+    setVariantId1(undefined);
   }
   
   const clearCar2 = () => {
-    setCar2(undefined);
-    updateCurrentComparison(car1?.id, undefined);
+    setCarId2(undefined);
+    setVariantId2(undefined);
   }
 
   const handleSaveComparison = async () => {
@@ -186,21 +202,22 @@ export default function ComparisonContent() {
       router.push('/login?redirect=/comparacion');
       return;
     }
-    if (!car1 || !car2) return;
+    if (!car1 || !car2 || !variant1 || !variant2) return;
 
     setIsSaving(true);
     
     const comparisonData = {
-        userId: user.uid,
-        carId1: car1.id,
-        carId2: car2.id,
-        createdAt: serverTimestamp(),
+        usuarioId: user.uid,
+        autoId1: car1.id,
+        varianteId1: variant1.id,
+        autoId2: car2.id,
+        varianteId2: variant2.id,
+        fechaCreacion: serverTimestamp(),
     };
 
     try {
-        const comparacionesRef = collection(firestore, 'comparaciones');
-        await addDoc(comparacionesRef, comparisonData);
-
+        const docRef = await addDoc(collection(firestore, 'comparaciones'), comparisonData);
+        
         await Swal.fire({
             title: '¡Comparación Guardada!',
             text: 'Puedes ver tus comparaciones en tu perfil.',
@@ -240,23 +257,18 @@ export default function ComparisonContent() {
     { label: "Transmisión", key: 'transmision' },
     { label: "Cilindros", key: 'cilindrosMotor' },
     { label: "Pasajeros", key: 'pasajeros' },
-    { label: "Color", key: 'color' },
   ];
 
-  const formatValue = (key: string, car?: Car) => {
+  const formatValue = (key: string, car?: Car, variant?: CarVariant) => {
     if (!car) return '-';
     if (key === 'precio') {
-        const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
-        return price > 0 ? `$${price.toLocaleString('es-MX')}` : '-';
-    }
-    if (key === 'color') {
-        return car.variantes?.[0]?.color ?? car.color ?? '-';
+        return variant?.precio ? `$${variant.precio.toLocaleString('es-MX')}` : '-';
     }
     const value = car[key as keyof Car] as string | number;
     return value || '-';
   }
   
-  if (loadingCars || !todosLosAutos || loadingUser || loadingProfile) {
+  if (loadingCars || !todosLosAutos || loadingUser) {
     return <EsqueletoComparacion />;
   }
 
@@ -275,9 +287,11 @@ export default function ComparisonContent() {
         <div className="space-y-8">
             <div className="grid grid-cols-[1fr_auto_1fr] items-start justify-center gap-8">
                 <CarSelector 
-                    selectedCar={car1} 
+                    selectedCar={car1}
+                    selectedVariant={variant1} 
                     allCars={todosLosAutos} 
-                    onSelect={handleSelectCar1} 
+                    onCarSelect={handleSelectCar1} 
+                    onVariantSelect={setVariantId1}
                     otherCarId={car2?.id} 
                     onClear={clearCar1}
                 />
@@ -286,8 +300,10 @@ export default function ComparisonContent() {
                 </div>
                 <CarSelector 
                     selectedCar={car2} 
+                    selectedVariant={variant2}
                     allCars={todosLosAutos} 
-                    onSelect={handleSelectCar2} 
+                    onCarSelect={handleSelectCar2} 
+                    onVariantSelect={setVariantId2}
                     otherCarId={car1?.id}
                     onClear={clearCar2}
                 />
@@ -307,8 +323,8 @@ export default function ComparisonContent() {
                         <div key={feature.key}>
                             <div className="grid grid-cols-3 items-center gap-4">
                                 <div className="text-left font-semibold text-muted-foreground col-span-1">{feature.label}</div>
-                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car1)}</div>
-                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car2)}</div>
+                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car1, variant1)}</div>
+                                <div className="text-left col-span-1 font-medium px-4">{formatValue(feature.key, car2, variant2)}</div>
                             </div>
                             <Separator className="mt-4"/>
                         </div>
@@ -335,3 +351,5 @@ export default function ComparisonContent() {
     </div>
   );
 }
+
+    
