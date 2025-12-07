@@ -2,40 +2,48 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+const themes = [
+  { name: 'light', icon: Sun },
+  { name: 'dark', icon: Moon },
+  { name: 'system', icon: Monitor },
+];
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className='h-9 w-9'>
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          Claro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Oscuro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          Sistema
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="relative flex items-center rounded-full bg-muted p-1">
+      {themes.map((t) => (
+        <button
+          key={t.name}
+          className={cn(
+            'relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors',
+            { 'text-primary-foreground': theme === t.name }
+          )}
+          onClick={() => setTheme(t.name)}
+          aria-label={`Switch to ${t.name} theme`}
+        >
+          <t.icon className="h-5 w-5" />
+        </button>
+      ))}
+      <motion.div
+        className="absolute left-1 top-1 z-0 h-9 w-9 rounded-full bg-primary"
+        layoutId="theme-switcher-bg"
+        initial={false}
+        animate={{
+          x: themes.findIndex((t) => t.name === theme) * 44, // 44px is w-9 + p-1 on each side
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 350,
+          damping: 30,
+        }}
+      />
+    </div>
   );
 }

@@ -41,7 +41,6 @@ import {
 import { useAuth, useUser } from '@/firebase';
 import { signOut, type User as FirebaseUser } from 'firebase/auth';
 import Swal from 'sweetalert2';
-import { ThemeToggle } from '../ThemeToggle';
 
 interface SiteHeaderProps {
     user: FirebaseUser | null;
@@ -174,8 +173,6 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
               <span className="sr-only">Buscar</span>
             </Button>
             
-            <ThemeToggle />
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9">
