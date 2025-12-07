@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAccessibility } from '@/hooks/use-accessibility.tsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
 
@@ -80,9 +80,9 @@ export function AccessibilityToolbar() {
 
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Cerrar el panel si se presiona la tecla Escape
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
         setIsOpen(false);
@@ -91,6 +91,12 @@ export function AccessibilityToolbar() {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (panelRef.current) {
+      panelRef.current.id = 'accessibility-panel-wrapper';
+    }
+  }, []);
   
   const handleCycleTextSpacing = () => {
     const nextStep = (textSpacing + 1) % 3;
@@ -127,88 +133,88 @@ export function AccessibilityToolbar() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in duration-300">
-      {/* Overlay para cerrar al hacer clic afuera */}
-      <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
-      
-      {/* Contenido del Panel */}
-      <div className="absolute top-0 right-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
-        <header className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl font-bold">Panel de Accesibilidad</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(false)}
-            aria-label="Cerrar panel de accesibilidad"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </header>
+    <div ref={panelRef}>
+        <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in duration-300">
+            <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
+            
+            <div className="absolute top-0 right-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
+                <header className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-xl font-bold">Panel de Accesibilidad</h2>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsOpen(false)}
+                    aria-label="Cerrar panel de accesibilidad"
+                >
+                    <X className="h-5 w-5" />
+                </Button>
+                </header>
 
-        <div className="flex-grow overflow-y-auto p-4 space-y-6">
-            <div>
-                <SectionTitle>Ajustes de Contenido</SectionTitle>
-                <div className="grid grid-cols-3 gap-3">
-                    <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
-                        <div className="flex flex-col items-center gap-2">
-                           <ZoomIn className="h-7 w-7" />
-                           <div className="flex items-center gap-1.5 mt-1">
-                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 1 ? "bg-white" : "bg-gray-500/50")} />
-                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 2 ? "bg-white" : "bg-gray-500/50")} />
-                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 3 ? "bg-white" : "bg-gray-500/50")} />
-                           </div>
+                <div className="flex-grow overflow-y-auto p-4 space-y-6">
+                    <div>
+                        <SectionTitle>Ajustes de Contenido</SectionTitle>
+                        <div className="grid grid-cols-3 gap-3">
+                            <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
+                                <div className="flex flex-col items-center justify-center h-full">
+                                   <ZoomIn className="h-7 w-7" />
+                                   <div className="flex items-center gap-1.5 mt-2">
+                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 1 ? "bg-white" : "bg-gray-500/50")} />
+                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 2 ? "bg-white" : "bg-gray-500/50")} />
+                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 3 ? "bg-white" : "bg-gray-500/50")} />
+                                   </div>
+                                </div>
+                            </ToolButton>
+                            <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
+                                <FileText className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
+                                <Heading1 className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label="Subrayar Enlaces" onClick={() => setUnderlineLinks(!underlineLinks)} isActive={underlineLinks}>
+                                <Underline className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label={getTextSpacingLabel()} onClick={handleCycleTextSpacing} isActive={textSpacing > 0}>
+                                <Baseline className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label="Ocultar Imágenes" onClick={() => setHideImages(!hideImages)} isActive={hideImages}>
+                                <ImageOff className="h-7 w-7" />
+                            </ToolButton>
+                             <ToolButton label="Leer Texto" onClick={() => setTextToSpeech(!textToSpeech)} isActive={textToSpeech}>
+                                <Volume2 className="h-7 w-7" />
+                            </ToolButton>
                         </div>
-                    </ToolButton>
-                    <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
-                        <FileText className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
-                        <Heading1 className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton label="Subrayar Enlaces" onClick={() => setUnderlineLinks(!underlineLinks)} isActive={underlineLinks}>
-                        <Underline className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton label={getTextSpacingLabel()} onClick={handleCycleTextSpacing} isActive={textSpacing > 0}>
-                        <Baseline className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton label="Ocultar Imágenes" onClick={() => setHideImages(!hideImages)} isActive={hideImages}>
-                        <ImageOff className="h-7 w-7" />
-                    </ToolButton>
-                     <ToolButton label="Leer Texto" onClick={() => setTextToSpeech(!textToSpeech)} isActive={textToSpeech}>
-                        <Volume2 className="h-7 w-7" />
-                    </ToolButton>
+                    </div>
+                    <div>
+                      <SectionTitle>Ajustes de Color</SectionTitle>
+                      <div className="grid grid-cols-3 gap-3">
+                          <ToolButton label="Contraste Oscuro" onClick={() => setTheme('dark')} isActive={theme === 'dark'}>
+                              <Moon className="h-7 w-7" />
+                          </ToolButton>
+                          <ToolButton label="Contraste Claro" onClick={() => setTheme('light')} isActive={theme === 'light'}>
+                              <Sun className="h-7 w-7" />
+                          </ToolButton>
+                          <ToolButton label="Alto Contraste" onClick={() => setHighContrast(!highContrast)} isActive={highContrast}>
+                              <Contrast className="h-7 w-7" />
+                          </ToolButton>
+                          <ToolButton label="Monocromático" onClick={() => setGrayscale(!grayscale)} isActive={grayscale}>
+                              <Palette className="h-7 w-7" />
+                          </ToolButton>
+                      </div>
+                    </div>
                 </div>
-            </div>
-            <div>
-              <SectionTitle>Ajustes de Color</SectionTitle>
-              <div className="grid grid-cols-3 gap-3">
-                  <ToolButton label="Contraste Oscuro" onClick={() => setTheme('dark')} isActive={theme === 'dark'}>
-                      <Moon className="h-7 w-7" />
-                  </ToolButton>
-                  <ToolButton label="Contraste Claro" onClick={() => setTheme('light')} isActive={theme === 'light'}>
-                      <Sun className="h-7 w-7" />
-                  </ToolButton>
-                  <ToolButton label="Alto Contraste" onClick={() => setHighContrast(!highContrast)} isActive={highContrast}>
-                      <Contrast className="h-7 w-7" />
-                  </ToolButton>
-                  <ToolButton label="Monocromático" onClick={() => setGrayscale(!grayscale)} isActive={grayscale}>
-                      <Palette className="h-7 w-7" />
-                  </ToolButton>
-              </div>
+
+                <footer className="p-4 border-t">
+                     <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={resetAccessibility}
+                      >
+                        <CircleSlash className="mr-2 h-4 w-4" />
+                        Restablecer todo
+                      </Button>
+                </footer>
             </div>
         </div>
-
-        <footer className="p-4 border-t">
-             <Button
-                variant="outline"
-                className="w-full"
-                onClick={resetAccessibility}
-              >
-                <CircleSlash className="mr-2 h-4 w-4" />
-                Restablecer todo
-              </Button>
-        </footer>
-      </div>
     </div>
   );
 }
