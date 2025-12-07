@@ -100,7 +100,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                         <Slider
                             id="monthly-budget"
                             min={1000}
-                            max={30000}
+                            max={50000}
                             step={500}
                             value={[monthlyBudget]}
                             onValueChange={(vals) => setMonthlyBudget(vals[0])}
