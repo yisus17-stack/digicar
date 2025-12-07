@@ -14,6 +14,7 @@ import { ThemeProvider } from '@/app/theme-provider';
 import { AccessibilityProvider, useAccessibility } from '@/hooks/use-accessibility.tsx';
 import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
 import { useEffect } from 'react';
+import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -45,7 +46,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      <body className={cn("font-sans", poppins.variable)}>
+      <body className={cn('font-sans', poppins.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -61,7 +62,25 @@ export default function RootLayout({
         </ThemeProvider>
         {/* Contenedor del portal para la barra de accesibilidad, ahora como hermano del body */}
         <div id="accessibility-portal"></div>
+        <Script
+          id="accessibe-script"
+          src="https://acsbapp.com/apps/app/dist/js/app.js"
+          strategy="lazyOnload"
+          onLoad={() => {
+            if (window.acsbJS) {
+              window.acsbJS.init();
+            }
+          }}
+        />
       </body>
     </html>
   );
+}
+
+declare global {
+  interface Window {
+    acsbJS: {
+      init: () => void;
+    };
+  }
 }
