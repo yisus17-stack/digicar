@@ -64,7 +64,6 @@ export function AccessibilityToolbar() {
     fontSizeStep,
     grayscale,
     underlineLinks,
-    readableFont,
     textToSpeech,
     hideImages,
     highlightTitles,
@@ -73,7 +72,6 @@ export function AccessibilityToolbar() {
     setHighContrast,
     setGrayscale,
     setUnderlineLinks,
-    setReadableFont,
     setTextToSpeech,
     setHideImages,
     setHighlightTitles,
@@ -153,19 +151,24 @@ export function AccessibilityToolbar() {
                     <div>
                         <SectionTitle>Ajustes de Contenido</SectionTitle>
                         <div className="grid grid-cols-3 gap-3">
-                             <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
-                                <div className="flex flex-col items-center justify-center h-full gap-2">
-                                   <ZoomIn className="h-7 w-7" />
-                                   <div className="flex items-end gap-1">
-                                        <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-500/50")} />
-                                        <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
-                                        <div className={cn("w-2 h-4 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
-                                   </div>
+                             <button
+                                onClick={cycleFontSize}
+                                aria-pressed={fontSizeStep > 0}
+                                className={cn(
+                                'flex flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors text-center w-full aspect-square',
+                                fontSizeStep > 0
+                                    ? 'bg-primary text-primary-foreground border-primary'
+                                    : 'bg-card hover:bg-muted border-border'
+                                )}
+                            >
+                                <ZoomIn className="h-7 w-7" />
+                                <span className="text-xs font-medium">{getFontSizeLabel()}</span>
+                                <div className="flex items-end gap-1 pt-1">
+                                    <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-400")} />
+                                    <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-400")} />
+                                    <div className={cn("w-2 h-4 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-400")} />
                                 </div>
-                            </ToolButton>
-                            <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
-                                <FileText className="h-7 w-7" />
-                            </ToolButton>
+                            </button>
                             <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
                                 <Heading1 className="h-7 w-7" />
                             </ToolButton>

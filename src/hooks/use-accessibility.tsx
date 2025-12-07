@@ -12,7 +12,6 @@ interface AccessibilityState {
   grayscale: boolean;
   invert: boolean;
   underlineLinks: boolean;
-  readableFont: boolean;
   textToSpeech: boolean;
   hideImages: boolean;
   highlightTitles: boolean;
@@ -23,7 +22,6 @@ interface AccessibilityState {
   setGrayscale: (value: boolean) => void;
   setInvert: (value: boolean) => void;
   setUnderlineLinks: (value: boolean) => void;
-  setReadableFont: (value: boolean) => void;
   setTextToSpeech: (value: boolean) => void;
   setHideImages: (value: boolean) => void;
   setHighlightTitles: (value: boolean) => void;
@@ -52,7 +50,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [grayscale, setGrayscale] = useState<boolean>(() => getLocalStorageItem('accessibility-grayscale', false));
   const [invert, setInvert] = useState<boolean>(() => getLocalStorageItem('accessibility-invert', false));
   const [underlineLinks, setUnderlineLinks] = useState<boolean>(() => getLocalStorageItem('accessibility-underlineLinks', false));
-  const [readableFont, setReadableFont] = useState<boolean>(() => getLocalStorageItem('accessibility-readableFont', false));
   const [textToSpeech, setTextToSpeech] = useState<boolean>(() => getLocalStorageItem('accessibility-textToSpeech', false));
   const [hideImages, setHideImages] = useState<boolean>(() => getLocalStorageItem('accessibility-hideImages', false));
   const [highlightTitles, setHighlightTitles] = useState<boolean>(() => getLocalStorageItem('accessibility-highlightTitles', false));
@@ -96,11 +93,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     document.body.dataset.underlineLinks = underlineLinks ? 'true' : 'false';
     setLocalStorageItem('accessibility-underlineLinks', underlineLinks);
   }, [underlineLinks]);
-  
-  useEffect(() => {
-    document.body.dataset.readableFont = readableFont ? 'true' : 'false';
-    setLocalStorageItem('accessibility-readableFont', readableFont);
-  }, [readableFont]);
   
   useEffect(() => {
     document.body.dataset.hideImages = hideImages ? 'true' : 'false';
@@ -193,7 +185,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setGrayscale(false);
     setInvert(false);
     setUnderlineLinks(false);
-    setReadableFont(false);
     setTextToSpeech(false);
     setHideImages(false);
     setHighlightTitles(false);
@@ -207,7 +198,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     grayscale,
     invert,
     underlineLinks,
-    readableFont,
     textToSpeech,
     hideImages,
     highlightTitles,
@@ -218,7 +208,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setGrayscale,
     setInvert,
     setUnderlineLinks,
-    setReadableFont,
     setTextToSpeech,
     setHideImages,
     setHighlightTitles,
