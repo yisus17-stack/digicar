@@ -256,7 +256,7 @@ function CatalogPageContent() {
                             </Pagination>
                         )}
                     </div>
-                </main>
+                </motion.main>
             </div>
         </div>
     );
