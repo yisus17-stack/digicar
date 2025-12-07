@@ -279,11 +279,11 @@ export default function FormularioRegistro() {
                   <div className="space-y-1 leading-none">
                     <FormLabel>
                       Acepto los{' '}
-                      <Link href="/legal/terminos-y-condiciones" className="underline text-blue-600 hover:text-blue-800">
+                      <Link href="/legal/terminos-y-condiciones" className="text-primary hover:underline">
                         términos y condiciones
                       </Link>{' '}
                       y la{' '}
-                      <Link href="/legal/politica-de-privacidad" className="underline text-blue-600 hover:text-blue-800">
+                      <Link href="/legal/politica-de-privacidad" className="text-primary hover:underline">
                         política de privacidad
                       </Link>
                       .
