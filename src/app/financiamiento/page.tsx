@@ -8,6 +8,7 @@ import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
 import { Suspense } from "react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
