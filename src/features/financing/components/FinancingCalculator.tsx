@@ -160,10 +160,13 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.setTextColor(89, 92, 151); // Primary color
     doc.text(`$ ${monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
     
+    const disclaimer = '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.';
+    const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
+    
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.',
+      splitDisclaimer,
       15,
       doc.internal.pageSize.getHeight() - 15
     );
