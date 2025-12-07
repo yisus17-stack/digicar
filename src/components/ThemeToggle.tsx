@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -14,35 +15,15 @@ const themes = [
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [effectiveTheme, setEffectiveTheme] = React.useState(theme);
-
-  React.useEffect(() => {
-    // We need to resolve the "system" theme to "light" or "dark" to apply the correct color
-    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
-      if (theme === 'system') {
-        setEffectiveTheme(e.matches ? 'dark' : 'light');
-      }
-    };
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-      setEffectiveTheme(systemTheme.matches ? 'dark' : 'light');
-      systemTheme.addEventListener('change', handleSystemThemeChange);
-      return () => systemTheme.removeEventListener('change', handleSystemThemeChange);
-    } else {
-      setEffectiveTheme(theme);
-    }
-  }, [theme]);
-
 
   return (
-    <div className="relative flex items-center rounded-full bg-muted p-1">
+    <div className="relative flex items-center rounded-full bg-muted p-1 gap-1">
       {themes.map((t) => (
         <button
           key={t.name}
           className={cn(
             'relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors',
-            { 'text-primary-foreground': theme === t.name }
+            { 'text-primary-foreground dark:text-primary': theme === t.name }
           )}
           onClick={() => setTheme(t.name)}
           aria-label={`Switch to ${t.name} theme`}
@@ -55,7 +36,7 @@ export function ThemeToggle() {
         layoutId="theme-switcher-bg"
         initial={false}
         animate={{
-          x: themes.findIndex((t) => t.name === theme) * 44, // 44px is w-9 + p-1 on each side
+          x: themes.findIndex((t) => t.name === theme) * 40,
         }}
         transition={{
           type: 'spring',
