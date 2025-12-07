@@ -72,49 +72,48 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.contrast = highContrast ? 'true' : 'false';
+    document.body.dataset.contrast = highContrast ? 'true' : 'false';
     setLocalStorageItem('accessibility-highContrast', highContrast);
   }, [highContrast]);
 
   useEffect(() => {
-    // Map our simplified steps to the CSS values
-    const stepMap = { 0: 0, 1: 1, 2: 2 }; // More steps can be added here
-    document.documentElement.dataset.fontSizeStep = String(stepMap[fontSizeStep] || 0);
+    const stepMap = { 0: 0, 1: 1, 2: 2 };
+    document.body.dataset.fontSizeStep = String(stepMap[fontSizeStep] || 0);
     setLocalStorageItem('accessibility-fontSizeStep', fontSizeStep);
   }, [fontSizeStep]);
   
   useEffect(() => {
-    document.documentElement.dataset.grayscale = grayscale ? 'true' : 'false';
+    document.body.dataset.grayscale = grayscale ? 'true' : 'false';
     setLocalStorageItem('accessibility-grayscale', grayscale);
   }, [grayscale]);
 
   useEffect(() => {
-    document.documentElement.dataset.invert = invert ? 'true' : 'false';
+    document.body.dataset.invert = invert ? 'true' : 'false';
     setLocalStorageItem('accessibility-invert', invert);
   }, [invert]);
 
   useEffect(() => {
-    document.documentElement.dataset.underlineLinks = underlineLinks ? 'true' : 'false';
+    document.body.dataset.underlineLinks = underlineLinks ? 'true' : 'false';
     setLocalStorageItem('accessibility-underlineLinks', underlineLinks);
   }, [underlineLinks]);
   
   useEffect(() => {
-    document.documentElement.dataset.readableFont = readableFont ? 'true' : 'false';
+    document.body.dataset.readableFont = readableFont ? 'true' : 'false';
     setLocalStorageItem('accessibility-readableFont', readableFont);
   }, [readableFont]);
   
   useEffect(() => {
-    document.documentElement.dataset.hideImages = hideImages ? 'true' : 'false';
+    document.body.dataset.hideImages = hideImages ? 'true' : 'false';
     setLocalStorageItem('accessibility-hideImages', hideImages);
   }, [hideImages]);
 
   useEffect(() => {
-    document.documentElement.dataset.highlightTitles = highlightTitles ? 'true' : 'false';
+    document.body.dataset.highlightTitles = highlightTitles ? 'true' : 'false';
     setLocalStorageItem('accessibility-highlightTitles', highlightTitles);
   }, [highlightTitles]);
   
   useEffect(() => {
-    document.documentElement.dataset.textSpacing = String(textSpacing);
+    document.body.dataset.textSpacing = String(textSpacing);
     setLocalStorageItem('accessibility-textSpacing', textSpacing);
   }, [textSpacing]);
 
@@ -132,19 +131,40 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         return text?.replace(/\s\s+/g, ' ').trim() || '';
     }
 
+    const findReadableText = (element: HTMLElement): string | null => {
+        if (!element) return null;
+        
+        // Prioritize explicit labels
+        const ariaLabel = element.getAttribute('aria-label');
+        if (ariaLabel) return ariaLabel;
+
+        const title = element.getAttribute('title');
+        if (title) return title;
+        
+        // Exclude interactive elements that contain other text
+        if (element.matches('button, a, [role="button"]')) {
+            const childText = Array.from(element.childNodes)
+                .map(node => node.nodeType === Node.TEXT_NODE ? node.textContent : '')
+                .join(' ')
+                .trim();
+            if(childText) return childText;
+        }
+
+        // General text content for static elements
+        const readableElements = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'SPAN'];
+        if (readableElements.includes(element.tagName)) {
+            return element.textContent;
+        }
+
+        return null;
+    }
+
     const readTarget = (target: EventTarget | null) => {
       if (!(target instanceof HTMLElement)) return;
-
-      let textToRead = target.getAttribute('aria-label') || target.getAttribute('title');
-
-      if (!textToRead) {
-          const readableElements = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'];
-          if (readableElements.includes(target.tagName) || target.closest(readableElements.join(','))) {
-             textToRead = target.textContent;
-          }
-      }
       
+      const textToRead = findReadableText(target);
       const cleanedText = cleanText(textToRead);
+      
       if (cleanedText) {
           speak(cleanedText);
       }

@@ -44,7 +44,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
+      <head />
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -58,7 +59,7 @@ export default function RootLayout({
             </FirebaseClientProvider>
           </AccessibilityProvider>
         </ThemeProvider>
-        {/* Contenedor del portal para la barra de accesibilidad */}
+        {/* Contenedor del portal para la barra de accesibilidad, ahora como hermano del body */}
         <div id="accessibility-portal"></div>
       </body>
     </html>
