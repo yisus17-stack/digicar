@@ -11,9 +11,6 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/app/theme-provider';
-import { AccessibilityProvider, useAccessibility } from '@/hooks/use-accessibility.tsx';
-import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
-import { useEffect } from 'react';
 import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
@@ -32,7 +29,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
-      {!isAdminPage && <AccessibilityToolbar />}
     </div>
   );
 }
@@ -53,15 +49,11 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <AccessibilityProvider>
-            <FirebaseClientProvider>
-              <AppContent>{children}</AppContent>
-              <Toaster />
-            </FirebaseClientProvider>
-          </AccessibilityProvider>
+          <FirebaseClientProvider>
+            <AppContent>{children}</AppContent>
+            <Toaster />
+          </FirebaseClientProvider>
         </ThemeProvider>
-        {/* Contenedor del portal para la barra de accesibilidad, ahora como hermano del body */}
-        <div id="accessibility-portal"></div>
         <Script
           id="accessibe-script"
           src="https://acsbapp.com/apps/app/dist/js/app.js"
