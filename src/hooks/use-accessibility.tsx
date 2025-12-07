@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState, ReactNode, useCallback 
 import { useTheme } from 'next-themes';
 
 type FontSizeStep = -2 | -1 | 0 | 1 | 2;
+type TextSpacingStep = 0 | 1 | 2;
 
 interface AccessibilityState {
   highContrast: boolean;
@@ -14,6 +15,9 @@ interface AccessibilityState {
   underlineLinks: boolean;
   readableFont: boolean;
   textToSpeech: boolean;
+  hideImages: boolean;
+  highlightTitles: boolean;
+  textSpacing: TextSpacingStep;
   setHighContrast: (value: boolean) => void;
   setFontSizeStep: (step: FontSizeStep) => void;
   setGrayscale: (value: boolean) => void;
@@ -21,6 +25,9 @@ interface AccessibilityState {
   setUnderlineLinks: (value: boolean) => void;
   setReadableFont: (value: boolean) => void;
   setTextToSpeech: (value: boolean) => void;
+  setHideImages: (value: boolean) => void;
+  setHighlightTitles: (value: boolean) => void;
+  setTextSpacing: (step: TextSpacingStep) => void;
   resetAccessibility: () => void;
   speak: (text: string, lang?: string) => void;
 }
@@ -47,6 +54,10 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [underlineLinks, setUnderlineLinks] = useState<boolean>(() => getLocalStorageItem('accessibility-underlineLinks', false));
   const [readableFont, setReadableFont] = useState<boolean>(() => getLocalStorageItem('accessibility-readableFont', false));
   const [textToSpeech, setTextToSpeech] = useState<boolean>(() => getLocalStorageItem('accessibility-textToSpeech', false));
+  const [hideImages, setHideImages] = useState<boolean>(() => getLocalStorageItem('accessibility-hideImages', false));
+  const [highlightTitles, setHighlightTitles] = useState<boolean>(() => getLocalStorageItem('accessibility-highlightTitles', false));
+  const [textSpacing, setTextSpacing] = useState<TextSpacingStep>(() => getLocalStorageItem('accessibility-textSpacing', 0));
+
 
   const speak = useCallback((text: string, lang = 'es-MX') => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
@@ -86,6 +97,22 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     document.documentElement.dataset.readableFont = readableFont ? 'true' : 'false';
     setLocalStorageItem('accessibility-readableFont', readableFont);
   }, [readableFont]);
+  
+  useEffect(() => {
+    document.documentElement.dataset.hideImages = hideImages ? 'true' : 'false';
+    setLocalStorageItem('accessibility-hideImages', hideImages);
+  }, [hideImages]);
+
+  useEffect(() => {
+    document.documentElement.dataset.highlightTitles = highlightTitles ? 'true' : 'false';
+    setLocalStorageItem('accessibility-highlightTitles', highlightTitles);
+  }, [highlightTitles]);
+  
+  useEffect(() => {
+    document.documentElement.dataset.textSpacing = String(textSpacing);
+    setLocalStorageItem('accessibility-textSpacing', textSpacing);
+  }, [textSpacing]);
+
 
   useEffect(() => {
     setLocalStorageItem('accessibility-textToSpeech', textToSpeech);
@@ -143,6 +170,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setUnderlineLinks(false);
     setReadableFont(false);
     setTextToSpeech(false);
+    setHideImages(false);
+    setHighlightTitles(false);
+    setTextSpacing(0);
     setTheme('system');
   };
 
@@ -154,6 +184,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     underlineLinks,
     readableFont,
     textToSpeech,
+    hideImages,
+    highlightTitles,
+    textSpacing,
     setHighContrast,
     setFontSizeStep,
     setGrayscale,
@@ -161,6 +194,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setUnderlineLinks,
     setReadableFont,
     setTextToSpeech,
+    setHideImages,
+    setHighlightTitles,
+    setTextSpacing,
     resetAccessibility,
     speak,
   };

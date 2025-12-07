@@ -5,18 +5,17 @@ import {
     CircleSlash,
     Contrast,
     FileText,
-    Type,
     Underline,
     Palette,
     Sun,
     Moon,
     ZoomIn,
-    ZoomOut,
     Accessibility,
     X,
     Volume2,
-    Paintbrush,
-    Pilcrow,
+    ImageOff,
+    Heading1,
+    Baseline,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAccessibility } from '@/hooks/use-accessibility.tsx';
@@ -62,12 +61,18 @@ export function AccessibilityToolbar() {
     underlineLinks,
     readableFont,
     textToSpeech,
+    hideImages,
+    highlightTitles,
+    textSpacing,
     setHighContrast,
     setFontSizeStep,
     setGrayscale,
     setUnderlineLinks,
     setReadableFont,
     setTextToSpeech,
+    setHideImages,
+    setHighlightTitles,
+    setTextSpacing,
     resetAccessibility,
   } = useAccessibility();
 
@@ -85,8 +90,27 @@ export function AccessibilityToolbar() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  const handleIncreaseFont = () => setFontSizeStep(Math.min(2, fontSizeStep + 1) as any);
-  const handleDecreaseFont = () => setFontSizeStep(Math.max(-2, fontSizeStep - 1) as any);
+  const handleCycleFontSize = () => {
+    const nextStep = (fontSizeStep + 3) % 5 - 2; // Cycles from -2 to 2
+    setFontSizeStep(nextStep as any);
+  };
+  
+  const handleCycleTextSpacing = () => {
+    const nextStep = (textSpacing + 1) % 3;
+    setTextSpacing(nextStep as any);
+  };
+
+  const getFontSizeLabel = () => {
+    if (fontSizeStep === 0) return 'Tamaño de Texto';
+    return `Texto x${(1 + fontSizeStep * 0.125).toFixed(2)}`;
+  }
+  
+  const getTextSpacingLabel = () => {
+    if (textSpacing === 0) return 'Espaciado de Texto';
+    if (textSpacing === 1) return 'Espaciado x1.5';
+    if (textSpacing === 2) return 'Espaciado x2.0';
+  }
+
 
   if (!isOpen) {
     return (
@@ -124,78 +148,47 @@ export function AccessibilityToolbar() {
 
         <div className="flex-grow overflow-y-auto p-4 space-y-6">
             <div>
+                <SectionTitle>Ajustes de Contenido</SectionTitle>
+                <div className="grid grid-cols-3 gap-3">
+                    <ToolButton label={getFontSizeLabel()} onClick={handleCycleFontSize} isActive={fontSizeStep !== 0}>
+                        <ZoomIn className="h-7 w-7" />
+                    </ToolButton>
+                    <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
+                        <FileText className="h-7 w-7" />
+                    </ToolButton>
+                    <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
+                        <Heading1 className="h-7 w-7" />
+                    </ToolButton>
+                    <ToolButton label="Subrayar Enlaces" onClick={() => setUnderlineLinks(!underlineLinks)} isActive={underlineLinks}>
+                        <Underline className="h-7 w-7" />
+                    </ToolButton>
+                    <ToolButton label={getTextSpacingLabel()} onClick={handleCycleTextSpacing} isActive={textSpacing > 0}>
+                        <Baseline className="h-7 w-7" />
+                    </ToolButton>
+                    <ToolButton label="Ocultar Imágenes" onClick={() => setHideImages(!hideImages)} isActive={hideImages}>
+                        <ImageOff className="h-7 w-7" />
+                    </ToolButton>
+                     <ToolButton label="Leer Texto" onClick={() => setTextToSpeech(!textToSpeech)} isActive={textToSpeech}>
+                        <Volume2 className="h-7 w-7" />
+                    </ToolButton>
+                </div>
+            </div>
+            <div>
               <SectionTitle>Ajustes de Color</SectionTitle>
               <div className="grid grid-cols-3 gap-3">
-                  <ToolButton
-                      label="Contraste Oscuro"
-                      onClick={() => setTheme('dark')}
-                      isActive={theme === 'dark'}
-                  >
+                  <ToolButton label="Contraste Oscuro" onClick={() => setTheme('dark')} isActive={theme === 'dark'}>
                       <Moon className="h-7 w-7" />
                   </ToolButton>
-                  <ToolButton
-                      label="Contraste Claro"
-                      onClick={() => setTheme('light')}
-                      isActive={theme === 'light'}
-                  >
+                  <ToolButton label="Contraste Claro" onClick={() => setTheme('light')} isActive={theme === 'light'}>
                       <Sun className="h-7 w-7" />
                   </ToolButton>
-                  <ToolButton
-                      label="Alto Contraste"
-                      onClick={() => setHighContrast(!highContrast)}
-                      isActive={highContrast}
-                  >
+                  <ToolButton label="Alto Contraste" onClick={() => setHighContrast(!highContrast)} isActive={highContrast}>
                       <Contrast className="h-7 w-7" />
                   </ToolButton>
-                  <ToolButton
-                      label="Monocromático"
-                      onClick={() => setGrayscale(!grayscale)}
-                      isActive={grayscale}
-                  >
+                  <ToolButton label="Monocromático" onClick={() => setGrayscale(!grayscale)} isActive={grayscale}>
                       <Palette className="h-7 w-7" />
                   </ToolButton>
               </div>
-            </div>
-
-            <div>
-              <SectionTitle>Ajustes de Contenido</SectionTitle>
-               <div className="grid grid-cols-3 gap-3">
-                    <ToolButton
-                      label="Aumentar Texto"
-                      onClick={handleIncreaseFont}
-                      isActive={fontSizeStep > 0}
-                    >
-                      <ZoomIn className="h-7 w-7" />
-                    </ToolButton>
-                     <ToolButton
-                      label="Reducir Texto"
-                      onClick={handleDecreaseFont}
-                      isActive={fontSizeStep < 0}
-                    >
-                      <ZoomOut className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton
-                      label="Fuente Legible"
-                      onClick={() => setReadableFont(!readableFont)}
-                      isActive={readableFont}
-                    >
-                      <FileText className="h-7 w-7" />
-                    </ToolButton>
-                    <ToolButton
-                      label="Subrayar Enlaces"
-                      onClick={() => setUnderlineLinks(!underlineLinks)}
-                      isActive={underlineLinks}
-                    >
-                      <Underline className="h-7 w-7" />
-                    </ToolButton>
-                     <ToolButton
-                      label="Leer Texto"
-                      onClick={() => setTextToSpeech(!textToSpeech)}
-                      isActive={textToSpeech}
-                    >
-                      <Volume2 className="h-7 w-7" />
-                    </ToolButton>
-               </div>
             </div>
         </div>
 
