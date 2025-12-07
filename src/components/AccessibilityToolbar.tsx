@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
-import { useAccessibility } from '@/hooks/use-accessibility';
+import { useAccessibility } from '@/hooks/use-accessibility.tsx';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
@@ -59,7 +58,7 @@ const SectionTitle = ({ children, className }: { children: React.ReactNode, clas
     <h3 className={cn("text-lg font-semibold text-foreground mb-3", className)}>{children}</h3>
 );
 
-export function AccessibilityToolbar() {
+export function AccessibilityToolbar({ fontClassName }: { fontClassName: string }) {
   const {
     highContrast,
     fontSizeStep,
@@ -117,7 +116,7 @@ export function AccessibilityToolbar() {
   }
 
   const toolbarContent = (
-    <div className="accessibility-panel-wrapper">
+    <div className={cn("accessibility-panel-wrapper", fontClassName)}>
       {!isOpen && (
         <div className="fixed bottom-4 left-4 z-50">
           <Button

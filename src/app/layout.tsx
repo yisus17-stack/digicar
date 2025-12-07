@@ -1,4 +1,3 @@
-
 'use client';
 
 import './globals.css';
@@ -18,7 +17,7 @@ import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
-function AppContent({ children }: { children: React.ReactNode }) {
+function AppContent({ children, fontClassName }: { children: React.ReactNode, fontClassName: string }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
 
@@ -28,10 +27,11 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div className={cn("relative flex min-h-screen flex-col font-sans", poppins.variable)}>
+    <div className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
+      <AccessibilityToolbar fontClassName={fontClassName} />
     </div>
   );
 }
@@ -75,8 +75,7 @@ export default function RootLayout({
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
-              <AppContent>{children}</AppContent>
-              <AccessibilityToolbar />
+              <AppContent fontClassName={poppins.className}>{children}</AppContent>
             </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>
