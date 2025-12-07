@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import ComparisonContent from "@/features/comparison/components/ComparisonContent";
+import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 
 function ComparisonAuthWrapper({ children }: { children: React.ReactNode }) {
     const { user, loading: loadingUser } = useUser();
@@ -17,7 +18,7 @@ function ComparisonAuthWrapper({ children }: { children: React.ReactNode }) {
     }, [user, loadingUser, router]);
 
     if (loadingUser || !user) {
-        return null;
+        return <EsqueletoComparacion />;
     }
 
     return <>{children}</>;
