@@ -99,11 +99,10 @@
     transition: font-size 0.2s ease-in-out;
   }
 
-  html[data-font-size-step='-2'] { --font-base-size: 12px; }
-  html[data-font-size-step='-1'] { --font-base-size: 14px; }
   html[data-font-size-step='0'] { --font-base-size: 16px; }
   html[data-font-size-step='1'] { --font-base-size: 18px; }
   html[data-font-size-step='2'] { --font-base-size: 20px; }
+
 
   html[data-grayscale='true'] { filter: grayscale(100%); }
   html[data-invert='true'] { filter: invert(100%); }

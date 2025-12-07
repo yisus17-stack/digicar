@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 
-type FontSizeStep = -2 | -1 | 0 | 1 | 2;
+type FontSizeStep = 0 | 1 | 2; // 0: normal, 1: medium, 2: large
 type TextSpacingStep = 0 | 1 | 2;
 
 interface AccessibilityState {
@@ -19,8 +19,7 @@ interface AccessibilityState {
   textSpacing: TextSpacingStep;
   setHighContrast: (value: boolean) => void;
   setFontSizeStep: (step: FontSizeStep) => void;
-  increaseFontSize: () => void;
-  decreaseFontSize: () => void;
+  cycleFontSize: () => void;
   setGrayscale: (value: boolean) => void;
   setInvert: (value: boolean) => void;
   setUnderlineLinks: (value: boolean) => void;
@@ -59,14 +58,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [highlightTitles, setHighlightTitles] = useState<boolean>(() => getLocalStorageItem('accessibility-highlightTitles', false));
   const [textSpacing, setTextSpacing] = useState<TextSpacingStep>(() => getLocalStorageItem('accessibility-textSpacing', 0));
 
-  const increaseFontSize = () => {
-    setFontSizeStep(prev => Math.min(prev + 1, 2) as FontSizeStep);
+  const cycleFontSize = () => {
+    setFontSizeStep(prev => ((prev + 1) % 3) as FontSizeStep);
   }
-  
-  const decreaseFontSize = () => {
-    setFontSizeStep(prev => Math.max(prev - 1, -2) as FontSizeStep);
-  }
-
 
   const speak = useCallback((text: string, lang = 'es-MX') => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
@@ -83,7 +77,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   }, [highContrast]);
 
   useEffect(() => {
-    document.documentElement.dataset.fontSizeStep = String(fontSizeStep);
+    // Map our simplified steps to the CSS values
+    const stepMap = { 0: 0, 1: 1, 2: 2 }; // More steps can be added here
+    document.documentElement.dataset.fontSizeStep = String(stepMap[fontSizeStep] || 0);
     setLocalStorageItem('accessibility-fontSizeStep', fontSizeStep);
   }, [fontSizeStep]);
   
@@ -198,8 +194,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     textSpacing,
     setHighContrast,
     setFontSizeStep,
-    increaseFontSize,
-    decreaseFontSize,
+    cycleFontSize,
     setGrayscale,
     setInvert,
     setUnderlineLinks,

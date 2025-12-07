@@ -9,7 +9,6 @@ import {
     Sun,
     Moon,
     ZoomIn,
-    ZoomOut,
     Accessibility,
     X,
     Volume2,
@@ -67,9 +66,8 @@ export function AccessibilityToolbar() {
     hideImages,
     highlightTitles,
     textSpacing,
+    cycleFontSize,
     setHighContrast,
-    increaseFontSize,
-    decreaseFontSize,
     setGrayscale,
     setUnderlineLinks,
     setReadableFont,
@@ -103,6 +101,13 @@ export function AccessibilityToolbar() {
     if (textSpacing === 0) return 'Espaciado de Texto';
     if (textSpacing === 1) return 'Espaciado x1.5';
     if (textSpacing === 2) return 'Espaciado x2.0';
+  }
+
+  const getFontSizeLabel = () => {
+    if (fontSizeStep === 0) return 'Tamaño de Texto';
+    if (fontSizeStep === 1) return 'Texto Mediano';
+    if (fontSizeStep === 2) return 'Texto Grande';
+    return 'Tamaño de Texto';
   }
 
 
@@ -144,32 +149,16 @@ export function AccessibilityToolbar() {
             <div>
                 <SectionTitle>Ajustes de Contenido</SectionTitle>
                 <div className="grid grid-cols-3 gap-3">
-                    {/* Text Size Control */}
-                    <div className="col-span-1 rounded-lg border bg-card p-3 flex flex-col justify-center items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <button onClick={decreaseFontSize} className="p-1 rounded-full hover:bg-muted disabled:opacity-50" disabled={fontSizeStep === -2} aria-label="Reducir texto">
-                                <ZoomOut className="h-6 w-6" />
-                            </button>
-                            <button onClick={increaseFontSize} className="p-1 rounded-full hover:bg-muted disabled:opacity-50" disabled={fontSizeStep === 2} aria-label="Aumentar texto">
-                                <ZoomIn className="h-6 w-6" />
-                            </button>
+                    <ToolButton label={getFontSizeLabel()} onClick={cycleFontSize} isActive={fontSizeStep > 0}>
+                        <div className="flex flex-col items-center gap-2">
+                           <ZoomIn className="h-7 w-7" />
+                           <div className="flex items-center gap-1.5 mt-1">
+                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 1 ? "bg-white" : "bg-gray-500/50")} />
+                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 2 ? "bg-white" : "bg-gray-500/50")} />
+                                <div className={cn("w-6 h-1.5 rounded-full", fontSizeStep >= 3 ? "bg-white" : "bg-gray-500/50")} />
+                           </div>
                         </div>
-                        <span className="text-xs font-medium text-center">Tamaño de Texto</span>
-                         <div className="flex items-end justify-center gap-1 h-3 mt-1">
-                            {[-2, -1, 0, 1, 2].map((step, index) => (
-                                <div key={step} className={cn(
-                                    "w-3 rounded-sm transition-all",
-                                    step <= fontSizeStep ? "bg-primary" : "bg-muted",
-                                    index === 0 && "h-1",
-                                    index === 1 && "h-2",
-                                    index === 2 && "h-3",
-                                    index === 3 && "h-4",
-                                    index === 4 && "h-5",
-                                )}/>
-                            ))}
-                        </div>
-                    </div>
-
+                    </ToolButton>
                     <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
                         <FileText className="h-7 w-7" />
                     </ToolButton>
