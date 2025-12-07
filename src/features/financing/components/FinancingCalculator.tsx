@@ -14,6 +14,7 @@ import WizardSteps from '@/components/layout/WizardSteps';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { Loader2, Download } from 'lucide-react';
+import { useUser } from '@/firebase';
 
 const INTEREST_RATE = 0.12; // Tasa de interés anual fija del 12%
 
@@ -34,6 +35,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   const [downPayment, setDownPayment] = useState(200000);
   const [term, setTerm] = useState(24);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const { user } = useUser();
 
   const wizardSteps = [
     { number: 1, title: 'Presupuesto' },
@@ -120,27 +122,41 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.text('Aquí tienes un resumen detallado de tu plan de financiamiento personalizado.', 15, 28);
+    
+    let currentY = 45;
+
+    if(user) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Preparado para:', 15, currentY);
+        doc.setFont('helvetica', 'normal');
+        doc.text(user.displayName || 'N/A', 15, currentY + 5);
+        doc.text(user.email || 'N/A', 15, currentY + 10);
+        currentY += 25;
+    }
 
 
     if(carImage) {
         const imageBase64 = await getImageBase64(carImage);
         if (imageBase64) {
-            doc.addImage(imageBase64, 'PNG', 15, 45, 80, 50, '', 'FAST');
+            doc.addImage(imageBase64, 'PNG', 15, currentY, 80, 50, '', 'FAST');
         }
     }
     
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, 60);
+    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, currentY + 15);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, 68);
+    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, currentY + 23);
+
+    currentY += 65;
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('Especificaciones del Vehículo', 15, 110);
+    doc.text('Especificaciones del Vehículo', 15, currentY);
     doc.autoTable({
-        startY: 115,
+        startY: currentY + 5,
         head: [['Especificación', 'Valor']],
         body: [
             ['Combustible', selectedCar.tipoCombustible],
