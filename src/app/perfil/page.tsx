@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity, Landmark } from 'lucide-react';
+import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity, Landmark, Download } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import ChangePasswordForm from '@/features/auth/components/ChangePasswordForm';
@@ -26,6 +26,8 @@ import type { Favorite, Car, Comparison, Financing, CarVariant, FavoriteItem } f
 import CarCard from '@/features/catalog/components/CarCard';
 import Image from 'next/image';
 import Link from 'next/link';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const profileSchema = z.object({
   displayName: z.string(),
@@ -70,6 +72,11 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+declare module 'jspdf' {
+    interface jsPDF {
+      autoTable: (options: any) => jsPDF;
+    }
+}
 
 function EsqueletoPerfil() {
   return (
@@ -178,12 +185,132 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
     );
 };
 
-const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing, allCars: Car[], onRemove: (id: string) => void }) => {
+const FinancingItem = ({ financing, allCars, onRemove, user }: { financing: Financing, allCars: Car[], onRemove: (id: string) => void, user: any }) => {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
     const car = allCars.find(c => c.id === financing.autoId);
     if (!car) return null;
+    
+    const INTEREST_RATE = 0.12;
 
     const variant = car.variantes.find(v => v.id === financing.varianteId);
     const carImage = variant?.imagenUrl ?? car.imagenUrl;
+    
+    const handleGeneratePDF = async () => {
+        setIsGeneratingPdf(true);
+
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const getImageBase64 = async (url: string) => {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch (e) {
+                console.error("Error fetching image for PDF:", e);
+                return null;
+            }
+        };
+
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Cotización de Financiamiento', 15, 20);
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Aquí tienes un resumen detallado de tu plan de financiamiento personalizado.', 15, 28);
+
+        let currentY = 45;
+
+        if (user) {
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Preparado para:', 15, currentY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(user.displayName || 'N/A', 15, currentY + 5);
+            doc.text(user.email || 'N/A', 15, currentY + 10);
+            currentY += 25;
+        }
+
+        if (carImage) {
+            const imageBase64 = await getImageBase64(carImage);
+            if (imageBase64) {
+                doc.addImage(imageBase64, 'PNG', 15, currentY, 80, 0, '', 'FAST');
+            }
+        }
+
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${car.marca} ${car.modelo}`, 105, currentY + 15);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${car.anio} • ${car.tipo}`, 105, currentY + 23);
+
+        currentY += 65;
+
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Especificaciones del Vehículo', 15, currentY);
+        doc.autoTable({
+            startY: currentY + 5,
+            head: [['Especificación', 'Valor']],
+            body: [
+                ['Combustible', car.tipoCombustible],
+                ['Transmisión', car.transmision],
+                ['Cilindros', `${car.cilindrosMotor}`],
+                ['Pasajeros', `${car.pasajeros}`],
+                ['Color', variant?.color ?? car.variantes?.[0]?.color ?? '-'],
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [244, 244, 245], textColor: [20, 20, 20] },
+        });
+
+        let finalY = (doc as any).lastAutoTable.finalY + 15;
+
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Resumen de Financiamiento', 15, finalY);
+
+        doc.autoTable({
+            startY: finalY + 5,
+            head: [['Concepto', 'Monto']],
+            body: [
+                ['Precio del Vehículo', `$ ${financing.precioAuto.toLocaleString('es-MX')}`],
+                ['Enganche', `$ ${financing.enganche.toLocaleString('es-MX')}`],
+                ['Monto a Financiar', `$ ${(financing.precioAuto - financing.enganche).toLocaleString('es-MX')}`],
+                ['Plazo', `${financing.plazo} meses`],
+                ['Tasa de Interés Anual Fija', `${(INTEREST_RATE * 100).toFixed(0)}%`],
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [244, 244, 245], textColor: [20, 20, 20] },
+        });
+
+        finalY = (doc as any).lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Pago Mensual Estimado:', 15, finalY);
+        doc.setFontSize(18);
+        doc.setTextColor(89, 92, 151);
+        doc.text(`$ ${financing.pagoMensual.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
+        doc.setTextColor(0);
+
+        finalY += 25;
+
+        const disclaimer = `*Este documento es una cotización preliminar de DigiCar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del ${(INTEREST_RATE * 100).toFixed(0)}%.`;
+        const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
+
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(splitDisclaimer, 15, finalY, { align: 'left' });
+
+        doc.save(`Cotizacion-${car.marca}-${car.modelo}.pdf`);
+        setIsGeneratingPdf(false);
+    };
 
     return (
         <Card>
@@ -217,6 +344,9 @@ const FinancingItem = ({ financing, allCars, onRemove }: { financing: Financing,
                      <p className="text-xs text-muted-foreground sm:absolute sm:top-4 sm:right-4">
                         {new Date(financing.fechaCreacion.seconds * 1000).toLocaleDateString()}
                     </p>
+                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleGeneratePDF} disabled={isGeneratingPdf}>
+                        {isGeneratingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(financing.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                 </div>
             </CardContent>
@@ -505,7 +635,7 @@ export default function PaginaPerfil() {
                         {financiamientos && financiamientos.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6">
                                 {financiamientos.map(fin => (
-                                    <FinancingItem key={fin.id} financing={fin} allCars={todosLosAutos} onRemove={handleRemoveFinancing}/>
+                                    <FinancingItem key={fin.id} financing={fin} allCars={todosLosAutos} onRemove={handleRemoveFinancing} user={user}/>
                                 ))}
                             </div>
                         ) : (
