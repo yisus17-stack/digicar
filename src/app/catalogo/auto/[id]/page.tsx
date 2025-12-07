@@ -161,7 +161,7 @@ export default function PaginaDetalleAuto() {
       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
       <Card className="mt-6 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Columna Izquierda: Imagen */}
             <div className="p-4 md:p-8 lg:border-r">
                  <AspectRatio 
@@ -197,7 +197,7 @@ export default function PaginaDetalleAuto() {
             </div>
 
             {/* Columna Derecha: Información */}
-            <div className="p-8 space-y-6">
+            <div className="p-4 sm:p-8 space-y-6">
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
