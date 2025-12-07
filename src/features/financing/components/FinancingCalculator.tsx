@@ -33,18 +33,6 @@ declare module 'jspdf' {
     }
 }
 
-const EsqueletoFinanciamiento = () => (
-    <div className="container mx-auto px-4 py-8 md:py-12">
-        <Skeleton className="h-8 w-1/4 mb-12" />
-        <div className="text-center mb-12">
-            <Skeleton className="h-12 w-1/2 mx-auto" />
-            <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
-        </div>
-        <Skeleton className="h-96 w-full" />
-    </div>
-);
-
-
 export default function FinancingCalculator({ allCars }: FinancingCalculatorProps) {
   const [step, setStep] = useState(1);
   const [monthlyBudget, setMonthlyBudget] = useState(5000);
@@ -54,7 +42,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   const [term, setTerm] = useState(24);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { user, loading: loadingUser } = useUser();
+  const { user } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
 
@@ -65,12 +53,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     { number: 3, title: 'Resultado' },
   ];
   
-  useEffect(() => {
-    if (!loadingUser && !user) {
-      router.push('/login?redirect=/financiamiento');
-    }
-  }, [user, loadingUser, router]);
-
   const resetCalculator = () => {
     setStep(1);
     setMonthlyBudget(5000);
@@ -314,11 +296,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
   };
-
-  if (loadingUser) {
-    return <EsqueletoFinanciamiento />;
-  }
-
 
   return (
     <div className="w-full max-w-4xl mx-auto">

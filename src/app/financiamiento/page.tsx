@@ -2,11 +2,13 @@
 'use client';
 
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -21,11 +23,24 @@ const EsqueletoFinanciamiento = () => (
 
 export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
+    const { user, loading: loadingUser } = useUser();
+    const router = useRouter();
+    
     const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
     const { data: autos, isLoading } = useCollection<Car>(coleccionAutos);
 
-    if (isLoading || !autos) {
+    useEffect(() => {
+        if (!loadingUser && !user) {
+            router.push('/login?redirect=/financiamiento');
+        }
+    }, [user, loadingUser, router]);
+
+    if (isLoading || loadingUser || !autos) {
         return <EsqueletoFinanciamiento />;
+    }
+    
+    if (!user) {
+        return null;
     }
 
     return (
