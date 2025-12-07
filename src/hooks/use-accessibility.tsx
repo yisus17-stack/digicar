@@ -20,6 +20,8 @@ export interface AccessibilityState {
   setTextMagnifier: (value: boolean) => void;
   readingMask: boolean;
   setReadingMask: (value: boolean) => void;
+  highlightOnHover: boolean;
+  setHighlightOnHover: (value: boolean) => void;
   fontSizeStep: 0 | 1 | 2;
   cycleFontSize: () => void;
   textSpacing: 0 | 1 | 2;
@@ -46,6 +48,7 @@ export function useAccessibilityState(): AccessibilityState {
   const [textToSpeech, setTextToSpeech] = useState(false);
   const [textMagnifier, setTextMagnifier] = useState(false);
   const [readingMask, setReadingMask] = useState(false);
+  const [highlightOnHover, setHighlightOnHover] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
 
@@ -62,6 +65,7 @@ export function useAccessibilityState(): AccessibilityState {
     setTextToSpeech(false);
     setTextMagnifier(false);
     setReadingMask(false);
+    setHighlightOnHover(false);
     setFontSizeStep(0);
     setTextSpacing(0);
   };
@@ -81,12 +85,13 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.textSpacing = String(textSpacing);
     body.dataset.textMagnifier = String(textMagnifier);
     body.dataset.readingMask = String(readingMask);
+    body.dataset.highlightOnHover = String(highlightOnHover);
     
     if (mainContentWrapper) {
       mainContentWrapper.dataset.grayscale = String(grayscale);
     }
     
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask]);
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask, highlightOnHover]);
 
 
   return {
@@ -98,6 +103,7 @@ export function useAccessibilityState(): AccessibilityState {
     textToSpeech, setTextToSpeech,
     textMagnifier, setTextMagnifier,
     readingMask, setReadingMask,
+    highlightOnHover, setHighlightOnHover,
     fontSizeStep, cycleFontSize,
     textSpacing, setTextSpacing,
     resetAccessibility,

@@ -18,6 +18,7 @@ import {
     Baseline,
     ZoomOut,
     RectangleHorizontal,
+    MousePointerClick,
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
@@ -73,6 +74,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     textSpacing,
     textMagnifier,
     readingMask,
+    highlightOnHover,
     cycleFontSize,
     setHighContrast,
     setGrayscale,
@@ -83,6 +85,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     setTextSpacing,
     setTextMagnifier,
     setReadingMask,
+    setHighlightOnHover,
     resetAccessibility,
   } = useAccessibility();
 
@@ -199,6 +202,9 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                             </ToolButton>
                             <ToolButton label="Máscara de Lectura" onClick={() => setReadingMask(!readingMask)} isActive={readingMask}>
                                 <RectangleHorizontal className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label="Resaltar Pasada" onClick={() => setHighlightOnHover(!highlightOnHover)} isActive={highlightOnHover}>
+                                <MousePointerClick className="h-7 w-7" />
                             </ToolButton>
                             <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
                                 <Heading1 className="h-7 w-7" />

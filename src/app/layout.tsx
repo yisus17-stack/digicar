@@ -17,6 +17,7 @@ import { useState, useEffect, ReactNode } from 'react';
 import Script from 'next/script';
 import { TextMagnifier } from '@/components/TextMagnifier';
 import { ReadingMask } from '@/components/ReadingMask';
+import { HighlightOnHover } from '@/components/HighlightOnHover';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -72,6 +73,7 @@ export default function RootLayout({
               <AccessibilityToolbar fontClassName={poppins.className} />
               <TextMagnifier />
               <ReadingMask />
+              <HighlightOnHover />
             </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>
