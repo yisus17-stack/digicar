@@ -30,7 +30,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      {showHeaderAndFooter && <SiteHeader user={user} />}
+      {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
     </div>

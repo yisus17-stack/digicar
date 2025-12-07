@@ -2,13 +2,12 @@
 'use client';
 
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense } from "react";
 
 const EsqueletoFinanciamiento = () => (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -21,30 +20,13 @@ const EsqueletoFinanciamiento = () => (
     </div>
 );
 
-function FinancingAuthWrapper({ children }: { children: React.ReactNode }) {
-    const { user, loading: loadingUser } = useUser();
-    const router = useRouter();
-
-    useEffect(() => {
-        if (!loadingUser && !user) {
-            router.push('/login?redirect=/financiamiento');
-        }
-    }, [user, loadingUser, router]);
-    
-    if (loadingUser || !user) {
-        return <EsqueletoFinanciamiento />;
-    }
-
-    return <>{children}</>;
-}
-
 
 export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
     const { data: autos, isLoading } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
 
     return (
-        <FinancingAuthWrapper>
+        <Suspense fallback={<EsqueletoFinanciamiento />}>
              <div className="container mx-auto px-4 py-8 md:py-12">
                 <Breadcrumbs items={[{ label: "Financiamiento" }]} />
                 <div className="text-center mb-12">
@@ -57,6 +39,6 @@ export default function PaginaFinanciamiento() {
                 </div>
                 {isLoading || !autos ? <EsqueletoFinanciamiento /> : <FinancingCalculator allCars={autos} />}
             </div>
-        </FinancingAuthWrapper>
+        </Suspense>
     );
 }

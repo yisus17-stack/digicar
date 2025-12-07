@@ -44,9 +44,10 @@ import Swal from 'sweetalert2';
 
 interface SiteHeaderProps {
     user: FirebaseUser | null;
+    loading: boolean;
 }
 
-const SiteHeader = ({ user }: SiteHeaderProps) => {
+const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -82,17 +83,28 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
       setSearchTerm('');
     }
   };
+
+  const handleProtectedLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    if (loading) {
+      return; 
+    }
+    if (user) {
+      router.push(href);
+    } else {
+      router.push('/login?redirect=' + href);
+    }
+  }
   
-  // Do not show header on admin routes
   if (pathname.startsWith('/admin')) {
     return null;
   }
 
   const navLinks = [
-    { href: '/', label: 'Inicio', icon: Home },
-    { href: '/catalogo', label: 'Catálogo', icon: LayoutGrid },
-    { href: '/comparacion', label: 'Comparar', icon: GitCompareArrows },
-    { href: '/financiamiento', label: 'Financiamiento', icon: Landmark },
+    { href: '/', label: 'Inicio', icon: Home, protected: false },
+    { href: '/catalogo', label: 'Catálogo', icon: LayoutGrid, protected: false },
+    { href: '/comparacion', label: 'Comparar', icon: GitCompareArrows, protected: true },
+    { href: '/financiamiento', label: 'Financiamiento', icon: Landmark, protected: true },
   ];
 
   const handleSignOut = async () => {
@@ -138,6 +150,7 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
                 className={cn(
                   'transition-colors hover:text-primary',
                   pathname === link.href ? 'text-primary' : 'text-muted-foreground'
@@ -232,6 +245,7 @@ const SiteHeader = ({ user }: SiteHeaderProps) => {
                         <Link
                           key={link.href}
                           href={link.href}
+                          onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
                           className="flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted"
                         >
                           <link.icon className="h-5 w-5" />
