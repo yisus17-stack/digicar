@@ -58,6 +58,8 @@ export default function RootLayout({
             </FirebaseClientProvider>
           </AccessibilityProvider>
         </ThemeProvider>
+        {/* Contenedor del portal para la barra de accesibilidad */}
+        <div id="accessibility-portal"></div>
       </body>
     </html>
   );

@@ -16,11 +16,13 @@ import {
     Heading1,
     Baseline,
 } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
 import { useAccessibility } from '@/hooks/use-accessibility.tsx';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
+import { useMounted } from '@/hooks/use-mounted';
 
 const ToolButton = ({
   label,
@@ -80,7 +82,7 @@ export function AccessibilityToolbar() {
 
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const isMounted = useMounted();
   
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -92,12 +94,6 @@ export function AccessibilityToolbar() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  useEffect(() => {
-    if (panelRef.current) {
-      panelRef.current.id = 'accessibility-panel-wrapper';
-    }
-  }, []);
-  
   const handleCycleTextSpacing = () => {
     const nextStep = (textSpacing + 1) % 3;
     setTextSpacing(nextStep as any);
@@ -116,24 +112,26 @@ export function AccessibilityToolbar() {
     return 'Tamaño de Texto';
   }
 
-
-  if (!isOpen) {
-    return (
-      <div className="fixed bottom-4 left-4 z-50">
-        <Button
-          size="icon"
-          onClick={() => setIsOpen(true)}
-          aria-label="Abrir panel de accesibilidad"
-          className="rounded-full h-14 w-14 shadow-lg"
-        >
-          <Accessibility className="h-7 w-7" />
-        </Button>
-      </div>
-    );
+  if (!isMounted) {
+    return null;
   }
 
-  return (
-    <div ref={panelRef}>
+  const toolbarContent = (
+    <>
+      {!isOpen && (
+        <div className="fixed bottom-4 left-4 z-50">
+          <Button
+            size="icon"
+            onClick={() => setIsOpen(true)}
+            aria-label="Abrir panel de accesibilidad"
+            className="rounded-full h-14 w-14 shadow-lg"
+          >
+            <Accessibility className="h-7 w-7" />
+          </Button>
+        </div>
+      )}
+
+      {isOpen && (
         <div className="fixed inset-0 bg-black/60 z-50 animate-in fade-in duration-300">
             <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
             
@@ -158,9 +156,9 @@ export function AccessibilityToolbar() {
                                 <div className="flex flex-col items-center justify-center h-full">
                                    <ZoomIn className="h-7 w-7" />
                                    <div className="flex items-center gap-1.5 mt-2">
-                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 1 ? "bg-white" : "bg-gray-500/50")} />
-                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 2 ? "bg-white" : "bg-gray-500/50")} />
-                                        <div className={cn("w-4 h-1 rounded-full", fontSizeStep >= 3 ? "bg-white" : "bg-gray-500/50")} />
+                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-500/50")} />
+                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-500/50")} />
+                                        <div className={cn("w-4 h-1 rounded-full transition-colors", fontSizeStep >= 3 ? "bg-primary-foreground" : "bg-gray-500/50")} />
                                    </div>
                                 </div>
                             </ToolButton>
@@ -215,6 +213,10 @@ export function AccessibilityToolbar() {
                 </footer>
             </div>
         </div>
-    </div>
+      )}
+    </>
   );
+
+  const portalContainer = document.getElementById('accessibility-portal');
+  return portalContainer ? createPortal(toolbarContent, portalContainer) : null;
 }

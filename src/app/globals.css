@@ -144,18 +144,6 @@
     line-height: var(--text-spacing, 1.5);
     word-spacing: var(--word-spacing, 0);
   }
-
-  #accessibility-panel-wrapper {
-    filter: none !important;
-    font-size: 16px !important;
-  }
-
-  #accessibility-panel-wrapper * {
-    font-size: inherit !important;
-    line-height: initial !important;
-    letter-spacing: initial !important;
-    word-spacing: initial !important;
-  }
 }
 
 @layer base {
