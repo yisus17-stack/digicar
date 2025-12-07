@@ -15,6 +15,7 @@ import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useNotification } from '@/core/contexts/NotificationContext';
 
 interface TablaMarcasProps {
   marcas: Marca[];
@@ -25,6 +26,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
+  const { startUpload, updateUploadProgress, completeUpload, errorUpload, showNotification, updateNotificationStatus } = useNotification();
+
 
   const manejarAnadir = () => {
     setMarcaSeleccionada(null);
@@ -98,45 +101,47 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
 
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     setIsSaving(true);
+    const notificationId = showNotification({ title: 'Guardando marca...', status: 'loading' });
     
     try {
         let finalBrandData: any = { ...data };
 
         if (file) {
-            Swal.fire({
-              title: 'Subiendo imagen...',
-              text: 'Por favor, espera.',
-              icon: 'info',
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-              confirmButtonColor: '#595c97',
-            });
-            const logoUrl = await uploadImage(file);
-            finalBrandData.logoUrl = logoUrl;
+            const uploadId = startUpload(file);
+            try {
+                const logoUrl = await uploadImage(file, (progress) => {
+                    updateUploadProgress(uploadId, progress);
+                });
+                finalBrandData.logoUrl = logoUrl;
+                completeUpload(uploadId, `Logo ${file.name} subido`);
+            } catch (uploadError) {
+                errorUpload(uploadId, `Error al subir ${file.name}`);
+                throw uploadError; // Propagate error to stop saving process
+            }
         } else if (marcaSeleccionada && data.logoUrl) {
             finalBrandData.logoUrl = data.logoUrl;
         } else if (marcaSeleccionada) {
-            finalBrandData.logoUrl = marcaSeleccionada.logoUrl || '';
+            // Case where image is removed
+            if (marcaSeleccionada.logoUrl && !data.logoUrl) {
+                await deleteImage(marcaSeleccionada.logoUrl);
+            }
+            finalBrandData.logoUrl = data.logoUrl || '';
         }
 
         if (marcaSeleccionada) {
             const marcaRef = doc(firestore, 'marcas', marcaSeleccionada.id);
             await updateDoc(marcaRef, finalBrandData);
-            Swal.fire({ title: '¡Actualizada!', text: 'La marca se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
+            updateNotificationStatus(notificationId, 'success', 'Marca actualizada');
         } else {
             const nuevaMarcaRef = doc(collection(firestore, 'marcas'));
             const idEntidad = nuevaMarcaRef.id;
             const datosMarca = { ...finalBrandData, id: idEntidad, createdAt: serverTimestamp() };
             await setDoc(nuevaMarcaRef, datosMarca);
-            Swal.fire({ title: '¡Creada!', text: 'La nueva marca se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
+            updateNotificationStatus(notificationId, 'success', 'Marca creada');
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la marca.', icon: 'error', confirmButtonColor: '#595c97', });
-        
-        console.error("Error al guardar la marca:", error);
+        updateNotificationStatus(notificationId, 'error', 'Error al guardar');
         
         if (error.code && error.code.includes('permission-denied')) {
             const contextualError = new FirestorePermissionError({

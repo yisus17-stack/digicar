@@ -20,7 +20,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
-import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,11 +30,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import Swal from 'sweetalert2';
-
+import { NotificationProvider } from '@/core/contexts/NotificationContext';
+import NotificationCenter from '@/features/admin/components/NotificationCenter';
 
 // Contexto para el estado de la barra lateral
 const ContextoBarraLateral = createContext<{ estaCerrada: boolean; alternarBarraLateral: () => void } | null>(null);
@@ -178,7 +176,12 @@ function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
         return <EsqueletoLayoutAdmin />;
     }
 
-    return <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>;
+    return (
+      <NotificationProvider>
+        <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>
+        <NotificationCenter />
+      </NotificationProvider>
+    );
 }
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
@@ -195,7 +198,6 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
 function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   const contextoBarraLateral = useContext(ContextoBarraLateral);
   const estaCerrada = contextoBarraLateral?.estaCerrada ?? false;
-  const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -288,7 +290,3 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
       </div>
   );
 }
-
-    
-
-    

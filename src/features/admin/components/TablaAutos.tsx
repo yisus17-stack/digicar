@@ -15,6 +15,7 @@ import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useNotification } from '@/core/contexts/NotificationContext';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -28,6 +29,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
+  const { showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -99,6 +101,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]) => {
     setIsSaving(true);
+    const notificationId = showNotification({ title: 'Guardando auto...', status: 'loading' });
     
     try {
         const finalCarData: any = { ...datosAuto };
@@ -106,14 +109,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         const uploadPromises = finalCarData.variantes.map(async (variante: any, index: number) => {
             const file = files[index];
             if (file) {
-                 Swal.fire({
-                    title: 'Subiendo imágenes...',
-                    text: `Por favor, espera. Subiendo variante ${index + 1}`,
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    didOpen: () => { Swal.showLoading(); },
-                    confirmButtonColor: '#595c97',
-                });
                 const imageUrl = await uploadImage(file);
                 return { ...variante, imagenUrl: imageUrl };
             }
@@ -128,17 +123,17 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 ...finalCarData,
                 variantes: finalCarData.variantes,
             });
-            Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97', });
+             updateNotificationStatus(notificationId, 'success', 'Auto actualizado correctamente.');
         } else {
             const coleccionRef = collection(firestore, 'autos');
             const newDocRef = doc(coleccionRef); // Creates a ref with a new auto-generated ID
             const finalDataWithId = { ...finalCarData, id: newDocRef.id, createdAt: serverTimestamp() };
             await setDoc(newDocRef, finalDataWithId); // Use setDoc to create the document
-            Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
+            updateNotificationStatus(notificationId, 'success', 'Auto creado correctamente.');
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar los cambios.', icon: 'error', confirmButtonColor: '#595c97', });
+        updateNotificationStatus(notificationId, 'error', 'Error al guardar el auto.');
         
         if (error.code && error.code.includes('permission-denied')) {
           const contextualError = new FirestorePermissionError({
