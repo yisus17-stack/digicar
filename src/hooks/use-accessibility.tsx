@@ -19,6 +19,8 @@ interface AccessibilityState {
   textSpacing: TextSpacingStep;
   setHighContrast: (value: boolean) => void;
   setFontSizeStep: (step: FontSizeStep) => void;
+  increaseFontSize: () => void;
+  decreaseFontSize: () => void;
   setGrayscale: (value: boolean) => void;
   setInvert: (value: boolean) => void;
   setUnderlineLinks: (value: boolean) => void;
@@ -56,6 +58,14 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [hideImages, setHideImages] = useState<boolean>(() => getLocalStorageItem('accessibility-hideImages', false));
   const [highlightTitles, setHighlightTitles] = useState<boolean>(() => getLocalStorageItem('accessibility-highlightTitles', false));
   const [textSpacing, setTextSpacing] = useState<TextSpacingStep>(() => getLocalStorageItem('accessibility-textSpacing', 0));
+
+  const increaseFontSize = () => {
+    setFontSizeStep(prev => Math.min(prev + 1, 2) as FontSizeStep);
+  }
+  
+  const decreaseFontSize = () => {
+    setFontSizeStep(prev => Math.max(prev - 1, -2) as FontSizeStep);
+  }
 
 
   const speak = useCallback((text: string, lang = 'es-MX') => {
@@ -188,6 +198,8 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     textSpacing,
     setHighContrast,
     setFontSizeStep,
+    increaseFontSize,
+    decreaseFontSize,
     setGrayscale,
     setInvert,
     setUnderlineLinks,

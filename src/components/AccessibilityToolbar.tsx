@@ -9,6 +9,7 @@ import {
     Sun,
     Moon,
     ZoomIn,
+    ZoomOut,
     Accessibility,
     X,
     Volume2,
@@ -27,11 +28,13 @@ const ToolButton = ({
   onClick,
   isActive,
   children,
+  className,
 }: {
   label: string;
   onClick: () => void;
   isActive: boolean;
   children: React.ReactNode;
+  className?: string;
 }) => (
   <button
     onClick={onClick}
@@ -40,7 +43,8 @@ const ToolButton = ({
       'flex flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors text-center w-full aspect-square',
       isActive
         ? 'bg-primary text-primary-foreground border-primary'
-        : 'bg-card hover:bg-muted border-border'
+        : 'bg-card hover:bg-muted border-border',
+      className
     )}
   >
     {children}
@@ -64,7 +68,8 @@ export function AccessibilityToolbar() {
     highlightTitles,
     textSpacing,
     setHighContrast,
-    setFontSizeStep,
+    increaseFontSize,
+    decreaseFontSize,
     setGrayscale,
     setUnderlineLinks,
     setReadableFont,
@@ -88,22 +93,12 @@ export function AccessibilityToolbar() {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
-
-  const handleCycleFontSize = () => {
-    const nextStep = (fontSizeStep + 3) % 5 - 2; // Cycles from -2 to 2
-    setFontSizeStep(nextStep as any);
-  };
   
   const handleCycleTextSpacing = () => {
     const nextStep = (textSpacing + 1) % 3;
     setTextSpacing(nextStep as any);
   };
 
-  const getFontSizeLabel = () => {
-    if (fontSizeStep === 0) return 'Tamaño de Texto';
-    return `Texto x${(1 + fontSizeStep * 0.125).toFixed(2)}`;
-  }
-  
   const getTextSpacingLabel = () => {
     if (textSpacing === 0) return 'Espaciado de Texto';
     if (textSpacing === 1) return 'Espaciado x1.5';
@@ -149,9 +144,32 @@ export function AccessibilityToolbar() {
             <div>
                 <SectionTitle>Ajustes de Contenido</SectionTitle>
                 <div className="grid grid-cols-3 gap-3">
-                    <ToolButton label={getFontSizeLabel()} onClick={handleCycleFontSize} isActive={fontSizeStep !== 0}>
-                        <ZoomIn className="h-7 w-7" />
-                    </ToolButton>
+                    {/* Text Size Control */}
+                    <div className="col-span-1 rounded-lg border bg-card p-3 flex flex-col justify-center items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <button onClick={decreaseFontSize} className="p-1 rounded-full hover:bg-muted disabled:opacity-50" disabled={fontSizeStep === -2} aria-label="Reducir texto">
+                                <ZoomOut className="h-6 w-6" />
+                            </button>
+                            <button onClick={increaseFontSize} className="p-1 rounded-full hover:bg-muted disabled:opacity-50" disabled={fontSizeStep === 2} aria-label="Aumentar texto">
+                                <ZoomIn className="h-6 w-6" />
+                            </button>
+                        </div>
+                        <span className="text-xs font-medium text-center">Tamaño de Texto</span>
+                         <div className="flex items-end justify-center gap-1 h-3 mt-1">
+                            {[-2, -1, 0, 1, 2].map((step, index) => (
+                                <div key={step} className={cn(
+                                    "w-3 rounded-sm transition-all",
+                                    step <= fontSizeStep ? "bg-primary" : "bg-muted",
+                                    index === 0 && "h-1",
+                                    index === 1 && "h-2",
+                                    index === 2 && "h-3",
+                                    index === 3 && "h-4",
+                                    index === 4 && "h-5",
+                                )}/>
+                            ))}
+                        </div>
+                    </div>
+
                     <ToolButton label="Fuente Legible" onClick={() => setReadableFont(!readableFont)} isActive={readableFont}>
                         <FileText className="h-7 w-7" />
                     </ToolButton>
