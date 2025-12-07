@@ -274,12 +274,12 @@ export default function ComparisonContent() {
     return value || '-';
   }
   
-  if (loadingCars || !todosLosAutos || loadingUser) {
-    return <EsqueletoComparacion />;
+  if (loadingUser || !user) {
+    return null;
   }
 
-  if (!user) {
-    return null;
+  if (loadingCars || !todosLosAutos) {
+    return <EsqueletoComparacion />;
   }
 
   return (
