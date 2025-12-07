@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -15,6 +14,26 @@ const themes = [
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [effectiveTheme, setEffectiveTheme] = React.useState(theme);
+
+  React.useEffect(() => {
+    // We need to resolve the "system" theme to "light" or "dark" to apply the correct color
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      if (theme === 'system') {
+        setEffectiveTheme(e.matches ? 'dark' : 'light');
+      }
+    };
+
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+      setEffectiveTheme(systemTheme.matches ? 'dark' : 'light');
+      systemTheme.addEventListener('change', handleSystemThemeChange);
+      return () => systemTheme.removeEventListener('change', handleSystemThemeChange);
+    } else {
+      setEffectiveTheme(theme);
+    }
+  }, [theme]);
+
 
   return (
     <div className="relative flex items-center rounded-full bg-muted p-1">
