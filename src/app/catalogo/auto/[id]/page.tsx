@@ -159,35 +159,33 @@ export default function PaginaDetalleAuto() {
     <div className="container mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Catálogo', href: '/catalogo' }, { label: `${auto.marca} ${auto.modelo}` }]} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-6 lg:items-stretch">
-        {/* Columna Izquierda: Galería de Imágenes */}
-        <div className="relative">
-          <AspectRatio 
-            ratio={16/10} 
-            className="overflow-hidden rounded-lg bg-white dark:bg-background relative"
-          >
-            {selectedVariant ? (
-              <Image
-                src={selectedVariant.imagenUrl}
-                alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
-                fill
-                className="object-contain"
-                priority
-                draggable="false"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <IconoAuto className="w-24 h-24 text-muted-foreground" />
-              </div>
-            )}
-          </AspectRatio>
-        </div>
+      <Card className="mt-6 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+            {/* Columna Izquierda: Imagen */}
+            <div className="p-4 md:p-8 bg-white dark:bg-card">
+                 <AspectRatio 
+                    ratio={16/10} 
+                    className="overflow-hidden rounded-lg bg-white dark:bg-card relative"
+                >
+                    {selectedVariant ? (
+                    <Image
+                        src={selectedVariant.imagenUrl}
+                        alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
+                        fill
+                        className="object-contain"
+                        priority
+                        draggable="false"
+                    />
+                    ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <IconoAuto className="w-24 h-24 text-muted-foreground" />
+                    </div>
+                    )}
+                </AspectRatio>
+            </div>
 
-        {/* Columna Derecha: Información y Compra */}
-        <div className="relative">
-          <div className="lg:sticky top-24 h-full">
-            <Card className="h-full">
-              <CardContent className="p-6 space-y-6">
+            {/* Columna Derecha: Información */}
+            <div className="p-8 space-y-6">
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="text-sm text-muted-foreground">{auto.tipo} • {auto.anio}</p>
@@ -237,6 +235,8 @@ export default function PaginaDetalleAuto() {
                     )}
                 </div>
 
+                <Separator />
+                
                 <div className="pt-4">
                     <Button variant={isFavorite ? 'default' : 'outline'} className="w-full" onClick={handleToggleFavorite} disabled={isUpdatingFavorite}>
                         {isUpdatingFavorite ? (
@@ -247,11 +247,9 @@ export default function PaginaDetalleAuto() {
                         {isFavorite ? 'Quitar de Favoritos' : 'Añadir a Favoritos'}
                     </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+            </div>
         </div>
-      </div>
+      </Card>
 
        {/* Secciones de Detalles Adicionales */}
        <div className="mt-12 lg:mt-16">
@@ -301,5 +299,3 @@ export default function PaginaDetalleAuto() {
     </div>
   );
 }
-
-    
