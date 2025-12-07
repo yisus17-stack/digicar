@@ -110,10 +110,10 @@
     display: none !important;
   }
 
-  body[data-highlight-titles='true'] h1,
-  body[data-highlight-titles='true'] h2,
-  body[data-highlight-titles='true'] h3,
-  body[data-highlight-titles='true'] h4 {
+  body[data-highlight-titles='true'] #main-content-wrapper h1,
+  body[data-highlight-titles='true'] #main-content-wrapper h2,
+  body[data-highlight-titles='true'] #main-content-wrapper h3,
+  body[data-highlight-titles='true'] #main-content-wrapper h4 {
     background-color: hsl(var(--primary) / 0.1);
     border-left: 4px solid hsl(var(--primary));
     padding-left: 8px;
