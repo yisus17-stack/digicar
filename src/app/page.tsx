@@ -47,14 +47,13 @@ const SeccionHero = () => {
         }
     };
     
-    const handleProtectedLinkClick = (e: MouseEvent<HTMLButtonElement>, href: string) => {
-        e.preventDefault();
+    const handleProtectedLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
         if (loadingUser) {
+            e.preventDefault();
             return;
         }
-        if (user) {
-            router.push(href);
-        } else {
+        if (!user) {
+            e.preventDefault();
             router.push('/login');
         }
     }
@@ -93,14 +92,14 @@ const SeccionHero = () => {
                             <LayoutGrid className="h-4 w-4" />
                             <span>Catálogo</span>
                         </Link>
-                         <button onClick={(e) => handleProtectedLinkClick(e, '/comparacion')} className="flex items-center gap-2 hover:text-primary transition-colors">
+                         <Link href="/comparacion" onClick={(e) => handleProtectedLinkClick(e, '/comparacion')} className="flex items-center gap-2 hover:text-primary transition-colors">
                             <GitCompareArrows className="h-4 w-4" />
                             <span>Comparar</span>
-                        </button>
-                         <button onClick={(e) => handleProtectedLinkClick(e, '/financiamiento')} className="flex items-center gap-2 hover:text-primary transition-colors">
+                        </Link>
+                         <Link href="/financiamiento" onClick={(e) => handleProtectedLinkClick(e, '/financiamiento')} className="flex items-center gap-2 hover:text-primary transition-colors">
                             <Landmark className="h-4 w-4" />
                             <span>Financiamiento</span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
