@@ -192,7 +192,7 @@ export default function PaginaDetalleAuto() {
                         <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{auto.marca} {auto.modelo}</h1>
                     </div>
                     {brandLogoUrl && (
-                        <div className="relative h-12 w-20 flex-shrink-0">
+                        <div className="relative h-16 w-28 flex-shrink-0">
                             <Image 
                             src={brandLogoUrl}
                             alt={`${auto.marca} logo`}
