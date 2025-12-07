@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import type { Car, CarVariant, Marca, Favorite } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import CarCard from '@/features/catalog/components/CarCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function SkeletonDetalle() {
   return (
@@ -167,20 +168,31 @@ export default function PaginaDetalleAuto() {
                     ratio={16/10} 
                     className="overflow-hidden rounded-lg bg-white dark:bg-card relative"
                 >
-                    {selectedVariant ? (
-                    <Image
-                        src={selectedVariant.imagenUrl}
-                        alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
-                        fill
-                        className="object-contain"
-                        priority
-                        draggable="false"
-                    />
-                    ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <IconoAuto className="w-24 h-24 text-muted-foreground" />
-                    </div>
-                    )}
+                    <AnimatePresence mode="wait">
+                      {selectedVariant ? (
+                      <motion.div
+                          key={selectedVariant.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="w-full h-full"
+                      >
+                          <Image
+                              src={selectedVariant.imagenUrl}
+                              alt={`${auto.marca} ${auto.modelo} en color ${selectedVariant.color}`}
+                              fill
+                              className="object-contain"
+                              priority
+                              draggable="false"
+                          />
+                      </motion.div>
+                      ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                          <IconoAuto className="w-24 h-24 text-muted-foreground" />
+                      </div>
+                      )}
+                    </AnimatePresence>
                 </AspectRatio>
             </div>
 
@@ -204,7 +216,18 @@ export default function PaginaDetalleAuto() {
                     )}
                 </div>
 
-                <p className="text-3xl font-bold text-primary">${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}</p>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={selectedVariant?.precio}
+                    className="text-3xl font-bold text-primary"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    ${(selectedVariant?.precio ?? 0).toLocaleString('es-MX')}
+                  </motion.p>
+                </AnimatePresence>
                 
                 <Separator />
                 
@@ -213,23 +236,28 @@ export default function PaginaDetalleAuto() {
                     {auto.variantes && auto.variantes.length > 1 && (
                     <div className="grid grid-cols-5 gap-2">
                         {auto.variantes.map(v => (
-                        <AspectRatio 
-                            key={`thumb-${v.id}`} 
-                            ratio={1/1} 
-                            className={cn(
-                                "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
-                                selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
-                            )}
-                            onClick={() => setSelectedVariant(v)}
-                            >
-                            <Image
-                                src={v.imagenUrl}
-                                alt={v.color}
-                                fill
-                                className="object-contain"
-                                draggable="false"
-                            />
-                        </AspectRatio>
+                        <motion.div
+                          key={`thumb-motion-${v.id}`}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <AspectRatio 
+                              ratio={1/1} 
+                              className={cn(
+                                  "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
+                                  selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
+                              )}
+                              onClick={() => setSelectedVariant(v)}
+                              >
+                              <Image
+                                  src={v.imagenUrl}
+                                  alt={v.color}
+                                  fill
+                                  className="object-contain"
+                                  draggable="false"
+                              />
+                          </AspectRatio>
+                        </motion.div>
                         ))}
                     </div>
                     )}
@@ -299,3 +327,4 @@ export default function PaginaDetalleAuto() {
     </div>
   );
 }
+
