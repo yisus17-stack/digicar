@@ -22,8 +22,8 @@ export function ThemeToggle() {
         <button
           key={t.name}
           className={cn(
-            'relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors',
-            { 'text-primary-foreground dark:text-primary': theme === t.name }
+            'relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors dark:text-primary',
+            { 'text-primary-foreground': theme === t.name }
           )}
           onClick={() => setTheme(t.name)}
           aria-label={`Switch to ${t.name} theme`}
