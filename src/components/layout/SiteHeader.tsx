@@ -41,6 +41,7 @@ import {
 import { useAuth, useUser } from '@/firebase';
 import { signOut, type User as FirebaseUser } from 'firebase/auth';
 import Swal from 'sweetalert2';
+import { ThemeToggle } from '../ThemeToggle';
 
 interface SiteHeaderProps {
     user: FirebaseUser | null;
