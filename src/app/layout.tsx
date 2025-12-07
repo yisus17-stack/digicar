@@ -12,8 +12,9 @@ import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/app/theme-provider';
 import { AccessibilityToolbar } from '@/components/AccessibilityToolbar';
-import { AccessibilityContext, useAccessibilityState } from '@/hooks/use-accessibility';
+import { AccessibilityContext, useAccessibilityState } from '@/hooks/use-accessibility.tsx';
 import { useState, useEffect, ReactNode } from 'react';
+import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -27,7 +28,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div className={cn("relative flex min-h-screen flex-col", poppins.variable, 'font-sans')}>
+    <div className={cn("relative flex min-h-screen flex-col font-sans", poppins.variable)}>
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
