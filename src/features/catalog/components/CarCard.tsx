@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, type MouseEvent } from 'react';
+import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -135,5 +135,3 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
     </div>
   );
 }
-
-    
