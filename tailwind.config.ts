@@ -112,6 +112,18 @@ export default {
           'mask-position': 'center',
           'mask-size': 'contain',
         },
+        '.high-contrast-hidden': {
+          display: 'block',
+        },
+        'body[data-high-contrast="true"] .high-contrast-hidden': {
+          display: 'none',
+        },
+        '.high-contrast-block': {
+          display: 'none',
+        },
+        'body[data-high-contrast="true"] .high-contrast-block': {
+          display: 'block',
+        },
       });
     }),
   ],
