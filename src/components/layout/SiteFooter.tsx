@@ -11,41 +11,27 @@ const SiteFooter = () => {
     return null;
   }
   
-  const navLinks = [
-      { href: "/catalogo", label: "Catálogo" },
-      { href: "/comparacion", label: "Comparador" },
-      { href: "/financiamiento", label: "Financiamiento" },
-  ];
-
   return (
     <footer className="bg-background border-t">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center text-center">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Logo */}
-            <Link href="/" className="mb-6">
-                <Image 
-                    src="/logo.svg" 
-                    alt="DigiCar Logo" 
-                    width={180} 
-                    height={60} 
-                    draggable="false" 
-                />
-            </Link>
-
-            {/* Main Links */}
-            <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
-                {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="text-muted-foreground hover:text-primary transition-colors">
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
+            <div className="flex-shrink-0">
+                <Link href="/">
+                    <Image 
+                        src="/logo.svg" 
+                        alt="DigiCar Logo" 
+                        width={120} 
+                        height={40} 
+                        draggable="false" 
+                    />
+                </Link>
+            </div>
 
             {/* Copyright & Legal */}
-            <div className="text-sm text-muted-foreground space-y-2 md:space-y-0 md:flex md:items-center md:gap-4">
+            <div className="text-center md:text-right text-sm text-muted-foreground space-y-2 md:space-y-0">
                 <p>© {new Date().getFullYear()} Digicar. Todos los derechos reservados.</p>
-                <div className="hidden md:block h-4 border-l"></div>
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center md:justify-end gap-4">
                     <Link href="/legal/terminos-y-condiciones" className="hover:text-primary hover:underline">Términos y Condiciones</Link>
                     <Link href="/legal/politica-de-privacidad" className="hover:text-primary hover:underline">Política de Privacidad</Link>
                 </div>
