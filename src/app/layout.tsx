@@ -66,7 +66,6 @@ export default function RootLayout({
             dark: 'dark',
           }}
           storageKey="digicar-theme"
-          forcedTheme="light"
         >
           <FirebaseClientProvider>
             <AccessibilityProvider>
