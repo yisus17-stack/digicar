@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type MouseEvent } from 'react';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,9 +38,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/firebase';
+import { useAuth, useUser } from '@/firebase';
 import { signOut, type User as FirebaseUser } from 'firebase/auth';
 import Swal from 'sweetalert2';
+import { ThemeToggle } from '../ThemeToggle';
 
 interface SiteHeaderProps {
     user: FirebaseUser | null;
@@ -172,6 +173,8 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
               <Search className="h-5 w-5" />
               <span className="sr-only">Buscar</span>
             </Button>
+            
+            <ThemeToggle />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

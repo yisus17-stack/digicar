@@ -11,6 +11,7 @@ import { Poppins } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useUser } from '@/firebase/auth/use-user';
 import { usePathname } from 'next/navigation';
+import { ThemeProvider } from '@/app/theme-provider';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -46,10 +47,17 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', poppins.variable)}>
-        <FirebaseClientProvider>
-          <AppContent>{children}</AppContent>
-          <Toaster />
-        </FirebaseClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <FirebaseClientProvider>
+            <AppContent>{children}</AppContent>
+            <Toaster />
+          </FirebaseClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
