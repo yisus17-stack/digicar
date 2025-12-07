@@ -5,8 +5,8 @@ import { Home } from 'lucide-react';
 
 export default function PaginaRegistro() {
   return (
-    <div className="relative min-h-screen flex items-center justify-center py-8 px-4">
-      <div className="absolute top-8 left-8">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
+       <div className="absolute top-4 left-4">
         <Button variant="outline" asChild>
             <Link href="/">
                 <Home className="mr-2 h-4 w-4" />
@@ -14,7 +14,7 @@ export default function PaginaRegistro() {
             </Link>
         </Button>
       </div>
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm pt-16 sm:pt-0">
         <FormularioRegistro />
       </div>
     </div>
