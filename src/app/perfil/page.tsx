@@ -1,13 +1,12 @@
 
-
 'use client';
 
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useUser, useDoc, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, Repeat, User as UserIcon, Shield, Loader2, Trash2, GitCompareArrows, Activity, Landmark, Download } from 'lucide-react';
 import { Label } from '@/components/ui/label';
@@ -355,7 +354,7 @@ const FinancingItem = ({ financing, allCars, onRemove, user }: { financing: Fina
 }
 
 
-export default function PaginaPerfil() {
+function PaginaPerfilContenido() {
   const { user, loading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -710,6 +709,11 @@ export default function PaginaPerfil() {
     </div>
   );
 }
-    
-    
-    
+
+export default function PaginaPerfil() {
+    return (
+        <Suspense fallback={<EsqueletoPerfil />}>
+            <PaginaPerfilContenido />
+        </Suspense>
+    )
+}
