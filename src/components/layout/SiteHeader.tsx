@@ -141,7 +141,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/logo.png"
+                src="/digicar-logo.png"
                 alt="DigiCar Logo"
                 width={150}
                 height={50}
@@ -149,7 +149,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 className="dark:hidden"
               />
               <Image
-                src="/logo-white.png"
+                src="/digicar-logo-blanco.png"
                 alt="DigiCar Logo"
                 width={150}
                 height={50}
@@ -255,7 +255,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                           <SheetTitle>
                               <Link href="/" className="flex items-center gap-2">
                                   <Image 
-                                    src="/logo-white.png" 
+                                    src="/digicar-logo-blanco.png" 
                                     alt="DigiCar Logo" 
                                     width={150} 
                                     height={50} 
