@@ -13,9 +13,10 @@ import {
     ZoomOut,
     Accessibility,
     X,
+    Volume2,
   } from 'lucide-react';
   import { Button } from './ui/button';
-  import { useAccessibility } from '@/hooks/use-accessibility';
+  import { useAccessibility } from '@/hooks/use-accessibility.tsx';
   import { useState } from 'react';
   import { cn } from '@/lib/utils';
   
@@ -53,12 +54,14 @@ import {
       invert,
       underlineLinks,
       readableFont,
+      textToSpeech,
       setHighContrast,
       setFontSizeStep,
       setGrayscale,
       setInvert,
       setUnderlineLinks,
       setReadableFont,
+      setTextToSpeech,
       resetAccessibility,
     } = useAccessibility();
   
@@ -89,7 +92,7 @@ import {
   
     return (
       <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center animate-in fade-in duration-300">
-        <div className="bg-card text-card-foreground rounded-xl shadow-2xl w-full max-w-lg p-6 m-4 relative">
+        <div className="bg-card text-card-foreground rounded-xl shadow-2xl w-full max-w-2xl p-6 m-4 relative">
           <Button
             variant="ghost"
             size="icon"
@@ -102,7 +105,7 @@ import {
   
           <h2 className="text-2xl font-bold mb-6 text-center">Panel de Accesibilidad</h2>
   
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-x-4 gap-y-6">
             <ToolButton
               label="Contraste"
               onClick={() => setHighContrast(!highContrast)}
@@ -157,6 +160,14 @@ import {
               isActive={invert}
             >
               <SunMoon className="h-7 w-7" />
+            </ToolButton>
+
+            <ToolButton
+              label="Leer Texto"
+              onClick={() => setTextToSpeech(!textToSpeech)}
+              isActive={textToSpeech}
+            >
+              <Volume2 className="h-7 w-7" />
             </ToolButton>
   
             <ToolButton

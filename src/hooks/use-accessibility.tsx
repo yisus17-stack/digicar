@@ -12,12 +12,14 @@ interface AccessibilityState {
   invert: boolean;
   underlineLinks: boolean;
   readableFont: boolean;
+  textToSpeech: boolean;
   setHighContrast: (value: boolean) => void;
   setFontSizeStep: (step: FontSizeStep) => void;
   setGrayscale: (value: boolean) => void;
   setInvert: (value: boolean) => void;
   setUnderlineLinks: (value: boolean) => void;
   setReadableFont: (value: boolean) => void;
+  setTextToSpeech: (value: boolean) => void;
   resetAccessibility: () => void;
 }
 
@@ -41,6 +43,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [invert, setInvert] = useState<boolean>(() => getLocalStorageItem('accessibility-invert', false));
   const [underlineLinks, setUnderlineLinks] = useState<boolean>(() => getLocalStorageItem('accessibility-underlineLinks', false));
   const [readableFont, setReadableFont] = useState<boolean>(() => getLocalStorageItem('accessibility-readableFont', false));
+  const [textToSpeech, setTextToSpeech] = useState<boolean>(() => getLocalStorageItem('accessibility-textToSpeech', false));
 
   useEffect(() => {
     document.documentElement.dataset.contrast = highContrast ? 'true' : 'false';
@@ -72,6 +75,44 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setLocalStorageItem('accessibility-readableFont', readableFont);
   }, [readableFont]);
 
+  useEffect(() => {
+    setLocalStorageItem('accessibility-textToSpeech', textToSpeech);
+    const synth = window.speechSynthesis;
+    if (!textToSpeech || !synth) {
+        synth?.cancel();
+        return;
+    }
+
+    const handleMouseOver = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        const text = target.innerText || target.getAttribute('aria-label');
+        if (text) {
+            synth.cancel(); // Detiene cualquier lectura anterior
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-MX';
+            synth.speak(utterance);
+        }
+    };
+    
+    const handleMouseOut = () => {
+        synth.cancel();
+    };
+
+    document.body.addEventListener('mouseover', handleMouseOver);
+    document.body.addEventListener('mouseout', handleMouseOut);
+    document.body.addEventListener('focus', handleMouseOver as any, true); // Use focusin para burbujeo
+    document.body.addEventListener('blur', handleMouseOut, true);
+
+
+    return () => {
+        document.body.removeEventListener('mouseover', handleMouseOver);
+        document.body.removeEventListener('mouseout', handleMouseOut);
+        document.body.removeEventListener('focus', handleMouseOver as any, true);
+        document.body.removeEventListener('blur', handleMouseOut, true);
+        synth.cancel();
+    };
+  }, [textToSpeech]);
+
   const resetAccessibility = () => {
     setHighContrast(false);
     setFontSizeStep(0);
@@ -79,6 +120,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setInvert(false);
     setUnderlineLinks(false);
     setReadableFont(false);
+    setTextToSpeech(false);
   };
 
   const value = {
@@ -88,12 +130,14 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     invert,
     underlineLinks,
     readableFont,
+    textToSpeech,
     setHighContrast,
     setFontSizeStep,
     setGrayscale,
     setInvert,
     setUnderlineLinks,
     setReadableFont,
+    setTextToSpeech,
     resetAccessibility,
   };
 
