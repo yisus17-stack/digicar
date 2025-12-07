@@ -116,28 +116,28 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cotización de Financiamiento', pageWidth / 2, 25, { align: 'center' });
+    doc.text('Cotización de Financiamiento', pageWidth / 2, 20, { align: 'center' });
 
     if(carImage) {
         const imageBase64 = await getImageBase64(carImage);
         if (imageBase64) {
-            doc.addImage(imageBase64, 'PNG', 15, 40, 80, 50, '', 'FAST');
+            doc.addImage(imageBase64, 'PNG', 15, 30, 80, 50, '', 'FAST');
         }
     }
     
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, 55);
+    doc.text(`${selectedCar.marca} ${selectedCar.modelo}`, 105, 45);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, 63);
+    doc.text(`${selectedCar.anio} • ${selectedCar.tipo}`, 105, 53);
 
     // Tabla de Especificaciones
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('Especificaciones del Vehículo', 15, 85);
+    doc.text('Especificaciones del Vehículo', 15, 95);
     doc.autoTable({
-        startY: 90,
+        startY: 100,
         head: [['Especificación', 'Valor']],
         body: [
             ['Combustible', selectedCar.tipoCombustible],
