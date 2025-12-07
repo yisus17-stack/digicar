@@ -17,7 +17,6 @@ import {
     Heading1,
     Baseline,
     ZoomOut,
-    Pipette,
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
@@ -70,7 +69,6 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     hideImages,
     highlightTitles,
     textSpacing,
-    invertColors,
     cycleFontSize,
     setHighContrast,
     setGrayscale,
@@ -79,7 +77,6 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     setHideImages,
     setHighlightTitles,
     setTextSpacing,
-    setInvertColors,
     resetAccessibility,
   } = useAccessibility();
 
@@ -210,9 +207,6 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                           </ToolButton>
                           <ToolButton label="Monocromático" onClick={() => setGrayscale(!grayscale)} isActive={grayscale}>
                               <Palette className="h-7 w-7" />
-                          </ToolButton>
-                          <ToolButton label="Invertir Colores" onClick={() => setInvertColors(!invertColors)} isActive={invertColors}>
-                              <Pipette className="h-7 w-7" />
                           </ToolButton>
                       </div>
                     </div>

@@ -16,8 +16,6 @@ export interface AccessibilityState {
   setHighlightTitles: (value: boolean) => void;
   textToSpeech: boolean;
   setTextToSpeech: (value: boolean) => void;
-  invertColors: boolean;
-  setInvertColors: (value: boolean) => void;
   fontSizeStep: 0 | 1 | 2;
   cycleFontSize: () => void;
   textSpacing: 0 | 1 | 2;
@@ -42,7 +40,6 @@ export function useAccessibilityState(): AccessibilityState {
   const [hideImages, setHideImages] = useState(false);
   const [highlightTitles, setHighlightTitles] = useState(false);
   const [textToSpeech, setTextToSpeech] = useState(false);
-  const [invertColors, setInvertColors] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
 
@@ -57,7 +54,6 @@ export function useAccessibilityState(): AccessibilityState {
     setHideImages(false);
     setHighlightTitles(false);
     setTextToSpeech(false);
-    setInvertColors(false);
     setFontSizeStep(0);
     setTextSpacing(0);
   };
@@ -65,9 +61,10 @@ export function useAccessibilityState(): AccessibilityState {
   useEffect(() => {
     const mainContentWrapper = document.getElementById('main-content-wrapper');
     const body = document.body;
-    const html = document.documentElement;
 
-    html.dataset.fontSizeStep = String(fontSizeStep);
+    if (mainContentWrapper) {
+      mainContentWrapper.dataset.fontSizeStep = String(fontSizeStep);
+    }
     
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
@@ -77,10 +74,9 @@ export function useAccessibilityState(): AccessibilityState {
     
     if (mainContentWrapper) {
       mainContentWrapper.dataset.grayscale = String(grayscale);
-      mainContentWrapper.dataset.invertColors = String(invertColors);
     }
     
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, invertColors]);
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
 
   return {
@@ -90,7 +86,6 @@ export function useAccessibilityState(): AccessibilityState {
     hideImages, setHideImages,
     highlightTitles, setHighlightTitles,
     textToSpeech, setTextToSpeech,
-    invertColors, setInvertColors,
     fontSizeStep, cycleFontSize,
     textSpacing, setTextSpacing,
     resetAccessibility,

@@ -92,22 +92,12 @@
     --ring: 60 100% 50%;
   }
   
-  html[data-font-size-step='0'] { font-size: 16px; }
-  html[data-font-size-step='1'] { font-size: 18px; }
-  html[data-font-size-step='2'] { font-size: 20px; }
+  #main-content-wrapper[data-font-size-step='0'] { font-size: 16px; }
+  #main-content-wrapper[data-font-size-step='1'] { font-size: 18px; }
+  #main-content-wrapper[data-font-size-step='2'] { font-size: 20px; }
 
   #main-content-wrapper[data-grayscale='true'] { 
     filter: grayscale(100%); 
-  }
-
-  #main-content-wrapper[data-invert-colors='true'] {
-    filter: invert(100%);
-  }
-
-  #main-content-wrapper[data-invert-colors='true'] img,
-  #main-content-wrapper[data-invert-colors='true'] [class*="bg-"],
-  #main-content-wrapper[data-invert-colors='true'] [style*="background-image"] {
-    filter: invert(100%);
   }
 
   body[data-underline-links='true'] #main-content-wrapper a {
