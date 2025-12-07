@@ -51,6 +51,26 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     return payment;
   }, [carPrice, downPayment, term]);
 
+  const suggestedCars = useMemo(() => {
+    if (step !== 2) return [];
+
+    return allCars.filter(car => {
+        const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
+        if (price <= 0) return false;
+
+        // Estimate payment with 20% down payment and 60 months term
+        const estimatedDownPayment = price * 0.20;
+        const amountToFinance = price - estimatedDownPayment;
+        const monthlyRate = INTEREST_RATE / 12;
+        const estimatedTerm = 60;
+        
+        const estimatedPayment = (amountToFinance * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -estimatedTerm));
+
+        return estimatedPayment <= monthlyBudget;
+    });
+  }, [allCars, monthlyBudget, step]);
+
+
   const handleCarChange = (id: string) => {
     setSelectedCarId(id);
     const car = allCars.find(c => c.id === id);
@@ -104,7 +124,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                             <SelectValue placeholder="Selecciona un auto" />
                         </SelectTrigger>
                         <SelectContent>
-                            {allCars.map(car => {
+                            {suggestedCars.map(car => {
                                 const variant = car.variantes?.[0];
                                 const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
                                 return (
@@ -222,3 +242,5 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     </div>
   );
 }
+
+    
