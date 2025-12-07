@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Search, Award, GitCompareArrows, Landmark } from 'lucide-react';
+import { Search, GitCompareArrows, Landmark, LayoutGrid } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -89,9 +89,9 @@ const SeccionHero = () => {
                     </form>
 
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                        <Link href="#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
-                            <Award className="h-4 w-4" />
-                            <span>Los más populares</span>
+                        <Link href="/catalogo" className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <LayoutGrid className="h-4 w-4" />
+                            <span>Catálogo</span>
                         </Link>
                          <button onClick={(e) => handleProtectedLinkClick(e, '/comparacion')} className="flex items-center gap-2 hover:text-primary transition-colors">
                             <GitCompareArrows className="h-4 w-4" />
@@ -116,7 +116,7 @@ export default function Home() {
              <Suspense fallback={<div>Cargando marcas...</div>}>
               <BrandLogos />
             </Suspense>
-            <div className="py-24">
+            <div id="popular" className="py-24">
                 <Suspense fallback={<div>Cargando...</div>}>
                   <PopularCarsSection />
                 </Suspense>
