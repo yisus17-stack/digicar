@@ -41,7 +41,7 @@ const CatalogSkeleton = () => (
                     <Skeleton className="h-6 w-24" />
                     <Skeleton className="h-10 w-48" />
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
                        <div key={i} className="space-y-3">
                             <Skeleton className="aspect-square w-full rounded-lg bg-muted" />
@@ -235,7 +235,7 @@ function CatalogPageContent() {
                     </div>
 
                     {paginatedCars.length > 0 ? (
-                       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
+                       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
                             {paginatedCars.map(car => (
                                 <CarCard 
                                     key={`car-${car.id}`} 
@@ -277,3 +277,5 @@ export default function Catalog() {
         </Suspense>
     )
 }
+
+    
