@@ -89,7 +89,7 @@ const SeccionHero = () => {
                     </form>
 
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                        <Link href="/catalogo#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
+                        <Link href="#popular" className="flex items-center gap-2 hover:text-primary transition-colors">
                             <Award className="h-4 w-4" />
                             <span>Los más populares</span>
                         </Link>
