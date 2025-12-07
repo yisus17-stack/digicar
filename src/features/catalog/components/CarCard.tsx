@@ -97,7 +97,7 @@ export default function CarCard({ car }: CarCardProps) {
           <div className="flex-grow">
             <h3 className="text-lg font-semibold">{car.marca} {car.modelo}</h3>
             <p className="text-base text-muted-foreground">
-              {car.tipo} • {car.anio} {color ? `• ${color}` : ''}
+              {car.tipo} • {car.anio}
             </p>
           </div>
           <p className="mt-4 pt-2 text-lg font-bold">
