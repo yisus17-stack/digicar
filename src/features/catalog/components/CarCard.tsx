@@ -1,13 +1,12 @@
-
 'use client';
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
-import type { Car, Favorite, FavoriteItem } from '@/core/types';
+import { useFirestore, useUser, useDoc, useMemoFirebase, useCollection } from '@/firebase';
+import { doc, updateDoc, arrayUnion, arrayRemove, setDoc, collection } from 'firebase/firestore';
+import type { Car, Favorite, FavoriteItem, Marca } from '@/core/types';
 import { Car as CarIcon, Heart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -29,6 +28,9 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   const refFavoritos = useMemoFirebase(() => user ? doc(firestore, 'favoritos', user.uid) : null, [user, firestore]);
   const { data: favoritos, isLoading: loadingFavorites } = useDoc<Favorite>(refFavoritos);
 
+  const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
+  const { data: marcas, isLoading: loadingMarcas } = useCollection<Marca>(coleccionMarcas);
+
   const displayVariant = useMemo(() => {
     if (preselectedVariantId) {
       return car.variantes?.find(v => v.id === preselectedVariantId) ?? car.variantes?.[0];
@@ -44,6 +46,12 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
     const isFav = favoritos.items.some(item => item.autoId === car.id && item.varianteId === displayVariant.id);
     setIsFavorite(isFav);
   }, [favoritos, car.id, displayVariant]);
+
+  const brandLogoUrl = useMemo(() => {
+    if (!marcas) return null;
+    const brand = marcas.find(b => b.nombre === car.marca);
+    return brand?.logoUrl || null;
+  }, [car.marca, marcas]);
 
   if (!car) {
     return null;
@@ -83,19 +91,43 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   };
 
   return (
-    <div className="group relative">
       <Link
         href={`/catalogo/auto/${car.id}`}
-        className="flex h-full flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg"
+        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
       >
-        <div className="h-40 w-full flex items-center justify-center p-6 bg-muted">
+        <div className="flex justify-between">
+          <div>
+            <h3 className="text-base font-semibold">{car.marca} {car.modelo}</h3>
+            <p className="text-sm text-muted-foreground">
+              {car.anio} • {car.tipo}
+            </p>
+          </div>
+          {showFavoriteButton && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleToggleFavorite}
+              disabled={isUpdating || loadingUser || loadingFavorites}
+              className="h-8 w-8 rounded-full text-foreground/80 hover:text-primary hover:bg-background"
+            >
+              {isUpdating ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
+              )}
+              <span className="sr-only">Añadir a favoritos</span>
+            </Button>
+          )}
+        </div>
+
+        <div className="my-auto flex h-40 w-full items-center justify-center py-4">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={`${car.marca} ${car.modelo}`}
               width={300}
               height={300}
-              className="h-32 w-auto object-contain"
+              className="h-auto max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               draggable="false"
             />
           ) : (
@@ -103,35 +135,22 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           )}
         </div>
 
-        <div className="flex flex-col px-4 py-4 flex-grow">
-          <div className="flex-grow">
-            <h3 className="text-sm font-semibold">{car.marca} {car.modelo}</h3>
-            <p className="text-xs text-muted-foreground">
-              {car.anio} • {car.tipo}
-            </p>
-          </div>
-          <p className="mt-4 pt-2 text-lg font-bold">
+        <div className="flex items-end justify-between">
+          <p className="text-xl font-bold">
             ${price.toLocaleString('es-MX')}
           </p>
+          {brandLogoUrl && (
+            <div className="relative h-8 w-20">
+                <Image
+                    src={brandLogoUrl}
+                    alt={`${car.marca} logo`}
+                    fill
+                    className="object-contain"
+                    draggable="false"
+                />
+            </div>
+          )}
         </div>
       </Link>
-
-      {showFavoriteButton && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleToggleFavorite}
-          disabled={isUpdating || loadingUser || loadingFavorites}
-          className="absolute top-3 right-3 z-10 rounded-full bg-background/60 p-2 text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary hover:bg-background h-9 w-9"
-        >
-          {isUpdating ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <Heart className={cn("h-5 w-5", isFavorite && "fill-current text-primary")} />
-          )}
-          <span className="sr-only">Añadir a favoritos</span>
-        </Button>
-      )}
-    </div>
   );
 }
