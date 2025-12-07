@@ -161,7 +161,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
               className="absolute top-0 left-0 h-full w-full max-w-sm bg-card text-card-foreground shadow-2xl flex flex-col"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              exit={{ x: '-100%', transition: { duration: 0.3, ease: 'easeOut' } }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
                 <header className="flex items-center justify-between p-4 border-b">
@@ -192,9 +192,9 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                             >
                                 <ZoomIn className="h-7 w-7" />
                                 <span className="text-xs font-medium">{getFontSizeLabel()}</span>
-                                <div className="flex items-end gap-1 pt-1">
-                                    <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? "bg-primary-foreground" : "bg-gray-400")} />
-                                    <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? "bg-primary-foreground" : "bg-gray-400")} />
+                                <div className="flex items-end gap-1 pt-1 h-3">
+                                    <div className={cn("w-2 h-2 rounded-full transition-colors", fontSizeStep >= 1 ? (fontSizeStep > 0 ? "bg-primary-foreground": "bg-gray-300") : "bg-gray-400")} />
+                                    <div className={cn("w-2 h-3 rounded-full transition-colors", fontSizeStep >= 2 ? (fontSizeStep > 0 ? "bg-primary-foreground": "bg-gray-300") : "bg-gray-400")} />
                                 </div>
                             </button>
                              <ToolButton label="Lupa de Texto" onClick={() => setTextMagnifier(!textMagnifier)} isActive={textMagnifier}>
