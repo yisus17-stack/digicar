@@ -30,9 +30,15 @@ const CatalogSkeleton = () => (
         <Breadcrumbs items={[{ label: 'Catálogo' }]} />
         <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
             <aside className="hidden lg:block lg:w-1/4 space-y-6">
+                {/* Esqueleto de filtros más representativo */}
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
             </aside>
@@ -198,7 +204,7 @@ function CatalogPageContent() {
             <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
                 <AnimatePresence>
                 {showFilters && (
-                    <motion.div
+                    <motion.aside
                         className="hidden lg:block lg:w-1/4 sticky top-24"
                         initial={{ width: 0, opacity: 0, marginRight: 0 }}
                         animate={{ width: '25%', opacity: 1, marginRight: '2rem' }}
@@ -208,7 +214,7 @@ function CatalogPageContent() {
                         <div className="overflow-hidden">
                             {filterComponent}
                         </div>
-                    </motion.div>
+                    </motion.aside>
                 )}
                 </AnimatePresence>
                 
@@ -280,5 +286,3 @@ export default function Catalog() {
         </Suspense>
     )
 }
-
-    
