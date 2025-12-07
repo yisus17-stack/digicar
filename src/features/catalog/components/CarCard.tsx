@@ -1,16 +1,14 @@
 
 'use client';
 
-import { useState, useEffect, useMemo, type MouseEvent } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
-import type { Car, Favorite, Marca } from '@/core/types';
-import { Car as CarIcon, Heart, Loader2, Droplets, GitMerge, Users } from 'lucide-react';
+import type { Car } from '@/core/types';
+import { Car as CarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface CarCardProps {
   car: Car;
@@ -19,10 +17,9 @@ interface CarCardProps {
 }
 
 export default function CarCard({ car, showFavoriteButton = true, preselectedVariantId }: CarCardProps) {
-  const { user, loading: loadingUser } = useUser();
-  const firestore = useFirestore();
   const router = useRouter();
-  
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   const displayVariant = useMemo(() => {
     if (preselectedVariantId) {
       return car.variantes?.find(v => v.id === preselectedVariantId) ?? car.variantes?.[0];
@@ -38,20 +35,29 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   const price = displayVariant?.precio ?? car.precio ?? 0;
   const colorCount = car.variantes?.length || 1;
 
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
+
   return (
       <Link
         href={`/catalogo/auto/${car.id}`}
         className="group"
       >
-        <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted p-4">
+        <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted relative p-4">
+            {!isImageLoaded && <Skeleton className="absolute inset-0 rounded-lg" />}
             {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt={`${car.marca} ${car.modelo}`}
                 width={400}
                 height={400}
-                className="h-full w-full object-contain object-center transition-transform duration-300 ease-in-out group-hover:scale-105"
+                className={cn(
+                  "h-full w-full object-contain object-center transition-all duration-300 ease-in-out group-hover:scale-105",
+                  isImageLoaded ? 'opacity-100' : 'opacity-0'
+                )}
                 draggable="false"
+                onLoad={handleImageLoad}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
