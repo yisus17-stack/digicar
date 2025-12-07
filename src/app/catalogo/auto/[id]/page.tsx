@@ -168,17 +168,6 @@ export default function PaginaDetalleAuto() {
                     ratio={16/10} 
                     className="overflow-hidden rounded-lg bg-white dark:bg-card relative"
                 >
-                    {brandLogoUrl && (
-                        <div className="absolute inset-0 z-0 opacity-5">
-                            <Image
-                                src={brandLogoUrl}
-                                alt={`${auto.marca} logo watermark`}
-                                fill
-                                className="object-contain"
-                                draggable="false"
-                            />
-                        </div>
-                    )}
                     <AnimatePresence mode="wait">
                       {selectedVariant ? (
                       <motion.div
@@ -187,7 +176,7 @@ export default function PaginaDetalleAuto() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.3, ease: 'easeInOut' }}
-                          className="w-full h-full relative z-10"
+                          className="w-full h-full"
                       >
                           <Image
                               src={selectedVariant.imagenUrl}
@@ -199,7 +188,7 @@ export default function PaginaDetalleAuto() {
                           />
                       </motion.div>
                       ) : (
-                      <div className="w-full h-full flex items-center justify-center relative z-10">
+                      <div className="w-full h-full flex items-center justify-center">
                           <IconoAuto className="w-24 h-24 text-muted-foreground" />
                       </div>
                       )}
