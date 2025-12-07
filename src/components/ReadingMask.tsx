@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 export function ReadingMask() {
   const { readingMask } = useAccessibility();
   const [y, setY] = useState(-1000);
-  const maskHeight = 150; // Height of the readable area in pixels
+  const maskHeight = 200; // Height of the readable area in pixels
 
   useEffect(() => {
     if (!readingMask) {
@@ -29,25 +29,23 @@ export function ReadingMask() {
   if (!readingMask) {
     return null;
   }
+  
+  const gradient = `linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.85) calc(${y - maskHeight / 2}px),
+    transparent calc(${y - maskHeight / 2}px),
+    transparent calc(${y + maskHeight / 2}px),
+    rgba(0, 0, 0, 0.85) calc(${y + maskHeight / 2}px),
+    rgba(0, 0, 0, 0.85) 100%
+  )`;
 
   return (
-    <div className="fixed inset-0 z-[9998] pointer-events-none">
-      {/* Top Overlay */}
-      <div
-        className="absolute left-0 right-0 bg-black/70"
-        style={{
-          top: 0,
-          height: `calc(${y}px - ${maskHeight / 2}px)`,
-        }}
-      />
-      {/* Bottom Overlay */}
-      <div
-        className="absolute left-0 right-0 bg-black/70"
-        style={{
-          top: `calc(${y}px + ${maskHeight / 2}px)`,
-          bottom: 0,
-        }}
-      />
-    </div>
+    <div
+      className="fixed inset-0 z-[9998] pointer-events-none"
+      style={{
+        background: gradient,
+      }}
+    />
   );
 }
