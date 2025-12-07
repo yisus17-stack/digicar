@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      <body>
+      <body className={poppins.variable}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
