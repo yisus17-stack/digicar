@@ -159,6 +159,12 @@ export default function ComparisonContent() {
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
 
   useEffect(() => {
+    if (!loadingUser && !user) {
+      router.push('/login?redirect=/comparacion');
+    }
+  }, [user, loadingUser, router]);
+
+  useEffect(() => {
     const storedData = sessionStorage.getItem('comparisonData');
     if (storedData && todosLosAutos) {
       try {
@@ -268,7 +274,7 @@ export default function ComparisonContent() {
     return value || '-';
   }
   
-  if (loadingCars || !todosLosAutos || loadingUser) {
+  if (loadingCars || !todosLosAutos || loadingUser || !user) {
     return <EsqueletoComparacion />;
   }
 
@@ -351,5 +357,3 @@ export default function ComparisonContent() {
     </div>
   );
 }
-
-    
