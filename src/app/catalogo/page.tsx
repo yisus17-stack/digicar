@@ -41,9 +41,9 @@ const CatalogSkeleton = () => (
                     <Skeleton className="h-6 w-24" />
                     <Skeleton className="h-10 w-48" />
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-4">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
-                        <Skeleton key={i} className="h-96 w-full" />
+                        <Skeleton key={i} className="h-64 w-full" />
                     ))}
                 </div>
             </main>
