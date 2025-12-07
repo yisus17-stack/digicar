@@ -27,7 +27,7 @@
     --radius: 0.5rem;
   }
  
-  .dark #main-content-wrapper {
+  .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -93,9 +93,9 @@
     --ring: 60 100% 50%;
   }
   
-  html[data-font-size-step='0'] { font-size: 16px; }
-  html[data-font-size-step='1'] { font-size: 18px; }
-  html[data-font-size-step='2'] { font-size: 20px; }
+  #main-content-wrapper[data-font-size-step='0'] { font-size: 16px; }
+  #main-content-wrapper[data-font-size-step='1'] { font-size: 18px; }
+  #main-content-wrapper[data-font-size-step='2'] { font-size: 20px; }
 
   #main-content-wrapper[data-grayscale='true'] { 
     filter: grayscale(100%); 

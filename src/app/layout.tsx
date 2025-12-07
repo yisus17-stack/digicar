@@ -21,7 +21,6 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 function AppContent({ children, fontClassName }: { children: React.ReactNode, fontClassName: string }) {
   const pathname = usePathname();
   const { user, loading } = useUser();
-  const { grayscale } = useAccessibilityState();
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const isAdminPage = pathname.startsWith('/admin');
@@ -29,11 +28,7 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div 
-      id="main-content-wrapper" 
-      className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}
-      data-grayscale={grayscale}
-    >
+    <div id="main-content-wrapper" className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
@@ -43,29 +38,6 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
 
 function AccessibilityProvider({ children }: { children: ReactNode }) {
   const accessibilityState = useAccessibilityState();
-  const {
-    highContrast,
-    fontSizeStep,
-    highlightTitles,
-    underlineLinks,
-    hideImages,
-    textSpacing,
-    grayscale,
-  } = accessibilityState;
-
-  useEffect(() => {
-    const body = document.body;
-    body.dataset.highContrast = String(highContrast);
-    body.dataset.highlightTitles = String(highlightTitles);
-    body.dataset.underlineLinks = String(underlineLinks);
-    body.dataset.hideImages = String(hideImages);
-    body.dataset.textSpacing = String(textSpacing);
-    body.dataset.grayscale = String(grayscale);
-    
-    const html = document.documentElement;
-    html.dataset.fontSizeStep = String(fontSizeStep);
-
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
   return (
     <AccessibilityContext.Provider value={accessibilityState}>

@@ -61,19 +61,17 @@ export function useAccessibilityState(): AccessibilityState {
   useEffect(() => {
     const mainContentWrapper = document.getElementById('main-content-wrapper');
     const body = document.body;
-    const html = document.documentElement;
 
     body.dataset.highContrast = String(highContrast);
     body.dataset.highlightTitles = String(highlightTitles);
     body.dataset.underlineLinks = String(underlineLinks);
     body.dataset.hideImages = String(hideImages);
+    body.dataset.textSpacing = String(textSpacing);
     
     if (mainContentWrapper) {
-      mainContentWrapper.dataset.textSpacing = String(textSpacing);
       mainContentWrapper.dataset.grayscale = String(grayscale);
+      mainContentWrapper.dataset.fontSizeStep = String(fontSizeStep);
     }
-    
-    html.dataset.fontSizeStep = String(fontSizeStep);
     
   }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale]);
 
