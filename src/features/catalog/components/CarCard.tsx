@@ -91,7 +91,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   return (
       <Link
         href={`/catalogo/auto/${car.id}`}
-        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg"
+        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg border-l-4 border-l-primary"
       >
         <div className="flex flex-col flex-grow p-4">
           {/* Encabezado */}
@@ -137,9 +137,9 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           </div>
         </div>
         
-        {/* Pie de tarjeta azul */}
-        <div className="rounded-b-lg bg-primary p-4 text-primary-foreground">
-            <div className="flex w-full justify-around items-center text-sm mb-3">
+        {/* Pie de tarjeta */}
+        <div className="rounded-b-lg border-t p-4">
+            <div className="flex w-full justify-around items-center text-sm mb-3 text-muted-foreground">
               {specs.map((spec, index) => (
                 <div key={index} className="flex items-center gap-1.5">
                   <spec.icon className="h-4 w-4" />
@@ -147,8 +147,8 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
                 </div>
               ))}
             </div>
-            <div className="text-center">
-                <p className="text-2xl font-bold tracking-tight">
+            <div className="text-left">
+                <p className="text-2xl font-bold tracking-tight text-primary">
                     ${price.toLocaleString('es-MX')}
                 </p>
             </div>
