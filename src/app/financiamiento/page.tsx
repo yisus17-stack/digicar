@@ -35,8 +35,12 @@ export default function PaginaFinanciamiento() {
         }
     }, [user, loadingUser, router]);
 
-    if (isLoading || loadingUser || !user) {
+    if (loadingUser || isLoading) {
         return <EsqueletoFinanciamiento />;
+    }
+
+    if (!user) {
+        return null;
     }
 
     return (

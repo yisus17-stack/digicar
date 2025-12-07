@@ -18,8 +18,12 @@ export default function Comparar() {
         }
     }, [user, loadingUser, router]);
 
-    if (loadingUser || !user) {
-        return <EsqueletoComparacion />;
+    if (loadingUser) {
+        return null;
+    }
+
+    if (!user) {
+        return null;
     }
     
     return <ComparisonContent />;
