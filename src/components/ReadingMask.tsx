@@ -32,12 +32,12 @@ export function ReadingMask() {
   
   const gradient = `linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0.85) calc(${y - maskHeight / 2}px),
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.75) calc(${y - maskHeight / 2}px),
     transparent calc(${y - maskHeight / 2}px),
     transparent calc(${y + maskHeight / 2}px),
-    rgba(0, 0, 0, 0.85) calc(${y + maskHeight / 2}px),
-    rgba(0, 0, 0, 0.85) 100%
+    rgba(0, 0, 0, 0.75) calc(${y + maskHeight / 2}px),
+    rgba(0, 0, 0, 0.75) 100%
   )`;
 
   return (
