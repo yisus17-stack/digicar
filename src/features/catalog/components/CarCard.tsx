@@ -7,10 +7,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from 'firebase/firestore';
-import type { Car, Favorite, FavoriteItem } from '@/core/types';
-import { Car as CarIcon, Heart, Loader2 } from 'lucide-react';
+import type { Car, Favorite } from '@/core/types';
+import { Car as CarIcon, Heart, Loader2, Droplets, GitMerge, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 interface CarCardProps {
   car: Car;
@@ -63,7 +64,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
     if (!refFavoritos || !displayVariant) return;
 
     setIsUpdating(true);
-    const favoriteItem: FavoriteItem = { autoId: car.id, varianteId: displayVariant.id };
+    const favoriteItem = { autoId: car.id, varianteId: displayVariant.id };
     
     try {
       if (isFavorite) {
@@ -82,20 +83,31 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
     }
   };
 
+  const specs = [
+    { icon: Droplets, value: car.tipoCombustible },
+    { icon: GitMerge, value: car.transmision },
+    { icon: Users, value: `${car.pasajeros}` },
+  ];
+
   return (
       <Link
         href={`/catalogo/auto/${car.id}`}
-        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-muted/50 p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
+        className="group relative flex h-full flex-col overflow-hidden rounded-lg border bg-muted p-4 shadow-sm transition-all duration-300 hover:shadow-lg"
       >
         <div className="flex justify-between items-start">
-            <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
+            <div className='flex-1'>
+                <h3 className="text-xl font-bold">{car.marca} {car.modelo}</h3>
+                 <p className="text-sm text-muted-foreground">
+                    {car.anio} • {car.tipo}
+                </p>
+            </div>
           {showFavoriteButton && (
             <Button
               variant="ghost"
               size="icon"
               onClick={handleToggleFavorite}
               disabled={isUpdating || loadingUser || loadingFavorites}
-              className="h-8 w-8 rounded-full text-foreground/80 hover:text-primary hover:bg-background"
+              className="h-8 w-8 rounded-full flex-shrink-0 text-foreground/80 hover:text-primary hover:bg-background"
             >
               {isUpdating ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -107,14 +119,6 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           )}
         </div>
         
-        <p className="text-sm text-muted-foreground">
-            {car.anio} • {car.tipo}
-        </p>
-
-        <p className="text-2xl font-bold text-primary mt-1 mb-4">
-            ${price.toLocaleString('es-MX')}
-        </p>
-
         <div className="my-auto flex h-40 w-full items-center justify-center py-4">
           {imageUrl ? (
             <Image
@@ -128,6 +132,22 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           ) : (
             <CarIcon className="h-12 w-12 text-muted-foreground" />
           )}
+        </div>
+
+        <div className="mt-auto">
+            <Separator className="my-3" />
+            <div className="flex justify-around items-center text-sm text-muted-foreground">
+              {specs.map((spec, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <spec.icon className="h-4 w-4" />
+                  <span>{spec.value}</span>
+                </div>
+              ))}
+            </div>
+            <Separator className="my-3" />
+            <p className="text-2xl font-bold text-primary">
+                ${price.toLocaleString('es-MX')}
+            </p>
         </div>
       </Link>
   );

@@ -43,7 +43,7 @@ const CatalogSkeleton = () => (
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
-                        <Skeleton key={i} className="h-80 w-full" />
+                        <Skeleton key={i} className="h-96 w-full" />
                     ))}
                 </div>
             </main>
