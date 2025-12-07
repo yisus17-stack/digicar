@@ -119,12 +119,12 @@
     padding-left: 8px;
   }
 
-  body[data-text-spacing='1'] {
+  body[data-text-spacing='1'] #main-content-wrapper {
     letter-spacing: 0.12em;
     word-spacing: 0.16em;
     line-height: 1.6;
   }
-  body[data-text-spacing='2'] {
+  body[data-text-spacing='2'] #main-content-wrapper {
     letter-spacing: 0.16em;
     word-spacing: 0.2em;
     line-height: 1.8;
