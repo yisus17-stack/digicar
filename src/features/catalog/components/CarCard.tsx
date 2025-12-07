@@ -42,6 +42,7 @@ export default function CarCard({ car }: CarCardProps) {
   const displayVariant = car.variantes && car.variantes.length > 0 ? car.variantes[0] : null;
   const imageUrl = displayVariant?.imagenUrl ?? car.imagenUrl;
   const price = displayVariant?.precio ?? car.precio ?? 0;
+  const color = displayVariant?.color ?? car.color;
 
   const handleToggleFavorite = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -96,7 +97,7 @@ export default function CarCard({ car }: CarCardProps) {
           <div className="flex-grow">
             <h3 className="text-lg font-semibold">{car.marca} {car.modelo}</h3>
             <p className="text-base text-muted-foreground">
-              {car.tipo} • {car.anio}
+              {car.tipo} • {car.anio} {color ? `• ${color}` : ''}
             </p>
           </div>
           <p className="mt-4 pt-2 text-lg font-bold">
