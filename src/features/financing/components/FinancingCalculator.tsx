@@ -198,21 +198,23 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     doc.text(`$ ${monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 15, finalY + 8);
     doc.setTextColor(0);
 
-    const pageHeight = doc.internal.pageSize.getHeight();
-    
+    finalY += 25;
+
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Contacto DigiCar', 15, pageHeight - 35);
+    doc.text('Contacto DigiCar', 15, finalY);
     doc.setFont('helvetica', 'normal');
-    doc.text('Av. Principal No. 173, Maravatío, Michoacán', 15, pageHeight - 30);
-    doc.text('contacto@digicar.com.mx', 15, pageHeight - 25);
+    doc.text('Av. Principal No. 173, Maravatío, Michoacán', 15, finalY + 5);
+    doc.text('contacto@digicar.com.mx', 15, finalY + 10);
+
+    finalY += 20;
 
     const disclaimer = '*Este documento es una cotización preliminar y no constituye una oferta de crédito. Los montos son estimados y están sujetos a aprobación crediticia y pueden variar sin previo aviso. Tasa de interés anual fija del 12%.';
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 30);
     
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text(splitDisclaimer, 15, pageHeight - 15);
+    doc.text(splitDisclaimer, 15, finalY);
 
     doc.save(`Cotizacion-${selectedCar.marca}-${selectedCar.modelo}.pdf`);
     setIsGeneratingPdf(false);
