@@ -2,6 +2,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { useTheme } from 'next-themes';
 
 type FontSizeStep = -2 | -1 | 0 | 1 | 2;
 
@@ -38,6 +39,7 @@ const setLocalStorageItem = (key: string, value: any) => {
 };
 
 export function AccessibilityProvider({ children }: { children: ReactNode }) {
+  const { setTheme } = useTheme();
   const [highContrast, setHighContrast] = useState<boolean>(() => getLocalStorageItem('accessibility-highContrast', false));
   const [fontSizeStep, setFontSizeStep] = useState<FontSizeStep>(() => getLocalStorageItem('accessibility-fontSizeStep', 0));
   const [grayscale, setGrayscale] = useState<boolean>(() => getLocalStorageItem('accessibility-grayscale', false));
@@ -104,8 +106,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       let textToRead = target.getAttribute('aria-label') || target.getAttribute('title');
 
       if (!textToRead) {
-          if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'].includes(target.tagName)) {
-              textToRead = target.textContent;
+          const readableElements = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'BUTTON', 'A', 'LABEL'];
+          if (readableElements.includes(target.tagName) || target.closest(readableElements.join(','))) {
+             textToRead = target.textContent;
           }
       }
       
@@ -140,6 +143,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setUnderlineLinks(false);
     setReadableFont(false);
     setTextToSpeech(false);
+    setTheme('system');
   };
 
   const value = {
