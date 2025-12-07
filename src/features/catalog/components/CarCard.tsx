@@ -106,7 +106,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
         <div className="flex flex-col px-4 py-4 flex-grow">
           <div className="flex-grow">
             <h3 className="text-lg font-semibold">{car.marca} {car.modelo}</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {car.anio} • {car.tipo}
             </p>
           </div>
