@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Search, Award, GitCompareArrows } from 'lucide-react';
+import { Search, Award, GitCompareArrows, Landmark } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -96,6 +96,10 @@ const SeccionHero = () => {
                          <button onClick={(e) => handleProtectedLinkClick(e, '/comparacion')} className="flex items-center gap-2 hover:text-primary transition-colors">
                             <GitCompareArrows className="h-4 w-4" />
                             <span>Comparar</span>
+                        </button>
+                         <button onClick={(e) => handleProtectedLinkClick(e, '/financiamiento')} className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <Landmark className="h-4 w-4" />
+                            <span>Financiamiento</span>
                         </button>
                     </div>
                 </div>
