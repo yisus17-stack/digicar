@@ -51,24 +51,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     return payment;
   }, [carPrice, downPayment, term]);
 
-  const suggestedCars = useMemo(() => {
-    if (step !== 2) return [];
-
-    return allCars.filter(car => {
-        const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
-        if (price <= 0) return false;
-
-        // Estimate payment with 20% down payment and 60 months term
-        const estimatedDownPayment = price * 0.20;
-        const amountToFinance = price - estimatedDownPayment;
-        const monthlyRate = INTEREST_RATE / 12;
-        const estimatedTerm = 60;
-        
-        const estimatedPayment = (amountToFinance * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -estimatedTerm));
-
-        return estimatedPayment <= monthlyBudget;
-    });
-  }, [allCars, monthlyBudget, step]);
+  const suggestedCars = allCars;
 
 
   const handleCarChange = (id: string) => {
@@ -82,6 +65,20 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
   const handlePrevStep = () => setStep(prev => prev - 1);
 
   const carImage = selectedCar?.variantes?.[0]?.imagenUrl ?? selectedCar?.imagenUrl;
+
+  const isWithinBudget = (car: Car) => {
+    const price = car.variantes?.[0]?.precio ?? car.precio ?? 0;
+    if (price <= 0) return false;
+
+    const estimatedDownPayment = price * 0.20;
+    const amountToFinance = price - estimatedDownPayment;
+    const monthlyRate = INTEREST_RATE / 12;
+    const estimatedTerm = 60;
+    
+    const estimatedPayment = (amountToFinance * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -estimatedTerm));
+
+    return estimatedPayment <= monthlyBudget;
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -127,6 +124,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                             {suggestedCars.map(car => {
                                 const variant = car.variantes?.[0];
                                 const imageUrl = variant?.imagenUrl ?? car.imagenUrl;
+                                const inBudget = isWithinBudget(car);
                                 return (
                                     <SelectItem key={car.id} value={car.id}>
                                         <div className="flex items-center gap-3">
@@ -140,7 +138,10 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                                                     />
                                                 </div>
                                             )}
-                                            <span>{car.marca} {car.modelo}</span>
+                                            <div className="flex flex-col">
+                                                <span>{car.marca} {car.modelo}</span>
+                                                {inBudget && <span className="text-xs text-green-600 font-medium">Dentro de tu presupuesto</span>}
+                                            </div>
                                         </div>
                                     </SelectItem>
                                 );
@@ -150,7 +151,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                     <Card className="overflow-hidden">
                         <CardContent className="p-4">
                             <div className="aspect-[16/10] bg-white dark:bg-background rounded-lg flex items-center justify-center">
-                                {carImage && (
+                                {carImage ? (
                                     <Image
                                         src={carImage}
                                         alt={selectedCar?.modelo ?? 'Auto seleccionado'}
@@ -158,6 +159,8 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                                         height={400}
                                         className="object-contain h-full w-full"
                                     />
+                                ) : (
+                                   <div className="w-full h-full min-h-[170px]" />
                                 )}
                             </div>
                         </CardContent>
@@ -242,5 +245,7 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
     </div>
   );
 }
+
+    
 
     
