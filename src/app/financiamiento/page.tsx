@@ -7,7 +7,6 @@ import { collection } from 'firebase/firestore';
 import type { Car } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
-import { Suspense } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const EsqueletoFinanciamiento = () => (
@@ -36,20 +35,22 @@ export default function PaginaFinanciamiento() {
     const firestore = useFirestore();
     const { data: autos, isLoading } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
 
+    if (isLoading || !autos) {
+        return <EsqueletoFinanciamiento />;
+    }
+
     return (
-        <Suspense fallback={<EsqueletoFinanciamiento />}>
-             <div className="container mx-auto px-4 py-8 md:py-12">
-                <Breadcrumbs items={[{ label: "Financiamiento" }]} />
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-                    Estrena el auto de tus sueños
-                    </h1>
-                    <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                    Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
-                    </p>
-                </div>
-                {isLoading || !autos ? <EsqueletoFinanciamiento /> : <FinancingCalculator allCars={autos} />}
+        <div className="container mx-auto px-4 py-8 md:py-12">
+            <Breadcrumbs items={[{ label: "Financiamiento" }]} />
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
+                Estrena el auto de tus sueños
+                </h1>
+                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
+                </p>
             </div>
-        </Suspense>
+            <FinancingCalculator allCars={autos} />
+        </div>
     );
 }
