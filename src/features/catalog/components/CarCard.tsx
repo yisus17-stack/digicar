@@ -107,8 +107,12 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           )}
         </div>
         
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-sm text-muted-foreground">
             {car.anio} • {car.tipo}
+        </p>
+
+        <p className="text-2xl font-bold text-primary mt-1 mb-4">
+            ${price.toLocaleString('es-MX')}
         </p>
 
         <div className="my-auto flex h-40 w-full items-center justify-center py-4">
@@ -124,12 +128,6 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
           ) : (
             <CarIcon className="h-12 w-12 text-muted-foreground" />
           )}
-        </div>
-
-        <div className="flex items-end justify-between mt-auto">
-          <p className="text-2xl font-bold text-primary">
-            ${price.toLocaleString('es-MX')}
-          </p>
         </div>
       </Link>
   );
