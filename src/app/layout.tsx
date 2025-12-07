@@ -27,28 +27,42 @@ function AppContent({ children, fontClassName }: { children: React.ReactNode, fo
   const showHeaderAndFooter = !isAuthPage && !isLegalPage && !isAdminPage;
 
   return (
-    <div className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
+    <div id="main-content-wrapper" className={cn("relative flex min-h-screen flex-col font-sans", fontClassName)}>
       {showHeaderAndFooter && <SiteHeader user={user} loading={loading} />}
       <main className="flex-1">{children}</main>
       {showHeaderAndFooter && <SiteFooter />}
-      <AccessibilityToolbar fontClassName={fontClassName} />
     </div>
   );
 }
 
 function AccessibilityProvider({ children }: { children: ReactNode }) {
   const accessibilityState = useAccessibilityState();
+  const {
+    grayscale,
+    highContrast,
+    fontSizeStep,
+    highlightTitles,
+    underlineLinks,
+    hideImages,
+    textSpacing,
+  } = accessibilityState;
 
   useEffect(() => {
     const body = document.body;
-    body.dataset.grayscale = String(accessibilityState.grayscale);
-    body.dataset.highContrast = String(accessibilityState.highContrast);
-    body.dataset.fontSizeStep = String(accessibilityState.fontSizeStep);
-    body.dataset.highlightTitles = String(accessibilityState.highlightTitles);
-    body.dataset.underlineLinks = String(accessibilityState.underlineLinks);
-    body.dataset.hideImages = String(accessibilityState.hideImages);
-    body.dataset.textSpacing = String(accessibilityState.textSpacing);
-  }, [accessibilityState]);
+    body.dataset.highContrast = String(highContrast);
+    body.dataset.fontSizeStep = String(fontSizeStep);
+    body.dataset.highlightTitles = String(highlightTitles);
+    body.dataset.underlineLinks = String(underlineLinks);
+    body.dataset.hideImages = String(hideImages);
+    body.dataset.textSpacing = String(textSpacing);
+    
+    // Apply grayscale to the main content wrapper instead of body
+    const mainContent = document.getElementById('main-content-wrapper');
+    if (mainContent) {
+      mainContent.dataset.grayscale = String(grayscale);
+    }
+
+  }, [grayscale, highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing]);
 
   return (
     <AccessibilityContext.Provider value={accessibilityState}>
@@ -76,6 +90,7 @@ export default function RootLayout({
           <FirebaseClientProvider>
             <AccessibilityProvider>
               <AppContent fontClassName={poppins.className}>{children}</AppContent>
+              <AccessibilityToolbar fontClassName={poppins.className} />
             </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>

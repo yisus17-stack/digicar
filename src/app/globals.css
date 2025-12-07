@@ -97,12 +97,8 @@
   body[data-font-size-step='1'] { font-size: 18px; }
   body[data-font-size-step='2'] { font-size: 20px; }
 
-  body[data-grayscale='true'] { 
+  #main-content-wrapper[data-grayscale='true'] { 
     filter: grayscale(100%); 
-  }
-
-  body[data-grayscale='true'] .accessibility-panel-wrapper {
-    filter: none !important;
   }
 
   body[data-underline-links='true'] a {
