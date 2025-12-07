@@ -35,7 +35,11 @@ export default function BrandLogos() {
     }
     
     const renderLogos = (keyPrefix: string) => logosToDisplay.map((marca, index) => (
-        <div key={`${keyPrefix}-${marca.id}-${index}`} className="flex-shrink-0 mx-8 flex items-center justify-center w-52 h-20">
+        <div 
+          key={`${keyPrefix}-${marca.id}-${index}`} 
+          className="flex-shrink-0 mx-8 flex items-center justify-center"
+          style={{ width: '208px', height: '80px' }}
+        >
             <div className="relative w-full h-full">
                 <Image
                     src={marca.logoUrl!}
@@ -55,7 +59,11 @@ export default function BrandLogos() {
                 <div className="container mx-auto py-12">
                     <div className="flex justify-center items-center gap-8 flex-wrap">
                         {logosToDisplay.map((marca) => (
-                             <div key={`static-${marca.id}`} className="flex-shrink-0 mx-8 flex items-center justify-center w-52 h-20">
+                             <div 
+                                key={`static-${marca.id}`} 
+                                className="flex-shrink-0 mx-8 flex items-center justify-center"
+                                style={{ width: '208px', height: '80px' }}
+                             >
                                 <div className="relative w-full h-full">
                                     <Image
                                         src={marca.logoUrl!}
