@@ -66,7 +66,7 @@ const SeccionHero = () => {
             <div className="absolute bottom-[-80px] right-[-80px] w-72 h-72 bg-accent/10 rounded-full -z-10"></div>
 
             <div className="container mx-auto px-4 text-center relative z-10">
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight">
                     Encuentra el auto de tus sueños, sin complicaciones.
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
