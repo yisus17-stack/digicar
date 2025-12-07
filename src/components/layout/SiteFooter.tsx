@@ -18,7 +18,7 @@ const SiteFooter = () => {
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="DigiCar Logo"
                 width={120}
                 height={40}
@@ -26,7 +26,7 @@ const SiteFooter = () => {
                 className="dark:hidden"
               />
               <Image
-                src="/logo-white.svg"
+                src="/logo-white.png"
                 alt="DigiCar Logo"
                 width={120}
                 height={40}
