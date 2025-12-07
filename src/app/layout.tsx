@@ -16,6 +16,7 @@ import { AccessibilityContext, useAccessibilityState } from '@/hooks/use-accessi
 import { useState, useEffect, ReactNode } from 'react';
 import Script from 'next/script';
 import { TextMagnifier } from '@/components/TextMagnifier';
+import { ReadingMask } from '@/components/ReadingMask';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -70,6 +71,7 @@ export default function RootLayout({
               </div>
               <AccessibilityToolbar fontClassName={poppins.className} />
               <TextMagnifier />
+              <ReadingMask />
             </AccessibilityProvider>
             <Toaster />
           </FirebaseClientProvider>

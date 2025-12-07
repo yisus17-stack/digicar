@@ -18,6 +18,8 @@ export interface AccessibilityState {
   setTextToSpeech: (value: boolean) => void;
   textMagnifier: boolean;
   setTextMagnifier: (value: boolean) => void;
+  readingMask: boolean;
+  setReadingMask: (value: boolean) => void;
   fontSizeStep: 0 | 1 | 2;
   cycleFontSize: () => void;
   textSpacing: 0 | 1 | 2;
@@ -43,6 +45,7 @@ export function useAccessibilityState(): AccessibilityState {
   const [highlightTitles, setHighlightTitles] = useState(false);
   const [textToSpeech, setTextToSpeech] = useState(false);
   const [textMagnifier, setTextMagnifier] = useState(false);
+  const [readingMask, setReadingMask] = useState(false);
   const [fontSizeStep, setFontSizeStep] = useState<0 | 1 | 2>(0);
   const [textSpacing, setTextSpacing] = useState<0 | 1 | 2>(0);
 
@@ -58,6 +61,7 @@ export function useAccessibilityState(): AccessibilityState {
     setHighlightTitles(false);
     setTextToSpeech(false);
     setTextMagnifier(false);
+    setReadingMask(false);
     setFontSizeStep(0);
     setTextSpacing(0);
   };
@@ -76,12 +80,13 @@ export function useAccessibilityState(): AccessibilityState {
     body.dataset.hideImages = String(hideImages);
     body.dataset.textSpacing = String(textSpacing);
     body.dataset.textMagnifier = String(textMagnifier);
+    body.dataset.readingMask = String(readingMask);
     
     if (mainContentWrapper) {
       mainContentWrapper.dataset.grayscale = String(grayscale);
     }
     
-  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier]);
+  }, [highContrast, fontSizeStep, highlightTitles, underlineLinks, hideImages, textSpacing, grayscale, textMagnifier, readingMask]);
 
 
   return {
@@ -92,6 +97,7 @@ export function useAccessibilityState(): AccessibilityState {
     highlightTitles, setHighlightTitles,
     textToSpeech, setTextToSpeech,
     textMagnifier, setTextMagnifier,
+    readingMask, setReadingMask,
     fontSizeStep, cycleFontSize,
     textSpacing, setTextSpacing,
     resetAccessibility,

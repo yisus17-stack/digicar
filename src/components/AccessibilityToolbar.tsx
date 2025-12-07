@@ -17,6 +17,7 @@ import {
     Heading1,
     Baseline,
     ZoomOut,
+    RectangleHorizontal,
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Button } from './ui/button';
@@ -71,6 +72,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     highlightTitles,
     textSpacing,
     textMagnifier,
+    readingMask,
     cycleFontSize,
     setHighContrast,
     setGrayscale,
@@ -80,6 +82,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
     setHighlightTitles,
     setTextSpacing,
     setTextMagnifier,
+    setReadingMask,
     resetAccessibility,
   } = useAccessibility();
 
@@ -147,8 +150,7 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
             className="fixed inset-0 bg-black/60 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, transition: { duration: 0.3 } }}
           >
             <div className="absolute inset-0" onClick={() => setIsOpen(false)}></div>
             
@@ -194,6 +196,9 @@ export function AccessibilityToolbar({ fontClassName }: { fontClassName: string 
                             </button>
                              <ToolButton label="Lupa de Texto" onClick={() => setTextMagnifier(!textMagnifier)} isActive={textMagnifier}>
                                 <ZoomIn className="h-7 w-7" />
+                            </ToolButton>
+                            <ToolButton label="Máscara de Lectura" onClick={() => setReadingMask(!readingMask)} isActive={readingMask}>
+                                <RectangleHorizontal className="h-7 w-7" />
                             </ToolButton>
                             <ToolButton label="Resaltar Títulos" onClick={() => setHighlightTitles(!highlightTitles)} isActive={highlightTitles}>
                                 <Heading1 className="h-7 w-7" />
