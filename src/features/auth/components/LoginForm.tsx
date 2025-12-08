@@ -69,27 +69,27 @@ export default function LoginForm() {
       }
 
     } catch (error: any) {
-        let description = "Ocurrió un error. Inténtalo nuevamente.";
-        const code = error?.code;
+        const code =
+          error?.code ||
+          error?.message ||
+          error?.error ||
+          "unknown";
 
-        switch (code) {
-            case "auth/user-not-found":
-            case "auth/wrong-password":
-                description = "Correo o contraseña incorrectos.";
-                break;
-            case "auth/invalid-email":
-                description = "El correo no tiene un formato válido.";
-                break;
-            case "auth/too-many-requests":
-                description = "Demasiados intentos fallidos. Intenta más tarde.";
-                break;
+        let description = "Ocurrió un error. Inténtalo nuevamente.";
+
+        if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) {
+          description = "Correo o contraseña incorrectos.";
+        } else if (code.includes("invalid-email")) {
+          description = "El correo no tiene un formato válido.";
+        } else if (code.includes("too-many-requests")) {
+          description = "Demasiados intentos fallidos. Intenta más tarde.";
         }
 
         Swal.fire({
-            title: 'Error al iniciar sesión',
-            text: description,
-            icon: 'error',
-            confirmButtonColor: '#595c97',
+          title: "Error al iniciar sesión",
+          text: description,
+          icon: "error",
+          confirmButtonColor: "#595c97",
         });
     } finally {
       setIsLoading(false);
