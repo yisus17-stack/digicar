@@ -1,6 +1,7 @@
 
 'use client';
 
+import { Suspense } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Marca } from '@/core/types';
@@ -19,7 +20,7 @@ const BrandLogosSkeleton = () => (
     </div>
 );
 
-export default function BrandLogos() {
+function BrandLogosContent() {
     const firestore = useFirestore();
     const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
     const { data: marcas, isLoading } = useCollection<Marca>(coleccionMarcas);
@@ -52,7 +53,6 @@ export default function BrandLogos() {
         </div>
     ));
 
-    // Si hay pocos logos, los mostramos estáticos para evitar la repetición obvia.
     if (logosToDisplay.length < 5) {
         return (
             <div className="bg-muted">
@@ -81,7 +81,6 @@ export default function BrandLogos() {
         )
     }
 
-    // Si hay suficientes logos, usamos la animación de marquee.
     return (
         <div className="relative w-full overflow-hidden bg-muted py-12">
              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-muted to-transparent z-10"></div>
@@ -91,5 +90,13 @@ export default function BrandLogos() {
                 <div className="flex animate-marquee" aria-hidden="true">{renderLogos('secondary')}</div>
             </div>
         </div>
+    );
+}
+
+export default function BrandLogos() {
+    return (
+        <Suspense fallback={<BrandLogosSkeleton />}>
+            <BrandLogosContent />
+        </Suspense>
     );
 }

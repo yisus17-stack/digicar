@@ -43,7 +43,7 @@ const SeccionHero = () => {
     const manejarBusqueda = (e: React.FormEvent) => {
         e.preventDefault();
         if (terminoBusqueda.trim()) {
-            router.push(`/catalogo?search=${'\'\'\''}${encodeURIComponent(terminoBusqueda.trim())}${'\'\'\''}`);
+            router.push(`/catalogo?search=${encodeURIComponent(terminoBusqueda.trim())}`);
         }
     };
     
@@ -113,7 +113,6 @@ export default function Home() {
         <Suspense fallback={
             <>
                 <EsqueletoSeccionHero />
-                <Skeleton className="h-20 w-full" />
                 <div className="py-24">
                   <div className="container mx-auto px-4">
                       <div className="text-center mb-6">
