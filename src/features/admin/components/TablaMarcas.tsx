@@ -48,7 +48,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínala!',
       cancelButtonText: 'Cancelar',
-      target: event.currentTarget.closest('body') || undefined,
+      target: document.querySelector('body') || undefined,
     });
 
     if (!result.isConfirmed) {

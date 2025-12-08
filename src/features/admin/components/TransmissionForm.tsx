@@ -62,7 +62,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
   }, [transmision, estaAbierto, form]);
 
 
-  const alEnviar = async (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+  const alEnviar = async (data: DatosFormulario) => {
     const success = await alGuardar(data);
     if (!success) {
       Swal.fire({
@@ -70,7 +70,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
           text: `La transmisión "${data.nombre}" ya existe.`,
           icon: 'error',
           confirmButtonColor: '#595c97',
-          target: event.currentTarget.closest('[role="dialog"]') || undefined,
+          target: document.querySelector('[role="dialog"]') || undefined,
       });
     }
   };
@@ -82,7 +82,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
           <DialogTitle>{transmision ? 'Editar Transmisión' : 'Añadir Transmisión'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(); }} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Transmisión</FormLabel>

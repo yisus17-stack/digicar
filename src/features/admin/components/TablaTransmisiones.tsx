@@ -46,7 +46,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínala!',
       cancelButtonText: 'Cancelar',
-      target: event.currentTarget.closest('body') || undefined,
+      target: document.querySelector('body') || undefined,
     });
 
     if (!result.isConfirmed) {

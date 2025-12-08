@@ -169,7 +169,7 @@ export default function FormularioAuto({
     }
   };
   
-  const alEnviar = async (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+  const alEnviar = async (data: DatosFormulario) => {
     const files = data.variantes.map(v => v.file);
     const datosAuto: Omit<Car, 'id'> = {
       ...data,
@@ -194,7 +194,7 @@ export default function FormularioAuto({
         text: `Ya existe un auto con la marca "${datosAuto.marca}" y el modelo "${datosAuto.modelo}".`,
         icon: 'error',
         confirmButtonColor: '#595c97',
-        target: event.currentTarget.closest('[role="dialog"]') || undefined,
+        target: document.querySelector('[role="dialog"]') || undefined,
       });
     }
   };
@@ -241,7 +241,7 @@ export default function FormularioAuto({
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      target: e.currentTarget.closest('[role="dialog"]') || undefined,
+      target: document.querySelector('[role="dialog"]') || undefined,
     });
     
     if (result.isConfirmed) {
@@ -279,7 +279,7 @@ export default function FormularioAuto({
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form id="auto-form" onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e), handleFormErrors)(); }} className="flex-grow flex flex-col overflow-hidden">
+          <form id="auto-form" onSubmit={form.handleSubmit(alEnviar, handleFormErrors)} className="flex-grow flex flex-col overflow-hidden">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col overflow-hidden">
               <TabsList className="w-full grid grid-cols-2">
                 <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>

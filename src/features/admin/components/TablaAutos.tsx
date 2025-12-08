@@ -51,7 +51,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínalo!',
       cancelButtonText: 'Cancelar',
-      target: event.currentTarget.closest('body') || undefined,
+      target: document.querySelector('body') || undefined,
     });
 
     if (!result.isConfirmed) {

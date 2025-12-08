@@ -47,7 +47,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínalo!',
       cancelButtonText: 'Cancelar',
-      target: event.currentTarget.closest('body') || undefined,
+      target: document.querySelector('body') || undefined,
     });
 
     if (!result.isConfirmed) {

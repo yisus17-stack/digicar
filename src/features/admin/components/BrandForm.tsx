@@ -94,7 +94,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
     form.setValue('logoUrl', '', { shouldValidate: true });
   };
 
-  const alEnviar = async (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+  const alEnviar = async (data: DatosFormulario) => {
     const finalData = { ...data, logoUrl: preview || data.logoUrl || '' };
     const success = await alGuardar(finalData, selectedFile);
     if (!success) {
@@ -103,7 +103,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
             text: `La marca "${data.nombre}" ya existe.`,
             icon: 'error',
             confirmButtonColor: '#595c97',
-            target: event.currentTarget.closest('[role="dialog"]') || undefined,
+            target: document.querySelector('[role="dialog"]') || undefined,
         });
     }
   };
@@ -115,7 +115,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
           <DialogTitle>{marca ? 'Editar Marca' : 'Añadir Marca'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(); }} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
             <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Marca</FormLabel>
