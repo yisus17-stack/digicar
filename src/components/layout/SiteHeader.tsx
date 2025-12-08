@@ -359,7 +359,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 <Input
                   type="search"
                   placeholder="Busca en todo el catálogo..."
-                  className="h-12 flex-1 border-0 bg-transparent text-lg shadow-none focus-visible:ring-0"
+                  className="h-12 flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0"
                   autoFocus
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
