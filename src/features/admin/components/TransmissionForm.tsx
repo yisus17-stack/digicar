@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -24,7 +25,6 @@ import { Input } from '@/components/ui/input';
 import { Transmision } from '@/core/types';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -36,7 +36,7 @@ interface PropsFormularioTransmision {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   transmision: Transmision | null;
-  alGuardar: (transmission: Omit<Transmision, 'id'>) => void;
+  alGuardar: (transmission: Omit<Transmision, 'id'>, event: React.FormEvent<HTMLFormElement>) => void;
   isSaving: boolean;
 }
 
@@ -61,8 +61,8 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
   }, [transmision, estaAbierto, form]);
 
 
-  const alEnviar = (data: DatosFormulario) => {
-    alGuardar(data);
+  const alEnviar = (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+    alGuardar(data, event);
   };
 
   return (
@@ -72,7 +72,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
           <DialogTitle>{transmision ? 'Editar Transmisión' : 'Añadir Transmisión'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4 py-4">
+          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(e); }} className="space-y-4 py-4">
             <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Transmisión</FormLabel>

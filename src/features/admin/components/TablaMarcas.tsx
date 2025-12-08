@@ -98,7 +98,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     }
 };
 
-  const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
+  const manejarGuardar = async (data: Omit<Marca, 'id'>, file: File | undefined, event: React.FormEvent<HTMLFormElement>) => {
     setIsSaving(true);
     
     const normalizedName = data.nombre.trim().toLowerCase();
@@ -112,6 +112,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             text: `La marca "${data.nombre}" ya existe.`,
             icon: 'error',
             confirmButtonColor: '#595c97',
+            target: event.currentTarget.closest('[role="dialog"]') || undefined,
         });
         setIsSaving(false);
         return;
@@ -124,6 +125,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       didOpen: () => {
         Swal.showLoading();
       },
+      target: event.currentTarget.closest('[role="dialog"]') || undefined,
     });
 
     try {

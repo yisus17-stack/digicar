@@ -67,7 +67,7 @@ interface PropsFormularioAuto {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   auto: Car | null;
-  alGuardar: (auto: Omit<Car, 'id'>, files: (File | undefined)[]) => void;
+  alGuardar: (auto: Omit<Car, 'id'>, files: (File | undefined)[], event: React.FormEvent<HTMLFormElement>) => void;
   marcas: Marca[];
   colores: Color[];
   transmisiones: Transmision[];
@@ -169,7 +169,7 @@ export default function FormularioAuto({
     }
   };
   
-  const alEnviar = (data: DatosFormulario) => {
+  const alEnviar = (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
     const files = data.variantes.map(v => v.file);
     const datosAuto: Omit<Car, 'id'> = {
       ...data,
@@ -187,7 +187,7 @@ export default function FormularioAuto({
         id: rest.id || `new_${Date.now()}_${Math.random()}`,
       })),
     };
-    alGuardar(datosAuto, files);
+    alGuardar(datosAuto, files, event);
   };
 
   const handleFormErrors = () => {
@@ -270,7 +270,7 @@ export default function FormularioAuto({
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form id="auto-form" onSubmit={form.handleSubmit(alEnviar, handleFormErrors)} className="flex-grow flex flex-col overflow-hidden">
+          <form id="auto-form" onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e), handleFormErrors)(e); }} className="flex-grow flex flex-col overflow-hidden">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col overflow-hidden">
               <TabsList className="w-full grid grid-cols-2">
                 <TabsTrigger value="general">Datos del Vehículo</TabsTrigger>

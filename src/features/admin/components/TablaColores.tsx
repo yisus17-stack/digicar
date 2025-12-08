@@ -102,7 +102,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     }
   };
 
-  const manejarGuardar = async (data: Omit<Color, 'id'>) => {
+  const manejarGuardar = async (data: Omit<Color, 'id'>, event: React.FormEvent<HTMLFormElement>) => {
     setIsSaving(true);
     const normalizedName = data.nombre.trim().toLowerCase();
 
@@ -116,6 +116,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             text: `El color "${data.nombre}" ya existe.`,
             icon: 'error',
             confirmButtonColor: '#595c97',
+            target: event.currentTarget.closest('[role="dialog"]') || undefined,
         });
         setIsSaving(false);
         return;

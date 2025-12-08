@@ -99,7 +99,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     }
   };
 
-  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]) => {
+  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[], event: React.FormEvent<HTMLFormElement>) => {
     setIsSaving(true);
 
     const isDuplicate = autosIniciales.some(auto => 
@@ -114,6 +114,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             text: `Ya existe un auto con la marca "${datosAuto.marca}" y el modelo "${datosAuto.modelo}".`,
             icon: 'error',
             confirmButtonColor: '#595c97',
+            target: event.currentTarget.closest('[role="dialog"]') || undefined,
         });
         setIsSaving(false);
         return;
@@ -126,6 +127,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       didOpen: () => {
         Swal.showLoading();
       },
+      target: event.currentTarget.closest('[role="dialog"]') || undefined,
     });
     
     try {

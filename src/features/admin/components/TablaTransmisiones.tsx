@@ -91,7 +91,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     }
   };
 
-  const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
+  const manejarGuardar = async (data: Omit<Transmision, 'id'>, event: React.FormEvent<HTMLFormElement>) => {
     setIsSaving(true);
     const normalizedName = data.nombre.trim().toLowerCase();
 
@@ -107,6 +107,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
         text: `La transmisión "${data.nombre}" ya existe.`,
         icon: 'error',
         confirmButtonColor: '#595c97',
+        target: event.currentTarget.closest('[role="dialog"]') || undefined,
       });
       setIsSaving(false);
       return;
