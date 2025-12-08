@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -11,7 +11,6 @@ import { useMounted } from '@/hooks/use-mounted';
 const themes = [
   { name: 'light', icon: Sun },
   { name: 'dark', icon: Moon },
-  { name: 'system', icon: Monitor },
 ];
 
 export function ThemeToggle() {
