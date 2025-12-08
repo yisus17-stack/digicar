@@ -182,7 +182,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     <>
       <Card>
         <CardHeader className="flex-col gap-4 sm:flex-row justify-between items-center">
-            <CardTitle className="text-2xl sm:text-3xl font-bold">Administrar Transmisiones</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl font-bold">Administrar Transmisiones</CardTitle>
             <Button onClick={manejarAnadir}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Añadir Transmisión
