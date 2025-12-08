@@ -307,7 +307,7 @@ export default function ComparisonContent() {
                     onClear={clearCar1}
                 />
                 <div className="flex items-center justify-center h-full my-4 md:my-0 md:pt-16">
-                    <GitCompareArrows className="h-8 w-8 text-muted-foreground transform md:transform-none -rotate-90" />
+                    <GitCompareArrows className="h-8 w-8 text-muted-foreground rotate-90 md:rotate-0" />
                 </div>
                 <CarSelector 
                     selectedCar={car2} 
@@ -337,20 +337,18 @@ export default function ComparisonContent() {
                         <div className="col-span-1 px-4">{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</div>
                     </div>
                      <div className="md:hidden flex justify-around mb-4 font-bold">
-                        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span>{car1 ? `${car1.marca}` : 'Auto 1'}</span></div>
-                        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div><span>{car2 ? `${car2.marca}` : 'Auto 2'}</span></div>
+                        <span>{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</span>
+                        <span>{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</span>
                     </div>
                     <Separator className="hidden md:block" />
 
                     {features.map(feature => (
                         <div key={feature.key} className="grid grid-cols-2 md:grid-cols-3 items-center gap-x-4 gap-y-2 md:gap-y-0">
                            <div className="col-span-2 md:col-span-1 font-semibold text-muted-foreground">{feature.label}</div>
-                           <div className="text-left font-medium flex items-center gap-2">
-                                <div className="md:hidden w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0"></div>
+                           <div className="text-left font-medium">
                                 {formatValue(feature.key, car1, variant1)}
                            </div>
-                           <div className="text-left font-medium flex items-center gap-2">
-                               <div className="md:hidden w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
+                           <div className="text-left font-medium">
                                {formatValue(feature.key, car2, variant2)}
                            </div>
                            <div className="col-span-2 mt-2 md:col-span-3 md:mt-4">
