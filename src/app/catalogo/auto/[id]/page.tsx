@@ -4,7 +4,7 @@
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import { useParams, notFound, useRouter } from 'next/navigation';
-import { doc, getDoc, collection, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { useFirestore, useCollection, useMemoFirebase, useUser, useDoc } from '@/firebase'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -49,12 +49,13 @@ export default function PaginaDetalleAuto() {
   const firestore = useFirestore();
   const { user, loading: loadingUser } = useUser();
   const router = useRouter();
+  
+  const refAuto = useMemoFirebase(() => doc(firestore, 'autos', id), [id, firestore]);
+  const { data: auto, isLoading: cargandoAuto } = useDoc<Car>(refAuto);
 
-  const [auto, setAuto] = useState<Car | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<CarVariant | null>(null);
   
   const coleccionMarcas = useMemoFirebase(() => collection(firestore, 'marcas'), [firestore]);
   const { data: marcas, isLoading: cargandoMarcas } = useCollection<Marca>(coleccionMarcas);
@@ -64,6 +65,17 @@ export default function PaginaDetalleAuto() {
 
   const refFavoritos = useMemoFirebase(() => user ? doc(firestore, 'favoritos', user.uid) : null, [user, firestore]);
   const { data: favoritos, isLoading: cargandoFavoritos } = useDoc<Favorite>(refFavoritos);
+
+  const selectedVariant = useMemo(() => {
+    if (!auto || !auto.variantes) return null;
+    return auto.variantes.find(v => v.id === selectedVariantId) ?? auto.variantes[0];
+  }, [auto, selectedVariantId]);
+
+  useEffect(() => {
+    if (auto && auto.variantes && auto.variantes.length > 0 && !selectedVariantId) {
+        setSelectedVariantId(auto.variantes[0].id);
+    }
+  }, [auto, selectedVariantId]);
 
   useEffect(() => {
     if (!favoritos || !favoritos.items || !selectedVariant) {
@@ -75,34 +87,6 @@ export default function PaginaDetalleAuto() {
     );
     setIsFavorite(isFav);
   }, [favoritos, id, selectedVariant]);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchAuto = async () => {
-      setIsLoading(true);
-      try {
-        const ref = doc(firestore, 'autos', id);
-        const docSnap = await getDoc(ref);
-        if (docSnap.exists()) {
-          const data = docSnap.data() as Car;
-          setAuto(data);
-          if (data.variantes && data.variantes.length > 0) {
-            setSelectedVariant(data.variantes[0]);
-          }
-        } else {
-          setAuto(null);
-        }
-      } catch (err) {
-        console.error('Error al cargar el auto:', err);
-        setAuto(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAuto();
-  }, [id, firestore]);
   
   const brandLogoUrl = useMemo(() => {
     if (!auto || !marcas) return null;
@@ -149,7 +133,7 @@ export default function PaginaDetalleAuto() {
   };
 
 
-  if (isLoading || cargandoMarcas || cargandoTodosLosAutos || loadingUser || cargandoFavoritos) return <SkeletonDetalle />;
+  if (cargandoAuto || cargandoMarcas || cargandoTodosLosAutos || loadingUser || cargandoFavoritos) return <SkeletonDetalle />;
   if (!auto) return notFound();
 
   const detallesAuto = [
@@ -250,7 +234,7 @@ export default function PaginaDetalleAuto() {
                                   "rounded-md overflow-hidden cursor-pointer border-2 transition-all",
                                   selectedVariant?.id === v.id ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
                               )}
-                              onClick={() => setSelectedVariant(v)}
+                              onClick={() => setSelectedVariantId(v.id)}
                               >
                               <Image
                                   src={v.imagenUrl}
