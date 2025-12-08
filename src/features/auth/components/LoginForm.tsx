@@ -69,23 +69,29 @@ export default function LoginForm() {
       }
 
     } catch (error) {
-        let description = '';
+        let description = "Ocurrió un error. Inténtalo nuevamente.";
+
         if (error instanceof FirebaseError) {
-          if (error.code === 'auth/invalid-credential') {
-            description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
-          } else if (error.code === 'auth/too-many-requests') {
-            description = 'El acceso a esta cuenta ha sido temporalmente deshabilitado debido a muchos intentos fallidos. Inténtalo más tarde.';
-          }
+            switch (error.code) {
+                case "auth/user-not-found":
+                case "auth/wrong-password":
+                    description = "Correo o contraseña incorrectos.";
+                    break;
+                case "auth/invalid-email":
+                    description = "El correo no tiene un formato válido.";
+                    break;
+                case "auth/too-many-requests":
+                    description = "Demasiados intentos fallidos. Intenta más tarde.";
+                    break;
+            }
         }
         
-        if (description) {
-            Swal.fire({
-                title: 'Error al iniciar sesión',
-                text: description,
-                icon: 'error',
-                confirmButtonColor: '#595c97',
-            });
-        }
+        Swal.fire({
+            title: 'Error al iniciar sesión',
+            text: description,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
     } finally {
       setIsLoading(false);
     }
