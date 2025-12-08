@@ -88,7 +88,10 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan} className="align-middle">
+                    <TableHead key={header.id} colSpan={header.colSpan} className={cn("align-middle", 
+                      header.id === 'anio' && 'hidden md:table-cell',
+                      header.id === 'precio' && 'hidden md:table-cell'
+                    )}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -109,7 +112,10 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className={cn(
+                      cell.column.id === 'anio' && 'hidden md:table-cell',
+                      cell.column.id === 'precio' && 'hidden md:table-cell'
+                    )}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -131,14 +137,14 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between">
+       <div className="flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} de{' '}
           {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Filas por página</p>
+            <p className="whitespace-nowrap text-sm font-medium">Filas por página</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
@@ -157,7 +163,7 @@ export function DataTable<TData, TValue>({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          <div className="flex items-center justify-center text-sm font-medium">
             Página {table.getState().pagination.pageIndex + 1} de{' '}
             {table.getPageCount()}
           </div>

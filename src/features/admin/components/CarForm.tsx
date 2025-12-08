@@ -264,7 +264,7 @@ export default function FormularioAuto({
 
   return (
     <Dialog open={estaAbierto} onOpenChange={alCambiarApertura}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[90vh] max-h-[800px]">
+      <DialogContent className="sm:max-w-3xl flex flex-col h-[95vh] sm:h-[90vh] max-h-[800px]">
         <DialogHeader>
           <DialogTitle className="text-xl">{auto ? 'Editar Auto' : 'Añadir Auto'}</DialogTitle>
         </DialogHeader>
@@ -276,8 +276,8 @@ export default function FormularioAuto({
                 <TabsTrigger value="variantes">Colores y Precios</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="general" className="flex-grow overflow-y-auto py-3 px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+              <TabsContent value="general" className="flex-grow overflow-y-auto py-3 px-1 sm:px-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3">
                   <FormField name="marca" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>Marca *</FormLabel>
@@ -376,7 +376,7 @@ export default function FormularioAuto({
                           </FormControl>
                           <SelectContent>
                               {[2, 4, 5, 7, 8].map(p => (
-                                  <SelectItem key={p} value={String(p)}>{p}</SelectItem>
+                                  <SelectItem key={p} value={String(p)}>{p} Pasajeros</SelectItem>
                               ))}
                           </SelectContent>
                       </Select>
@@ -400,7 +400,7 @@ export default function FormularioAuto({
                 />
               </TabsContent>
               
-              <TabsContent value="variantes" className="flex-grow flex flex-col p-4 overflow-hidden">
+              <TabsContent value="variantes" className="flex-grow flex flex-col p-1 sm:p-4 overflow-hidden">
                 <div className="flex-grow overflow-y-auto pr-2">
                   {fields.length > 0 && (
                     <div className="flex items-center justify-center gap-4 mb-4">
@@ -425,11 +425,11 @@ export default function FormularioAuto({
                         {fields.length > 0 && (
                           <Button type="button" variant="destructive" size="sm" onClick={(e) => removeVariantAction(e, index)}>
                               <Trash2 className="mr-2 h-4 w-4" />
-                              Eliminar Variante
+                              Eliminar
                           </Button>
                         )}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField control={form.control} name={`variantes.${index}.color`} render={({ field }) => (
                           <FormItem>
                             <FormLabel>Color *</FormLabel>
@@ -464,19 +464,19 @@ export default function FormularioAuto({
                         render={({ field: imageField }) => (
                           <FormItem>
                             <FormLabel>Imagen *</FormLabel>
-                            <div className="flex items-center gap-4">
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
                               <FormControl>
-                                <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                <label htmlFor={`file-upload-${index}`} className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full sm:w-auto">
                                   Elegir archivo
                                   <Input id={`file-upload-${index}`} type="file" accept="image/*" onChange={(e) => handleFileChange(e, index)} className="hidden"/>
                                 </label>
                               </FormControl>
                               {imageField.value ? (
-                                <div className="relative w-40 h-24 rounded-lg overflow-hidden border">
+                                <div className="relative w-full sm:w-40 h-24 rounded-lg overflow-hidden border">
                                   <img src={imageField.value} alt="Vista previa" className="object-cover w-full h-full" draggable="false" />
                                 </div>
                               ) : (
-                                <div className="w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
+                                <div className="w-full sm:w-40 h-24 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">Vista previa</div>
                               )}
                             </div>
                             <FormMessage />
@@ -499,7 +499,7 @@ export default function FormularioAuto({
             </Tabs>
           </form>
         </Form>
-        <DialogFooter>
+        <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-0 pt-4 border-t">
           <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
           {activeTab === 'general' ? (
               <Button type="button" onClick={handleNext}>Siguiente</Button>
