@@ -157,25 +157,40 @@ export default function ComparisonContent() {
   }, [user, loadingUser, router]);
 
  useEffect(() => {
-    if (isInitialLoad && !loadingProfile && userProfile && todosLosAutos) {
-      const [comp1, comp2] = userProfile.currentComparison || [];
-      if (comp1) {
-        const [cId1, vId1] = comp1.split(':');
-        if (cId1 && vId1 && todosLosAutos.some(c => c.id === cId1)) {
-          setCarId1(cId1);
-          setVariantId1(vId1);
+    if (isInitialLoad && !loadingCars) {
+      const storedComparison = sessionStorage.getItem('comparisonData');
+      if (storedComparison) {
+        try {
+          const { carId1, variantId1, carId2, variantId2 } = JSON.parse(storedComparison);
+          setCarId1(carId1);
+          setVariantId1(variantId1);
+          setCarId2(carId2);
+          setVariantId2(variantId2);
+          sessionStorage.removeItem('comparisonData');
+        } catch (error) {
+          console.error("Error parsing comparison data from sessionStorage", error);
         }
-      }
-      if (comp2) {
-        const [cId2, vId2] = comp2.split(':');
-        if (cId2 && vId2 && todosLosAutos.some(c => c.id === cId2)) {
-          setCarId2(cId2);
-          setVariantId2(vId2);
+        setIsInitialLoad(false);
+      } else if (!loadingProfile && userProfile && todosLosAutos) {
+        const [comp1, comp2] = userProfile.currentComparison || [];
+        if (comp1) {
+          const [cId1, vId1] = comp1.split(':');
+          if (cId1 && vId1 && todosLosAutos.some(c => c.id === cId1)) {
+            setCarId1(cId1);
+            setVariantId1(vId1);
+          }
         }
+        if (comp2) {
+          const [cId2, vId2] = comp2.split(':');
+          if (cId2 && vId2 && todosLosAutos.some(c => c.id === cId2)) {
+            setCarId2(cId2);
+            setVariantId2(vId2);
+          }
+        }
+        setIsInitialLoad(false);
       }
-      setIsInitialLoad(false);
     }
-  }, [userProfile, todosLosAutos, isInitialLoad, loadingProfile]);
+  }, [userProfile, todosLosAutos, isInitialLoad, loadingProfile, loadingCars]);
 
   useEffect(() => {
     if (isInitialLoad || !user || !userProfileRef) {
