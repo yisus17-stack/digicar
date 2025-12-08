@@ -194,7 +194,7 @@ export default function FormularioAuto({
         text: `Ya existe un auto con la marca "${datosAuto.marca}" y el modelo "${datosAuto.modelo}".`,
         icon: 'error',
         confirmButtonColor: '#595c97',
-        target: document.querySelector('[role="dialog"]') || undefined,
+        backdrop: false,
       });
     }
   };

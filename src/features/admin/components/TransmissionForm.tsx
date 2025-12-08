@@ -70,7 +70,7 @@ export default function FormularioTransmision({ estaAbierto, alCambiarApertura, 
           text: `La transmisión "${data.nombre}" ya existe.`,
           icon: 'error',
           confirmButtonColor: '#595c97',
-          target: document.querySelector('[role="dialog"]') || undefined,
+          backdrop: false,
       });
     }
   };

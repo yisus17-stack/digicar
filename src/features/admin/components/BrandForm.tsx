@@ -103,7 +103,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
             text: `La marca "${data.nombre}" ya existe.`,
             icon: 'error',
             confirmButtonColor: '#595c97',
-            target: document.querySelector('[role="dialog"]') || undefined,
+            backdrop: false,
         });
     }
   };
