@@ -1,39 +1,15 @@
 
 'use client';
 
-import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Search, GitCompareArrows, Landmark, LayoutGrid } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useState, type MouseEvent } from 'react';
-import PopularCarsSection, { PopularCarsSkeleton } from '@/features/catalog/components/PopularCarsSection';
-import BrandLogos, { BrandLogosSkeleton } from '@/features/catalog/components/BrandLogos';
+import PopularCarsSection from '@/features/catalog/components/PopularCarsSection';
+import BrandLogos from '@/features/catalog/components/BrandLogos';
 import { useUser } from '@/firebase';
-
-
-const EsqueletoSeccionHero = () => {
-    return (
-        <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
-            <div className="absolute top-[-50px] left-[-50px] w-48 h-48 bg-primary/10 rounded-full -z-10"></div>
-            <div className="absolute bottom-[-80px] right-[-80px] w-72 h-72 bg-accent/10 rounded-full -z-10"></div>
-            <div className="container mx-auto px-4 text-center relative z-10">
-                <Skeleton className="h-12 md:h-16 w-3/4 mx-auto mb-6" />
-                <Skeleton className="h-6 md:h-7 w-full max-w-3xl mx-auto mb-10" />
-                <div className="max-w-2xl mx-auto">
-                    <Skeleton className="h-14 w-full rounded-full" />
-                    <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2">
-                        <Skeleton className="h-5 w-24" />
-                        <Skeleton className="h-5 w-24" />
-                        <Skeleton className="h-5 w-28" />
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-};
 
 
 const SeccionHero = () => {
@@ -59,8 +35,6 @@ const SeccionHero = () => {
         }
     }
 
-    // Aunque este componente no use datos, el hook useUser lo hará suspenderse
-    // si la autenticación aún está cargando, sincronizándolo con los demás.
     if (loadingUser) {
       return null;
     }
@@ -116,20 +90,12 @@ const SeccionHero = () => {
 
 export default function Home() {
     return (
-        <Suspense fallback={
-            <>
-                <EsqueletoSeccionHero />
-                <BrandLogosSkeleton />
-                <div id="popular" className="py-24">
-                    <PopularCarsSkeleton />
-                </div>
-            </>
-        }>
+        <>
             <SeccionHero />
             <BrandLogos />
             <div id="popular" className="py-24">
                 <PopularCarsSection />
             </div>
-        </Suspense>
+        </>
     );
 }
