@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Color } from '@/core/types';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -36,7 +37,7 @@ interface PropsFormularioColor {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   color: Color | null;
-  alGuardar: (color: Omit<Color, 'id'>, event: React.FormEvent<HTMLFormElement>) => void;
+  alGuardar: (color: Omit<Color, 'id'>) => Promise<boolean>;
   isSaving: boolean;
 }
 
@@ -61,8 +62,17 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
   }, [color, estaAbierto, form]);
 
 
-  const alEnviar = (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
-    alGuardar(data, event);
+  const alEnviar = async (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+    const success = await alGuardar(data);
+    if (!success) {
+        Swal.fire({
+            title: 'Color Duplicado',
+            text: `El color "${data.nombre}" ya existe.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+            target: event.currentTarget.closest('[role="dialog"]') || undefined,
+        });
+    }
   };
 
   return (
@@ -72,7 +82,7 @@ export default function FormularioColor({ estaAbierto, alCambiarApertura, color,
           <DialogTitle>{color ? 'Editar Color' : 'Añadir Color'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(e); }} className="space-y-4 py-4">
+          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(); }} className="space-y-4 py-4">
             <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre del Color</FormLabel>

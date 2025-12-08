@@ -26,6 +26,7 @@ import { Marca } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
@@ -38,7 +39,7 @@ interface PropsFormularioMarca {
   estaAbierto: boolean;
   alCambiarApertura: (open: boolean) => void;
   marca: Marca | null;
-  alGuardar: (data: Omit<Marca, 'id'>, file: File | undefined, event: React.FormEvent<HTMLFormElement>) => void;
+  alGuardar: (data: Omit<Marca, 'id'>, file: File | undefined) => Promise<boolean>;
   isSaving: boolean;
 }
 
@@ -93,9 +94,18 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
     form.setValue('logoUrl', '', { shouldValidate: true });
   };
 
-  const alEnviar = (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
+  const alEnviar = async (data: DatosFormulario, event: React.FormEvent<HTMLFormElement>) => {
     const finalData = { ...data, logoUrl: preview || data.logoUrl || '' };
-    alGuardar(finalData, selectedFile, event);
+    const success = await alGuardar(finalData, selectedFile);
+    if (!success) {
+        Swal.fire({
+            title: 'Marca Duplicada',
+            text: `La marca "${data.nombre}" ya existe.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+            target: event.currentTarget.closest('[role="dialog"]') || undefined,
+        });
+    }
   };
   
   return (
@@ -105,7 +115,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
           <DialogTitle>{marca ? 'Editar Marca' : 'Añadir Marca'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(e); }} className="space-y-4 py-4">
+          <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(data => alEnviar(data, e))(); }} className="space-y-4 py-4">
             <FormField control={form.control} name="nombre" render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombre de la Marca</FormLabel>

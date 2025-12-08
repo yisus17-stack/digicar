@@ -38,7 +38,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     setEstaFormularioAbierto(true);
   };
 
-  const manejarEliminar = async (marca: Marca) => {
+  const manejarEliminar = async (marca: Marca, event: React.MouseEvent<HTMLButtonElement>) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer.",
@@ -47,7 +47,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínala!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      target: event.currentTarget.closest('body') || undefined,
     });
 
     if (!result.isConfirmed) {
@@ -98,7 +99,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     }
 };
 
-  const manejarGuardar = async (data: Omit<Marca, 'id'>, file: File | undefined, event: React.FormEvent<HTMLFormElement>) => {
+  const manejarGuardar = async (data: Omit<Marca, 'id'>, file: File | undefined): Promise<boolean> => {
     setIsSaving(true);
     
     const normalizedName = data.nombre.trim().toLowerCase();
@@ -107,15 +108,8 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
     );
 
     if (isDuplicate) {
-        Swal.fire({
-            title: 'Marca Duplicada',
-            text: `La marca "${data.nombre}" ya existe.`,
-            icon: 'error',
-            confirmButtonColor: '#595c97',
-            target: event.currentTarget.closest('[role="dialog"]') || undefined,
-        });
         setIsSaving(false);
-        return;
+        return false;
     }
 
     Swal.fire({
@@ -124,8 +118,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      },
-      target: event.currentTarget.closest('[role="dialog"]') || undefined,
+      }
     });
 
     try {
@@ -160,6 +153,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             Swal.fire({ title: '¡Creada!', text: 'La nueva marca se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97' });
         }
         alCambiarAperturaFormulario(false);
+        return true;
     } catch (error: any) {
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la marca.', icon: 'error', confirmButtonColor: '#595c97' });
         
@@ -171,6 +165,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             });
             errorEmitter.emit('permission-error', contextualError);
         }
+        return false;
     } finally {
         setIsSaving(false);
     }
@@ -241,7 +236,7 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
             <Button variant="outline" size="sm" onClick={() => manejarEditar(marca)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(marca)}>
+            <Button variant="destructive" size="sm" onClick={(e) => manejarEliminar(marca, e)}>
                 <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>

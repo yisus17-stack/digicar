@@ -36,7 +36,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     setEstaFormularioAbierto(true);
   };
 
-  const manejarEliminar = async (transmision: Transmision) => {
+  const manejarEliminar = async (transmision: Transmision, event: React.MouseEvent<HTMLButtonElement>) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer.",
@@ -45,7 +45,8 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínala!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      target: event.currentTarget.closest('body') || undefined,
     });
 
     if (!result.isConfirmed) {
@@ -91,7 +92,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     }
   };
 
-  const manejarGuardar = async (data: Omit<Transmision, 'id'>, event: React.FormEvent<HTMLFormElement>) => {
+  const manejarGuardar = async (data: Omit<Transmision, 'id'>): Promise<boolean> => {
     setIsSaving(true);
     const normalizedName = data.nombre.trim().toLowerCase();
 
@@ -102,15 +103,8 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
     );
 
     if (isDuplicate) {
-      Swal.fire({
-        title: 'Transmisión Duplicada',
-        text: `La transmisión "${data.nombre}" ya existe.`,
-        icon: 'error',
-        confirmButtonColor: '#595c97',
-        target: event.currentTarget.closest('[role="dialog"]') || undefined,
-      });
       setIsSaving(false);
-      return;
+      return false;
     }
 
     try {
@@ -125,6 +119,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             Swal.fire({ title: '¡Creada!', text: 'La nueva transmisión se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
+        return true;
     } catch (error: any) {
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar la transmisión.', icon: 'error', confirmButtonColor: '#595c97', });
          if (error.code && error.code.includes('permission-denied')) {
@@ -135,6 +130,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             });
             errorEmitter.emit('permission-error', contextualError);
         }
+        return false;
     } finally {
         setIsSaving(false);
     }
@@ -190,7 +186,7 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
             <Button variant="outline" size="sm" onClick={() => manejarEditar(transmision)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(transmision)}>
+            <Button variant="destructive" size="sm" onClick={(e) => manejarEliminar(transmision, e)}>
                 <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>

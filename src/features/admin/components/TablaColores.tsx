@@ -37,7 +37,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     setEstaFormularioAbierto(true);
   };
 
-  const manejarEliminar = async (color: Color) => {
+  const manejarEliminar = async (color: Color, event: React.MouseEvent<HTMLButtonElement>) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer.",
@@ -46,7 +46,8 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínalo!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      target: event.currentTarget.closest('body') || undefined,
     });
 
     if (!result.isConfirmed) {
@@ -102,7 +103,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     }
   };
 
-  const manejarGuardar = async (data: Omit<Color, 'id'>, event: React.FormEvent<HTMLFormElement>) => {
+  const manejarGuardar = async (data: Omit<Color, 'id'>): Promise<boolean> => {
     setIsSaving(true);
     const normalizedName = data.nombre.trim().toLowerCase();
 
@@ -111,15 +112,8 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
     );
 
     if (isDuplicate) {
-        Swal.fire({
-            title: 'Color Duplicado',
-            text: `El color "${data.nombre}" ya existe.`,
-            icon: 'error',
-            confirmButtonColor: '#595c97',
-            target: event.currentTarget.closest('[role="dialog"]') || undefined,
-        });
         setIsSaving(false);
-        return;
+        return false;
     }
 
     try {
@@ -134,6 +128,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             Swal.fire({ title: '¡Creado!', text: 'El nuevo color se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97', });
         }
         alCambiarAperturaFormulario(false);
+        return true;
     } catch (error: any) {
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el color.', icon: 'error', confirmButtonColor: '#595c97', });
         if (error.code && error.code.includes('permission-denied')) {
@@ -144,6 +139,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             });
             errorEmitter.emit('permission-error', contextualError);
         }
+        return false;
     } finally {
         setIsSaving(false);
     }
@@ -199,7 +195,7 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
             <Button variant="outline" size="sm" onClick={() => manejarEditar(color)}>
               <Edit className="mr-2 h-4 w-4" /> Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(color)}>
+            <Button variant="destructive" size="sm" onClick={(e) => manejarEliminar(color, e)}>
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
             </Button>
           </div>

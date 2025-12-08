@@ -41,7 +41,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     setEstaFormularioAbierto(true);
   };
   
-  const manejarEliminar = async (autoId: string) => {
+  const manejarEliminar = async (autoId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: "Esta acción no se puede deshacer. Esto eliminará permanentemente el auto y sus imágenes de la base de datos.",
@@ -50,7 +50,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       confirmButtonColor: '#595c97',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, ¡elimínalo!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      target: event.currentTarget.closest('body') || undefined,
     });
 
     if (!result.isConfirmed) {
@@ -99,7 +100,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     }
   };
 
-  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[], event: React.FormEvent<HTMLFormElement>) => {
+  const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]): Promise<boolean> => {
     setIsSaving(true);
 
     const isDuplicate = autosIniciales.some(auto => 
@@ -109,15 +110,8 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
     );
 
     if (isDuplicate) {
-        Swal.fire({
-            title: 'Auto Duplicado',
-            text: `Ya existe un auto con la marca "${datosAuto.marca}" y el modelo "${datosAuto.modelo}".`,
-            icon: 'error',
-            confirmButtonColor: '#595c97',
-            target: event.currentTarget.closest('[role="dialog"]') || undefined,
-        });
         setIsSaving(false);
-        return;
+        return false;
     }
 
     Swal.fire({
@@ -126,8 +120,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      },
-      target: event.currentTarget.closest('[role="dialog"]') || undefined,
+      }
     });
     
     try {
@@ -160,6 +153,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97' });
         }
         alCambiarAperturaFormulario(false);
+        return true;
     } catch (error: any) {
         Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el auto.', icon: 'error', confirmButtonColor: '#595c97' });
         
@@ -171,6 +165,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
           });
           errorEmitter.emit('permission-error', contextualError);
         }
+        return false;
     } finally {
         setIsSaving(false);
     }
@@ -294,7 +289,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
             <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
               <Edit className="mr-0 sm:mr-2 h-4 w-4" /> <span className="hidden sm:inline">Editar</span>
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => manejarEliminar(auto.id)}>
+            <Button variant="destructive" size="sm" onClick={(e) => manejarEliminar(auto.id, e)}>
                 <Trash2 className="mr-0 sm:mr-2 h-4 w-4" /> <span className="hidden sm:inline">Eliminar</span>
             </Button>
           </div>
