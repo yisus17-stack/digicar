@@ -102,7 +102,7 @@ export default function PaginaDetalleAuto() {
   const autosRelacionados = useMemo(() => {
     if (!auto || !todosLosAutos) return [];
     return todosLosAutos
-      .filter(a => a.marca === auto.marca && a.id !== auto.id)
+      .filter(a => a.id !== auto.id)
       .slice(0, 3);
   }, [auto, todosLosAutos]);
 
