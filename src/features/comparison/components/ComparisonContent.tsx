@@ -4,22 +4,23 @@
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collection, addDoc, serverTimestamp, doc } from 'firebase/firestore';
-import type { Car, CarVariant, Comparison } from '@/core/types';
+import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayRemove } from 'firebase/firestore';
+import type { Car, CarVariant, Comparison, UserProfile } from '@/core/types';
 import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows, RefreshCw } from 'lucide-react';
+import { Car as CarIcon, PlusCircle, Save, Loader2, GitCompareArrows, RefreshCw, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { useDebounce } from 'use-debounce';
 
 
 const CarSelector = ({
@@ -136,17 +137,21 @@ export default function ComparisonContent() {
   const [variantId1, setVariantId1] = useState<string | undefined>();
   const [carId2, setCarId2] = useState<string | undefined>();
   const [variantId2, setVariantId2] = useState<string | undefined>();
-
   const [isSaving, setIsSaving] = useState(false);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading: loadingCars } = useCollection<Car>(coleccionAutos);
+
+  const userProfileRef = useMemoFirebase(() => user ? doc(firestore, 'usuarios', user.uid) : null, [user, firestore]);
+  const { data: userProfile, isLoading: loadingProfile } = useDoc<UserProfile>(userProfileRef);
 
   const car1 = useMemo(() => todosLosAutos?.find(c => c.id === carId1), [carId1, todosLosAutos]);
   const car2 = useMemo(() => todosLosAutos?.find(c => c.id === carId2), [carId2, todosLosAutos]);
   
   const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
+
+  const [debouncedCarIds] = useDebounce([carId1, carId2], 1000);
   
   useEffect(() => {
     if (!loadingUser && !user) {
@@ -155,39 +160,29 @@ export default function ComparisonContent() {
   }, [user, loadingUser, router]);
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem('comparisonData');
-    if (storedData && todosLosAutos) {
-      try {
-        const data = JSON.parse(storedData);
-        setCarId1(data.carId1);
-        setVariantId1(data.variantId1);
-        setCarId2(data.carId2);
-        setVariantId2(data.variantId2);
-      } catch (e) {
-        console.error("Error parsing comparison data from session storage", e);
-      } finally {
-        // We keep the data in session storage for reload purposes
-      }
+    if (userProfile && userProfile.currentComparison && todosLosAutos) {
+      const [id1, id2] = userProfile.currentComparison;
+      if (id1 && !carId1) handleSelectCar1(id1);
+      if (id2 && !carId2) handleSelectCar2(id2);
     }
-  }, [todosLosAutos]);
+  }, [userProfile, todosLosAutos]);
 
-  // Persist state to session storage on change
   useEffect(() => {
-    if (carId1 || carId2) {
-      const dataToStore = { carId1, variantId1, carId2, variantId2 };
-      sessionStorage.setItem('comparisonData', JSON.stringify(dataToStore));
-    } else {
-        sessionStorage.removeItem('comparisonData');
+    if (user && userProfileRef) {
+      const idsToSave = [debouncedCarIds[0] || null, debouncedCarIds[1] || null].filter(id => id !== null);
+      updateDoc(userProfileRef, { currentComparison: idsToSave });
     }
-  }, [carId1, variantId1, carId2, variantId2]);
+  }, [debouncedCarIds, user, userProfileRef]);
 
 
-  const resetComparison = () => {
+  const resetComparison = async () => {
     setCarId1(undefined);
     setVariantId1(undefined);
     setCarId2(undefined);
     setVariantId2(undefined);
-    sessionStorage.removeItem('comparisonData');
+    if (userProfileRef) {
+        await updateDoc(userProfileRef, { currentComparison: [] });
+    }
   };
   
   const handleSelectCar1 = (id: string) => {
@@ -231,7 +226,7 @@ export default function ComparisonContent() {
     };
 
     try {
-        const docRef = await addDoc(collection(firestore, 'comparaciones'), comparisonData);
+        await addDoc(collection(firestore, 'comparaciones'), comparisonData);
         
         await Swal.fire({
             title: '¡Comparación Guardada!',
@@ -239,7 +234,7 @@ export default function ComparisonContent() {
             icon: 'success',
             confirmButtonColor: '#595c97',
         });
-        resetComparison();
+        await resetComparison();
         
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
@@ -281,7 +276,7 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  if (loadingUser || loadingCars) {
+  if (loadingUser || loadingCars || loadingProfile) {
     return <EsqueletoComparacion />;
   }
 
@@ -329,11 +324,17 @@ export default function ComparisonContent() {
             <Card>
                 <CardHeader className="flex flex-col md:flex-row justify-between items-center gap-4">
                     <CardTitle>Especificaciones</CardTitle>
-                     <Button onClick={handleSaveComparison} disabled={!car1 || !car2 || isSaving} className="w-full md:w-auto">
-                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        <Save className="mr-2 h-4 w-4" />
-                        Guardar Comparación
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <Button onClick={handleSaveComparison} disabled={!car1 || !car2 || isSaving} className="w-full">
+                            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            <Save className="mr-2 h-4 w-4" />
+                            Guardar Comparación
+                        </Button>
+                         <Button variant="outline" onClick={resetComparison} disabled={!car1 && !car2} className="w-full">
+                            <X className="mr-2 h-4 w-4" />
+                            Limpiar Comparación
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="hidden md:grid md:grid-cols-3 items-center gap-4 py-2 font-bold text-lg">
