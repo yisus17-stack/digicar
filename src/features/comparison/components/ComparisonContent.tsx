@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -276,8 +277,12 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  if (loadingUser || loadingCars || loadingProfile) {
-    return <EsqueletoComparacion />;
+  const hasPersistedComparison = !loadingProfile && !!userProfile?.currentComparison?.some(id => id);
+  const persistedCar1Loaded = !userProfile?.currentComparison?.[0] || (userProfile?.currentComparison?.[0] && car1);
+  const persistedCar2Loaded = !userProfile?.currentComparison?.[1] || (userProfile?.currentComparison?.[1] && car2);
+
+  if (loadingUser || loadingCars || loadingProfile || (hasPersistedComparison && (!persistedCar1Loaded || !persistedCar2Loaded))) {
+      return <EsqueletoComparacion />;
   }
 
   if (!user || !todosLosAutos) {
