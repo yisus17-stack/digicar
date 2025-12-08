@@ -152,7 +152,8 @@ export default function ComparisonContent() {
   const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
 
-  const [debouncedCarIds] = useDebounce([carId1, carId2], 1000);
+  const [debouncedCarId1] = useDebounce(carId1, 500);
+  const [debouncedCarId2] = useDebounce(carId2, 500);
   
   useEffect(() => {
     if (!loadingUser && !user) {
@@ -170,10 +171,10 @@ export default function ComparisonContent() {
 
   useEffect(() => {
     if (user && userProfileRef) {
-      const idsToSave = [debouncedCarIds[0] || null, debouncedCarIds[1] || null].filter(id => id !== null);
+      const idsToSave = [debouncedCarId1 || null, debouncedCarId2 || null].filter(id => id !== null);
       setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
     }
-  }, [debouncedCarIds, user, userProfileRef]);
+  }, [debouncedCarId1, debouncedCarId2, user, userProfileRef]);
 
 
   const resetComparison = async () => {
