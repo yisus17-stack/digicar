@@ -19,6 +19,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Spinner } from '@/components/ui/spinner';
 
 const CarSelector = ({
   selectedCar,
@@ -155,7 +156,7 @@ export default function ComparisonContent() {
     }
   }, [user, loadingUser, router]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (isInitialLoad && !loadingProfile && userProfile && todosLosAutos) {
       const [comp1, comp2] = userProfile.currentComparison || [];
       if (comp1) {
@@ -288,12 +289,12 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  const isLoading = loadingUser || loadingCars || isInitialLoad;
+  const isLoading = loadingUser || loadingCars || loadingProfile || isInitialLoad;
 
   if (isLoading) {
       return (
         <div className="flex h-[80vh] w-full items-center justify-center">
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <Spinner />
         </div>
       );
   }
