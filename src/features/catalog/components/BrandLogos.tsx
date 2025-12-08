@@ -11,10 +11,10 @@ import { cn } from '@/lib/utils';
 
 export const BrandLogosSkeleton = () => (
     <div className="bg-muted">
-        <div className="container mx-auto py-12">
+        <div className="container mx-auto py-8 md:py-12">
             <div className="flex justify-around items-center">
                 {[...Array(5)].map((_, i) => (
-                    <Skeleton key={i} className="h-20 w-52" />
+                    <Skeleton key={i} className="h-16 w-32 md:h-20 md:w-52" />
                 ))}
             </div>
         </div>
@@ -50,7 +50,7 @@ function BrandLogosContent() {
 
     const logosToDisplay = useMemo(() => {
         const logos = marcas?.filter(marca => marca.logoUrl) ?? [];
-        if (logos.length === 0 || logos.length > 10) return logos;
+        if (logos.length === 0) return [];
         
         // Duplicar la lista para asegurar un bucle suave
         let extendedLogos = [];
@@ -74,17 +74,16 @@ function BrandLogosContent() {
     const renderLogos = (logos: Marca[], keyPrefix: string) => logos.map((marca, index) => (
         <div 
           key={`${keyPrefix}-${marca.id}-${index}`} 
-          className="flex-shrink-0 mx-8 flex items-center justify-center"
-          style={{ width: '208px', height: '80px' }}
+          className="flex-shrink-0 mx-4 md:mx-8 w-32 h-16 md:w-52 md:h-20 flex items-center justify-center"
         >
             <LogoImage marca={marca} />
         </div>
     ));
 
     return (
-        <div className="relative w-full overflow-hidden bg-muted py-12">
-             <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-muted to-transparent z-10"></div>
-             <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-muted to-transparent z-10"></div>
+        <div className="relative w-full overflow-hidden bg-muted py-8 md:py-12">
+             <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-muted to-transparent z-10"></div>
+             <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-muted to-transparent z-10"></div>
             <div className="flex whitespace-nowrap">
                 <div className="flex animate-marquee">{renderLogos(logosToDisplay, 'primary')}</div>
                 <div className="flex animate-marquee" aria-hidden="true">{renderLogos(logosToDisplay, 'secondary')}</div>
