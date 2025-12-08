@@ -50,6 +50,29 @@ interface SiteHeaderProps {
     loading: boolean;
 }
 
+const SiteHeaderSkeleton = () => {
+    return (
+        <header className="sticky top-0 z-40 w-full border-b bg-background">
+            <div className="container mx-auto flex h-20 items-center justify-between px-4">
+                <Skeleton className="h-10 w-36" />
+                <div className="hidden items-center space-x-6 lg:flex">
+                    <Skeleton className="h-6 w-16" />
+                    <Skeleton className="h-6 w-20" />
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-6 w-28" />
+                </div>
+                <div className="flex items-center justify-end gap-2 sm:gap-4">
+                    <Skeleton className="h-9 w-9 rounded-md" />
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                    <div className="lg:hidden">
+                        <Skeleton className="h-9 w-9 rounded-md" />
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
 const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -103,6 +126,11 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
   if (pathname.startsWith('/admin')) {
     return null;
   }
+  
+  if (!isMounted) {
+    return <SiteHeaderSkeleton />;
+  }
+
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: Home, protected: false },
