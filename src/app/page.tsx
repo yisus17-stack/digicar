@@ -25,8 +25,9 @@ const EsqueletoSeccionHero = () => {
                 <div className="max-w-2xl mx-auto">
                     <Skeleton className="h-14 w-full rounded-full" />
                     <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2">
-                        <Skeleton className="h-5 w-32" />
                         <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-5 w-28" />
                     </div>
                 </div>
             </div>
