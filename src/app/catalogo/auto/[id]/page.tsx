@@ -4,7 +4,7 @@
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
 import Image from 'next/image';
 import { useParams, notFound, useRouter } from 'next/navigation';
-import { doc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, collection, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { useFirestore, useCollection, useMemoFirebase, useUser, useDoc } from '@/firebase'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -73,9 +73,14 @@ export default function PaginaDetalleAuto() {
 
   useEffect(() => {
     if (auto && auto.variantes && auto.variantes.length > 0 && !selectedVariantId) {
-        setSelectedVariantId(auto.variantes[0].id);
+        // Only set default if no variant is selected, or if the selected one is no longer valid
+        const currentVariantExists = auto.variantes.some(v => v.id === selectedVariantId);
+        if (!currentVariantExists) {
+            setSelectedVariantId(auto.variantes[0].id);
+        }
     }
   }, [auto, selectedVariantId]);
+
 
   useEffect(() => {
     if (!favoritos || !favoritos.items || !selectedVariant) {
