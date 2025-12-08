@@ -111,10 +111,12 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
     }
   };
 
-  const handleProtectedLinkClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
+  const handleProtectedLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     if (loading) {
-      return; 
+      // Si el estado de autenticación aún está cargando, no hacemos nada para evitar
+      // una redirección prematura o un acceso incorrecto. El usuario puede volver a hacer clic.
+      return;
     }
     if (user) {
       router.push(href);

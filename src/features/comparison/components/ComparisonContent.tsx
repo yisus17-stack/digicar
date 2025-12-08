@@ -148,7 +148,7 @@ export default function ComparisonContent() {
   
   useEffect(() => {
     if (!loadingUser && !user) {
-        router.replace('/login');
+      router.replace('/login');
     }
   }, [user, loadingUser, router]);
 
