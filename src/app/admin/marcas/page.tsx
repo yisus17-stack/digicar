@@ -5,17 +5,25 @@ import { useFirestore } from '@/firebase';
 import TablaMarcas from '@/features/admin/components/TablaMarcas';
 import { collection } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 function EsqueletoTablaMarcas() {
   return (
-    <div className="space-y-4">
-      <Skeleton className="h-10 w-1/3" />
-      <div className="border rounded-lg">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-1/3" />
+          <div className="border rounded-lg">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -26,16 +34,10 @@ export default function PaginaAdminMarcas() {
   const { data: marcas, isLoading: cargandoMarcas } = useCollection(coleccionMarcas);
 
   if (cargandoMarcas) {
-    return (
-        <div>
-            <EsqueletoTablaMarcas />
-        </div>
-    );
+    return <EsqueletoTablaMarcas />;
   }
 
   return (
-    <div>
-      <TablaMarcas marcas={marcas ?? []} />
-    </div>
+    <TablaMarcas marcas={marcas ?? []} />
   );
 }

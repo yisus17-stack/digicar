@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useNotification } from '@/core/contexts/NotificationContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface TablaAutosProps {
   autos: Car[];
@@ -262,12 +263,12 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
       cell: ({ row }) => {
         const auto = row.original;
         return (
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" size="sm" onClick={() => manejarEditar(auto)}>
-              <Edit className="mr-2 h-4 w-4" /> Editar
+              <Edit className="mr-0 sm:mr-2 h-4 w-4" /> <span className="hidden sm:inline">Editar</span>
             </Button>
             <Button variant="destructive" size="sm" onClick={() => manejarEliminar(auto.id)}>
-                <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+                <Trash2 className="mr-0 sm:mr-2 h-4 w-4" /> <span className="hidden sm:inline">Eliminar</span>
             </Button>
           </div>
         );
@@ -278,31 +279,34 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   return (
     <>
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
-            <h1 className="text-2xl sm:text-3xl font-bold">Administrar Autos</h1>
+      <Card>
+        <CardHeader className="flex-col gap-4 sm:flex-row justify-between items-center">
+            <CardTitle className="text-2xl sm:text-3xl font-bold">Administrar Autos</CardTitle>
             <Button onClick={manejarAnadir}>
               <PlusCircle className="mr-2 h-4 w-4" />
               Añadir Auto
             </Button>
-        </div>
-        
-        <DataTable
-            columns={columns}
-            data={autosIniciales}
-            filterColumnId="modelo"
-            filterPlaceholder="Buscar por modelo, marca, año..."
-        />
-
-        <FormularioAuto 
-            estaAbierto={estaFormularioAbierto}
-            alCambiarApertura={alCambiarAperturaFormulario}
-            auto={autoSeleccionado}
-            alGuardar={manejarGuardar}
-            marcas={marcas}
-            colores={colores}
-            transmisiones={transmisiones}
-            isSaving={isSaving}
-        />
+        </CardHeader>
+        <CardContent>
+           <DataTable
+              columns={columns}
+              data={autosIniciales}
+              filterColumnId="modelo"
+              filterPlaceholder="Buscar por modelo, marca, año..."
+          />
+        </CardContent>
+      </Card>
+      
+      <FormularioAuto 
+          estaAbierto={estaFormularioAbierto}
+          alCambiarApertura={alCambiarAperturaFormulario}
+          auto={autoSeleccionado}
+          alGuardar={manejarGuardar}
+          marcas={marcas}
+          colores={colores}
+          transmisiones={transmisiones}
+          isSaving={isSaving}
+      />
     </>
   );
 }

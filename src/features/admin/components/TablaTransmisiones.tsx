@@ -13,6 +13,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface TablaTransmisionesProps {
   transmisiones: Transmision[];
@@ -179,19 +180,24 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
-        <h1 className="text-2xl sm:text-3xl font-bold">Administrar Transmisiones</h1>
-        <Button onClick={manejarAnadir}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Añadir Transmisión
-        </Button>
-      </div>
-      <DataTable
-        columns={columns}
-        data={transmisionesIniciales}
-        filterColumnId="nombre"
-        filterPlaceholder="Buscar por nombre..."
-      />
+      <Card>
+        <CardHeader className="flex-col gap-4 sm:flex-row justify-between items-center">
+            <CardTitle className="text-2xl sm:text-3xl font-bold">Administrar Transmisiones</CardTitle>
+            <Button onClick={manejarAnadir}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Añadir Transmisión
+            </Button>
+        </CardHeader>
+        <CardContent>
+            <DataTable
+                columns={columns}
+                data={transmisionesIniciales}
+                filterColumnId="nombre"
+                filterPlaceholder="Buscar por nombre..."
+            />
+        </CardContent>
+      </Card>
+
       <FormularioTransmision 
         estaAbierto={estaFormularioAbierto}
         alCambiarApertura={alCambiarAperturaFormulario}
