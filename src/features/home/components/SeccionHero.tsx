@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -78,7 +79,7 @@ export const SeccionHero = () => {
                         <Input
                             type="search"
                             placeholder="Busca marca, modelo, categoría..."
-                            className="h-14 text-base pl-6 pr-28 rounded-full"
+                            className="h-14 text-sm pl-6 pr-28 rounded-full"
                             value={terminoBusqueda}
                             onChange={(e) => setTerminoBusqueda(e.target.value)}
                         />
