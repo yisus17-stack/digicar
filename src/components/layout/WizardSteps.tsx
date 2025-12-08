@@ -47,7 +47,7 @@ export default function WizardSteps({ steps, currentStep, className }: WizardSte
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  'flex-1 h-1 mx-4 mt-5 transition-colors duration-300',
+                  'flex-1 h-1 mx-4 mt-5 transition-colors duration-300 rounded-full',
                   currentStep > step.number ? 'bg-primary' : 'bg-muted'
                 )}
               />
