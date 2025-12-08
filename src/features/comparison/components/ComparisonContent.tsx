@@ -48,7 +48,7 @@ const CarSelector = ({
     return (
       <div className="flex flex-col items-center justify-start text-center space-y-4">
         <Link href={`/catalogo/auto/${selectedCar.id}`} className="block w-full max-w-xs">
-            <AspectRatio ratio={16/10} className="rounded-lg">
+             <AspectRatio ratio={16/10} className="rounded-lg">
                 {imageUrl ? (
                     <Image
                     src={imageUrl}
@@ -161,21 +161,32 @@ export default function ComparisonContent() {
     }
   }, [user, loadingUser, router]);
 
+  // Effect to load initial state from Firestore
   useEffect(() => {
-    if (!loadingProfile && userProfile && userProfile.currentComparison && todosLosAutos) {
+    if (userProfile && userProfile.currentComparison && todosLosAutos) {
       const [id1, id2] = userProfile.currentComparison;
-      if (id1 && !carId1) handleSelectCar1(id1);
-      if (id2 && !carId2) handleSelectCar2(id2);
+      if (id1 && !carId1) {
+          handleSelectCar1(id1);
+      }
+      if (id2 && !carId2) {
+          handleSelectCar2(id2);
+      }
     }
-  }, [userProfile, loadingProfile, todosLosAutos]);
+  }, [userProfile, todosLosAutos]); // Depends on userProfile and the list of cars
 
+  // Effect to persist selection to Firestore
   useEffect(() => {
-    if (user && userProfileRef) {
-      const idsToSave = [debouncedCarId1 || null, debouncedCarId2 || null].filter(id => id !== null);
-      setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
-    }
-  }, [debouncedCarId1, debouncedCarId2, user, userProfileRef]);
+    if (user && userProfileRef && !loadingProfile) {
+        // Only update if there's a change to persist.
+        const currentIds = (userProfile?.currentComparison || []).filter(Boolean);
+        const newIds = [debouncedCarId1, debouncedCarId2].filter(Boolean);
 
+        // Simple check if arrays are different
+        if (currentIds.length !== newIds.length || currentIds.some((id, i) => id !== newIds[i])) {
+            setDoc(userProfileRef, { currentComparison: newIds }, { merge: true });
+        }
+    }
+  }, [debouncedCarId1, debouncedCarId2, user, userProfileRef, loadingProfile, userProfile]);
 
   const resetComparison = async () => {
     setCarId1(undefined);
@@ -283,7 +294,11 @@ export default function ComparisonContent() {
   const persistedCar2Loaded = !userProfile?.currentComparison?.[1] || (userProfile?.currentComparison?.[1] && car2);
 
   if (loadingUser || loadingCars || loadingProfile || (hasPersistedComparison && (!persistedCar1Loaded || !persistedCar2Loaded))) {
-      return <EsqueletoComparacion />;
+      return (
+        <div className="flex h-[80vh] w-full items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      );
   }
 
   if (!user || !todosLosAutos) {
