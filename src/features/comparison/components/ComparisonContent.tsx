@@ -139,6 +139,7 @@ export default function ComparisonContent() {
   const [carId2, setCarId2] = useState<string | undefined>();
   const [variantId2, setVariantId2] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const coleccionAutos = useMemoFirebase(() => collection(firestore, 'autos'), [firestore]);
   const { data: todosLosAutos, isLoading: loadingCars } = useCollection<Car>(coleccionAutos);
@@ -153,7 +154,9 @@ export default function ComparisonContent() {
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
 
   const [debouncedCarId1] = useDebounce(carId1, 500);
+  const [debouncedVariantId1] = useDebounce(variantId1, 500);
   const [debouncedCarId2] = useDebounce(carId2, 500);
+  const [debouncedVariantId2] = useDebounce(variantId2, 500);
   
   useEffect(() => {
     if (!loadingUser && !user) {
@@ -161,32 +164,46 @@ export default function ComparisonContent() {
     }
   }, [user, loadingUser, router]);
 
-  // Effect to load initial state from Firestore
+  // Effect to load initial state from Firestore on first load
   useEffect(() => {
-    if (userProfile && userProfile.currentComparison && todosLosAutos) {
-      const [id1, id2] = userProfile.currentComparison;
-      if (id1 && !carId1) {
-          handleSelectCar1(id1);
+    if (isInitialLoad && userProfile && todosLosAutos) {
+      const [comp1, comp2] = userProfile.currentComparison || [];
+
+      if (comp1) {
+        const [cId1, vId1] = comp1.split(':');
+        if (cId1 && todosLosAutos.some(c => c.id === cId1)) {
+          setCarId1(cId1);
+          setVariantId1(vId1);
+        }
       }
-      if (id2 && !carId2) {
-          handleSelectCar2(id2);
+      if (comp2) {
+        const [cId2, vId2] = comp2.split(':');
+        if (cId2 && todosLosAutos.some(c => c.id === cId2)) {
+          setCarId2(cId2);
+          setVariantId2(vId2);
+        }
       }
+      setIsInitialLoad(false);
     }
-  }, [userProfile, todosLosAutos]); // Depends on userProfile and the list of cars
+  }, [userProfile, todosLosAutos, isInitialLoad]);
 
   // Effect to persist selection to Firestore
   useEffect(() => {
-    if (user && userProfileRef && !loadingProfile) {
-        // Only update if there's a change to persist.
-        const currentIds = (userProfile?.currentComparison || []).filter(Boolean);
-        const newIds = [debouncedCarId1, debouncedCarId2].filter(Boolean);
-
-        // Simple check if arrays are different
-        if (currentIds.length !== newIds.length || currentIds.some((id, i) => id !== newIds[i])) {
-            setDoc(userProfileRef, { currentComparison: newIds }, { merge: true });
-        }
+    if (isInitialLoad || !user || !userProfileRef || loadingProfile) {
+      return;
     }
-  }, [debouncedCarId1, debouncedCarId2, user, userProfileRef, loadingProfile, userProfile]);
+    
+    const idsToSave = [
+      debouncedCarId1 && debouncedVariantId1 ? `${debouncedCarId1}:${debouncedVariantId1}` : undefined,
+      debouncedCarId2 && debouncedVariantId2 ? `${debouncedCarId2}:${debouncedVariantId2}` : undefined,
+    ].filter((id): id is string => !!id);
+
+    const currentIds = (userProfile?.currentComparison || []).filter(Boolean);
+
+    if (currentIds.length !== idsToSave.length || currentIds.some((id, i) => id !== idsToSave[i])) {
+      setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
+    }
+  }, [debouncedCarId1, debouncedVariantId1, debouncedCarId2, debouncedVariantId2, user, userProfileRef, loadingProfile, isInitialLoad, userProfile]);
 
   const resetComparison = async () => {
     setCarId1(undefined);
@@ -289,11 +306,9 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  const hasPersistedComparison = !loadingProfile && !!userProfile?.currentComparison?.some(id => id);
-  const persistedCar1Loaded = !userProfile?.currentComparison?.[0] || (userProfile?.currentComparison?.[0] && car1);
-  const persistedCar2Loaded = !userProfile?.currentComparison?.[1] || (userProfile?.currentComparison?.[1] && car2);
+  const isLoading = loadingUser || loadingCars || loadingProfile || isInitialLoad;
 
-  if (loadingUser || loadingCars || loadingProfile || (hasPersistedComparison && (!persistedCar1Loaded || !persistedCar2Loaded))) {
+  if (isLoading) {
       return (
         <div className="flex h-[80vh] w-full items-center justify-center">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -411,3 +426,5 @@ export default function ComparisonContent() {
     </div>
   );
 }
+
+    

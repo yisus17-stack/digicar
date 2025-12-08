@@ -167,7 +167,7 @@
         "currentComparison": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "An array containing the IDs of two cars currently being compared. This is a temporary state."
+          "description": "An array containing the IDs of two cars and their variants currently being compared, formatted as 'carId:variantId'. This is a temporary state."
         }
       },
       "required": ["uid", "email", "createdAt"]
@@ -357,4 +357,6 @@
 }
     
     
+    
+
     
