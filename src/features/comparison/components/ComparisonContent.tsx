@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayRemove } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 import type { Car, CarVariant, Comparison, UserProfile } from '@/core/types';
 import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
@@ -160,17 +160,17 @@ export default function ComparisonContent() {
   }, [user, loadingUser, router]);
 
   useEffect(() => {
-    if (userProfile && userProfile.currentComparison && todosLosAutos) {
+    if (!loadingProfile && userProfile && userProfile.currentComparison && todosLosAutos) {
       const [id1, id2] = userProfile.currentComparison;
       if (id1 && !carId1) handleSelectCar1(id1);
       if (id2 && !carId2) handleSelectCar2(id2);
     }
-  }, [userProfile, todosLosAutos]);
+  }, [userProfile, loadingProfile, todosLosAutos]);
 
   useEffect(() => {
     if (user && userProfileRef) {
       const idsToSave = [debouncedCarIds[0] || null, debouncedCarIds[1] || null].filter(id => id !== null);
-      updateDoc(userProfileRef, { currentComparison: idsToSave });
+      setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
     }
   }, [debouncedCarIds, user, userProfileRef]);
 
@@ -181,7 +181,7 @@ export default function ComparisonContent() {
     setCarId2(undefined);
     setVariantId2(undefined);
     if (userProfileRef) {
-        await updateDoc(userProfileRef, { currentComparison: [] });
+        await setDoc(userProfileRef, { currentComparison: [] }, { merge: true });
     }
   };
   
@@ -390,5 +390,3 @@ export default function ComparisonContent() {
     </div>
   );
 }
-
-    
