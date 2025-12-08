@@ -158,6 +158,7 @@ export default function ComparisonContent() {
 
  useEffect(() => {
     if (isInitialLoad && !loadingCars) {
+      window.scrollTo(0, 0);
       const storedComparison = sessionStorage.getItem('comparisonData');
       if (storedComparison) {
         try {
