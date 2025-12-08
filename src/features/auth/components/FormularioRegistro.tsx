@@ -19,6 +19,7 @@ import { useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
@@ -125,6 +126,8 @@ export default function FormularioRegistro() {
         displayName: data.name,
       });
 
+      await sendEmailVerification(user);
+
       // Create user profile document in Firestore
       const userDocRef = doc(firestore, 'usuarios', user.uid);
       await setDoc(userDocRef, {
@@ -148,8 +151,8 @@ export default function FormularioRegistro() {
       });
 
       await Swal.fire({
-        title: '¡Cuenta Creada!',
-        text: 'Tu cuenta ha sido creada exitosamente.',
+        title: '¡Revisa tu correo!',
+        text: 'Hemos enviado un enlace de verificación a tu correo electrónico para completar el registro.',
         icon: 'success',
         confirmButtonColor: '#595c97',
       });
@@ -157,7 +160,7 @@ export default function FormularioRegistro() {
       if (user.uid === adminUid) {
         router.push('/admin');
       } else {
-        router.push('/');
+        router.push('/login');
       }
 
     } catch (error) {
