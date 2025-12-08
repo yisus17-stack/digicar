@@ -55,17 +55,27 @@ export default function LoginForm() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
-      await Swal.fire({
-        title: '¡Bienvenido de vuelta!',
-        text: 'Has iniciado sesión correctamente.',
-        icon: 'success',
-        confirmButtonColor: '#595c97',
-      });
-      
-      if (user.uid === adminUid) {
-        router.push('/admin');
+      if (user.emailVerified) {
+        await Swal.fire({
+          title: '¡Bienvenido de vuelta!',
+          text: 'Has iniciado sesión correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#595c97',
+        });
+        
+        if (user.uid === adminUid) {
+          router.push('/admin');
+        } else {
+          router.push('/');
+        }
       } else {
-        router.push('/');
+        await auth.signOut();
+        await Swal.fire({
+          title: 'Verifica tu Correo',
+          text: 'Tu cuenta no ha sido verificada. Por favor, revisa tu correo electrónico y sigue el enlace de verificación.',
+          icon: 'warning',
+          confirmButtonColor: '#595c97',
+        });
       }
 
     } catch (error: any) {
