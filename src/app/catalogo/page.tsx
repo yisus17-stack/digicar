@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect, Suspense } from 'react';
@@ -251,7 +252,7 @@ function CatalogPageContent() {
                     </div>
 
                     {paginatedCars.length > 0 ? (
-                       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
+                       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedCars.map(car => (
                                 <CarCard 
                                     key={`car-${car.id}`} 
