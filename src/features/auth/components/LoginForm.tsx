@@ -69,7 +69,7 @@ export default function LoginForm() {
       }
 
     } catch (error) {
-        let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+        let description = '';
         if (error instanceof FirebaseError) {
           if (error.code === 'auth/invalid-credential') {
             description = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
@@ -77,12 +77,15 @@ export default function LoginForm() {
             description = 'El acceso a esta cuenta ha sido temporalmente deshabilitado debido a muchos intentos fallidos. Inténtalo más tarde.';
           }
         }
-        Swal.fire({
-            title: 'Error al iniciar sesión',
-            text: description,
-            icon: 'error',
-            confirmButtonColor: '#595c97',
-        });
+        
+        if (description) {
+            Swal.fire({
+                title: 'Error al iniciar sesión',
+                text: description,
+                icon: 'error',
+                confirmButtonColor: '#595c97',
+            });
+        }
     } finally {
       setIsLoading(false);
     }
