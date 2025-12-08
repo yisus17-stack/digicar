@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -92,6 +93,25 @@ export default function TablaTransmisiones({ transmisiones: transmisionesInicial
 
   const manejarGuardar = async (data: Omit<Transmision, 'id'>) => {
     setIsSaving(true);
+    const normalizedName = data.nombre.trim().toLowerCase();
+
+    const isDuplicate = transmisionesIniciales.some(
+      (transmision) =>
+        transmision.nombre.trim().toLowerCase() === normalizedName &&
+        transmision.id !== transmisionSeleccionada?.id
+    );
+
+    if (isDuplicate) {
+      Swal.fire({
+        title: 'Transmisión Duplicada',
+        text: `La transmisión "${data.nombre}" ya existe.`,
+        icon: 'error',
+        confirmButtonColor: '#595c97',
+      });
+      setIsSaving(false);
+      return;
+    }
+
     try {
         if (transmisionSeleccionada) {
             const transmisionRef = doc(firestore, 'transmisiones', transmisionSeleccionada.id);

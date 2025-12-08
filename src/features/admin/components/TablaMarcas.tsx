@@ -101,6 +101,22 @@ export default function TablaMarcas({ marcas: marcasIniciales }: TablaMarcasProp
   const manejarGuardar = async (data: Omit<Marca, 'id'>, file?: File) => {
     setIsSaving(true);
     
+    const normalizedName = data.nombre.trim().toLowerCase();
+    const isDuplicate = marcasIniciales.some(
+        marca => marca.nombre.trim().toLowerCase() === normalizedName && marca.id !== marcaSeleccionada?.id
+    );
+
+    if (isDuplicate) {
+        Swal.fire({
+            title: 'Marca Duplicada',
+            text: `La marca "${data.nombre}" ya existe.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        setIsSaving(false);
+        return;
+    }
+
     Swal.fire({
       title: 'Guardando marca...',
       text: 'Por favor, espera.',

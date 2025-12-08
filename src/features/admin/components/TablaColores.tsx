@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -103,6 +104,23 @@ export default function TablaColores({ colors: coloresIniciales }: TablaColoresP
 
   const manejarGuardar = async (data: Omit<Color, 'id'>) => {
     setIsSaving(true);
+    const normalizedName = data.nombre.trim().toLowerCase();
+
+    const isDuplicate = coloresIniciales.some(
+        color => color.nombre.trim().toLowerCase() === normalizedName && color.id !== colorSeleccionado?.id
+    );
+
+    if (isDuplicate) {
+        Swal.fire({
+            title: 'Color Duplicado',
+            text: `El color "${data.nombre}" ya existe.`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        setIsSaving(false);
+        return;
+    }
+
     try {
         if (colorSeleccionado) {
             const colorRef = doc(firestore, 'colores', colorSeleccionado.id);

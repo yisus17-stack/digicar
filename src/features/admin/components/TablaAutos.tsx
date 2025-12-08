@@ -101,7 +101,24 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]) => {
     setIsSaving(true);
-    
+
+    const isDuplicate = autosIniciales.some(auto => 
+        auto.marca.toLowerCase() === datosAuto.marca.toLowerCase() &&
+        auto.modelo.toLowerCase() === datosAuto.modelo.toLowerCase() &&
+        auto.id !== autoSeleccionado?.id
+    );
+
+    if (isDuplicate) {
+        Swal.fire({
+            title: 'Auto Duplicado',
+            text: `Ya existe un auto con la marca "${datosAuto.marca}" y el modelo "${datosAuto.modelo}".`,
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        setIsSaving(false);
+        return;
+    }
+
     Swal.fire({
       title: 'Guardando auto...',
       text: 'Por favor, espera.',
