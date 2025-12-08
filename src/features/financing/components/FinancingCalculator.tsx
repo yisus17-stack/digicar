@@ -331,8 +331,8 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
         )}
 
         {step === 2 && (
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start animate-in fade-in-50 duration-500">
-                <div className="lg:col-span-2 space-y-6 sticky top-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start animate-in fade-in-50 duration-500">
+                <div className="space-y-6">
                     <div className='space-y-2'>
                         <Label>1. Selecciona un vehículo</Label>
                         <Select onValueChange={handleCarChange} value={selectedCarId}>
@@ -409,9 +409,9 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                     </Card>
                 </div>
 
-                <div className="lg:col-span-3">
+                <div>
                     <Card>
-                        <CardContent className="p-8 space-y-8">
+                        <CardContent className="p-6 md:p-8 space-y-8">
                             <div>
                                 <Label htmlFor="car-price" className="text-muted-foreground">Precio del vehículo</Label>
                                 <Input
@@ -471,13 +471,13 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
                 </CardHeader>
                 <CardContent className="p-8 space-y-8 text-center">
                      <p className="text-muted-foreground">Tu pago mensual estimado para un {selectedCar?.marca} {selectedCar?.modelo} {selectedVariant?.color ? `color ${selectedVariant.color}` : ''} es:</p>
-                    <p className="text-6xl font-bold text-primary tracking-tight mt-2">
+                    <p className="text-5xl md:text-6xl font-bold text-primary tracking-tight mt-2">
                         $ {monthlyPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                     <p className="text-xs text-muted-foreground mt-2">
                         *Cálculo aproximado con un enganche de ${downPayment.toLocaleString('es-MX')} a {term} meses y una tasa de interés anual fija del {INTEREST_RATE * 100}%.
                     </p>
-                    <div className="pt-8 flex justify-center gap-4">
+                    <div className="pt-8 flex flex-col sm:flex-row justify-center gap-4">
                         <Button variant="outline" onClick={handlePrevStep}>Ajustar Plan</Button>
                         <Button size="lg" onClick={handleSaveFinancing} disabled={isSaving || !user}>
                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
