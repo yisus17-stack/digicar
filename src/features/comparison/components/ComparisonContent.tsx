@@ -220,8 +220,7 @@ export default function ComparisonContent() {
             confirmButtonColor: '#595c97',
         });
         
-        clearCar1();
-        clearCar2();
+        router.push('/perfil?tab=comparisons');
 
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
@@ -284,7 +283,7 @@ export default function ComparisonContent() {
         </div>
         
         <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-y-2 md:gap-y-4 md:gap-x-8">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-y-2 md:gap-y-4 md:gap-x-2">
                 <CarSelector 
                     selectedCar={car1}
                     selectedVariant={variant1} 
