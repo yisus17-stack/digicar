@@ -45,8 +45,8 @@ const CarSelector = ({
   if (selectedCar) {
     return (
       <div className="flex flex-col items-center justify-start text-center space-y-4">
-        <Link href={`/catalogo/auto/${selectedCar.id}`} className="block w-full max-w-sm">
-            <AspectRatio ratio={16/10} className="bg-muted rounded-lg">
+        <Link href={`/catalogo/auto/${selectedCar.id}`} className="block w-full max-w-xs">
+            <AspectRatio ratio={16/10} className="rounded-lg">
                 {imageUrl ? (
                     <Image
                     src={imageUrl}
