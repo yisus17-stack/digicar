@@ -33,8 +33,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import Swal from 'sweetalert2';
-import { NotificationProvider } from '@/core/contexts/NotificationContext';
-import NotificationCenter from '@/features/admin/components/NotificationCenter';
 
 // Contexto para el estado de la barra lateral
 const ContextoBarraLateral = createContext<{ estaCerrada: boolean; alternarBarraLateral: () => void } | null>(null);
@@ -156,12 +154,7 @@ function AdminLayoutAuthWrapper({ children }: { children: React.ReactNode }) {
         return null;
     }
 
-    return (
-      <NotificationProvider>
-        <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>
-        <NotificationCenter />
-      </NotificationProvider>
-    );
+    return <LayoutAdminConProveedor>{children}</LayoutAdminConProveedor>;
 }
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
@@ -205,7 +198,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   return (
       <div className="relative flex min-h-screen w-full" style={{ isolation: 'isolate' }}>
           <BarraLateralAdmin />
-          <div className={cn("flex flex-col gap-4 py-4 w-full transition-all duration-300 ease-in-out sm:pl-64", { 'sm:pl-20': estaCerrada })}>
+          <div className={cn("flex flex-col gap-4 py-4 w-full transition-all duration-300 ease-in-out sm:pl-64 sm:pr-4", { 'sm:pl-20': estaCerrada })}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                 <Sheet>
                     <SheetTrigger asChild>

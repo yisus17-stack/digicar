@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -15,7 +16,6 @@ import { uploadImage, deleteImage } from '@/core/services/storageService';
 import Swal from 'sweetalert2';
 import { DataTable } from './DataTable';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useNotification } from '@/core/contexts/NotificationContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface TablaAutosProps {
@@ -30,7 +30,6 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   const [autoSeleccionado, setAutoSeleccionado] = useState<Car | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const firestore = useFirestore();
-  const { showNotification, updateNotificationStatus } = useNotification();
 
   const manejarAnadir = () => {
     setAutoSeleccionado(null);
@@ -102,7 +101,15 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
 
   const manejarGuardar = async (datosAuto: Omit<Car, 'id'>, files: (File | undefined)[]) => {
     setIsSaving(true);
-    const notificationId = showNotification({ title: 'Guardando auto...', status: 'loading' });
+    
+    Swal.fire({
+      title: 'Guardando auto...',
+      text: 'Por favor, espera.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     
     try {
         const finalCarData: any = { ...datosAuto };
@@ -110,6 +117,7 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
         const uploadPromises = finalCarData.variantes.map(async (variante: any, index: number) => {
             const file = files[index];
             if (file) {
+                // We don't need progress indication with SweetAlert loader
                 const imageUrl = await uploadImage(file);
                 return { ...variante, imagenUrl: imageUrl };
             }
@@ -124,17 +132,17 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
                 ...finalCarData,
                 variantes: finalCarData.variantes,
             });
-             updateNotificationStatus(notificationId, 'success', 'Auto actualizado correctamente.');
+            Swal.fire({ title: '¡Actualizado!', text: 'El auto se ha actualizado correctamente.', icon: 'success', confirmButtonColor: '#595c97' });
         } else {
             const coleccionRef = collection(firestore, 'autos');
             const newDocRef = doc(coleccionRef); // Creates a ref with a new auto-generated ID
             const finalDataWithId = { ...finalCarData, id: newDocRef.id, createdAt: serverTimestamp() };
             await setDoc(newDocRef, finalDataWithId); // Use setDoc to create the document
-            updateNotificationStatus(notificationId, 'success', 'Auto creado correctamente.');
+            Swal.fire({ title: '¡Creado!', text: 'El nuevo auto se ha añadido con éxito.', icon: 'success', confirmButtonColor: '#595c97' });
         }
         alCambiarAperturaFormulario(false);
     } catch (error: any) {
-        updateNotificationStatus(notificationId, 'error', 'Error al guardar el auto.');
+        Swal.fire({ title: 'Error', text: 'Ocurrió un error al guardar el auto.', icon: 'error', confirmButtonColor: '#595c97' });
         
         if (error.code && error.code.includes('permission-denied')) {
           const contextualError = new FirestorePermissionError({
@@ -280,14 +288,14 @@ export default function TablaAutos({ autos: autosIniciales, marcas, colores, tra
   return (
     <>
       <Card>
-        <CardHeader className="flex-col gap-4 sm:flex-row justify-between items-center">
+        <CardHeader className="flex-col gap-4 sm:flex-row justify-between items-center p-4 sm:p-6">
             <CardTitle className="text-xl sm:text-2xl font-bold">Administrar Autos</CardTitle>
             <Button onClick={manejarAnadir}>
               <PlusCircle className="mr-2 h-4 w-4" />
               Añadir Auto
             </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
            <DataTable
               columns={columns}
               data={autosIniciales}
