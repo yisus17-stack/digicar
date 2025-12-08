@@ -271,18 +271,6 @@ export default function ComparisonContent() {
     return null;
   }
 
-  const renderComparisonRow = (label: string, value1: React.ReactNode, value2: React.ReactNode) => (
-    <>
-      <div className="md:hidden col-span-2 text-left font-semibold text-muted-foreground">{label}</div>
-      <div className="hidden md:block text-left font-semibold text-muted-foreground col-span-1">{label}</div>
-      <div className="text-left col-span-1 font-medium px-4">{value1}</div>
-      <div className="md:hidden border-b pb-4 col-span-2"></div>
-      <div className="text-left col-span-1 font-medium px-4">{value2}</div>
-      <div className="hidden md:block col-span-3"><Separator className="mt-4"/></div>
-      <div className="md:hidden col-span-2 border-b mt-4"></div>
-    </>
-  );
-
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
         <Breadcrumbs items={[{ label: 'Comparar' }]} />
@@ -296,7 +284,7 @@ export default function ComparisonContent() {
         </div>
         
         <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-y-4 md:gap-x-8">
                 <CarSelector 
                     selectedCar={car1}
                     selectedVariant={variant1} 
@@ -306,7 +294,7 @@ export default function ComparisonContent() {
                     otherCarId={car2?.id} 
                     onClear={clearCar1}
                 />
-                <div className="flex items-center justify-center h-full my-4 md:my-0 md:pt-16">
+                <div className="flex items-center justify-center h-full my-2 md:my-0 md:pt-16">
                     <GitCompareArrows className="h-8 w-8 text-muted-foreground rotate-90 md:rotate-0" />
                 </div>
                 <CarSelector 
@@ -331,15 +319,16 @@ export default function ComparisonContent() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     
-                    <div className="hidden md:grid grid-cols-3 items-center gap-4 py-2 font-bold">
+                     <div className="hidden md:grid md:grid-cols-3 items-center gap-4 py-2 font-bold">
                         <div className="col-span-1">Característica</div>
                         <div className="col-span-1 px-4">{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</div>
                         <div className="col-span-1 px-4">{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</div>
                     </div>
-                     <div className="md:hidden flex justify-around mb-4 font-bold">
+                    <div className="md:hidden flex justify-around mb-4 font-bold">
                         <span>{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</span>
                         <span>{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</span>
                     </div>
+
                     <Separator className="hidden md:block" />
 
                     {features.map(feature => (
