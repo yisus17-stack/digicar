@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -149,7 +148,7 @@ export default function ComparisonContent() {
   
   useEffect(() => {
     if (!loadingUser && !user) {
-        router.push('/login');
+        router.replace('/login');
     }
   }, [user, loadingUser, router]);
 
@@ -263,11 +262,11 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  if (loadingUser || loadingCars || !todosLosAutos) {
+  if (loadingUser || loadingCars) {
     return <EsqueletoComparacion />;
   }
 
-  if (!user) {
+  if (!user || !todosLosAutos) {
     return null;
   }
 
