@@ -157,7 +157,7 @@ export default function ComparisonContent() {
   }, [user, loadingUser, router]);
 
  useEffect(() => {
-    if (isInitialLoad && !loadingCars) {
+    if (isInitialLoad && !loadingCars && todosLosAutos) {
       window.scrollTo(0, 0);
       const storedComparison = sessionStorage.getItem('comparisonData');
       if (storedComparison) {
@@ -171,8 +171,7 @@ export default function ComparisonContent() {
         } catch (error) {
           console.error("Error parsing comparison data from sessionStorage", error);
         }
-        setIsInitialLoad(false);
-      } else if (!loadingProfile && userProfile && todosLosAutos) {
+      } else if (!loadingProfile && userProfile) {
         const [comp1, comp2] = userProfile.currentComparison || [];
         if (comp1) {
           const [cId1, vId1] = comp1.split(':');
@@ -188,8 +187,8 @@ export default function ComparisonContent() {
             setVariantId2(vId2);
           }
         }
-        setIsInitialLoad(false);
       }
+      setIsInitialLoad(false);
     }
   }, [userProfile, todosLosAutos, isInitialLoad, loadingProfile, loadingCars]);
 
@@ -264,6 +263,7 @@ export default function ComparisonContent() {
             confirmButtonColor: '#595c97',
         });
         await resetComparison();
+        window.scrollTo(0, 0);
         
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
