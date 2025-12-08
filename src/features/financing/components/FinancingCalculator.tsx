@@ -163,7 +163,6 @@ export default function FinancingCalculator({ allCars }: FinancingCalculatorProp
         });
         
         resetCalculator();
-        router.push('/perfil?tab=financings');
 
     } catch (error) {
         console.error("Error guardando financiamiento:", error);

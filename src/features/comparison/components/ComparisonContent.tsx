@@ -220,8 +220,6 @@ export default function ComparisonContent() {
             confirmButtonColor: '#595c97',
         });
         
-        router.push('/perfil?tab=comparisons');
-
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
         
