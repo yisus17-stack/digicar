@@ -593,6 +593,7 @@ function PaginaPerfilContenido() {
                               car={car} 
                               showFavoriteButton={false}
                               preselectedVariantId={car.preselectedVariantId}
+                              showColorName={true}
                            />
                            <Button 
                              variant="destructive" 

@@ -14,9 +14,10 @@ interface CarCardProps {
   car: Car;
   showFavoriteButton?: boolean;
   preselectedVariantId?: string;
+  showColorName?: boolean;
 }
 
-export default function CarCard({ car, showFavoriteButton = true, preselectedVariantId }: CarCardProps) {
+export default function CarCard({ car, showFavoriteButton = true, preselectedVariantId, showColorName = false }: CarCardProps) {
   const router = useRouter();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -74,7 +75,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
             {car.tipo} • {car.anio}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-             {colorName ? colorName : `${colorCount} ${colorCount > 1 ? 'colores' : 'color'}`}
+             {showColorName && colorName ? colorName : `${colorCount} ${colorCount > 1 ? 'colores' : 'color'}`}
           </p>
           <p className="mt-2 text-base font-semibold text-foreground">
             ${price.toLocaleString('es-MX')}
