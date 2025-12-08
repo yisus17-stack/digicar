@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useEffect, Suspense } from 'react';
@@ -27,7 +26,11 @@ export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
 const CatalogSkeleton = () => (
     <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs items={[{ label: 'Catálogo' }]} />
+      <div className="flex items-center text-sm mb-4">
+        <Skeleton className="h-5 w-12" />
+        <Skeleton className="h-4 w-4 mx-1" />
+        <Skeleton className="h-5 w-20" />
+      </div>
         <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
             <aside className="hidden lg:block lg:w-1/4 space-y-6">
                 {/* Esqueleto de filtros más representativo */}

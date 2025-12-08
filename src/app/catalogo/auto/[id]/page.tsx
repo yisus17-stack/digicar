@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
@@ -22,7 +20,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 function SkeletonDetalle() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Skeleton className="h-6 w-1/3 mb-4" />
+      <div className="flex items-center text-sm mb-4">
+        <Skeleton className="h-5 w-12" />
+        <Skeleton className="h-4 w-4 mx-1" />
+        <Skeleton className="h-5 w-24" />
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-6">
         <div className="space-y-4">
            <AspectRatio ratio={16/10} className="overflow-hidden rounded-lg bg-muted">
