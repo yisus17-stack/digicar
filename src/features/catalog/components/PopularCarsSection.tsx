@@ -7,7 +7,7 @@ import type { Car } from '@/core/types';
 import CarCard from './CarCard';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const PopularCarsSkeleton = () => (
+export const PopularCarsSkeleton = () => (
     <div className="container mx-auto px-4">
         <div className="text-center mb-6">
             <Skeleton className="h-10 w-2/3 mx-auto" />
@@ -66,5 +66,3 @@ export default function PopularCarsSection() {
         </>
     );
 }
-
-    

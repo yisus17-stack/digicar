@@ -8,7 +8,7 @@ import type { Marca } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 
-const BrandLogosSkeleton = () => (
+export const BrandLogosSkeleton = () => (
     <div className="bg-muted">
         <div className="container mx-auto py-12">
             <div className="flex justify-around items-center">
