@@ -83,13 +83,13 @@ function BarraLateralAdmin() {
         { 'w-20': estaCerrada }
       )}
     >
-      <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20 overflow-hidden">
+      <div className="flex h-14 shrink-0 items-center justify-between border-b px-4 lg:h-20">
         <Link href="/" className={cn('relative h-10 w-10 flex-shrink-0 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
             <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" draggable="false" />
         </Link>
         <div className={cn(
-            'flex flex-col whitespace-nowrap transition-all duration-300 ease-in-out', 
-            { 'opacity-0 scale-x-0 -translate-x-10': estaCerrada }
+            'flex flex-col whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden', 
+            { 'opacity-0 scale-x-0 w-0': estaCerrada, 'w-auto ml-2': !estaCerrada }
         )}>
             <span className="font-bold text-lg">DigiCar</span>
             <span className="text-xs text-muted-foreground">Panel de Admin</span>
