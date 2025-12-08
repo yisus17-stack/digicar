@@ -78,7 +78,7 @@ function BarraLateralAdmin() {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300',
+        'fixed inset-y-0 left-0 hidden w-64 flex-col border-r bg-card sm:flex transition-all duration-300 ease-in-out',
         { 'w-20': estaCerrada }
       )}
     >
@@ -201,7 +201,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   return (
       <div className="relative flex min-h-screen w-full" style={{ isolation: 'isolate' }}>
           <BarraLateralAdmin />
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 data-[closed=true]:sm:pl-20" data-closed={estaCerrada}>
+          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 ease-in-out data-[closed=true]:sm:pl-20" data-closed={estaCerrada}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                 <Sheet>
                     <SheetTrigger asChild>
