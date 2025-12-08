@@ -111,20 +111,6 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
     }
   };
 
-  const handleProtectedLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    if (loading) {
-      // Si el estado de autenticación aún está cargando, no hacemos nada para evitar
-      // una redirección prematura o un acceso incorrecto. El usuario puede volver a hacer clic.
-      return;
-    }
-    if (user) {
-      router.push(href);
-    } else {
-      router.push('/login');
-    }
-  }
-  
   if (pathname.startsWith('/admin')) {
     return null;
   }
@@ -133,13 +119,17 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
     return <SiteHeaderSkeleton />;
   }
 
-
-  const navLinks = [
-    { href: '/', label: 'Inicio', icon: Home, protected: false },
-    { href: '/catalogo', label: 'Catálogo', icon: LayoutGrid, protected: false },
-    { href: '/comparacion', label: 'Comparar', icon: GitCompareArrows, protected: true },
-    { href: '/financiamiento', label: 'Financiamiento', icon: Landmark, protected: true },
+  const baseNavLinks = [
+    { baseHref: '/', label: 'Inicio', icon: Home, protected: false },
+    { baseHref: '/catalogo', label: 'Catálogo', icon: LayoutGrid, protected: false },
+    { baseHref: '/comparacion', label: 'Comparar', icon: GitCompareArrows, protected: true },
+    { baseHref: '/financiamiento', label: 'Financiamiento', icon: Landmark, protected: true },
   ];
+
+  const navLinks = baseNavLinks.map(link => {
+    const href = link.protected && !user ? '/login' : link.baseHref;
+    return { ...link, href };
+  });
 
   const handleSignOut = async () => {
     try {
@@ -200,12 +190,12 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
           <nav className="hidden items-center space-x-6 text-sm font-medium lg:flex">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.baseHref}
                 href={link.href}
-                onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+                  pathname === link.baseHref ? 'text-primary' : 'text-muted-foreground',
+                  loading && link.protected ? 'pointer-events-none opacity-50' : ''
                 )}
               >
                 {link.label}
@@ -323,11 +313,13 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                           <nav className="flex flex-col space-y-4">
                           {navLinks.map((link) => (
                               <Link
-                              key={link.href}
+                              key={link.baseHref}
                               href={link.href}
-                              onClick={(e) => link.protected ? handleProtectedLinkClick(e, link.href) : undefined}
-                              className="flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted"
-                              >
+                              className={cn(
+                                'flex items-center gap-3 rounded-md p-2 text-lg font-medium hover:bg-muted',
+                                loading && link.protected ? 'pointer-events-none opacity-50' : ''
+                              )}
+                            >
                               <link.icon className="h-5 w-5" />
                               <span>{link.label}</span>
                               </Link>
