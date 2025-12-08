@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useMemo, type MouseEvent } from 'react';
@@ -318,7 +319,7 @@ export default function PaginaDetalleAuto() {
             {autosRelacionados.length > 0 && (
                 <div className="mt-16">
                     <h2 className="text-3xl font-bold tracking-tight text-center mb-8">También te puede interesar</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                         {autosRelacionados.map(relatedCar => (
                             <CarCard key={relatedCar.id} car={relatedCar} />
                         ))}
