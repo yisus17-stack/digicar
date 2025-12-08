@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
 import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 import type { Car, CarVariant, Comparison, UserProfile } from '@/core/types';
-import EsqueletoComparacion from '@/features/comparison/components/EsqueletoComparacion';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -166,7 +165,7 @@ export default function ComparisonContent() {
 
   // Effect to load initial state from Firestore on first load
   useEffect(() => {
-    if (isInitialLoad && userProfile && todosLosAutos) {
+    if (isInitialLoad && !loadingProfile && userProfile && todosLosAutos) {
       const [comp1, comp2] = userProfile.currentComparison || [];
 
       if (comp1) {
@@ -185,11 +184,11 @@ export default function ComparisonContent() {
       }
       setIsInitialLoad(false);
     }
-  }, [userProfile, todosLosAutos, isInitialLoad]);
+  }, [userProfile, todosLosAutos, isInitialLoad, loadingProfile]);
 
   // Effect to persist selection to Firestore
   useEffect(() => {
-    if (isInitialLoad || !user || !userProfileRef || loadingProfile) {
+    if (isInitialLoad || !user || !userProfileRef) {
       return;
     }
     
@@ -198,12 +197,14 @@ export default function ComparisonContent() {
       debouncedCarId2 && debouncedVariantId2 ? `${debouncedCarId2}:${debouncedVariantId2}` : undefined,
     ].filter((id): id is string => !!id);
 
-    const currentIds = (userProfile?.currentComparison || []).filter(Boolean);
+    // Only update if there's a change to prevent loops
+    const currentIds = (userProfile?.currentComparison || []).filter(Boolean).sort();
+    const newIds = idsToSave.sort();
 
-    if (currentIds.length !== idsToSave.length || currentIds.some((id, i) => id !== idsToSave[i])) {
+    if (JSON.stringify(currentIds) !== JSON.stringify(newIds)) {
       setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
     }
-  }, [debouncedCarId1, debouncedVariantId1, debouncedCarId2, debouncedVariantId2, user, userProfileRef, loadingProfile, isInitialLoad, userProfile]);
+  }, [debouncedCarId1, debouncedVariantId1, debouncedCarId2, debouncedVariantId2, user, userProfileRef, isInitialLoad, userProfile]);
 
   const resetComparison = async () => {
     setCarId1(undefined);
@@ -426,5 +427,3 @@ export default function ComparisonContent() {
     </div>
   );
 }
-
-    
