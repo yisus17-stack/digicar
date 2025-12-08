@@ -1,3 +1,4 @@
+
 'use client';
 import {
   LayoutDashboard,
@@ -82,15 +83,18 @@ function BarraLateralAdmin() {
         { 'w-20': estaCerrada }
       )}
     >
-      <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20">
-        <Link href="/" className={cn('relative h-10 w-10 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
+      <div className="flex h-14 shrink-0 items-center justify-start gap-4 border-b px-4 lg:h-20 overflow-hidden">
+        <Link href="/" className={cn('relative h-10 w-10 flex-shrink-0 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada})}>
             <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" draggable="false" />
         </Link>
-        <div className={cn('flex flex-col', { 'hidden': estaCerrada })}>
+        <div className={cn(
+            'flex flex-col whitespace-nowrap transition-all duration-300 ease-in-out', 
+            { 'opacity-0 scale-x-0 -translate-x-10': estaCerrada }
+        )}>
             <span className="font-bold text-lg">DigiCar</span>
             <span className="text-xs text-muted-foreground">Panel de Admin</span>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex-shrink-0">
             <Button variant="default" size="icon" onClick={alternarBarraLateral} className="h-8 w-8">
                 <ChevronRight className={cn("h-5 w-5 transition-transform", { 'rotate-180': !estaCerrada })}/>
             </Button>
@@ -201,7 +205,7 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
   return (
       <div className="relative flex min-h-screen w-full" style={{ isolation: 'isolate' }}>
           <BarraLateralAdmin />
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 ease-in-out data-[closed=true]:sm:pl-20" data-closed={estaCerrada}>
+          <div className={cn("flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full transition-all duration-300 ease-in-out", { 'sm:pl-20': estaCerrada })}>
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                 <Sheet>
                     <SheetTrigger asChild>
