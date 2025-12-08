@@ -274,7 +274,7 @@ export default function ComparisonContent() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
         <Breadcrumbs items={[{ label: 'Comparar' }]} />
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
                 Comparación de Modelos
             </h1>
@@ -283,8 +283,8 @@ export default function ComparisonContent() {
             </p>
         </div>
         
-        <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-y-4 md:gap-x-8">
+        <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start justify-center gap-y-2 md:gap-y-4 md:gap-x-8">
                 <CarSelector 
                     selectedCar={car1}
                     selectedVariant={variant1} 
@@ -318,41 +318,48 @@ export default function ComparisonContent() {
                     </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    <div className="hidden md:grid md:grid-cols-3 items-center gap-4 py-2 font-bold text-lg">
+                        <div className="text-muted-foreground">Característica</div>
+                        <div>{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</div>
+                        <div>{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</div>
+                    </div>
                     
-                     <div className="hidden md:grid md:grid-cols-3 items-center gap-4 py-2 font-bold">
-                        <div className="col-span-1">Característica</div>
-                        <div className="col-span-1 px-4">{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</div>
-                        <div className="col-span-1 px-4">{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</div>
-                    </div>
-                    <div className="md:hidden flex justify-around mb-4 font-bold">
-                        <span>{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</span>
-                        <span>{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</span>
+                    <div className="md:hidden">
+                        <div className="grid grid-cols-2 gap-4 text-center font-bold text-lg mb-4">
+                            <div>{car1 ? `${car1.marca} ${car1.modelo}` : 'Auto 1'}</div>
+                            <div>{car2 ? `${car2.marca} ${car2.modelo}` : 'Auto 2'}</div>
+                        </div>
+                        <Separator />
                     </div>
 
-                    <Separator className="hidden md:block" />
 
-                    {features.map(feature => (
-                        <div key={feature.key} className="grid grid-cols-2 md:grid-cols-3 items-center gap-x-4 gap-y-2 md:gap-y-0">
-                           <div className="col-span-2 md:col-span-1 font-semibold text-muted-foreground">{feature.label}</div>
-                           <div className="text-left font-medium">
-                                {formatValue(feature.key, car1, variant1)}
-                           </div>
-                           <div className="text-left font-medium">
-                               {formatValue(feature.key, car2, variant2)}
-                           </div>
-                           <div className="col-span-2 mt-2 md:col-span-3 md:mt-4">
-                               <Separator />
-                           </div>
+                    {features.map((feature, index) => (
+                        <div key={feature.key}>
+                            <div className="grid grid-cols-2 md:grid-cols-3 items-center gap-x-4 md:gap-4 py-4">
+                                <div className="col-span-2 md:col-span-1 font-semibold text-muted-foreground">{feature.label}</div>
+                                
+                                <div className="md:hidden col-span-2"><Separator className="mt-2"/></div>
+
+                                <div className="mt-2 md:mt-0 text-left font-medium">
+                                    {formatValue(feature.key, car1, variant1)}
+                                </div>
+
+                                <div className="mt-2 md:mt-0 text-left font-medium">
+                                    {formatValue(feature.key, car2, variant2)}
+                                </div>
+                            </div>
+                            {index < features.length - 1 && <Separator />}
                         </div>
                     ))}
-                    <div className="grid grid-cols-2 md:grid-cols-3 items-start gap-x-4 gap-y-2 md:gap-y-0">
+                     <Separator />
+                     <div className="grid grid-cols-2 md:grid-cols-3 items-start gap-x-4 md:gap-4 py-4">
                          <div className="col-span-2 md:col-span-1 font-semibold text-muted-foreground pt-1">Características</div>
-                         <div className="text-left">
+                         <div className="mt-2 md:mt-0 text-left">
                             <ul className="list-disc list-inside space-y-1 text-sm">
                                 {car1?.caracteristicas?.map(f => <li key={`${car1.id}-${f}`}>{f}</li>) ?? (car1 && <li>-</li>)}
                             </ul>
                         </div>
-                        <div className="text-left">
+                        <div className="mt-2 md:mt-0 text-left">
                              <ul className="list-disc list-inside space-y-1 text-sm">
                                 {car2?.caracteristicas?.map(f => <li key={`${car2.id}-${f}`}>{f}</li>) ?? (car2 && <li>-</li>)}
                             </ul>
