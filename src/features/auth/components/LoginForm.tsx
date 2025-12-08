@@ -55,7 +55,7 @@ export default function LoginForm() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
-      if (user.emailVerified) {
+      if (user.emailVerified || user.uid === adminUid) {
         await Swal.fire({
           title: '¡Bienvenido de vuelta!',
           text: 'Has iniciado sesión correctamente.',
@@ -87,11 +87,11 @@ export default function LoginForm() {
 
         let description = "Ocurrió un error. Inténtalo nuevamente.";
 
-        if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) {
+        if (code.includes("auth/user-not-found") || code.includes("auth/wrong-password") || code.includes("invalid-credential")) {
           description = "Correo o contraseña incorrectos.";
-        } else if (code.includes("invalid-email")) {
+        } else if (code.includes("auth/invalid-email")) {
           description = "El correo no tiene un formato válido.";
-        } else if (code.includes("too-many-requests")) {
+        } else if (code.includes("auth/too-many-requests")) {
           description = "Demasiados intentos fallidos. Intenta más tarde.";
         }
 

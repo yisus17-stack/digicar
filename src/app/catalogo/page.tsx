@@ -19,7 +19,7 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const MAX_PRICE = 2000000;
+const MAX_PRICE = 10000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
 
