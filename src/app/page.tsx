@@ -59,6 +59,12 @@ const SeccionHero = () => {
         }
     }
 
+    // Aunque este componente no use datos, el hook useUser lo hará suspenderse
+    // si la autenticación aún está cargando, sincronizándolo con los demás.
+    if (loadingUser) {
+      return null;
+    }
+
 
     return (
         <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
