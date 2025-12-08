@@ -11,7 +11,7 @@ const SiteFooterSkeleton = () => (
   <footer className="bg-background border-t">
     <div className="container mx-auto px-4 py-6">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-24" />
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex flex-col items-center md:items-end gap-2">
             <Skeleton className="h-4 w-64" />
@@ -77,7 +77,7 @@ const SiteFooter = () => {
                 <Link href="/legal/politica-de-privacidad" className="hover:text-primary hover:underline">Política de Privacidad</Link>
               </div>
             </div>
-            <ThemeToggle />
+            {isMounted ? <ThemeToggle /> : <Skeleton className="h-11 w-28 rounded-full" />}
           </div>
         </div>
       </div>

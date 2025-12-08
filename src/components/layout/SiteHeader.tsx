@@ -54,7 +54,7 @@ const SiteHeaderSkeleton = () => {
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-background">
             <div className="container mx-auto flex h-20 items-center justify-between px-4">
-                <Skeleton className="h-10 w-36" />
+                <Skeleton className="h-10 w-24" />
                 <div className="hidden items-center space-x-6 lg:flex">
                     <Skeleton className="h-6 w-16" />
                     <Skeleton className="h-6 w-20" />
@@ -163,24 +163,24 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
               <Image
                 src="/digicar-logo.png"
                 alt="DigiCar Logo"
-                width={120}
-                height={40}
+                width={100}
+                height={33}
                 draggable="false"
                 className="block dark:hidden high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-blanco.png"
                 alt="DigiCar Logo"
-                width={120}
-                height={40}
+                width={100}
+                height={33}
                 draggable="false"
                 className="hidden dark:block high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-contraste.png"
                 alt="DigiCar Logo de Alto Contraste"
-                width={120}
-                height={40}
+                width={100}
+                height={33}
                 draggable="false"
                 className="hidden high-contrast-block h-auto w-auto"
               />
@@ -285,24 +285,24 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                             <Image
                               src="/digicar-logo.png"
                               alt="DigiCar Logo"
-                              width={120}
-                              height={40}
+                              width={100}
+                              height={33}
                               draggable="false"
                               className="block dark:hidden high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-blanco.png"
                               alt="DigiCar Logo"
-                              width={120}
-                              height={40}
+                              width={100}
+                              height={33}
                               draggable="false"
                               className="hidden dark:block high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-contraste.png"
                               alt="DigiCar Logo de Alto Contraste"
-                              width={120}
-                              height={40}
+                              width={100}
+                              height={33}
                               draggable="false"
                               className="hidden high-contrast-block h-auto w-auto"
                             />

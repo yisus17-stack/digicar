@@ -33,7 +33,7 @@ export function ThemeToggle() {
             'relative z-10 flex h-9 w-9 items-center justify-center rounded-full transition-colors',
             theme === t.name
               ? 'text-primary-foreground'
-              : 'text-muted-foreground dark:text-primary-foreground'
+              : 'text-muted-foreground'
           )}
           onClick={() => setTheme(t.name)}
           aria-label={`Switch to ${t.name} theme`}
