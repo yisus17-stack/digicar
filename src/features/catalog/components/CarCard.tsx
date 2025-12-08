@@ -33,6 +33,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
   
   const imageUrl = displayVariant?.imagenUrl ?? car.imagenUrl;
   const price = displayVariant?.precio ?? car.precio ?? 0;
+  const colorName = displayVariant?.color;
   const colorCount = car.variantes?.length || 1;
 
   const handleImageLoad = () => {
@@ -73,7 +74,7 @@ export default function CarCard({ car, showFavoriteButton = true, preselectedVar
             {car.tipo} • {car.anio}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {colorCount} {colorCount > 1 ? 'colores' : 'color'}
+             {colorName ? colorName : `${colorCount} ${colorCount > 1 ? 'colores' : 'color'}`}
           </p>
           <p className="mt-2 text-base font-semibold text-foreground">
             ${price.toLocaleString('es-MX')}
