@@ -163,24 +163,24 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
               <Image
                 src="/digicar-logo.png"
                 alt="DigiCar Logo"
-                width={150}
-                height={50}
+                width={120}
+                height={40}
                 draggable="false"
                 className="block dark:hidden high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-blanco.png"
                 alt="DigiCar Logo"
-                width={150}
-                height={50}
+                width={120}
+                height={40}
                 draggable="false"
                 className="hidden dark:block high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-contraste.png"
                 alt="DigiCar Logo de Alto Contraste"
-                width={150}
-                height={50}
+                width={120}
+                height={40}
                 draggable="false"
                 className="hidden high-contrast-block h-auto w-auto"
               />
@@ -285,24 +285,24 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                             <Image
                               src="/digicar-logo.png"
                               alt="DigiCar Logo"
-                              width={150}
-                              height={50}
+                              width={120}
+                              height={40}
                               draggable="false"
                               className="block dark:hidden high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-blanco.png"
                               alt="DigiCar Logo"
-                              width={150}
-                              height={50}
+                              width={120}
+                              height={40}
                               draggable="false"
                               className="hidden dark:block high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-contraste.png"
                               alt="DigiCar Logo de Alto Contraste"
-                              width={150}
-                              height={50}
+                              width={120}
+                              height={40}
                               draggable="false"
                               className="hidden high-contrast-block h-auto w-auto"
                             />
