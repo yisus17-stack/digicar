@@ -166,16 +166,28 @@ export default function ComparisonContent() {
       } catch (e) {
         console.error("Error parsing comparison data from session storage", e);
       } finally {
-        sessionStorage.removeItem('comparisonData');
+        // We keep the data in session storage for reload purposes
       }
     }
   }, [todosLosAutos]);
+
+  // Persist state to session storage on change
+  useEffect(() => {
+    if (carId1 || carId2) {
+      const dataToStore = { carId1, variantId1, carId2, variantId2 };
+      sessionStorage.setItem('comparisonData', JSON.stringify(dataToStore));
+    } else {
+        sessionStorage.removeItem('comparisonData');
+    }
+  }, [carId1, variantId1, carId2, variantId2]);
+
 
   const resetComparison = () => {
     setCarId1(undefined);
     setVariantId1(undefined);
     setCarId2(undefined);
     setVariantId2(undefined);
+    sessionStorage.removeItem('comparisonData');
   };
   
   const handleSelectCar1 = (id: string) => {
@@ -377,3 +389,5 @@ export default function ComparisonContent() {
     </div>
   );
 }
+
+    
