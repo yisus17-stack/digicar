@@ -10,7 +10,6 @@ import CarFilters from '@/features/catalog/components/CarFilters';
 import CarCard from '@/features/catalog/components/CarCard';
 import { SlidersHorizontal, Car as CarIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -20,7 +19,6 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const ITEMS_PER_PAGE = 9;
 const MAX_PRICE = 2000000;
 
 export type SortOrder = 'relevance' | 'price-asc' | 'price-desc' | 'year-desc';
@@ -51,7 +49,7 @@ const CatalogSkeleton = () => (
                     <Skeleton className="h-10 w-48" />
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
-                    {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
+                    {[...Array(9)].map((_, i) => (
                        <div key={i} className="space-y-3">
                             <Skeleton className="aspect-square w-full rounded-lg bg-muted p-4" />
                             <div className="space-y-2 py-2">
@@ -92,7 +90,6 @@ function CatalogPageContent() {
     });
     const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
     const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
-    const [currentPage, setCurrentPage] = useState(1);
     const [sortOrder, setSortOrder] = useState<SortOrder>('relevance');
     const [showFilters, setShowFilters] = useState(true);
     const isMobile = useIsMobile();
@@ -148,23 +145,13 @@ function CatalogPageContent() {
         return filtered;
     }, [filters, debouncedSearchTerm, sortOrder, datosTodosLosAutos]);
 
-    const totalPages = Math.ceil(filteredCars.length / ITEMS_PER_PAGE);
-    const paginatedCars = filteredCars.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters);
-        setCurrentPage(1);
     };
 
     const handleResetFilters = () => {
         setFilters({ brand: 'all', fuelType: 'all', transmission: 'all', price: MAX_PRICE, year: 'all', type: 'all', engineCylinders: 'all', color: 'all', passengers: 'all' });
         setSearchTerm('');
-        setCurrentPage(1);
         setSortOrder('relevance');
     };
     
@@ -251,9 +238,9 @@ function CatalogPageContent() {
                         </div>
                     </div>
 
-                    {paginatedCars.length > 0 ? (
+                    {filteredCars.length > 0 ? (
                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6 lg:gap-8">
-                            {paginatedCars.map(car => (
+                            {filteredCars.map(car => (
                                 <CarCard 
                                     key={`car-${car.id}`} 
                                     car={car}
@@ -267,20 +254,6 @@ function CatalogPageContent() {
                             <p className="mt-2 text-muted-foreground">Intenta ajustar tus filtros o búsqueda.</p>
                         </div>
                     )}
-                    
-                    <div className='pt-8 mt-auto'>
-                        {totalPages > 1 && (
-                            <Pagination>
-                                <PaginationContent>
-                                    <PaginationItem><PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); handlePageChange(Math.max(1, currentPage - 1)); }} className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''} /></PaginationItem>
-                                    {[...Array(totalPages)].map((_, i) => (
-                                        <PaginationItem key={i}><PaginationLink href="#" isActive={currentPage === i + 1} onClick={(e) => { e.preventDefault(); handlePageChange(i + 1); }}>{i + 1}</PaginationLink></PaginationItem>
-                                    ))}
-                                    <PaginationItem><PaginationNext href="#" onClick={(e) => { e.preventDefault(); handlePageChange(Math.min(totalPages, currentPage + 1)); }} className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} /></PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                        )}
-                    </div>
                 </motion.main>
             </div>
         </div>
