@@ -169,6 +169,13 @@ export default function ComparisonContent() {
       }
     }
   }, [todosLosAutos]);
+
+  const resetComparison = () => {
+    setCarId1(undefined);
+    setVariantId1(undefined);
+    setCarId2(undefined);
+    setVariantId2(undefined);
+  };
   
   const handleSelectCar1 = (id: string) => {
     setCarId1(id);
@@ -219,6 +226,7 @@ export default function ComparisonContent() {
             icon: 'success',
             confirmButtonColor: '#595c97',
         });
+        resetComparison();
         
     } catch (error) {
        console.error("Error guardando la comparación: ", error);
