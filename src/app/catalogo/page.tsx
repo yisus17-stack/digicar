@@ -33,7 +33,6 @@ const CatalogSkeleton = () => (
       </div>
         <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-start">
             <aside className="hidden lg:block lg:w-1/4 space-y-6">
-                {/* Esqueleto de filtros más representativo */}
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-20 w-full" />
@@ -53,7 +52,7 @@ const CatalogSkeleton = () => (
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
                     {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
                        <div key={i} className="space-y-3">
-                            <Skeleton className="aspect-square w-full rounded-lg bg-muted" />
+                            <Skeleton className="aspect-square w-full rounded-lg bg-muted p-4" />
                             <div className="space-y-2 py-2">
                               <Skeleton className="h-4 w-4/5" />
                               <Skeleton className="h-4 w-3/5" />
@@ -202,6 +201,11 @@ function CatalogPageContent() {
       );
 
     return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
+      >
         <div className="container mx-auto px-4 py-8">
             <Breadcrumbs items={[{ label: 'Catálogo' }]} />
             <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-start flex-grow">
@@ -279,13 +283,12 @@ function CatalogPageContent() {
                 </motion.main>
             </div>
         </div>
+      </motion.div>
     );
 }
 
 export default function Catalog() {
     return (
-        <Suspense fallback={<CatalogSkeleton />}>
-            <CatalogPageContent />
-        </Suspense>
+        <CatalogPageContent />
     )
 }
