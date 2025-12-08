@@ -71,6 +71,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
         setPreview(null);
       }
       setSelectedFile(undefined);
+      form.clearErrors();
     }
   }, [marca, estaAbierto, form]);
 
@@ -124,36 +125,40 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
                 </FormItem>
             )}/>
              
-            <FormItem>
-              <FormLabel>Subir logo *</FormLabel>
-              <div className="flex items-center gap-4">
-                <FormControl>
-                  <label htmlFor="file-upload-brand" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                    Elegir archivo
-                    <Input id="file-upload-brand" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                  </label>
-                </FormControl>
+            <FormField
+              control={form.control}
+              name="logoUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subir logo *</FormLabel>
+                  <div className="flex items-center gap-4">
+                    <FormControl>
+                      <label htmlFor="file-upload-brand" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                        Elegir archivo
+                        <Input
+                          id="file-upload-brand"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </FormControl>
 
-                {preview ? (
-                  <div className="relative w-24 h-16 rounded-lg overflow-hidden border">
-                    <img src={preview} alt="Vista previa" className="object-contain w-full h-full" draggable="false" />
+                    {preview ? (
+                      <div className="relative w-24 h-16 rounded-lg overflow-hidden border">
+                        <img src={preview} alt="Vista previa" className="object-contain w-full h-full" draggable="false" />
+                      </div>
+                    ) : (
+                      <div className="w-24 h-16 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
+                        Sin logo
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="w-24 h-16 flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground">
-                    Sin logo
-                  </div>
-                )}
-              </div>
-              <FormMessage />
-            </FormItem>
-            
-            <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                <FormItem className='hidden'>
-                    <FormLabel>URL del logo</FormLabel>
-                    <FormControl><Input {...field} readOnly/></FormControl>
-                    <FormMessage />
+                  <FormMessage />
                 </FormItem>
-            )}/>
+              )}
+            />
 
             <DialogFooter>
                 <DialogClose asChild><Button type="button" variant="secondary" disabled={isSaving}>Cancelar</Button></DialogClose>
