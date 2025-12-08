@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 
 const CarSelector = ({
@@ -44,22 +45,22 @@ const CarSelector = ({
   if (selectedCar) {
     return (
       <div className="flex flex-col items-center justify-start text-center space-y-4">
-        <Link href={`/catalogo/auto/${selectedCar.id}`} className="block">
-            <div className="relative w-full max-w-xs h-48">
-            {imageUrl ? (
-                <Image
-                src={imageUrl}
-                alt={`${selectedCar.marca} ${selectedCar.modelo}`}
-                fill
-                className="object-contain"
-                draggable="false"
-                />
-            ) : (
-                <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
-                <CarIcon className="w-16 h-16 text-muted-foreground" />
-                </div>
-            )}
-            </div>
+        <Link href={`/catalogo/auto/${selectedCar.id}`} className="block w-full max-w-sm">
+            <AspectRatio ratio={16/10} className="bg-muted rounded-lg">
+                {imageUrl ? (
+                    <Image
+                    src={imageUrl}
+                    alt={`${selectedCar.marca} ${selectedCar.modelo}`}
+                    fill
+                    className="object-contain"
+                    draggable="false"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                    <CarIcon className="w-16 h-16 text-muted-foreground" />
+                    </div>
+                )}
+            </AspectRatio>
             <p className="text-lg font-semibold hover:underline mt-4">
                 {selectedCar.marca} {selectedCar.modelo}
             </p>
