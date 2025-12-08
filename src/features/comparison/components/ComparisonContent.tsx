@@ -307,7 +307,7 @@ export default function ComparisonContent() {
     return value || '-';
   }
 
-  const isLoading = loadingUser || loadingCars || loadingProfile || isInitialLoad;
+  const isLoading = loadingUser || loadingCars || isInitialLoad;
 
   if (isLoading) {
       return (
