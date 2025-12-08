@@ -1,5 +1,3 @@
-'use client';
-
 import { BrandLogosSkeleton } from '@/features/catalog/components/BrandLogos';
 import { PopularCarsSkeleton } from '@/features/catalog/components/PopularCarsSection';
 import { Skeleton } from '@/components/ui/skeleton';
