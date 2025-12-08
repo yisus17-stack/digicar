@@ -166,7 +166,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 width={150}
                 height={50}
                 draggable="false"
-                className="block dark:hidden high-contrast-hidden"
+                className="block dark:hidden high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-blanco.png"
@@ -174,7 +174,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 width={150}
                 height={50}
                 draggable="false"
-                className="hidden dark:block high-contrast-hidden"
+                className="hidden dark:block high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-contraste.png"
@@ -182,7 +182,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                 width={150}
                 height={50}
                 draggable="false"
-                className="hidden high-contrast-block"
+                className="hidden high-contrast-block h-auto w-auto"
               />
             </Link>
           </div>
@@ -288,7 +288,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                               width={150}
                               height={50}
                               draggable="false"
-                              className="block dark:hidden high-contrast-hidden"
+                              className="block dark:hidden high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-blanco.png"
@@ -296,7 +296,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                               width={150}
                               height={50}
                               draggable="false"
-                              className="hidden dark:block high-contrast-hidden"
+                              className="hidden dark:block high-contrast-hidden h-auto w-auto"
                             />
                             <Image
                               src="/digicar-logo-contraste.png"
@@ -304,7 +304,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                               width={150}
                               height={50}
                               draggable="false"
-                              className="hidden high-contrast-block"
+                              className="hidden high-contrast-block h-auto w-auto"
                             />
                           </Link>
                         </SheetTitle>

@@ -49,7 +49,7 @@ const SiteFooter = () => {
                 width={120}
                 height={40}
                 draggable="false"
-                className="block dark:hidden high-contrast-hidden"
+                className="block dark:hidden high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-blanco.png"
@@ -57,7 +57,7 @@ const SiteFooter = () => {
                 width={120}
                 height={40}
                 draggable="false"
-                className="hidden dark:block high-contrast-hidden"
+                className="hidden dark:block high-contrast-hidden h-auto w-auto"
               />
               <Image
                 src="/digicar-logo-contraste.png"
@@ -65,7 +65,7 @@ const SiteFooter = () => {
                 width={120}
                 height={40}
                 draggable="false"
-                className="hidden high-contrast-block"
+                className="hidden high-contrast-block h-auto w-auto"
               />
             </Link>
           </div>
