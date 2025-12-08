@@ -319,9 +319,9 @@ export default function PaginaDetalleAuto() {
             {autosRelacionados.length > 0 && (
                 <div className="mt-16">
                     <h2 className="text-3xl font-bold tracking-tight text-center mb-8">También te puede interesar</h2>
-                    <div className="flex overflow-x-auto gap-8 pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible">
+                    <div className="flex overflow-x-auto gap-4 pb-4 lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible">
                         {autosRelacionados.map(relatedCar => (
-                            <div key={relatedCar.id} className="flex-shrink-0 w-[40vw] sm:w-64 lg:w-auto">
+                            <div key={relatedCar.id} className="flex-shrink-0 w-[65vw] sm:w-64 lg:w-auto">
                                 <CarCard car={relatedCar} />
                             </div>
                         ))}
