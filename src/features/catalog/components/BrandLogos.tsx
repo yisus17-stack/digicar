@@ -101,9 +101,5 @@ function BrandLogosContent() {
 }
 
 export default function BrandLogos() {
-    return (
-        <Suspense fallback={<BrandLogosSkeleton />}>
-            <BrandLogosContent />
-        </Suspense>
-    );
+    return <BrandLogosContent />;
 }
