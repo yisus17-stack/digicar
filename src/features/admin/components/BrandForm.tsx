@@ -30,7 +30,7 @@ import Swal from 'sweetalert2';
 
 const esquemaFormulario = z.object({
   nombre: z.string().min(2, 'El nombre es requerido.'),
-  logoUrl: z.string().optional(),
+  logoUrl: z.string().min(1, 'El logo es requerido.'),
 });
 
 type DatosFormulario = z.infer<typeof esquemaFormulario>;
@@ -125,7 +125,7 @@ export default function FormularioMarca({ estaAbierto, alCambiarApertura, marca,
             )}/>
              
             <FormItem>
-              <FormLabel>Subir logo</FormLabel>
+              <FormLabel>Subir logo *</FormLabel>
               <div className="flex items-center gap-4">
                 <FormControl>
                   <label htmlFor="file-upload-brand" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
