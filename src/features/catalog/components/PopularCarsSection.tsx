@@ -54,12 +54,13 @@ export default function PopularCarsSection() {
                     </h2>
                     <p className="mt-2 text-muted-foreground">Una selección de nuestros vehículos más deseados.</p>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
+                <div className="flex overflow-x-auto gap-8 pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible">
                     {autosPopulares.map(car => (
-                        <CarCard 
-                            key={`popular-${car.id}`} 
-                            car={car}
-                        />
+                        <div key={`popular-${car.id}`} className="flex-shrink-0 w-[65vw] sm:w-64 lg:w-auto">
+                            <CarCard 
+                                car={car}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>
