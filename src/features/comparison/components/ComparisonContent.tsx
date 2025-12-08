@@ -20,8 +20,6 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { useDebounce } from 'use-debounce';
-
 
 const CarSelector = ({
   selectedCar,
@@ -151,11 +149,6 @@ export default function ComparisonContent() {
   
   const variant1 = useMemo(() => car1?.variantes?.find(v => v.id === variantId1), [variantId1, car1]);
   const variant2 = useMemo(() => car2?.variantes?.find(v => v.id === variantId2), [variantId2, car2]);
-
-  const [debouncedCarId1] = useDebounce(carId1, 500);
-  const [debouncedVariantId1] = useDebounce(variantId1, 500);
-  const [debouncedCarId2] = useDebounce(carId2, 500);
-  const [debouncedVariantId2] = useDebounce(variantId2, 500);
   
   useEffect(() => {
     if (!loadingUser && !user) {
@@ -193,8 +186,8 @@ export default function ComparisonContent() {
     }
     
     const idsToSave = [
-      debouncedCarId1 && debouncedVariantId1 ? `${debouncedCarId1}:${debouncedVariantId1}` : undefined,
-      debouncedCarId2 && debouncedVariantId2 ? `${debouncedCarId2}:${debouncedVariantId2}` : undefined,
+      carId1 && variantId1 ? `${carId1}:${variantId1}` : undefined,
+      carId2 && variantId2 ? `${carId2}:${variantId2}` : undefined,
     ].filter((id): id is string => !!id);
 
     // Only update if there's a change to prevent loops
@@ -204,7 +197,7 @@ export default function ComparisonContent() {
     if (JSON.stringify(currentIds) !== JSON.stringify(newIds)) {
       setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
     }
-  }, [debouncedCarId1, debouncedVariantId1, debouncedCarId2, debouncedVariantId2, user, userProfileRef, isInitialLoad, userProfile]);
+  }, [carId1, variantId1, carId2, variantId2, user, userProfileRef, isInitialLoad, userProfile]);
 
   const resetComparison = async () => {
     setCarId1(undefined);
