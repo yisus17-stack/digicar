@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
@@ -26,6 +27,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const profileSchema = z.object({
   displayName: z.string(),
@@ -159,13 +161,13 @@ const ComparisonItem = ({ comparison, allCars, onRemove }: { comparison: Compari
     return (
         <Card className="overflow-hidden">
             <CardContent className="p-4">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
                     <div className="flex-1 flex flex-col items-center text-center">
                         {variant1.imagenUrl && <Image src={variant1.imagenUrl} alt={car1.modelo} width={150} height={100} className="object-contain h-24 mb-2" draggable="false" />}
                         <p className="font-semibold text-sm">{car1.marca} {car1.modelo}</p>
                         <p className="text-xs text-muted-foreground">{variant1.color}</p>
                     </div>
-                    <GitCompareArrows className="h-6 w-6 text-muted-foreground flex-shrink-0" />
+                    <GitCompareArrows className="h-6 w-6 text-muted-foreground flex-shrink-0 rotate-90 sm:rotate-0" />
                     <div className="flex-1 flex flex-col items-center text-center">
                         {variant2.imagenUrl && <Image src={variant2.imagenUrl} alt={car2.modelo} width={150} height={100} className="object-contain h-24 mb-2" draggable="false" />}
                         <p className="font-semibold text-sm">{car2.marca} {car2.modelo}</p>
@@ -315,40 +317,44 @@ const FinancingItem = ({ financing, allCars, onRemove, user }: { financing: Fina
 
     return (
         <Card>
-            <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
-                <div className="relative w-full sm:w-48 h-32 sm:h-auto flex-shrink-0">
-                    {carImage && <Image src={carImage} alt={car.modelo} fill className="object-contain rounded-md" draggable="false" />}
-                </div>
-                <div className="flex-grow">
-                    <h4 className="font-bold">{car.marca} {car.modelo}</h4>
-                    <p className="text-sm text-muted-foreground">{variant?.color}</p>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
-                        <div>
-                            <p className="text-muted-foreground">Pago Mensual</p>
-                            <p className="font-semibold">${financing.pagoMensual.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground">Enganche</p>
-                            <p className="font-semibold">${financing.enganche.toLocaleString('es-MX')}</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground">Plazo</p>
-                            <p className="font-semibold">{financing.plazo} meses</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground">Precio del Auto</p>
-                            <p className="font-semibold">${financing.precioAuto.toLocaleString('es-MX')}</p>
+            <CardContent className="p-4 flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative w-full h-40 sm:w-48 sm:h-auto flex-shrink-0">
+                        {carImage && <Image src={carImage} alt={car.modelo} fill className="object-contain rounded-md" draggable="false" />}
+                    </div>
+                    <div className="flex-grow">
+                        <h4 className="font-bold">{car.marca} {car.modelo}</h4>
+                        <p className="text-sm text-muted-foreground">{variant?.color}</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
+                            <div>
+                                <p className="text-muted-foreground">Pago Mensual</p>
+                                <p className="font-semibold">${financing.pagoMensual.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            </div>
+                            <div>
+                                <p className="text-muted-foreground">Enganche</p>
+                                <p className="font-semibold">${financing.enganche.toLocaleString('es-MX')}</p>
+                            </div>
+                            <div>
+                                <p className="text-muted-foreground">Plazo</p>
+                                <p className="font-semibold">{financing.plazo} meses</p>
+                            </div>
+                            <div>
+                                <p className="text-muted-foreground">Precio del Auto</p>
+                                <p className="font-semibold">${financing.precioAuto.toLocaleString('es-MX')}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="flex sm:flex-col justify-end items-center gap-2 pt-4 sm:pt-0 sm:border-l sm:pl-4">
-                     <p className="text-xs text-muted-foreground sm:absolute sm:top-4 sm:right-4">
+                 <div className="flex justify-between items-center border-t pt-2 gap-2">
+                    <p className="text-xs text-muted-foreground">
                         {new Date(financing.fechaCreacion.seconds * 1000).toLocaleDateString()}
                     </p>
-                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleGeneratePDF} disabled={isGeneratingPdf}>
-                        {isGeneratingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(financing.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <div className="flex items-center">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleGeneratePDF} disabled={isGeneratingPdf}>
+                            {isGeneratingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onRemove(financing.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>
@@ -513,9 +519,9 @@ function PaginaPerfilContenido() {
   return (
     <div className="container mx-auto px-4 py-8">
         <Breadcrumbs items={[{ label: "Mi Perfil" }]} />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start mt-8">
-            <aside className="lg:col-span-1 space-y-8 sticky top-24">
-              <div className="flex items-center gap-4">
+        <div className="lg:grid lg:grid-cols-4 lg:gap-12 items-start mt-8">
+            <aside className="lg:col-span-1 lg:space-y-8 mb-8 lg:mb-0">
+              <div className="flex items-center gap-4 mb-6 lg:mb-0">
                   <Avatar className="h-16 w-16">
                     {user.photoURL && !user.photoURL.includes('supabase') ? (
                       <AvatarImage src={user.photoURL} alt={user.displayName || 'Avatar'} draggable="false" />
@@ -530,7 +536,7 @@ function PaginaPerfilContenido() {
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                   </div>
               </div>
-              <nav className="space-y-1">
+              <nav className="hidden lg:flex lg:flex-col space-y-1">
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
@@ -553,6 +559,22 @@ function PaginaPerfilContenido() {
                   </button>
                 ))}
               </nav>
+              <ScrollArea className="lg:hidden w-full whitespace-nowrap">
+                <div className="flex w-max space-x-2 pb-2">
+                    {menuItems.map((item) => (
+                    <Button
+                        key={item.id}
+                        variant={activeTab === item.id ? 'default' : 'outline'}
+                        onClick={() => setActiveTab(item.id)}
+                        className="h-auto py-2 px-3 flex-col gap-1 items-center justify-center text-xs"
+                    >
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                    </Button>
+                    ))}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
             </aside>
 
             <main className="lg:col-span-3">
