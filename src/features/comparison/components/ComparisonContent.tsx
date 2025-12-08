@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -156,21 +155,19 @@ export default function ComparisonContent() {
     }
   }, [user, loadingUser, router]);
 
-  // Effect to load initial state from Firestore on first load
   useEffect(() => {
     if (isInitialLoad && !loadingProfile && userProfile && todosLosAutos) {
       const [comp1, comp2] = userProfile.currentComparison || [];
-
       if (comp1) {
         const [cId1, vId1] = comp1.split(':');
-        if (cId1 && todosLosAutos.some(c => c.id === cId1)) {
+        if (cId1 && vId1 && todosLosAutos.some(c => c.id === cId1)) {
           setCarId1(cId1);
           setVariantId1(vId1);
         }
       }
       if (comp2) {
         const [cId2, vId2] = comp2.split(':');
-        if (cId2 && todosLosAutos.some(c => c.id === cId2)) {
+        if (cId2 && vId2 && todosLosAutos.some(c => c.id === cId2)) {
           setCarId2(cId2);
           setVariantId2(vId2);
         }
@@ -179,25 +176,16 @@ export default function ComparisonContent() {
     }
   }, [userProfile, todosLosAutos, isInitialLoad, loadingProfile]);
 
-  // Effect to persist selection to Firestore
   useEffect(() => {
     if (isInitialLoad || !user || !userProfileRef) {
       return;
     }
-    
     const idsToSave = [
       carId1 && variantId1 ? `${carId1}:${variantId1}` : undefined,
       carId2 && variantId2 ? `${carId2}:${variantId2}` : undefined,
     ].filter((id): id is string => !!id);
-
-    // Only update if there's a change to prevent loops
-    const currentIds = (userProfile?.currentComparison || []).filter(Boolean).sort();
-    const newIds = idsToSave.sort();
-
-    if (JSON.stringify(currentIds) !== JSON.stringify(newIds)) {
-      setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
-    }
-  }, [carId1, variantId1, carId2, variantId2, user, userProfileRef, isInitialLoad, userProfile]);
+    setDoc(userProfileRef, { currentComparison: idsToSave }, { merge: true });
+  }, [carId1, variantId1, carId2, variantId2, user, userProfileRef, isInitialLoad]);
 
   const resetComparison = async () => {
     setCarId1(undefined);
