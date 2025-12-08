@@ -83,7 +83,7 @@ function BarraLateralAdmin() {
         { 'w-20': estaCerrada }
       )}
     >
-      <div className="flex h-14 shrink-0 items-center justify-between border-b px-4 lg:h-20">
+      <div className="flex h-14 shrink-0 items-center justify-between border-b px-4 lg:h-20 overflow-hidden">
         <Link href="/" className={cn('relative h-10 w-10 flex-shrink-0 flex items-center justify-center transition-all', {'h-8 w-8': estaCerrada, 'hidden': estaCerrada})}>
             <Image src="/icono-digicar.png" alt="DigiCar Icono" fill className="object-contain" draggable="false" />
         </Link>
@@ -219,13 +219,6 @@ function LayoutAdminConProveedor({ children }: { children: React.ReactNode }) {
                             <SheetTitle>Menú de Administración</SheetTitle>
                         </SheetHeader>
                         <nav className="grid gap-6 text-lg font-medium mt-6">
-                            <Link
-                                href="#"
-                                className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                            >
-                                <Car className="h-5 w-5 transition-all group-hover:scale-110" />
-                                <span className="sr-only">DigiCar</span>
-                            </Link>
                             {elementosNav.map((item) => (
                                 <SheetClose key={item.href} asChild>
                                     <Link
