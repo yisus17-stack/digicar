@@ -1,12 +1,13 @@
 
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Marca } from '@/core/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 export const BrandLogosSkeleton = () => (
     <div className="bg-muted">
@@ -19,6 +20,28 @@ export const BrandLogosSkeleton = () => (
         </div>
     </div>
 );
+
+const LogoImage = ({ marca }: { marca: Marca }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    return (
+        <div className="relative w-full h-full">
+            {!isLoaded && <Skeleton className="absolute inset-0" />}
+            <Image
+                src={marca.logoUrl!}
+                alt={`${marca.nombre} logo`}
+                fill
+                className={cn(
+                    "object-contain transition-opacity duration-300",
+                    isLoaded ? "opacity-100" : "opacity-0"
+                )}
+                onLoad={() => setIsLoaded(true)}
+                draggable="false"
+            />
+        </div>
+    );
+};
+
 
 function BrandLogosContent() {
     const firestore = useFirestore();
@@ -41,15 +64,7 @@ function BrandLogosContent() {
           className="flex-shrink-0 mx-8 flex items-center justify-center"
           style={{ width: '208px', height: '80px' }}
         >
-            <div className="relative w-full h-full">
-                <Image
-                    src={marca.logoUrl!}
-                    alt={`${marca.nombre} logo`}
-                    fill
-                    className="object-contain"
-                    draggable="false"
-                />
-            </div>
+            <LogoImage marca={marca} />
         </div>
     ));
 
@@ -64,15 +79,7 @@ function BrandLogosContent() {
                                 className="flex-shrink-0 mx-8 flex items-center justify-center"
                                 style={{ width: '208px', height: '80px' }}
                              >
-                                <div className="relative w-full h-full">
-                                    <Image
-                                        src={marca.logoUrl!}
-                                        alt={`${marca.nombre} logo`}
-                                        fill
-                                        className="object-contain"
-                                        draggable="false"
-                                    />
-                                </div>
+                                <LogoImage marca={marca} />
                             </div>
                         ))}
                     </div>
