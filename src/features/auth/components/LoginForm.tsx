@@ -68,24 +68,23 @@ export default function LoginForm() {
         router.push('/');
       }
 
-    } catch (error) {
+    } catch (error: any) {
         let description = "Ocurrió un error. Inténtalo nuevamente.";
+        const code = error?.code;
 
-        if (error instanceof FirebaseError) {
-            switch (error.code) {
-                case "auth/user-not-found":
-                case "auth/wrong-password":
-                    description = "Correo o contraseña incorrectos.";
-                    break;
-                case "auth/invalid-email":
-                    description = "El correo no tiene un formato válido.";
-                    break;
-                case "auth/too-many-requests":
-                    description = "Demasiados intentos fallidos. Intenta más tarde.";
-                    break;
-            }
+        switch (code) {
+            case "auth/user-not-found":
+            case "auth/wrong-password":
+                description = "Correo o contraseña incorrectos.";
+                break;
+            case "auth/invalid-email":
+                description = "El correo no tiene un formato válido.";
+                break;
+            case "auth/too-many-requests":
+                description = "Demasiados intentos fallidos. Intenta más tarde.";
+                break;
         }
-        
+
         Swal.fire({
             title: 'Error al iniciar sesión',
             text: description,
