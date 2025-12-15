@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAuth } from '@/firebase';
 import {
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/navigation';
@@ -48,6 +49,45 @@ export default function LoginForm() {
       password: '',
     },
   });
+
+  const handlePasswordReset = async () => {
+    const { value: email } = await Swal.fire({
+      title: 'Recuperar Contraseña',
+      input: 'email',
+      inputLabel: 'Introduce tu correo electrónico',
+      inputPlaceholder: 'tu@email.com',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar enlace',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#595c97',
+    });
+
+    if (email) {
+      setIsLoading(true);
+      try {
+        await sendPasswordResetEmail(auth, email);
+        Swal.fire({
+          title: '¡Enlace Enviado!',
+          text: 'Hemos enviado un enlace para restablecer tu contraseña a tu correo electrónico.',
+          icon: 'success',
+          confirmButtonColor: '#595c97',
+        });
+      } catch (error: any) {
+        let description = 'Ocurrió un error al enviar el correo.';
+        if (error.code === 'auth/user-not-found') {
+          description = 'No se encontró ninguna cuenta con ese correo electrónico.';
+        }
+        Swal.fire({
+          title: 'Error',
+          text: description,
+          icon: 'error',
+          confirmButtonColor: '#595c97',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -87,9 +127,9 @@ export default function LoginForm() {
 
         let description = "Ocurrió un error. Inténtalo nuevamente.";
 
-        if (code.includes("auth/user-not-found") || code.includes("auth/wrong-password") || code.includes("invalid-credential")) {
+        if (code.includes("auth/user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) {
           description = "Correo o contraseña incorrectos.";
-        } else if (code.includes("auth/invalid-email")) {
+        } else if (code.includes("invalid-email")) {
           description = "El correo no tiene un formato válido.";
         } else if (code.includes("auth/too-many-requests")) {
           description = "Demasiados intentos fallidos. Intenta más tarde.";
@@ -136,7 +176,17 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
+                  <div className="flex justify-between items-center">
+                    <FormLabel>Contraseña</FormLabel>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="p-0 h-auto text-xs"
+                      onClick={handlePasswordReset}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </Button>
+                  </div>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
