@@ -1,0 +1,56 @@
+
+'use client';
+
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { Car } from '@/core/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import FinancingCalculator from "@/features/financing/components/FinancingCalculator";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+
+const EsqueletoFinanciamiento = () => (
+    <div className="container mx-auto px-4 py-8 md:py-12">
+        <Skeleton className="h-6 w-1/3 mb-12" />
+        <div className="text-center mb-12">
+            <Skeleton className="h-12 w-1/2 mx-auto" />
+            <Skeleton className="h-6 w-3/4 mx-auto mt-4" />
+        </div>
+        <Card>
+            <CardHeader className="items-center">
+                 <Skeleton className="h-8 w-full max-w-lg" />
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+                <Skeleton className="h-40 w-full" />
+                <div className="flex justify-end">
+                    <Skeleton className="h-12 w-32" />
+                </div>
+            </CardContent>
+        </Card>
+    </div>
+);
+
+
+export default function PaginaFinanciamiento() {
+    const firestore = useFirestore();
+    const { data: autos, isLoading } = useCollection<Car>(useMemoFirebase(() => collection(firestore, 'autos'), [firestore]));
+
+    if (isLoading || !autos) {
+        return <EsqueletoFinanciamiento />;
+    }
+
+    return (
+        <div className="container mx-auto px-4 py-8 md:py-12">
+            <Breadcrumbs items={[{ label: "Financiamiento" }]} />
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
+                Estrena el auto de tus sueños
+                </h1>
+                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                Usa nuestro asesor virtual para encontrar el plan de financiamiento perfecto para ti.
+                </p>
+            </div>
+            <FinancingCalculator allCars={autos} />
+        </div>
+    );
+}

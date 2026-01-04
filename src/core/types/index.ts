@@ -1,0 +1,91 @@
+
+'use client';
+
+import { Timestamp } from "firebase/firestore";
+
+export type CarVariant = {
+  id: string;
+  color: 'Rojo' | 'Azul' | 'Blanco' | 'Gris' | 'Negro' | 'Amarillo' | 'Plata' | 'Verde';
+  imagenUrl: string;
+  precio: number;
+};
+
+export type Car = {
+  id: string;
+  marca: string;
+  modelo: string;
+  anio: number;
+  tipoCombustible: 'Gasolina' | 'Diésel' | 'Eléctrico' | 'Híbrido';
+  transmision: 'Automática' | 'Manual';
+  caracteristicas: string[];
+  tipo: 'Sedán' | 'SUV' | 'Deportivo' | 'Camioneta' | 'Hatchback';
+  cilindrosMotor: number;
+  pasajeros: number;
+  variantes: CarVariant[];
+  createdAt?: Date;
+  // Deprecated properties, kept for potential data migration
+  precio?: number;
+  imagenUrl?: string;
+  color?: string;
+};
+
+export type Marca = {
+    id: string;
+    nombre:string;
+    logoUrl?: string;
+    createdAt?: Date;
+}
+
+export type Color = {
+    id: string;
+    nombre: string;
+    createdAt?: Date;
+}
+
+export type Transmision = {
+  id: string;
+  nombre: string;
+  createdAt?: Date;
+}
+
+export type UserProfile = {
+  uid: string;
+  email: string;
+  displayName: string;
+  createdAt: Timestamp;
+  currentComparison?: string[];
+}
+
+export type FavoriteItem = {
+  autoId: string;
+  varianteId: string;
+};
+
+export type Favorite = {
+  items: FavoriteItem[];
+};
+
+export type Comparison = {
+    id: string;
+    usuarioId: string;
+    autoId1: string;
+    varianteId1: string;
+    autoId2: string;
+    varianteId2: string;
+    fechaCreacion: Timestamp;
+}
+
+export type Financing = {
+    id: string;
+    usuarioId: string;
+    autoId: string;
+    varianteId: string;
+    precioAuto: number;
+    enganche: number;
+    plazo: number;
+    pagoMensual: number;
+    fechaCreacion: Timestamp;
+}
+    
+    
+    

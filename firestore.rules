@@ -1,0 +1,89 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /autos/{autoId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    match /marcas/{marcaId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /colores/{colorId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /transmisiones/{transmisionId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /escenarios/{escenarioId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    match /recomendaciones/{recomendacionId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    match /clientes_potenciales/{clientePotencialId} {
+      allow create: if isSignedIn();
+      allow get: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+      allow list: if false;
+    }
+
+    match /usuarios/{usuarioId} {
+        allow create: if request.auth.uid == usuarioId;
+        allow list: if false;
+        allow get, update: if request.auth.uid == usuarioId;
+        allow delete: if false;
+    }
+    
+    match /favoritos/{usuarioId} {
+      allow read, write: if isSignedIn() && request.auth.uid == usuarioId;
+    }
+
+    match /comparaciones/{comparacionId} {
+      allow create: if isSignedIn() && request.resource.data.usuarioId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.usuarioId == request.auth.uid;
+      allow list: if isSignedIn();
+    }
+
+    match /financiamientos/{financiamientoId} {
+      allow create: if isSignedIn() && request.resource.data.usuarioId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.usuarioId == request.auth.uid;
+      allow list: if isSignedIn();
+    }
+
+    match /fuelTypes/{fuelTypeId} {
+      allow get, list: if true;
+      allow create, update, delete: if true;
+    }
+
+    match /contadores/usuarios {
+      allow get: if isAdmin();
+      allow create, update: if isSignedIn();
+      allow list, delete: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && request.auth.uid == 'oDqiYNo5iIWWWu8uJWOZMdheB8n2';
+    }
+  }
+}
+    
+    
+    
