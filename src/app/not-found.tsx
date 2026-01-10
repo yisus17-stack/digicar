@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center text-center px-4 py-32 md:py-32">
+    <div className="flex flex-col items-center justify-center text-center px-4 py-32 md:py-36">
       <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">Página No Encontrada</h1>
       <p className="text-base md:text-lg text-muted-foreground mb-6 max-w-md">
         Lo sentimos, la página que buscas no existe o ha sido movida.
