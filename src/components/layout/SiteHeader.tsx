@@ -279,13 +279,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                       </Button>
                       </SheetTrigger>
                       <SheetContent side="right" className="w-4/5">
-                      <SheetHeader>
-                        <SheetTitle>
-                          Menú
-                        </SheetTitle>
-                      </SheetHeader>
-                      <div className="mt-6">
-                          <nav className="flex flex-col space-y-4">
+                          <nav className="flex flex-col space-y-4 pt-6">
                           {navLinks.map((link) => (
                               <Link
                               key={link.baseHref}
@@ -300,7 +294,6 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                               </Link>
                           ))}
                           </nav>
-                      </div>
                       </SheetContent>
                   </Sheet>
               ) : (
