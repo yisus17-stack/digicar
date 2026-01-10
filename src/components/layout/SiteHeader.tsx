@@ -281,32 +281,7 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                       <SheetContent side="right" className="w-4/5">
                       <SheetHeader>
                         <SheetTitle>
-                          <Link href="/" className="flex items-center space-x-2">
-                            <Image
-                              src="/digicar-logo.png"
-                              alt="DigiCar Logo"
-                              width={100}
-                              height={33}
-                              draggable="false"
-                              className="block dark:hidden high-contrast-hidden h-auto w-auto"
-                            />
-                            <Image
-                              src="/digicar-logo-blanco.png"
-                              alt="DigiCar Logo"
-                              width={100}
-                              height={33}
-                              draggable="false"
-                              className="hidden dark:block high-contrast-hidden h-auto w-auto"
-                            />
-                            <Image
-                              src="/digicar-logo-contraste.png"
-                              alt="DigiCar Logo de Alto Contraste"
-                              width={100}
-                              height={33}
-                              draggable="false"
-                              className="hidden high-contrast-block h-auto w-auto"
-                            />
-                          </Link>
+                          Menú
                         </SheetTitle>
                       </SheetHeader>
                       <div className="mt-6">
