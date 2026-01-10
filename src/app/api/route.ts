@@ -1,8 +1,23 @@
 
-// This is a placeholder file to ensure the `api` directory is created.
-// You can delete this file once you have other files in this directory.
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  return NextResponse.json({ message: 'Hello from the API!' });
+  const technologies = {
+    frontend: {
+      framework: "Next.js (con React)",
+      language: "TypeScript",
+      styling: "Tailwind CSS",
+      components: "ShadCN UI",
+      icons: "Lucide React",
+      animations: "Framer Motion"
+    },
+    backend_services: {
+      database: "Firebase Firestore",
+      authentication: "Firebase Authentication",
+      storage: "Supabase Storage"
+    },
+    server_environment: "Next.js (API Routes / Server Components)"
+  };
+
+  return NextResponse.json(technologies);
 }
