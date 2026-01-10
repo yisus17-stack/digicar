@@ -279,6 +279,9 @@ const SiteHeader = ({ user, loading }: SiteHeaderProps) => {
                       </Button>
                       </SheetTrigger>
                       <SheetContent side="right" className="w-4/5">
+                          <SheetHeader>
+                            <SheetTitle className="sr-only">Navegación Principal</SheetTitle>
+                          </SheetHeader>
                           <nav className="flex flex-col space-y-4 pt-6">
                           {navLinks.map((link) => (
                               <Link
