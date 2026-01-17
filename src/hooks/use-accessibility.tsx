@@ -95,6 +95,7 @@ export function useAccessibilityState(): AccessibilityState {
 
   useEffect(() => {
     const loadVoices = () => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
         const spanishVoice = 
@@ -109,16 +110,22 @@ export function useAccessibilityState(): AccessibilityState {
     };
     
     loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
 
     return () => {
-      speechSynthesis.onvoiceschanged = null;
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        speechSynthesis.onvoiceschanged = null;
+      }
     };
   }, []);
 
   useEffect(() => {
     const speak = (text: string) => {
         if (!text) return;
+        if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
         speechSynthesis.cancel(); // Cancel any previous speech
         const utterance = new SpeechSynthesisUtterance(text);
         if (selectedVoice) {
@@ -146,13 +153,17 @@ export function useAccessibilityState(): AccessibilityState {
         document.body.addEventListener('mouseover', handleEvent);
         document.body.addEventListener('focusin', handleEvent);
     } else {
-        speechSynthesis.cancel();
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            speechSynthesis.cancel();
+        }
         document.body.removeEventListener('mouseover', handleEvent);
         document.body.removeEventListener('focusin', handleEvent);
     }
 
     return () => {
-        speechSynthesis.cancel();
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            speechSynthesis.cancel();
+        }
         document.body.removeEventListener('mouseover', handleEvent);
         document.body.removeEventListener('focusin', handleEvent);
     };
