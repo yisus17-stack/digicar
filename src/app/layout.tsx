@@ -18,6 +18,7 @@ import Script from 'next/script';
 import { TextMagnifier } from '@/components/TextMagnifier';
 import { ReadingMask } from '@/components/ReadingMask';
 import { HighlightOnHover } from '@/components/HighlightOnHover';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sans' });
 
@@ -49,6 +50,21 @@ function AccessibilityProvider({ children }: { children: ReactNode }) {
   );
 }
 
+function RecaptchaProvider({ children }: { children: React.ReactNode }) {
+  const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  if (!recaptchaKey) {
+    console.warn("reCAPTCHA Site Key no encontrada. Por favor, añade NEXT_PUBLIC_RECAPTCHA_SITE_KEY a tus variables de entorno.");
+    return <>{children}</>;
+  }
+
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
+      {children}
+    </GoogleReCaptchaProvider>
+  );
+}
+
 
 export default function RootLayout({
   children,
@@ -65,18 +81,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <FirebaseClientProvider>
-            <AccessibilityProvider>
-              <div id="main-content-wrapper" className="relative flex min-h-screen flex-col">
-                <AppContent>{children}</AppContent>
-              </div>
-              <AccessibilityToolbar fontClassName={poppins.className} />
-              <TextMagnifier />
-              <ReadingMask />
-              <HighlightOnHover />
-            </AccessibilityProvider>
-            <Toaster />
-          </FirebaseClientProvider>
+          <RecaptchaProvider>
+            <FirebaseClientProvider>
+              <AccessibilityProvider>
+                <div id="main-content-wrapper" className="relative flex min-h-screen flex-col">
+                  <AppContent>{children}</AppContent>
+                </div>
+                <AccessibilityToolbar fontClassName={poppins.className} />
+                <TextMagnifier />
+                <ReadingMask />
+                <HighlightOnHover />
+              </AccessibilityProvider>
+              <Toaster />
+            </FirebaseClientProvider>
+          </RecaptchaProvider>
         </ThemeProvider>
         <div id="accessibility-portal"></div>
       </body>

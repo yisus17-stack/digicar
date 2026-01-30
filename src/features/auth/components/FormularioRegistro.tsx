@@ -30,6 +30,7 @@ import PasswordStrength from './PasswordStrength';
 import { Checkbox } from '@/components/ui/checkbox';
 import { doc, setDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const esquemaFormulario = z
   .object({
@@ -97,6 +98,7 @@ export default function FormularioRegistro() {
   const [cargando, setCargando] = useState(false);
   const [passwordValue, setPasswordValue] = useState('');
   const adminUid = "oDqiYNo5iIWWWu8uJWOZMdheB8n2";
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
 
   const form = useForm<DatosFormulario>({
@@ -113,7 +115,35 @@ export default function FormularioRegistro() {
 
   const alEnviar = async (data: DatosFormulario) => {
     setCargando(true);
+    if (!executeRecaptcha) {
+        console.error("Execute recaptcha not yet available");
+        Swal.fire({
+            title: 'Error de Configuración',
+            text: 'El servicio de reCAPTCHA no está listo. Por favor, asegúrate de que la clave del sitio esté configurada correctamente e inténtalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#595c97',
+        });
+        setCargando(false);
+        return;
+    }
+
     try {
+      const token = await executeRecaptcha('register');
+      const recaptchaResponse = await fetch('/api/recaptcha-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const recaptchaData = await recaptchaResponse.json();
+
+      if (!recaptchaResponse.ok || !recaptchaData.success) {
+        throw new Error(recaptchaData.message || 'Falló la verificación de reCAPTCHA. Inténtalo de nuevo.');
+      }
+
+
       const credencialUsuario = await createUserWithEmailAndPassword(
         auth,
         data.email,
@@ -165,7 +195,7 @@ export default function FormularioRegistro() {
 
     } catch (error) {
       console.error(error);
-      let description = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+      let description = (error as Error).message || 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
       if (error instanceof FirebaseError) {
         switch (error.code) {
           case 'auth/email-already-in-use':
